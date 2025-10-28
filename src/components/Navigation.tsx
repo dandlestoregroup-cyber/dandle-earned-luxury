@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { getTotalItems } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,7 +51,18 @@ const Navigation = () => {
                 {link.label}
               </a>
             ))}
-            <Button variant="hero" size="lg">
+            <button
+              onClick={() => navigate('/cart')}
+              className="relative text-card-foreground hover:text-accent transition-colors"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              {getTotalItems() > 0 && (
+                <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {getTotalItems()}
+                </span>
+              )}
+            </button>
+            <Button variant="hero" size="lg" onClick={() => navigate('/cart')}>
               Shop Now
             </Button>
           </div>
@@ -75,8 +90,17 @@ const Navigation = () => {
                 {link.label}
               </a>
             ))}
-            <Button variant="hero" size="lg" className="w-full mt-4">
-              Shop Now
+            <Button 
+              variant="hero" 
+              size="lg" 
+              className="w-full mt-4"
+              onClick={() => {
+                navigate('/cart');
+                setIsOpen(false);
+              }}
+            >
+              <ShoppingCart className="w-5 h-5 mr-2" />
+              Cart ({getTotalItems()})
             </Button>
           </div>
         )}

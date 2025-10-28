@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { X, Check, MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Product } from "@/types/product";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Check, ShoppingCart } from "lucide-react";
+import { Product } from "@/types/product";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface ProductModalProps {
   product: Product | null;
@@ -19,6 +22,9 @@ interface ProductModalProps {
 const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [selectedColor, setSelectedColor] = useState(0);
   const [mechanism, setMechanism] = useState<"manual" | "power">("power");
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   if (!product) return null;
 
@@ -39,11 +45,18 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
     return product.price ? formatPrice(product.price) : "Contact for Price";
   };
 
-  const handleWhatsAppContact = () => {
-    const message = encodeURIComponent(
-      `I'm interested in the ${product.name} (${product.colors[selectedColor]}, ${mechanism}). Can you provide more details?`
-    );
-    window.open(`https://wa.me/201222804255?text=${message}`, "_blank");
+  const handleAddToCart = () => {
+    addItem(product, product.colors[selectedColor], mechanism);
+    toast({
+      title: "Added to cart",
+      description: `${product.name} (${product.colors[selectedColor]}, ${mechanism})`,
+    });
+  };
+
+  const handleBuyNow = () => {
+    addItem(product, product.colors[selectedColor], mechanism);
+    navigate('/cart');
+    onClose();
   };
 
   return (
@@ -155,16 +168,26 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               </ul>
             </div>
 
-            {/* CTA Button */}
-            <Button
-              variant="hero"
-              size="lg"
-              className="w-full"
-              onClick={handleWhatsAppContact}
-            >
-              <MessageCircle className="mr-2" size={20} />
-              Contact via WhatsApp
-            </Button>
+            {/* CTA Buttons */}
+            <div className="flex gap-3">
+              <Button
+                onClick={handleAddToCart}
+                className="flex-1"
+                size="lg"
+                variant="outline"
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                Add to Cart
+              </Button>
+              <Button
+                onClick={handleBuyNow}
+                className="flex-1"
+                size="lg"
+                variant="luxury"
+              >
+                Buy Now
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
