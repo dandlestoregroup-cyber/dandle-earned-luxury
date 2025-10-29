@@ -27,7 +27,7 @@ export const products: Product[] = [
       "Premium Leather Upholstery",
     ],
     targetAudience: "High-performing professionals",
-    imageUrl: "/src/assets/relaxmax-hero-offwhite.jpg",
+    imageUrl: "/images/relaxmax-hero-offwhite.jpg",
   },
   {
     id: "comfortplus",
@@ -74,7 +74,7 @@ export const products: Product[] = [
       "Center Console with Storage",
     ],
     targetAudience: "Couples and families",
-    imageUrl: "https://picsum.photos/400/300?random=chair4",
+    imageUrl: "/images/cozycompanion-yellow-front.jpg",
   },
   {
     id: "easyup",

@@ -61,7 +61,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card text-card-foreground">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card text-card-foreground animate-in fade-in-0 zoom-in-95 duration-300">
+
         <DialogHeader>
           <DialogTitle className="font-serif text-3xl text-card-foreground">
             {product.name}
@@ -72,11 +73,12 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
         <div className="grid md:grid-cols-2 gap-8 mt-4">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="relative rounded-lg overflow-hidden">
+            <div className="relative rounded-lg overflow-hidden bg-card-foreground/5 transition-transform duration-300 hover:scale-[1.02]">
               <img
                 src={product.imageUrl}
                 alt={product.name}
-                className="w-full h-96 object-cover"
+                className="w-full h-96 object-cover transition-opacity duration-300"
+                loading="lazy"
               />
             </div>
           </div>
