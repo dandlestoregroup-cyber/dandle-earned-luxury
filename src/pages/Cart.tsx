@@ -1,17 +1,24 @@
+import { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import CheckoutForm, { CustomerData } from '@/components/CheckoutForm';
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
   const navigate = useNavigate();
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false);
 
   const formatPrice = (num: number) => `${num.toLocaleString('en-US')} EGP`;
 
-  const handleCheckout = () => {
+  const handleCheckoutClick = () => {
+    setShowCheckoutForm(true);
+  };
+
+  const handleFormSubmit = (customerData: CustomerData) => {
     const orderDetails = items.map(item => {
       const price = item.mechanism === 'power' 
         ? (item.product.pricePower || item.product.price || 0)
@@ -20,9 +27,24 @@ const Cart = () => {
     }).join('%0A');
 
     const total = formatPrice(getTotalPrice());
-    const message = `Hello! I'd like to order:%0A%0A${orderDetails}%0A%0ATotal: ${total}`;
+    
+    const customerInfo = `
+*Customer Details:*
+Name: ${customerData.name}
+Phone: ${customerData.phone}
+${customerData.email ? `Email: ${customerData.email}` : ''}
+
+*Delivery Address:*
+${customerData.address}
+${customerData.city}, ${customerData.governorate}
+
+${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
+
+    const message = `Hello! I'd like to place an order:%0A%0A${customerInfo}%0A*Order Details:*%0A${orderDetails}%0A%0A*Total: ${total}*`;
     
     window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
+    clearCart();
+    navigate('/');
   };
 
   if (items.length === 0) {
@@ -50,9 +72,26 @@ const Cart = () => {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <main className="flex-1 container mx-auto px-4 py-32">
-        <h1 className="text-5xl font-bold mb-12">Your Cart</h1>
-        
-        <div className="grid lg:grid-cols-3 gap-8">
+        {showCheckoutForm ? (
+          <div className="max-w-2xl mx-auto">
+            <Button
+              variant="ghost"
+              onClick={() => setShowCheckoutForm(false)}
+              className="mb-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Cart
+            </Button>
+            <CheckoutForm
+              onSubmit={handleFormSubmit}
+              onCancel={() => setShowCheckoutForm(false)}
+            />
+          </div>
+        ) : (
+          <>
+            <h1 className="text-5xl font-bold mb-12">Your Cart</h1>
+            
+            <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
             {items.map((item, index) => {
               const price = item.mechanism === 'power' 
@@ -126,12 +165,12 @@ const Cart = () => {
                 </div>
               </div>
               <Button 
-                onClick={handleCheckout} 
+                onClick={handleCheckoutClick} 
                 variant="luxury" 
                 size="lg" 
                 className="w-full mb-3"
               >
-                Checkout via WhatsApp
+                Proceed to Checkout
               </Button>
               <Button 
                 onClick={clearCart} 
@@ -144,6 +183,8 @@ const Cart = () => {
             </div>
           </div>
         </div>
+          </>
+        )}
       </main>
       <Footer />
     </div>
