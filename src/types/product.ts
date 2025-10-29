@@ -27,7 +27,7 @@ export const products: Product[] = [
       "Premium Leather Upholstery",
     ],
     targetAudience: "High-performing professionals",
-    imageUrl: "https://picsum.photos/400/300?random=chair1",
+    imageUrl: "/src/assets/relaxmax-hero-offwhite.jpg",
   },
   {
     id: "comfortplus",
