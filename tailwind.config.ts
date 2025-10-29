@@ -65,7 +65,24 @@ export default {
       },
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Lato', 'sans-serif'],
+      },
+      letterSpacing: {
+        'headline': '0.5pt',
+        'body': '0.2pt',
+      },
+      fontSize: {
+        'hero-desktop': '64px',
+        'hero-mobile': '40px',
+        'section-desktop': '40px',
+        'section-mobile': '28px',
+        'body-desktop': '18px',
+        'body-mobile': '16px',
+        'caption': '22px',
+      },
+      lineHeight: {
+        'body': '1.4',
+        'heading': '1.1',
       },
       keyframes: {
         "accordion-down": {
