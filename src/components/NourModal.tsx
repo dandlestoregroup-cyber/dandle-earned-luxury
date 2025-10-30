@@ -430,13 +430,17 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
           boxSizing: 'border-box'
         }}
       >
-        {step !== 'greeting' && (
-          <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
-                Nour - AI Comfort Stylist
-              </DialogTitle>
+        <DialogHeader className={step === 'greeting' ? 'sr-only' : ''}>
+          <div className="flex items-center justify-between">
+            <DialogTitle className={step === 'greeting' ? 'sr-only' : 'flex items-center gap-2'}>
+              {step === 'greeting' ? 'Nour AI Experience' : (
+                <>
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  Nour - AI Comfort Stylist
+                </>
+              )}
+            </DialogTitle>
+            {step !== 'greeting' && (
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -446,12 +450,12 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                 <Languages className="w-4 h-4" />
                 {i18n.language === 'ar' ? '🇪🇬' : '🇬🇧'}
               </Button>
-            </div>
-            <DialogDescription className="sr-only">
-              {t('greeting')}
-            </DialogDescription>
-          </DialogHeader>
-        )}
+            )}
+          </div>
+          <DialogDescription className="sr-only">
+            {step === 'greeting' ? 'Experience AI-powered room visualization' : t('greeting')}
+          </DialogDescription>
+        </DialogHeader>
 
         {step === "greeting" && (
           <motion.div 
