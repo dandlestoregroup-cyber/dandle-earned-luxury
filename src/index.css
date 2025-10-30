@@ -132,8 +132,21 @@ All colors MUST be HSL.
     font-style: italic;
   }
   
+  /* Warm gradient appears before React hydrates (FIX: dead initial load) */
   html {
     scroll-behavior: smooth;
+    background: linear-gradient(135deg, #F5E6D3 0%, #FFF9F3 100%);
+    min-height: 100vh;
+  }
+  
+  /* Pulse animation for titles while JS loads */
+  @keyframes soft-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+  }
+  
+  .animate-soft-pulse {
+    animation: soft-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }
 

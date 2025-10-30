@@ -16,13 +16,13 @@ const NourCard = ({ onClick }: NourCardProps) => {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.1),transparent_70%)]" />
           
           <div className="relative z-10 space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors animate-soft-pulse">
               <Sparkles className="w-8 h-8 text-primary" />
             </div>
             
             <div>
-              <h3 className="text-2xl font-bold mb-2">Nour</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-2xl font-bold mb-2 animate-soft-pulse">Nour</h3>
+              <p className="text-muted-foreground animate-soft-pulse" style={{ animationDelay: "0.2s" }}>
                 AI Comfort Stylist
               </p>
             </div>

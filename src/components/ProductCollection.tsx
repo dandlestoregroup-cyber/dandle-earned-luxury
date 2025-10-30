@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 import NourCard from "./NourCard";
@@ -9,6 +9,34 @@ const ProductCollection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [nourModalOpen, setNourModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // FIX: Auto-open Nour on first visit + pre-load resources
+  useEffect(() => {
+    // 1. Auto-open Nour modal on first visit
+    const hasVisited = sessionStorage.getItem('nour-visited');
+    if (!hasVisited) {
+      setTimeout(() => {
+        setNourModalOpen(true);
+        sessionStorage.setItem('nour-visited', '1');
+      }, 1500); // Wait 1.5s after page load for smooth entry
+    }
+
+    // 2. Pre-load ColorThief library
+    import('colorthief').then(() => {
+      console.log('🎨 ColorThief ready');
+    }).catch((error) => {
+      console.log('ColorThief pre-load skipped:', error);
+    });
+
+    // 3. Warm the model cache silently
+    if ('caches' in window) {
+      caches.open('nour-v1').then((cache) => {
+        cache.add('/models/nanobanana-flash-2.5.safetensors').catch(() => {
+          console.log('Model cache warming skipped (file may not exist yet)');
+        });
+      });
+    }
+  }, []);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
