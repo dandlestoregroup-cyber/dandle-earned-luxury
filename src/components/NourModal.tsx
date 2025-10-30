@@ -418,13 +418,20 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         ref={dialogContentRef}
-        className={`nour-wrapper max-w-4xl max-h-[90vh] overflow-hidden ${
-          step === 'greeting' ? 'border-0 bg-transparent shadow-none p-0' : ''
+        className={`nour-wrapper overflow-hidden ${
+          step === 'greeting' 
+            ? 'w-screen h-screen max-w-none max-h-[100vh] border-0 bg-transparent shadow-none p-0' 
+            : 'max-w-4xl max-h-[90vh]'
         }`}
         style={{
           background: step === 'greeting' ? 'transparent' : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
-          width: '100%',
+          width: step === 'greeting' ? '100vw' : '100%',
           maxWidth: '100vw',
+          height: step === 'greeting' ? '100vh' : undefined,
+          maxHeight: step === 'greeting' ? '100vh' : undefined,
+          left: step === 'greeting' ? 0 as unknown as string : undefined,
+          top: step === 'greeting' ? 0 as unknown as string : undefined,
+          transform: step === 'greeting' ? 'none' : undefined,
           paddingLeft: step === 'greeting' ? '0' : 'env(safe-area-inset-left)',
           paddingRight: step === 'greeting' ? '0' : 'env(safe-area-inset-right)',
           boxSizing: 'border-box'
