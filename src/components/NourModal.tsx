@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
+import ColorThief from "colorthief";
 
 interface NourModalProps {
   open: boolean;
@@ -70,6 +71,9 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const greetingRef = useRef<HTMLDivElement>(null);
+  const dialogContentRef = useRef<HTMLDivElement>(null);
+  const sliderContainerRef = useRef<HTMLDivElement>(null);
+  const carouselCardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { toast } = useToast();
   const chimeAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -78,6 +82,15 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     const audio = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADhAC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAA4SxYqH5AAAAAAAAAAAAAAAAAAAAAP/7kGQAD/AAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+5BkAA/wAABpAAAACAAADSAAAAEAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==');
     audio.volume = 0.3;
     chimeAudioRef.current = audio;
+  }, []);
+
+  // Register service worker for model caching
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch((error) => {
+        console.log('Service worker registration failed:', error);
+      });
+    }
   }, []);
 
   // Auto-greeting on mount
@@ -118,6 +131,50 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     i18n.changeLanguage(i18n.language === 'ar' ? 'en' : 'ar');
   };
 
+  // Tilt and glow animation helper (FIX #4)
+  const triggerTiltGlow = (cardElement: HTMLElement) => {
+    gsap.fromTo(cardElement,
+      { rotateY: 0, boxShadow: "0 4px 6px rgba(0,0,0,0.1)" },
+      { 
+        rotateY: 5, 
+        boxShadow: "0 0 20px rgba(243, 122, 29, 0.6)",
+        duration: 0.6,
+        yoyo: true,
+        repeat: 1
+      }
+    );
+  };
+
+  // Extract colors from uploaded image (FIX #1)
+  const extractAndApplyColors = (imageDataUrl: string) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = imageDataUrl;
+    img.onload = () => {
+      try {
+        const colorThief = new ColorThief();
+        const palette = colorThief.getPalette(img, 3);
+        
+        if (palette && palette.length >= 3) {
+          document.documentElement.style.setProperty('--user-color-1', `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})`);
+          document.documentElement.style.setProperty('--user-color-2', `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`);
+          document.documentElement.style.setProperty('--user-color-3', `rgb(${palette[2][0]}, ${palette[2][1]}, ${palette[2][2]})`);
+          
+          // Animate background gradient
+          if (dialogContentRef.current) {
+            gsap.to(dialogContentRef.current, {
+              background: 'linear-gradient(135deg, var(--user-color-1), var(--user-color-2), var(--user-color-3))',
+              duration: 1,
+              ease: "power2.inOut"
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Color extraction failed:', error);
+      }
+    };
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -148,9 +205,14 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(img, offsetX, offsetY, cropWidth, cropHeight, 0, 0, 1920, 1080);
-            setRoomImage(canvas.toDataURL('image/jpeg', 0.95));
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            setRoomImage(dataUrl);
+            
+            // Extract colors and animate background (FIX #1)
+            extractAndApplyColors(dataUrl);
+            
             setStep("render");
-            handleRender(canvas.toDataURL('image/jpeg', 0.95));
+            handleRender(dataUrl);
           }
         };
         img.src = event.target?.result as string;
@@ -212,6 +274,9 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
           title: t('complete'),
           description: t('editsRemaining', { count: 3 - editCount - 1 })
         });
+
+        // Show Arabic calligraphy compliment (FIX #6)
+        showEgyptianCompliment();
       } else {
         throw new Error("Invalid response format");
       }
@@ -221,6 +286,45 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Egyptian compliment after render (FIX #6)
+  const showEgyptianCompliment = () => {
+    const compliment = document.createElement('div');
+    compliment.innerHTML = i18n.language === 'ar' 
+      ? 'مثالي… مكانك يستحق هذا الهدوء' 
+      : 'Perfect... your space deserves this tranquility';
+    compliment.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: rgba(243, 122, 29, 0.9);
+      text-align: center;
+      z-index: 9999;
+      pointer-events: none;
+      font-family: ${i18n.language === 'ar' ? 'Amiri, serif' : 'Inter, sans-serif'};
+    `;
+    document.body.appendChild(compliment);
+
+    gsap.fromTo(compliment,
+      { opacity: 0, scale: 0.8 },
+      { 
+        opacity: 1, 
+        scale: 1, 
+        duration: 0.5,
+        onComplete: () => {
+          gsap.to(compliment, {
+            opacity: 0,
+            duration: 0.5,
+            delay: 1.5,
+            onComplete: () => compliment.remove()
+          });
+        }
+      }
+    );
   };
 
   const handleChatSend = async () => {
@@ -259,14 +363,28 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     setEditCount(0);
     setMessages([]);
     setBeforeAfterSlide(50);
+    
+    // Reset background to default
+    if (dialogContentRef.current) {
+      gsap.to(dialogContentRef.current, {
+        background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
+        duration: 0.5
+      });
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-4xl max-h-[90vh] overflow-hidden"
+        ref={dialogContentRef}
+        className="nour-wrapper max-w-4xl max-h-[90vh] overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
+          background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
+          width: '100%',
+          maxWidth: '100vw',
+          paddingLeft: 'env(safe-area-inset-left)',
+          paddingRight: 'env(safe-area-inset-right)',
+          boxSizing: 'border-box'
         }}
       >
         <DialogHeader>
@@ -330,6 +448,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                 {RECLINERS.map((recliner, idx) => (
                   <CarouselItem key={idx} className="md:basis-1/2 lg:basis-1/3">
                     <Card 
+                      ref={(el) => (carouselCardRefs.current[idx] = el)}
                       className={`cursor-pointer transition-all duration-300 ${
                         selectedRecliner.model === recliner.model 
                           ? 'ring-2 ring-primary shadow-lg' 
@@ -338,9 +457,13 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                       onClick={() => {
                         setSelectedRecliner(recliner);
                         setSelectedColor(recliner.colors[0]);
+                        // FIX #4: Trigger tilt/glow on card click
+                        if (carouselCardRefs.current[idx]) {
+                          triggerTiltGlow(carouselCardRefs.current[idx]!);
+                        }
                       }}
                     >
-                      <CardContent className="p-4">
+                      <CardContent className="p-4" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
                         <div className="aspect-square relative overflow-hidden rounded-lg mb-3">
                           <img 
                             src={recliner.colors[0].image}
@@ -360,6 +483,10 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                                 e.stopPropagation();
                                 setSelectedRecliner(recliner);
                                 setSelectedColor(color);
+                                // FIX #4: Trigger tilt/glow on color dot click
+                                if (carouselCardRefs.current[idx]) {
+                                  triggerTiltGlow(carouselCardRefs.current[idx]!);
+                                }
                               }}
                               className={`w-4 h-4 rounded-full border-2 transition-all ${
                                 selectedRecliner.model === recliner.model && selectedColor.name === color.name
@@ -423,12 +550,17 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                   {t('beforeAfter')}
                 </Label>
                 
-                {/* Before/After Slider */}
+                {/* Before/After Slider (FIX #2) */}
                 <motion.div 
+                  ref={sliderContainerRef}
                   className="relative w-full aspect-video rounded-lg overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.4 }}
+                  style={{ 
+                    maxWidth: '100%',
+                    boxSizing: 'border-box'
+                  }}
                 >
                   {/* After image (full) */}
                   <img 
@@ -449,16 +581,18 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                     />
                   </div>
                   
-                  {/* Slider */}
+                  {/* Slider (FIX #2: use percentage instead of window.innerWidth) */}
                   <motion.div
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0}
                     dragMomentum={false}
                     onDrag={(_, info) => {
-                      const container = info.point.x;
-                      const percent = (container / window.innerWidth) * 100;
-                      setBeforeAfterSlide(Math.max(0, Math.min(100, percent)));
+                      if (sliderContainerRef.current) {
+                        const rect = sliderContainerRef.current.getBoundingClientRect();
+                        const percent = ((info.point.x - rect.left) / rect.width) * 100;
+                        setBeforeAfterSlide(Math.max(0, Math.min(100, percent)));
+                      }
                     }}
                     className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize"
                     style={{ left: `${beforeAfterSlide}%` }}
