@@ -24,6 +24,7 @@ const Navigation = () => {
     { label: "AR View", href: "#ar-demo" },
     { label: "About", href: "#story" },
     { label: "Contact", href: "#contact" },
+    { label: "Nour AI", href: "/nour-chat", isRoute: true },
   ];
 
   return (
@@ -43,13 +44,23 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-card-foreground hover:text-accent transition-colors"
-              >
-                {link.label}
-              </a>
+              link.isRoute ? (
+                <button
+                  key={link.href}
+                  onClick={() => navigate(link.href)}
+                  className="text-sm font-medium text-card-foreground hover:text-accent transition-colors"
+                >
+                  {link.label}
+                </button>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-card-foreground hover:text-accent transition-colors"
+                >
+                  {link.label}
+                </a>
+              )
             ))}
             <button
               onClick={() => navigate('/cart')}
@@ -81,14 +92,27 @@ const Navigation = () => {
         {isOpen && (
           <div className="md:hidden pb-6 animate-fade-in-up">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="block py-3 text-card-foreground hover:text-accent transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.label}
-              </a>
+              link.isRoute ? (
+                <button
+                  key={link.href}
+                  onClick={() => {
+                    navigate(link.href);
+                    setIsOpen(false);
+                  }}
+                  className="block py-3 text-card-foreground hover:text-accent transition-colors text-left w-full"
+                >
+                  {link.label}
+                </button>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="block py-3 text-card-foreground hover:text-accent transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </a>
+              )
             ))}
             <Button 
               variant="hero" 
