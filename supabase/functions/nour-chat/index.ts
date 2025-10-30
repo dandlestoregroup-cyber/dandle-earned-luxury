@@ -18,22 +18,15 @@ serve(async (req) => {
       });
     }
 
+    // Check if this is an image generation request (has image_url in content)
+    const lastMsg = messages[messages.length - 1];
+    const hasImage = Array.isArray(lastMsg?.content) && 
+      lastMsg.content.some((c: any) => c.type === "image_url");
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const last = messages[messages.length - 1];
-    const text = typeof last?.content === "string" ? last.content.toLowerCase() : "";
-    const imageKeywords = [
-      "generate image",
-      "create image",
-      "make image",
-      "draw",
-      "picture of",
-      "image of",
-    ];
-    const isImageRequest = imageKeywords.some((k) => text.includes(k));
-
-    if (isImageRequest) {
+    if (hasImage) {
       // Use Lovable AI image model (Nano banana)
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
@@ -92,14 +85,29 @@ serve(async (req) => {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: "You are a concise, friendly assistant for a recliner store called DANDLE. Keep answers brief and helpful." },
-          ...messages,
-        ],
-        stream: true,
-      }),
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { 
+              role: "system", 
+              content: `You are Nour, the AI Comfort Stylist for DANDLE recliners. Warm, elegant tone with Egyptian modern sophistication.
+              
+Knowledge base:
+- Models: RelaxMax (21,900 EGP), Diva (23,900 EGP), ComfortPlus (29,900 EGP), CozyCompanion (32,900 EGP), EasyUp (42,900 EGP)
+- Manufacturing: 7-14 days
+- Delivery: Cairo 1-3 days, Alexandria 3-5 days, Upper Egypt 7-10 days
+- Payment: 40% down, 60% on delivery after inspection
+- Installment: 610-1080 EGP/month (6-36 months with interest)
+- Warranty: 2y motor, 5y frame, 1y upholstery + free transit insurance + 48h swap if damaged
+- Policy: No discounts, no faster promises, no medical claims
+- Order: https://wa.link/m4mky2
+
+Keep answers brief, helpful, and reassuring.` 
+            },
+            ...messages,
+          ],
+          stream: true,
+        }),
     });
 
     if (!chatRes.ok) {

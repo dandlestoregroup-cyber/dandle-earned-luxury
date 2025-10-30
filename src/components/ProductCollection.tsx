@@ -1,10 +1,13 @@
 import { useState } from "react";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
+import NourCard from "./NourCard";
+import NourModal from "./NourModal";
 import { products, Product } from "@/types/product";
 
 const ProductCollection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [nourModalOpen, setNourModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleProductClick = (product: Product) => {
@@ -31,13 +34,32 @@ const ProductCollection = () => {
           </p>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.slice(0, 4).map((product, index) => (
+        {/* Product Grid with Nour Card */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          <div className="animate-fade-in-up">
+            <NourCard onClick={() => setNourModalOpen(true)} />
+          </div>
+          {products.slice(0, 2).map((product, index) => (
             <div
               key={product.id}
               className="animate-fade-in-up"
-              style={{ animationDelay: `${index * 100}ms` }}
+              style={{ animationDelay: `${(index + 1) * 100}ms` }}
+            >
+              <ProductCard
+                product={product}
+                onClick={() => handleProductClick(product)}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* More Products */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {products.slice(2, 5).map((product, index) => (
+            <div
+              key={product.id}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${(index + 3) * 100}ms` }}
             >
               <ProductCard
                 product={product}
@@ -48,10 +70,10 @@ const ProductCollection = () => {
         </div>
 
         {/* View More */}
-        {products.length > 4 && (
+        {products.length > 5 && (
           <div className="text-center mt-12">
             <p className="text-muted-foreground">
-              + {products.length - 4} more products in our collection
+              + {products.length - 5} more products in our collection
             </p>
           </div>
         )}
@@ -62,6 +84,12 @@ const ProductCollection = () => {
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+      />
+
+      {/* Nour Modal */}
+      <NourModal
+        open={nourModalOpen}
+        onOpenChange={setNourModalOpen}
       />
     </section>
   );
