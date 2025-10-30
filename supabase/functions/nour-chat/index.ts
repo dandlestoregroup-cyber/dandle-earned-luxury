@@ -10,7 +10,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const { type, messages } = await req.json();
     if (!Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "Invalid payload: messages[] required" }), {
         status: 400,
@@ -18,15 +18,16 @@ serve(async (req) => {
       });
     }
 
-    // Check if this is an image generation request (has image_url in content)
-    const lastMsg = messages[messages.length - 1];
-    const hasImage = Array.isArray(lastMsg?.content) && 
-      lastMsg.content.some((c: any) => c.type === "image_url");
+    // Check if this is an image generation request
+    const isImageRequest = type === "image" || (
+      Array.isArray(messages[messages.length - 1]?.content) && 
+      messages[messages.length - 1].content.some((c: any) => c.type === "image_url")
+    );
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    if (hasImage) {
+    if (isImageRequest) {
       // Use Lovable AI image model (Nano banana)
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
@@ -78,41 +79,39 @@ serve(async (req) => {
       );
     }
 
-    // Text chat with streaming
+    // Text chat - non-streaming for simplicity
     const chatRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            { 
-              role: "system", 
-              content: `You are Nour, the AI Comfort Stylist for DANDLE recliners. Speak in a warm, elegant, reassuring tone.
-              
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { 
+            role: "system", 
+            content: `You are Nour (نور), the AI Comfort Stylist for DANDLE recliners. You speak with warm Egyptian hospitality and modern sophistication.
+
 Knowledge base:
 - Models: RelaxMax (21,900 EGP), Diva (23,900 EGP), ComfortPlus (29,900 EGP), CozyCompanion (32,900 EGP), EasyUp (42,900 EGP)
 - Manufacturing: 7-14 days
-- Delivery: Cairo 1-3 days, Alexandria 3-5 days, Upper Egypt 7-10 days
+- Delivery: Cairo 1-3 days, Alexandria 3-5 days, Upper Egypt 7-10 days  
 - Payment: 40% down, 60% on delivery after inspection
 - Installment: 610-1080 EGP/month (6-36 months with interest)
 - Warranty: 2y motor, 5y frame, 1y upholstery + free transit insurance + 48h swap if damaged
 - Policy: No discounts, no faster promises, no medical claims
-- Order: https://wa.link/m4mky2
+- Order via WhatsApp: https://wa.link/m4mky2
 
-Image guidance:
-- You CAN work with images when the user uses the "Visualize in Your Room" flow (upload image + render).
-- Never claim you cannot view images or videos. If a user asks to visualize a recliner, guide them to the Visualize button and upload step.
-
-Style:
-- Keep answers brief, helpful, and action-oriented.`
-            },
-            ...messages,
-          ],
-          stream: true,
-        }),
+Personality:
+- Speak in a warm, reassuring, elegant tone
+- Use Egyptian expressions naturally when speaking Arabic
+- Keep answers brief and action-oriented
+- Guide users toward the visualization tool when discussing aesthetics`
+          },
+          ...messages,
+        ],
+      }),
     });
 
     if (!chatRes.ok) {
@@ -136,9 +135,13 @@ Style:
       });
     }
 
-    return new Response(chatRes.body, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
-    });
+    const data = await chatRes.json();
+    const content = data?.choices?.[0]?.message?.content || "I'm here to help!";
+    
+    return new Response(
+      JSON.stringify({ type: "text", content }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   } catch (e) {
     console.error("nour-chat error:", e);
     return new Response(
