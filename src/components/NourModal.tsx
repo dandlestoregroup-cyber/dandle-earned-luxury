@@ -68,10 +68,14 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
 
     setIsLoading(true);
     try {
-      const prompt = `Recreate the uploaded room photo as-is. Insert a Dandle ${model} recliner in ${color} (${series}). Render mode: ${mode}. Preserve all original lighting and décor. No hallucinations, no architectural changes, realistic shadow blending.`;
+      const modeDescription = MODES.find(m => m.value === mode)?.desc || mode;
+      const prompt = `Recreate the uploaded room photo as-is. Insert a Dandle ${model} recliner in ${color} (${series}). Render mode: ${modeDescription}. Preserve all original lighting and décor. No hallucinations, no architectural changes, realistic shadow blending.`;
+      
+      console.log("Calling nour-chat with prompt:", prompt);
       
       const { data, error } = await supabase.functions.invoke("nour-chat", {
         body: {
+          type: "image",
           messages: [
             {
               role: "user",
@@ -84,17 +88,24 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
         }
       });
 
-      if (error) throw error;
+      console.log("Response from nour-chat:", data);
 
-      if (data.type === "image") {
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw error;
+      }
+
+      if (data?.type === "image" && data?.content) {
         setRenderedImage(data.content);
         setEditCount(editCount + 1);
         setStep("render");
         toast({ title: "Visualization complete!", description: `${3 - editCount - 1} edits remaining` });
+      } else {
+        throw new Error("Invalid response format from image generation");
       }
     } catch (error: any) {
       console.error("Render error:", error);
-      toast({ title: "Rendering failed", description: error.message, variant: "destructive" });
+      toast({ title: "Rendering failed", description: error.message || "Please try again", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
