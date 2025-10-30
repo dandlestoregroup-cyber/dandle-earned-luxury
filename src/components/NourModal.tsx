@@ -68,6 +68,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [hasGreeted, setHasGreeted] = useState(false);
+  const [autoAdvanceTimer, setAutoAdvanceTimer] = useState<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const greetingRef = useRef<HTMLDivElement>(null);
@@ -76,12 +77,18 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const carouselCardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { toast } = useToast();
   const chimeAudioRef = useRef<HTMLAudioElement | null>(null);
+  const tickAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Load chime sound
+  // Load chime and tick sounds
   useEffect(() => {
-    const audio = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADhAC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAA4SxYqH5AAAAAAAAAAAAAAAAAAAAAP/7kGQAD/AAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+5BkAA/wAABpAAAACAAADSAAAAEAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==');
-    audio.volume = 0.3;
-    chimeAudioRef.current = audio;
+    const chime = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADhAC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAA4SxYqH5AAAAAAAAAAAAAAAAAAAAAP/7kGQAD/AAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+5BkAA/wAABpAAAACAAADSAAAAEAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==');
+    chime.volume = 0.3;
+    chimeAudioRef.current = chime;
+    
+    // Soft tick sound (8kB max)
+    const tick = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=');
+    tick.volume = 0.15;
+    tickAudioRef.current = tick;
   }, []);
 
   // Register service worker for model caching
@@ -93,7 +100,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     }
   }, []);
 
-  // Auto-greeting on mount
+  // Auto-greeting on mount + ESC handler
   useEffect(() => {
     if (open && !hasGreeted) {
       setTimeout(() => {
@@ -106,7 +113,31 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
         }
       }, 300);
     }
-  }, [open, hasGreeted]);
+    
+    // ESC key handler for greeting overlay
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && step === 'greeting') {
+        onOpenChange(false);
+      }
+    };
+    
+    if (open) {
+      document.addEventListener('keydown', handleEsc);
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [open, hasGreeted, step, onOpenChange]);
+
+  // Cleanup auto-advance timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+      }
+    };
+  }, [autoAdvanceTimer]);
 
   // Button hover animation
   useEffect(() => {
@@ -131,16 +162,26 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     i18n.changeLanguage(i18n.language === 'ar' ? 'en' : 'ar');
   };
 
-  // Tilt and glow animation helper (FIX #4)
+  // Tilt and glow animation helper with sound
   const triggerTiltGlow = (cardElement: HTMLElement) => {
+    // Play soft tick
+    tickAudioRef.current?.play().catch(() => {});
+    
+    // GSAP tilt + scale + orange glow
     gsap.fromTo(cardElement,
-      { rotateY: 0, boxShadow: "0 4px 6px rgba(0,0,0,0.1)" },
+      { 
+        rotateY: 0, 
+        scale: 1,
+        boxShadow: "0 4px 6px rgba(0,0,0,0.1)" 
+      },
       { 
         rotateY: 5, 
-        boxShadow: "0 0 20px rgba(243, 122, 29, 0.6)",
+        scale: 1.02,
+        boxShadow: "0 0 6px rgba(243, 122, 29, 0.8)",
         duration: 0.6,
         yoyo: true,
-        repeat: 1
+        repeat: 1,
+        ease: "power2.inOut"
       }
     );
   };
@@ -377,66 +418,110 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         ref={dialogContentRef}
-        className="nour-wrapper max-w-4xl max-h-[90vh] overflow-hidden"
+        className={`nour-wrapper max-w-4xl max-h-[90vh] overflow-hidden ${
+          step === 'greeting' ? 'border-0 bg-transparent shadow-none p-0' : ''
+        }`}
         style={{
-          background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
+          background: step === 'greeting' ? 'transparent' : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
           width: '100%',
           maxWidth: '100vw',
-          paddingLeft: 'env(safe-area-inset-left)',
-          paddingRight: 'env(safe-area-inset-right)',
+          paddingLeft: step === 'greeting' ? '0' : 'env(safe-area-inset-left)',
+          paddingRight: step === 'greeting' ? '0' : 'env(safe-area-inset-right)',
           boxSizing: 'border-box'
         }}
       >
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              Nour - AI Comfort Stylist
-            </DialogTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={toggleLanguage}
-              className="gap-2"
-            >
-              <Languages className="w-4 h-4" />
-              {i18n.language === 'ar' ? '🇪🇬' : '🇬🇧'}
-            </Button>
-          </div>
-          <DialogDescription className="sr-only">
-            {t('greeting')}
-          </DialogDescription>
-        </DialogHeader>
+        {step !== 'greeting' && (
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Nour - AI Comfort Stylist
+              </DialogTitle>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={toggleLanguage}
+                className="gap-2"
+              >
+                <Languages className="w-4 h-4" />
+                {i18n.language === 'ar' ? '🇪🇬' : '🇬🇧'}
+              </Button>
+            </div>
+            <DialogDescription className="sr-only">
+              {t('greeting')}
+            </DialogDescription>
+          </DialogHeader>
+        )}
 
         {step === "greeting" && (
-          <div className="space-y-6 py-8">
-            <motion.div
-              ref={greetingRef}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="text-center space-y-4"
-            >
-              <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                <Sparkles className="w-10 h-10 text-primary" />
-              </div>
-              <p className="text-lg leading-relaxed px-4" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                {t('greeting')}
-              </p>
-            </motion.div>
-            
-            <Button 
-              ref={buttonRef}
-              onClick={() => setStep("carousel")} 
-              className="w-full h-12 text-lg font-semibold"
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{
+              background: 'rgba(0, 0, 0, 0.45)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)'
+            }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) onOpenChange(false);
+            }}
+          >
+            <div 
+              className="glass-island relative rounded-2xl border border-white/20 p-8 text-center space-y-6 max-w-[360px] mx-4"
               style={{
-                background: 'hsl(var(--primary))',
-                boxShadow: '0 4px 12px rgba(243, 122, 29, 0.2)'
+                background: 'rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
               }}
             >
-              {t('visualizeButton')}
-            </Button>
-          </div>
+              {/* Ken-burns looping video/image */}
+              <div className="relative h-48 rounded-xl overflow-hidden mb-4">
+                <img 
+                  src="/aura-loop.jpg"
+                  alt="Comfort preview"
+                  className="w-full h-full object-cover animate-ken-burns"
+                />
+              </div>
+
+              {/* Bilingual headline */}
+              <h2 
+                className="text-white font-bold leading-tight"
+                style={{ 
+                  fontFamily: i18n.language === 'ar' ? 'Cairo Play, sans-serif' : 'inherit',
+                  fontSize: '28px'
+                }}
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+              >
+                {i18n.language === 'ar' ? 'قعد عليه قبل ما تشتريه' : 'Sit in it before you buy'}
+              </h2>
+
+              {/* Bilingual subline */}
+              <p 
+                className="text-white/80 text-sm leading-relaxed"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+              >
+                {i18n.language === 'ar' 
+                  ? 'صوّر أوضتك، نحط الكرسي مكانه، الأثاث يفضل، النتيجة في 15 ثانية'
+                  : 'Snap one photo, we drop the recliner into your room – furniture stays, result in 15 s'
+                }
+              </p>
+
+              {/* Breathing orange pill CTA */}
+              <Button
+                ref={buttonRef}
+                onClick={() => setStep("carousel")}
+                className="w-full h-12 text-lg font-semibold rounded-full animate-pulse-glow"
+                style={{
+                  background: 'hsl(var(--primary))',
+                  boxShadow: '0 4px 20px rgba(243, 122, 29, 0.4)'
+                }}
+              >
+                {i18n.language === 'ar' ? 'جربه دلوقتي' : 'Try it now'}
+              </Button>
+            </div>
+          </motion.div>
         )}
 
         {step === "carousel" && (
@@ -445,63 +530,108 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
             
             <Carousel className="w-full max-w-2xl mx-auto">
               <CarouselContent>
-                {RECLINERS.map((recliner, idx) => (
-                  <CarouselItem key={idx} className="md:basis-1/2 lg:basis-1/3">
-                    <Card 
-                      ref={(el) => (carouselCardRefs.current[idx] = el)}
-                      className={`cursor-pointer transition-all duration-300 ${
-                        selectedRecliner.model === recliner.model 
-                          ? 'ring-2 ring-primary shadow-lg' 
-                          : 'hover:shadow-md'
-                      }`}
-                      onClick={() => {
-                        setSelectedRecliner(recliner);
-                        setSelectedColor(recliner.colors[0]);
-                        // FIX #4: Trigger tilt/glow on card click
-                        if (carouselCardRefs.current[idx]) {
-                          triggerTiltGlow(carouselCardRefs.current[idx]!);
-                        }
-                      }}
+                {RECLINERS.map((recliner, idx) => {
+                  const isSelected = selectedRecliner.model === recliner.model;
+                  
+                  return (
+                    <CarouselItem 
+                      key={idx} 
+                      className="md:basis-1/2 lg:basis-1/3"
+                      style={{ minWidth: 'min(280px, 80vw)' }}
                     >
-                      <CardContent className="p-4" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                        <div className="aspect-square relative overflow-hidden rounded-lg mb-3">
-                          <img 
-                            src={recliner.colors[0].image}
-                            alt={recliner.model}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <h3 className="font-bold text-center mb-1">{recliner.model}</h3>
-                        <p className="text-sm text-muted-foreground text-center mb-3">{recliner.price}</p>
-                        
-                        {/* Color dots */}
-                        <div className="flex justify-center gap-2">
-                          {recliner.colors.map((color, colorIdx) => (
-                            <button
-                              key={colorIdx}
+                      <Card 
+                        ref={(el) => (carouselCardRefs.current[idx] = el)}
+                        className={`cursor-pointer transition-all duration-300 ${
+                          isSelected 
+                            ? 'ring-[6px] ring-primary/80 shadow-2xl' 
+                            : 'hover:shadow-md'
+                        }`}
+                        onClick={() => {
+                          // Clear any existing timer
+                          if (autoAdvanceTimer) {
+                            clearTimeout(autoAdvanceTimer);
+                            setAutoAdvanceTimer(null);
+                          }
+                          
+                          setSelectedRecliner(recliner);
+                          setSelectedColor(recliner.colors[0]);
+                          triggerTiltGlow(carouselCardRefs.current[idx]!);
+                          
+                          // Start 4s auto-advance timer
+                          const timer = setTimeout(() => {
+                            fileInputRef.current?.click();
+                          }, 4000);
+                          setAutoAdvanceTimer(timer);
+                        }}
+                      >
+                        <CardContent className="p-4 space-y-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                          <div className="aspect-square relative overflow-hidden rounded-lg">
+                            <img 
+                              src={recliner.colors[0].image}
+                              alt={recliner.model}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <h3 className="font-bold text-center">{recliner.model}</h3>
+                          <p className="text-sm text-muted-foreground text-center">{recliner.price}</p>
+                          
+                          {/* Color dots */}
+                          <div className="flex justify-center gap-2">
+                            {recliner.colors.map((color, colorIdx) => (
+                              <button
+                                key={colorIdx}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  
+                                  // Clear timer
+                                  if (autoAdvanceTimer) {
+                                    clearTimeout(autoAdvanceTimer);
+                                    setAutoAdvanceTimer(null);
+                                  }
+                                  
+                                  setSelectedRecliner(recliner);
+                                  setSelectedColor(color);
+                                  triggerTiltGlow(carouselCardRefs.current[idx]!);
+                                  
+                                  // Start 4s auto-advance timer
+                                  const timer = setTimeout(() => {
+                                    fileInputRef.current?.click();
+                                  }, 4000);
+                                  setAutoAdvanceTimer(timer);
+                                }}
+                                className={`w-4 h-4 rounded-full border-2 transition-all ${
+                                  selectedRecliner.model === recliner.model && selectedColor.name === color.name
+                                    ? 'border-primary scale-125'
+                                    : 'border-muted hover:scale-110'
+                                }`}
+                                style={{ backgroundColor: color.hex }}
+                                title={color.name}
+                              />
+                            ))}
+                          </div>
+
+                          {/* Big orange Next button - only in selected card */}
+                          {isSelected && (
+                            <Button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedRecliner(recliner);
-                                setSelectedColor(color);
-                                // FIX #4: Trigger tilt/glow on color dot click
-                                if (carouselCardRefs.current[idx]) {
-                                  triggerTiltGlow(carouselCardRefs.current[idx]!);
-                                }
+                                if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+                                fileInputRef.current?.click();
                               }}
-                              className={`w-4 h-4 rounded-full border-2 transition-all ${
-                                selectedRecliner.model === recliner.model && selectedColor.name === color.name
-                                  ? 'border-primary scale-125'
-                                  : 'border-muted hover:scale-110'
-                              }`}
-                              style={{ backgroundColor: color.hex }}
-                              title={color.name}
-                            />
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </CarouselItem>
-                ))}
+                              className="w-full h-12 text-lg font-semibold mt-4"
+                              style={{
+                                background: 'hsl(var(--primary))',
+                                boxShadow: '0 4px 12px rgba(243, 122, 29, 0.3)'
+                              }}
+                            >
+                              {i18n.language === 'ar' ? 'التالي' : 'Next'}
+                            </Button>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  );
+                })}
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />
