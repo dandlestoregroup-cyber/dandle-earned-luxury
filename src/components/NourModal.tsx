@@ -563,7 +563,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                           
                           // Start 4s auto-advance timer
                           const timer = setTimeout(() => {
-                            fileInputRef.current?.click();
+                            setStep("upload");
                           }, 4000);
                           setAutoAdvanceTimer(timer);
                         }}
@@ -599,7 +599,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                                   
                                   // Start 4s auto-advance timer
                                   const timer = setTimeout(() => {
-                                    fileInputRef.current?.click();
+                                    setStep("upload");
                                   }, 4000);
                                   setAutoAdvanceTimer(timer);
                                 }}
@@ -620,7 +620,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
-                                fileInputRef.current?.click();
+                                setStep("upload");
                               }}
                               className="w-full h-12 text-lg font-semibold mt-4"
                               style={{
@@ -656,6 +656,35 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                 className="hidden"
                 onChange={handleFileUpload}
               />
+            </div>
+          </div>
+        )}
+
+        {step === "upload" && (
+          <div className="space-y-6 py-4">
+            <p className="text-center text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+              {i18n.language === 'ar' ? 'ارفع صورة لغرفتك لبدء التجربة' : 'Upload a photo of your room to start'}
+            </p>
+            <div
+              className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                {t('uploadPlaceholder')}
+              </p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+            </div>
+            <div className="flex justify-center">
+              <Button variant="outline" onClick={() => setStep("carousel")}>
+                {i18n.language === 'ar' ? 'رجوع' : 'Back'}
+              </Button>
             </div>
           </div>
         )}

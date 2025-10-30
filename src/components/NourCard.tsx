@@ -8,11 +8,11 @@ interface NourCardProps {
 const NourCard = ({ onClick }: NourCardProps) => {
   return (
     <Card 
-      className="group cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5"
+      className="group cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 overflow-hidden border-0 bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10"
       onClick={onClick}
     >
       <CardContent className="p-0">
-        <div className="relative h-64 flex flex-col items-center justify-center text-center p-6 overflow-hidden">
+        <div className="relative min-h-[16rem] flex flex-col items-center justify-center text-center p-6 overflow-hidden">
           {/* Animated gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-primary/15 to-background animate-gradient" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,hsl(var(--primary)/0.3),transparent_60%)] group-hover:bg-[radial-gradient(circle_at_50%_120%,hsl(var(--primary)/0.5),transparent_70%)] transition-all duration-700" />
