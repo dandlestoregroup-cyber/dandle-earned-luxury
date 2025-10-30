@@ -32,6 +32,13 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const { addItem } = useCart();
   const navigate = useNavigate();
 
+  // Click sound effect
+  const playClickSound = () => {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBDGH0fPTgjMGHm7A7+OZSA0PVqzn77BdGAg+ltryxnYpBSuBzvLYiTcIGWi77eefTRAMUKfj8LZjHAY4ktfyy3ksBSR3x/DdkEAKFF606+uoVRQKRp/g8r5sIQQxh9Hz04IzBh5uwO/jmUgND1as5++wXRgIPpbb8sZ2KQUrgu7w1Io2Bxppu+3ln00QDFCN4/C2YxwGOJLX8st5LAUkd8fw3ZBAC');
+    audio.volume = 0.3;
+    audio.play().catch(() => {});
+  };
+
   const formatPrice = (price: number) => `${price.toLocaleString('en-US')}`;
 
   const calculateTotal = () => {
@@ -93,111 +100,64 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           </div>
 
           <div className="p-6 space-y-8">
-            {/* Last Touch Section */}
+            {/* Price and Target */}
+            <div className="text-center space-y-2 animate-in fade-in-0 slide-in-from-top-2 duration-700">
+              <p className="text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
+              <p className="text-muted-foreground">Target: High-performing professionals</p>
+            </div>
+
+            {/* Mechanism Type - First */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
-              <h3 className="text-2xl font-bold text-center mb-6">اللمسة الأخيرة</h3>
+              <h3 className="text-xl font-bold">Mechanism Type</h3>
               
-              <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
-                      checked={giftWrap}
-                      onCheckedChange={(checked) => setGiftWrap(checked as boolean)}
-                    />
-                    <div className="flex items-center gap-2">
-                      <Gift className="w-5 h-5 text-accent" />
-                      <div>
-                        <p className="font-semibold">تغليف الهدايا التذويجي</p>
-                        <p className="text-sm text-muted-foreground">شريط مع رسالة شخصية</p>
-                      </div>
-                    </div>
+              <RadioGroup value={mechanism} onValueChange={(value: string) => {
+                playClickSound();
+                setMechanism(value as "manual" | "power");
+              }} className="grid grid-cols-2 gap-4">
+                <label
+                  className={`p-6 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center active:scale-95 ${
+                    mechanism === "manual"
+                      ? 'border-accent bg-accent/10 scale-105 shadow-lg'
+                      : 'border-border hover:border-accent/50 hover:bg-accent/5'
+                  }`}
+                >
+                  <RadioGroupItem value="manual" id="manual" className="sr-only" />
+                  <div className="space-y-2">
+                    <p className="text-lg font-bold">Manual</p>
+                    <p className="text-xl font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} EGP</p>
                   </div>
-                  <span className="font-bold text-accent">+1,500 جنيه</span>
                 </label>
 
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
-                      checked={engraving}
-                      onCheckedChange={(checked) => setEngraving(checked as boolean)}
-                    />
-                    <div className="flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-accent" />
-                      <div>
-                        <p className="font-semibold">لوحة الإرث</p>
-                        <p className="text-sm text-muted-foreground">نقش مخصص للذكرى</p>
-                      </div>
-                    </div>
+                <label
+                  className={`p-6 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center active:scale-95 ${
+                    mechanism === "power"
+                      ? 'border-accent bg-accent/10 scale-105 shadow-lg'
+                      : 'border-border hover:border-accent/50 hover:bg-accent/5'
+                  }`}
+                >
+                  <RadioGroupItem value="power" id="power" className="sr-only" />
+                  <div className="space-y-2">
+                    <p className="text-lg font-bold">Power</p>
+                    <p className="text-xl font-bold text-accent">{formatPrice(product.pricePower || product.price || 0)} EGP</p>
                   </div>
-                  <span className="font-bold text-accent">+3,000 جنيه</span>
                 </label>
-              </div>
+              </RadioGroup>
             </div>
 
-            {/* Special Additions */}
+            {/* Color Selection - Second */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
-              <h3 className="text-2xl font-bold text-center mb-6">الإضافات المميزة</h3>
+              <h3 className="text-xl font-bold">Choose Your Color</h3>
               
-              <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
-                      checked={cupHolder}
-                      onCheckedChange={(checked) => setCupHolder(checked as boolean)}
-                    />
-                    <span className="font-semibold">حاملت الأكواب</span>
-                  </div>
-                  <span className="font-bold text-accent">+450 جنيه</span>
-                </label>
-
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
-                      checked={usbPort}
-                      onCheckedChange={(checked) => setUsbPort(checked as boolean)}
-                    />
-                    <span className="font-semibold">منافذ شحن USB</span>
-                  </div>
-                  <span className="font-bold text-accent">+750 جنيه</span>
-                </label>
-
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
-                      checked={sidePocket}
-                      onCheckedChange={(checked) => setSidePocket(checked as boolean)}
-                    />
-                    <span className="font-semibold">جيب جانبي</span>
-                  </div>
-                  <span className="font-bold text-accent">+350 جنيه</span>
-                </label>
-
-                <div className="pt-4">
-                  <Label className="text-base font-semibold mb-2 block">تعليمات خاصة</Label>
-                  <Textarea
-                    value={specialNotes}
-                    onChange={(e) => setSpecialNotes(e.target.value)}
-                    placeholder="أي طلبات أو ملاحظات خاصة..."
-                    className="min-h-[80px] resize-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Color Selection */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold mb-2">اختر لونك المفضل</h3>
-                <p className="text-muted-foreground">سيتم تحديث الصورة حسب اختيارك</p>
-              </div>
-              
-              <RadioGroup value={selectedColor} onValueChange={setSelectedColor} className="grid grid-cols-2 gap-3">
+              <RadioGroup value={selectedColor} onValueChange={(value) => {
+                playClickSound();
+                setSelectedColor(value);
+              }} className="grid grid-cols-2 gap-3">
                 {product.colors?.map((color) => (
                   <label
                     key={color}
-                    className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                    className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
                       selectedColor === color 
-                        ? 'border-accent bg-accent/10 scale-105' 
+                        ? 'border-accent bg-accent/10 scale-105 shadow-lg' 
                         : 'border-border hover:border-accent/50 hover:bg-accent/5'
                     }`}
                   >
@@ -213,58 +173,26 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               </RadioGroup>
             </div>
 
-            {/* Control Type */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
-              <h3 className="text-2xl font-bold text-center mb-6">نوع التحكم</h3>
+            {/* Base Type - Third */}
+            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
+              <h3 className="text-xl font-bold">Base Type</h3>
               
-              <RadioGroup value={mechanism} onValueChange={(value: string) => setMechanism(value as "manual" | "power")} className="grid grid-cols-2 gap-4">
+              <RadioGroup value={baseType} onValueChange={(value: string) => {
+                playClickSound();
+                setBaseType(value as any);
+              }} className="space-y-3">
                 <label
-                  className={`p-6 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center ${
-                    mechanism === "manual"
-                      ? 'border-accent bg-accent/10 scale-105'
-                      : 'border-border hover:border-accent/50 hover:bg-accent/5'
-                  }`}
-                >
-                  <RadioGroupItem value="manual" id="manual" className="sr-only" />
-                  <div className="space-y-2">
-                    <p className="text-xl font-bold">يدوي</p>
-                    <p className="text-2xl font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} جنيه</p>
-                  </div>
-                </label>
-
-                <label
-                  className={`p-6 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center ${
-                    mechanism === "power"
-                      ? 'border-accent bg-accent/10 scale-105'
-                      : 'border-border hover:border-accent/50 hover:bg-accent/5'
-                  }`}
-                >
-                  <RadioGroupItem value="power" id="power" className="sr-only" />
-                  <div className="space-y-2">
-                    <p className="text-xl font-bold">كهربائي</p>
-                    <p className="text-2xl font-bold text-accent">{formatPrice(product.pricePower || product.price || 0)} جنيه</p>
-                  </div>
-                </label>
-              </RadioGroup>
-            </div>
-
-            {/* Base Type */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
-              <h3 className="text-2xl font-bold text-center mb-6">نوع القاعدة</h3>
-              
-              <RadioGroup value={baseType} onValueChange={(value: string) => setBaseType(value as any)} className="space-y-3">
-                <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
                     baseType === "fixed"
-                      ? 'border-accent bg-accent/10'
+                      ? 'border-accent bg-accent/10 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="fixed" id="fixed" />
                     <div>
-                      <p className="font-bold text-lg">قاعدة ثابتة</p>
-                      <p className="text-sm text-muted-foreground">مجانًا</p>
+                      <p className="font-bold text-lg">Fixed Base</p>
+                      <p className="text-sm text-muted-foreground">Free</p>
                     </div>
                   </div>
                   {baseType === "fixed" && (
@@ -273,37 +201,143 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 </label>
 
                 <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
                     baseType === "swivel"
-                      ? 'border-accent bg-accent/10'
+                      ? 'border-accent bg-accent/10 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="swivel" id="swivel" />
                     <div>
-                      <p className="font-bold text-lg">قاعدة متأرجحة</p>
+                      <p className="font-bold text-lg">Swivel Base</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+1,200 جنيه</span>
+                  <span className="font-bold text-accent">+1,200 EGP</span>
                 </label>
 
                 <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
                     baseType === "swivel360"
-                      ? 'border-accent bg-accent/10'
+                      ? 'border-accent bg-accent/10 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="swivel360" id="swivel360" />
                     <div>
-                      <p className="font-bold text-lg">متأرجحة + دوارة 360°</p>
+                      <p className="font-bold text-lg">Swivel + 360° Rotation</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+2,500 جنيه</span>
+                  <span className="font-bold text-accent">+2,500 EGP</span>
                 </label>
               </RadioGroup>
+            </div>
+
+            {/* Last Touch Section */}
+            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
+              <h3 className="text-xl font-bold">The Last Touch</h3>
+              
+              <div className="space-y-3">
+                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      checked={giftWrap}
+                      onCheckedChange={(checked) => {
+                        playClickSound();
+                        setGiftWrap(checked as boolean);
+                      }}
+                    />
+                    <div className="flex items-center gap-2">
+                      <Gift className="w-5 h-5 text-accent" />
+                      <div>
+                        <p className="font-semibold">Premium Gift Wrapping</p>
+                        <p className="text-sm text-muted-foreground">Ribbon with personal message</p>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="font-bold text-accent">+1,500 EGP</span>
+                </label>
+
+                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      checked={engraving}
+                      onCheckedChange={(checked) => {
+                        playClickSound();
+                        setEngraving(checked as boolean);
+                      }}
+                    />
+                    <div className="flex items-center gap-2">
+                      <Trophy className="w-5 h-5 text-accent" />
+                      <div>
+                        <p className="font-semibold">Legacy Plaque</p>
+                        <p className="text-sm text-muted-foreground">Custom engraving for memory</p>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="font-bold text-accent">+3,000 EGP</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Special Additions */}
+            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
+              <h3 className="text-xl font-bold">Special Additions</h3>
+              
+              <div className="space-y-3">
+                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      checked={cupHolder}
+                      onCheckedChange={(checked) => {
+                        playClickSound();
+                        setCupHolder(checked as boolean);
+                      }}
+                    />
+                    <span className="font-semibold">Cup Holders</span>
+                  </div>
+                  <span className="font-bold text-accent">+450 EGP</span>
+                </label>
+
+                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      checked={usbPort}
+                      onCheckedChange={(checked) => {
+                        playClickSound();
+                        setUsbPort(checked as boolean);
+                      }}
+                    />
+                    <span className="font-semibold">USB Charging Ports</span>
+                  </div>
+                  <span className="font-bold text-accent">+750 EGP</span>
+                </label>
+
+                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      checked={sidePocket}
+                      onCheckedChange={(checked) => {
+                        playClickSound();
+                        setSidePocket(checked as boolean);
+                      }}
+                    />
+                    <span className="font-semibold">Side Pocket</span>
+                  </div>
+                  <span className="font-bold text-accent">+350 EGP</span>
+                </label>
+
+                <div className="pt-4">
+                  <Label className="text-base font-semibold mb-2 block">Special Instructions</Label>
+                  <Textarea
+                    value={specialNotes}
+                    onChange={(e) => setSpecialNotes(e.target.value)}
+                    placeholder="Any special requests or notes..."
+                    className="min-h-[80px] resize-none"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Bottom padding for sticky bar */}
@@ -314,21 +348,24 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center justify-between mb-3">
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">الإجمالي</p>
-                <p className="text-2xl font-bold">{formatPrice(calculateTotal())} جنيه</p>
+                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>
               </div>
               <div className="text-left">
-                <p className="text-sm text-muted-foreground">عمولتك (3.5%)</p>
-                <p className="text-2xl font-bold text-accent">{formatPrice(calculateCommission())} جنيه</p>
+                <p className="text-sm text-muted-foreground">Service Charge (3.5%)</p>
+                <p className="text-2xl font-bold text-accent">{formatPrice(calculateCommission())} EGP</p>
               </div>
             </div>
             
             <Button 
-              onClick={handleCompleteOrder}
+              onClick={() => {
+                playClickSound();
+                handleCompleteOrder();
+              }}
               size="lg"
-              className="w-full text-lg font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105"
+              className="w-full text-lg font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              إنهاء الطلب ✨
+              Complete Order ✨
             </Button>
           </div>
         </div>
