@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -206,6 +206,9 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
             <Sparkles className="w-5 h-5 text-primary" />
             Nour - AI Comfort Stylist
           </DialogTitle>
+          <DialogDescription>
+            Upload your room, choose a recliner, visualize it realistically, then chat for details.
+          </DialogDescription>
         </DialogHeader>
 
         {step === "carousel" && (
