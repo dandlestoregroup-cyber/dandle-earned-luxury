@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface NourModalProps {
   open: boolean;
@@ -28,8 +30,14 @@ interface Message {
   type?: "text" | "image";
 }
 
+const RECLINER_SHOWCASE = [
+  { model: "RelaxMax", color: "Elephant Grey", image: "/images/relaxmax-hero-offwhite.jpg" },
+  { model: "CozyCompanion", color: "Yellow", image: "/images/cozycompanion-yellow-front.jpg" },
+  { model: "RelaxMax", color: "Off White", image: "/images/relaxmax-lifestyle-day.png" },
+];
+
 const NourModal = ({ open, onOpenChange }: NourModalProps) => {
-  const [step, setStep] = useState<"upload" | "select" | "render" | "chat">("upload");
+  const [step, setStep] = useState<"carousel" | "upload" | "select" | "render" | "chat">("carousel");
   const [roomImage, setRoomImage] = useState<string | null>(null);
   const [model, setModel] = useState("");
   const [series, setSeries] = useState("");
@@ -179,7 +187,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   };
 
   const resetFlow = () => {
-    setStep("upload");
+    setStep("carousel");
     setRoomImage(null);
     setModel("");
     setSeries("");
@@ -199,6 +207,40 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
             Nour - AI Comfort Stylist
           </DialogTitle>
         </DialogHeader>
+
+        {step === "carousel" && (
+          <div className="space-y-6">
+            <p className="text-muted-foreground text-center">Discover our recliner collection</p>
+            
+            <Carousel className="w-full max-w-xl mx-auto">
+              <CarouselContent>
+                {RECLINER_SHOWCASE.map((item, index) => (
+                  <CarouselItem key={index}>
+                    <Card>
+                      <CardContent className="p-0">
+                        <img 
+                          src={item.image} 
+                          alt={`${item.model} in ${item.color}`}
+                          className="w-full h-80 object-cover rounded-t-lg"
+                        />
+                        <div className="p-6 text-center">
+                          <h3 className="text-xl font-bold mb-2">{item.model}</h3>
+                          <p className="text-muted-foreground mb-4">{item.color}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+
+            <Button onClick={() => setStep("upload")} className="w-full">
+              Visualize in Your Room
+            </Button>
+          </div>
+        )}
 
         {step === "upload" && (
           <div className="space-y-4">
