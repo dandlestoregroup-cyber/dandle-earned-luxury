@@ -30,12 +30,14 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       onClick={onClick}
     >
       {/* Image Container */}
-      <div className="relative h-64 overflow-hidden bg-muted">
+      <div className="relative h-48 md:h-52 overflow-hidden bg-muted">
         <img
           src={product.imageUrl}
           alt={`${product.name} - ${product.tagline}`}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          width="320"
+          height="192"
         />
         {product.comingSoon && (
           <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground">
