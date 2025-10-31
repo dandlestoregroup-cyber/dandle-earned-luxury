@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import ColorThief from "colorthief";
+import { SmartPlacementStep } from "./SmartPlacementStep";
 
 interface NourModalProps {
   open: boolean;
@@ -57,8 +58,9 @@ interface Message {
 
 const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const { t, i18n } = useTranslation();
-  const [step, setStep] = useState<"greeting" | "carousel" | "upload" | "render" | "chat">("greeting");
+  const [step, setStep] = useState<"greeting" | "carousel" | "upload" | "placement" | "render" | "chat">("greeting");
   const [roomImage, setRoomImage] = useState<string | null>(null);
+  const [placementInstruction, setPlacementInstruction] = useState<string>("");
   const [selectedRecliner, setSelectedRecliner] = useState(RECLINERS[0]);
   const [selectedColor, setSelectedColor] = useState(RECLINERS[0].colors[0]);
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
@@ -252,8 +254,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
             // Extract colors and animate background (FIX #1)
             extractAndApplyColors(dataUrl);
             
-            setStep("render");
-            handleRender(dataUrl);
+            setStep("placement");
           }
         };
         img.src = event.target?.result as string;
@@ -280,7 +281,10 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     console.log(`Model assertion: ${modelId}, SKU check: ${skuCheck}`);
 
     try {
-      const prompt = `Insert a ${selectedRecliner.model} recliner in ${selectedColor.name} into this room. CRITICAL: Preserve ALL existing furniture - do not remove or replace any objects. Only add the new recliner. Match lighting, shadows, and perspective perfectly. Realistic integration, no hallucinations, no architectural changes.`;
+      const placementText = placementInstruction 
+        ? ` ${placementInstruction}.` 
+        : "";
+      const prompt = `Insert a ${selectedRecliner.model} recliner in ${selectedColor.name} into this room.${placementText} CRITICAL: Preserve ALL existing furniture - do not remove or replace any objects. Only add the new recliner. Match lighting, shadows, and perspective perfectly. Realistic integration, no hallucinations, no architectural changes.`;
       
       const { data, error } = await supabase.functions.invoke("nour-chat", {
         body: {
@@ -404,6 +408,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     setEditCount(0);
     setMessages([]);
     setBeforeAfterSlide(50);
+    setPlacementInstruction("");
     
     // Reset background to default
     if (dialogContentRef.current) {
@@ -694,6 +699,18 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
               </Button>
             </div>
           </div>
+        )}
+
+        {step === "placement" && roomImage && (
+          <SmartPlacementStep
+            roomImageBase64={roomImage}
+            onPlacementSelected={(placement) => {
+              setPlacementInstruction(placement);
+              setStep("render");
+              handleRender();
+            }}
+            onBack={() => setStep("upload")}
+          />
         )}
 
         {step === "render" && (
