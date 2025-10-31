@@ -418,20 +418,13 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         ref={dialogContentRef}
-        className={`nour-wrapper overflow-hidden ${
-          step === 'greeting' 
-            ? 'w-screen h-screen max-w-none max-h-[100vh] border-0 bg-transparent shadow-none p-0' 
-            : 'max-w-4xl max-h-[90vh]'
+        className={`nour-wrapper max-w-4xl max-h-[90vh] overflow-hidden ${
+          step === 'greeting' ? 'border-0 bg-transparent shadow-none p-0' : ''
         }`}
         style={{
           background: step === 'greeting' ? 'transparent' : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
-          width: step === 'greeting' ? '100vw' : '100%',
+          width: '100%',
           maxWidth: '100vw',
-          height: step === 'greeting' ? '100vh' : undefined,
-          maxHeight: step === 'greeting' ? '100vh' : undefined,
-          left: step === 'greeting' ? 0 as unknown as string : undefined,
-          top: step === 'greeting' ? 0 as unknown as string : undefined,
-          transform: step === 'greeting' ? 'none' : undefined,
           paddingLeft: step === 'greeting' ? '0' : 'env(safe-area-inset-left)',
           paddingRight: step === 'greeting' ? '0' : 'env(safe-area-inset-right)',
           boxSizing: 'border-box'
@@ -570,7 +563,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                           
                           // Start 4s auto-advance timer
                           const timer = setTimeout(() => {
-                            setStep("upload");
+                            fileInputRef.current?.click();
                           }, 4000);
                           setAutoAdvanceTimer(timer);
                         }}
@@ -606,7 +599,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                                   
                                   // Start 4s auto-advance timer
                                   const timer = setTimeout(() => {
-                                    setStep("upload");
+                                    fileInputRef.current?.click();
                                   }, 4000);
                                   setAutoAdvanceTimer(timer);
                                 }}
@@ -627,7 +620,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
-                                setStep("upload");
+                                fileInputRef.current?.click();
                               }}
                               className="w-full h-12 text-lg font-semibold mt-4"
                               style={{
@@ -663,35 +656,6 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                 className="hidden"
                 onChange={handleFileUpload}
               />
-            </div>
-          </div>
-        )}
-
-        {step === "upload" && (
-          <div className="space-y-6 py-4">
-            <p className="text-center text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-              {i18n.language === 'ar' ? 'ارفع صورة لغرفتك لبدء التجربة' : 'Upload a photo of your room to start'}
-            </p>
-            <div
-              className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                {t('uploadPlaceholder')}
-              </p>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileUpload}
-              />
-            </div>
-            <div className="flex justify-center">
-              <Button variant="outline" onClick={() => setStep("carousel")}>
-                {i18n.language === 'ar' ? 'رجوع' : 'Back'}
-              </Button>
             </div>
           </div>
         )}
