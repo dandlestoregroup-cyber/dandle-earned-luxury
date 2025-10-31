@@ -702,15 +702,17 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
         )}
 
         {step === "placement" && roomImage && (
-          <SmartPlacementStep
-            roomImageBase64={roomImage}
-            onPlacementSelected={(placement) => {
-              setPlacementInstruction(placement);
-              setStep("render");
-              handleRender();
-            }}
-            onBack={() => setStep("upload")}
-          />
+          <ScrollArea className="max-h-[calc(90vh-150px)] pr-4">
+            <SmartPlacementStep
+              roomImageBase64={roomImage}
+              onPlacementSelected={(placement) => {
+                setPlacementInstruction(placement);
+                setStep("render");
+                handleRender();
+              }}
+              onBack={() => setStep("upload")}
+            />
+          </ScrollArea>
         )}
 
         {step === "render" && (
