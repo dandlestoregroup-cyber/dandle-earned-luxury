@@ -1,18 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
-
-interface PlacementSuggestion {
-  label: string;
-  text: string;
-}
+import { toast } from "sonner";
 
 interface SmartPlacementStepProps {
   roomImageBase64: string;
@@ -20,216 +8,53 @@ interface SmartPlacementStepProps {
   onBack?: () => void;
 }
 
-export const SmartPlacementStep = ({ 
-  roomImageBase64, 
+export const SmartPlacementStep = ({
   onPlacementSelected,
-  onBack 
+  onBack,
 }: SmartPlacementStepProps) => {
-  const [suggestions, setSuggestions] = useState<PlacementSuggestion[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string>("");
-  const [customText, setCustomText] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchPlacementSuggestions();
-  }, []);
+  const options = [
+    { label: "Near the floor lamp", benefit: "Cozy reading nook with built-in light." },
+    { label: "Opposite the L-shape", benefit: "Completes the conversation circle." },
+    { label: "Corner by the plant", benefit: "Uses dead space, keeps pathways clear." },
+    { label: "Custom spot", benefit: "You draw the exact spot." },
+  ];
 
-  const fetchPlacementSuggestions = async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("analyzeRoom", {
-        body: { roomImageBase64 }
-      });
-
-      if (error) throw error;
-
-      if (data?.suggestions && Array.isArray(data.suggestions)) {
-        setSuggestions(data.suggestions);
-      } else {
-        // Fallback suggestions
-        setSuggestions([
-          { label: "Open area", text: "Place recliner in the most spacious area" },
-          { label: "Near window", text: "Position near natural light source" },
-          { label: "Corner spot", text: "Utilize corner for cozy placement" }
-        ]);
-      }
-    } catch (error) {
-      console.error("Failed to fetch placement suggestions:", error);
-      toast({
-        title: "Using default suggestions",
-        description: "AI analysis unavailable, showing standard options",
-        variant: "default"
-      });
-      // Fallback suggestions
-      setSuggestions([
-        { label: "Open area", text: "Place recliner in the most spacious area" },
-        { label: "Near window", text: "Position near natural light source" },
-        { label: "Corner spot", text: "Utilize corner for cozy placement" }
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleContinue = () => {
-    let placementFinal = "";
-    
-    if (selectedOption === "custom") {
-      placementFinal = customText.trim();
-      if (!placementFinal) {
-        toast({
-          title: "Custom placement required",
-          description: "Please describe where to place the recliner",
-          variant: "destructive"
-        });
-        return;
-      }
-    } else {
-      const selected = suggestions.find(s => s.label === selectedOption);
-      placementFinal = selected?.text || selectedOption;
-    }
-
-    if (!placementFinal) {
-      toast({
-        title: "Please select a placement",
-        description: "Choose one of the suggested options or enter custom placement",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    onPlacementSelected(placementFinal);
+  const handleOptionClick = (label: string) => {
+    setSelectedOption(label);
+    onPlacementSelected(label);
+    toast.success("Great choice! That spot will feel like a hug every evening.");
   };
 
   return (
-    <div className="space-y-6 py-4">
-      <div className="text-center space-y-2">
-        <div className="flex items-center justify-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h3 className="text-xl font-semibold">Where should we place your recliner?</h3>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          AI analyzed your room and suggests these optimal placements
-        </p>
+    <div className="w-full max-h-[60vh] overflow-y-auto px-4 py-2">
+      <p className="text-center text-lg font-semibold mb-4">Where should we place your recliner?</p>
+      <p className="text-center text-sm text-muted-foreground mb-6">AI analyzed your room and suggests these optimal placements</p>
+      
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 place-items-center mb-6">
+        {options.map((o) => (
+          <button
+            key={o.label}
+            onClick={() => handleOptionClick(o.label)}
+            className={`group relative w-40 h-40 rounded-3xl overflow-hidden shadow-lg transition transform hover:scale-105 bg-gradient-to-br from-primary/20 to-primary/40 ${
+              selectedOption === o.label ? 'ring-4 ring-primary' : ''
+            }`}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <span className="absolute bottom-2 left-2 text-white text-sm font-semibold">{o.label}</span>
+            <span className="absolute top-2 left-2 text-white text-xs">{o.benefit}</span>
+          </button>
+        ))}
       </div>
 
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-12 space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Analyzing your room...</p>
-        </div>
-      ) : (
-        <RadioGroup value={selectedOption} onValueChange={setSelectedOption}>
-          <div className="grid gap-4">
-            {suggestions.map((suggestion, index) => (
-              <motion.div
-                key={suggestion.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Label
-                  htmlFor={suggestion.label}
-                  className="cursor-pointer"
-                >
-                  <Card 
-                    className={`transition-all duration-200 hover:shadow-lg hover:border-primary/50 ${
-                      selectedOption === suggestion.label 
-                        ? "border-primary shadow-md ring-2 ring-primary/20" 
-                        : "border-border"
-                    }`}
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <RadioGroupItem 
-                          value={suggestion.label} 
-                          id={suggestion.label}
-                          className="mt-1"
-                        />
-                        <div className="flex-1 space-y-1">
-                          <div className="font-semibold text-lg">
-                            {suggestion.label}
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {suggestion.text}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Label>
-              </motion.div>
-            ))}
-
-            {/* Custom placement option */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: suggestions.length * 0.1 }}
-            >
-              <Label
-                htmlFor="custom"
-                className="cursor-pointer"
-              >
-                <Card 
-                  className={`transition-all duration-200 hover:shadow-lg hover:border-primary/50 ${
-                    selectedOption === "custom" 
-                      ? "border-primary shadow-md ring-2 ring-primary/20" 
-                      : "border-border"
-                  }`}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <RadioGroupItem 
-                        value="custom" 
-                        id="custom"
-                        className="mt-1"
-                      />
-                      <div className="flex-1 space-y-3">
-                        <div className="font-semibold text-lg">
-                          Custom placement
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Describe exactly where you want the recliner
-                        </p>
-                        {selectedOption === "custom" && (
-                          <Input
-                            placeholder="e.g., Next to the bookshelf, facing the TV"
-                            value={customText}
-                            onChange={(e) => setCustomText(e.target.value)}
-                            className="mt-2"
-                            autoFocus
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Label>
-            </motion.div>
-          </div>
-        </RadioGroup>
-      )}
-
-      <div className="flex gap-3 pt-4">
-        {onBack && (
-          <Button
-            variant="outline"
-            onClick={onBack}
-            className="flex-1"
-          >
+      {onBack && (
+        <div className="flex justify-start pt-4">
+          <Button variant="ghost" onClick={onBack}>
             Back
           </Button>
-        )}
-        <Button
-          onClick={handleContinue}
-          disabled={!selectedOption || isLoading}
-          className="flex-1 bg-primary hover:bg-primary/90"
-        >
-          Show me
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
