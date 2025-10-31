@@ -553,7 +553,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                     <CarouselItem 
                       key={idx} 
                       className="md:basis-1/2 lg:basis-1/3"
-                      style={{ minWidth: 'min(240px, 70vw)', maxWidth: '320px' }}
+                      style={{ minWidth: 'min(280px, 80vw)' }}
                     >
                       <Card 
                         ref={(el) => (carouselCardRefs.current[idx] = el)}
@@ -580,12 +580,12 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
                           setAutoAdvanceTimer(timer);
                         }}
                       >
-                        <CardContent className="p-3 space-y-2" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                          <div className="aspect-square relative overflow-hidden rounded-lg bg-muted">
+                        <CardContent className="p-4 space-y-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                          <div className="aspect-square relative overflow-hidden rounded-lg">
                             <img 
                               src={recliner.colors[0].image}
                               alt={recliner.model}
-                              className="w-full h-full object-contain p-2"
+                              className="w-full h-full object-cover"
                             />
                           </div>
                           <h3 className="font-bold text-center">{recliner.model}</h3>

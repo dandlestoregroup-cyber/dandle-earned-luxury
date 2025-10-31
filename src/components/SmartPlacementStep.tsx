@@ -120,23 +120,13 @@ export const SmartPlacementStep = ({
           <p className="text-sm text-muted-foreground">Analyzing your room...</p>
         </div>
       ) : (
-        <RadioGroup value={selectedOption} onValueChange={(value) => {
-          setSelectedOption(value);
-          // Confirmation toast
-          if (value !== "custom") {
-            const selected = suggestions.find(s => s.label === value);
-            toast({
-              title: "Perfect choice!",
-              description: `${selected?.label} – That spot will feel like a hug every evening.`,
-            });
-          }
-        }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <RadioGroup value={selectedOption} onValueChange={setSelectedOption}>
+          <div className="grid gap-4">
             {suggestions.map((suggestion, index) => (
               <motion.div
                 key={suggestion.label}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
                 <Label
@@ -144,24 +134,24 @@ export const SmartPlacementStep = ({
                   className="cursor-pointer"
                 >
                   <Card 
-                    className={`transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
+                    className={`transition-all duration-200 hover:shadow-lg hover:border-primary/50 ${
                       selectedOption === suggestion.label 
-                        ? "border-primary shadow-lg ring-2 ring-primary/30 scale-[1.02]" 
-                        : "border-border hover:border-primary/50"
+                        ? "border-primary shadow-md ring-2 ring-primary/20" 
+                        : "border-border"
                     }`}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
                         <RadioGroupItem 
                           value={suggestion.label} 
                           id={suggestion.label}
-                          className="mt-0.5 flex-shrink-0"
+                          className="mt-1"
                         />
-                        <div className="flex-1 space-y-1 min-w-0">
-                          <div className="font-semibold text-base leading-tight">
+                        <div className="flex-1 space-y-1">
+                          <div className="font-semibold text-lg">
                             {suggestion.label}
                           </div>
-                          <p className="text-xs text-muted-foreground leading-snug">
+                          <p className="text-sm text-muted-foreground">
                             {suggestion.text}
                           </p>
                         </div>
@@ -174,50 +164,43 @@ export const SmartPlacementStep = ({
 
             {/* Custom placement option */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: suggestions.length * 0.1 }}
-              className="sm:col-span-2"
             >
               <Label
                 htmlFor="custom"
                 className="cursor-pointer"
               >
                 <Card 
-                  className={`transition-all duration-300 hover:shadow-lg hover:scale-[1.01] ${
+                  className={`transition-all duration-200 hover:shadow-lg hover:border-primary/50 ${
                     selectedOption === "custom" 
-                      ? "border-primary shadow-lg ring-2 ring-primary/30 scale-[1.01]" 
-                      : "border-border hover:border-primary/50"
+                      ? "border-primary shadow-md ring-2 ring-primary/20" 
+                      : "border-border"
                   }`}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
                       <RadioGroupItem 
                         value="custom" 
                         id="custom"
-                        className="mt-0.5 flex-shrink-0"
+                        className="mt-1"
                       />
-                      <div className="flex-1 space-y-2 min-w-0">
-                        <div className="font-semibold text-base leading-tight">
+                      <div className="flex-1 space-y-3">
+                        <div className="font-semibold text-lg">
                           Custom placement
                         </div>
-                        <p className="text-xs text-muted-foreground leading-snug">
+                        <p className="text-sm text-muted-foreground">
                           Describe exactly where you want the recliner
                         </p>
                         {selectedOption === "custom" && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <Input
-                              placeholder="e.g., Next to the bookshelf, facing the TV"
-                              value={customText}
-                              onChange={(e) => setCustomText(e.target.value)}
-                              className="mt-2"
-                              autoFocus
-                            />
-                          </motion.div>
+                          <Input
+                            placeholder="e.g., Next to the bookshelf, facing the TV"
+                            value={customText}
+                            onChange={(e) => setCustomText(e.target.value)}
+                            className="mt-2"
+                            autoFocus
+                          />
                         )}
                       </div>
                     </div>
