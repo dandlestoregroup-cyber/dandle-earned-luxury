@@ -24,60 +24,82 @@ serve(async (req) => {
       messages[messages.length - 1].content.some((c: any) => c.type === "image_url")
     );
 
+    const FAL_KEY = Deno.env.get("FAL_KEY");
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
-
+    
     if (isImageRequest) {
-      // Use Lovable AI image model (Nano banana)
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      if (!FAL_KEY) throw new Error("FAL_KEY is not configured");
+
+      // Extract image URL and prompt from messages
+      const lastMessage = messages[messages.length - 1];
+      let imageUrl = "";
+      let prompt = "";
+
+      if (Array.isArray(lastMessage?.content)) {
+        for (const item of lastMessage.content) {
+          if (item.type === "image_url") {
+            imageUrl = item.image_url?.url || "";
+          } else if (item.type === "text") {
+            prompt = item.text || "";
+          }
+        }
+      }
+
+      if (!imageUrl || !prompt) {
+        return new Response(
+          JSON.stringify({ error: "Image URL and prompt are required for rendering" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      console.log("FAL API request - Image URL:", imageUrl.slice(0, 100), "Prompt:", prompt);
+
+      const res = await fetch("https://api.fal.ai/v1/models/fal-ai/nano-banana/edit", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${FAL_KEY}`,
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image-preview",
-          messages,
-          modalities: ["image", "text"],
+          input: {
+            image_urls: [imageUrl],
+            prompt: prompt,
+          },
+          model: "gemini-2.5-flash",
+          size: "1920x1080",
+          output_format: "jpg",
         }),
       });
 
       if (!res.ok) {
-        if (res.status === 429) {
-          return new Response(JSON.stringify({ error: "Rate limits exceeded, please try again later." }), {
-            status: 429,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-        if (res.status === 402) {
-          return new Response(
-            JSON.stringify({ error: "Payment required, please add funds to your Lovable AI workspace." }),
-            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
-        }
-        const t = await res.text();
-        console.error("Image model error:", res.status, t);
-        return new Response(JSON.stringify({ error: "AI image generation failed" }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        const errorText = await res.text();
+        console.error("FAL API error:", res.status, errorText);
+        return new Response(
+          JSON.stringify({ error: `FAL API failed: ${res.status}` }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
 
       const data = await res.json();
-      const imageUrl: string | undefined = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-      if (!imageUrl) {
-        console.error("No image URL in response", JSON.stringify(data).slice(0, 500));
-        return new Response(JSON.stringify({ error: "No image returned" }), {
+      const resultImageUrl = data?.data?.url || data?.url || data?.output?.url;
+      
+      if (!resultImageUrl) {
+        console.error("No image URL in FAL response", JSON.stringify(data).slice(0, 500));
+        return new Response(JSON.stringify({ error: "No image returned from FAL" }), {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
+      console.log("FAL API success - Result URL:", resultImageUrl);
+
       return new Response(
-        JSON.stringify({ type: "image", content: imageUrl, message: "Image generated" }),
+        JSON.stringify({ type: "image", content: resultImageUrl, message: "Image generated" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     // Text chat - non-streaming for simplicity
     const chatRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
