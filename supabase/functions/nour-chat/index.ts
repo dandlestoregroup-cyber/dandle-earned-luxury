@@ -81,7 +81,7 @@ serve(async (req) => {
       }
 
       const data = await res.json();
-      const resultImageUrl = data?.data?.url || data?.url || data?.output?.url;
+      const resultImageUrl = data?.output?.[0]?.url || data?.image_url;
       
       if (!resultImageUrl) {
         console.error("No image URL in FAL response", JSON.stringify(data).slice(0, 500));
