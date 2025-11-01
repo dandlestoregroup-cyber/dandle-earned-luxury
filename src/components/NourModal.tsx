@@ -992,6 +992,34 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
               </motion.p>
             </div>
             
+            {/* Cancel/Upload Different Image Button */}
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                // Clear all timers
+                if (analyzingTimeoutRef.current) {
+                  clearTimeout(analyzingTimeoutRef.current);
+                  analyzingTimeoutRef.current = null;
+                }
+                if (countdownIntervalRef.current) {
+                  clearInterval(countdownIntervalRef.current);
+                  countdownIntervalRef.current = null;
+                }
+                // Reset state
+                setRoomImage(null);
+                setSuggestions([]);
+                setChosen(null);
+                setStep('upload');
+                toast({ 
+                  title: i18n.language === 'ar' ? 'تم الإلغاء' : 'Cancelled', 
+                  description: i18n.language === 'ar' ? 'يمكنك تحميل صورة أخرى' : 'You can upload a different image' 
+                });
+              }}
+              className="hover:bg-accent/10"
+            >
+              {i18n.language === 'ar' ? 'تحميل صورة أخرى' : 'Upload Different Image'}
+            </Button>
+            
             <div 
               role="status" 
               aria-live="polite" 
@@ -1009,7 +1037,17 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
               setChosen(placement);
               setStep("render");
             }}
-            onBack={() => setStep("upload")}
+            onBack={() => {
+              // Clear image and reset to upload
+              setRoomImage(null);
+              setSuggestions([]);
+              setChosen(null);
+              setStep("upload");
+              toast({ 
+                title: i18n.language === 'ar' ? 'تم الإلغاء' : 'Cancelled', 
+                description: i18n.language === 'ar' ? 'يمكنك تحميل صورة أخرى' : 'You can upload a different image' 
+              });
+            }}
           />
         )}
 
