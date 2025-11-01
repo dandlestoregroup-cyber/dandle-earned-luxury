@@ -637,11 +637,12 @@ If no free wall is visible, suggest asking for another angle.`
                         }}
                       >
                         <CardContent className="p-4 space-y-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                          <div className="aspect-square relative overflow-hidden rounded-lg bg-muted p-2">
+                          <div className="relative overflow-hidden rounded-lg bg-muted p-2 h-[220px] md:h-[280px]">
                             <img 
                               src={recliner.colors[0].image}
                               alt={recliner.model}
-                              className="w-full h-full object-contain"
+                              className="w-full h-full object-cover"
+                              style={{ aspectRatio: '4/3', maxHeight: '100%' }}
                             />
                           </div>
                           <h3 className="font-bold text-center">{recliner.model}</h3>
