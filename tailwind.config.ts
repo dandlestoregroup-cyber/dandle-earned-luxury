@@ -7,13 +7,22 @@ export default {
   safelist: [
     "bg-gradient-radial",
     "from-orange-400/10",
+    "from-orange-50/80",
+    "via-rose-50/60",
+    "to-amber-50/40",
     "via-rose-400/5",
+    "via-rose-300/8",
     "to-transparent",
     "border-orange-400",
     "border-orange-400/50",
     "shadow-[0_0_0_2px_rgba(251,146,60,0.35)]",
+    "shadow-orange-500/30",
+    "shadow-orange-500/40",
     "group-hover:opacity-100",
     "hover:border-orange-400/50",
+    "aspect-[4/3]",
+    "scroll-snap-type-x",
+    "scroll-snap-align-center",
   ],
   theme: {
     container: {

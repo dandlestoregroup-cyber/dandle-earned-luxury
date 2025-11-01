@@ -81,6 +81,21 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const [suggestions, setSuggestions] = useState<Placement[]>([]);
   const [chosen, setChosen] = useState<Placement | null>(null);
   const [customPlacement, setCustomPlacement] = useState("");
+  const [showIntro, setShowIntro] = useState(false);
+
+  // Show intro overlay on first open
+  useEffect(() => {
+    if (open) {
+      const hasSeenIntro = localStorage.getItem('nour-intro-seen');
+      if (!hasSeenIntro) {
+        setShowIntro(true);
+        setTimeout(() => {
+          setShowIntro(false);
+          localStorage.setItem('nour-intro-seen', 'true');
+        }, 7000);
+      }
+    }
+  }, [open]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const greetingRef = useRef<HTMLDivElement>(null);
@@ -525,6 +540,35 @@ If no free wall is visible, suggest asking for another angle.`
           </DialogDescription>
         </DialogHeader>
 
+        {/* Intro Overlay */}
+        {showIntro && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-gradient-to-br from-orange-50 via-rose-50 to-amber-50 rounded-3xl p-8 max-w-md mx-4 text-center shadow-2xl"
+            >
+              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-400 to-rose-400 rounded-full flex items-center justify-center">
+                <Sparkles className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-3xl font-bold mb-3 bg-gradient-to-r from-orange-600 to-rose-600 bg-clip-text text-transparent">
+                Welcome to Nour ✨
+              </h3>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                Just upload a photo of your space, and I'll help you see exactly how our comfort pieces will look in your home.
+              </p>
+              <div className="mt-6 text-sm text-gray-500 animate-pulse">
+                Starting in a moment...
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
         {step === "greeting" && (
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -600,114 +644,122 @@ If no free wall is visible, suggest asking for another angle.`
           <div className="space-y-6 py-4">
             <p className="text-center text-muted-foreground">{t('selectRecliner')}</p>
             
-            <Carousel className="w-full max-w-2xl mx-auto">
-              <CarouselContent>
+            <div className="w-full max-w-2xl mx-auto overflow-hidden">
+              <div 
+                className="flex gap-4 overflow-x-auto pb-4 px-1 snap-x snap-mandatory hide-scrollbar scroll-smooth"
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  WebkitOverflowScrolling: "touch",
+                  scrollSnapType: "x mandatory",
+                }}
+              >
                 {RECLINERS.map((recliner, idx) => {
                   const isSelected = selectedRecliner.model === recliner.model;
                   
                   return (
-                    <CarouselItem 
-                      key={idx} 
-                      className="md:basis-1/2 lg:basis-1/3"
-                      style={{ minWidth: 'min(240px, 70vw)' }}
+                    <Card 
+                      key={idx}
+                      ref={(el) => (carouselCardRefs.current[idx] = el)}
+                      className={`cursor-pointer transition-all duration-300 flex-shrink-0 ${
+                        isSelected 
+                          ? 'ring-[6px] ring-primary/80 shadow-2xl' 
+                          : 'hover:shadow-md'
+                      }`}
+                      style={{
+                        minWidth: "280px",
+                        maxWidth: "280px",
+                        scrollSnapAlign: "center",
+                        transform: `scale(${isSelected ? 1.05 : 0.92})`,
+                        transition: "transform 0.3s ease-in-out",
+                      }}
+                      onClick={() => {
+                        // Clear any existing timer
+                        if (autoAdvanceTimer) {
+                          clearTimeout(autoAdvanceTimer);
+                          setAutoAdvanceTimer(null);
+                        }
+                        
+                        setSelectedRecliner(recliner);
+                        setSelectedColor(recliner.colors[0]);
+                        triggerTiltGlow(carouselCardRefs.current[idx]!);
+                        
+                        // Start 4s auto-advance timer
+                        const timer = setTimeout(() => {
+                          setStep("upload");
+                        }, 4000);
+                        setAutoAdvanceTimer(timer);
+                      }}
                     >
-                      <Card 
-                        ref={(el) => (carouselCardRefs.current[idx] = el)}
-                        className={`cursor-pointer transition-all duration-300 ${
-                          isSelected 
-                            ? 'ring-[6px] ring-primary/80 shadow-2xl' 
-                            : 'hover:shadow-md'
-                        }`}
-                        onClick={() => {
-                          // Clear any existing timer
-                          if (autoAdvanceTimer) {
-                            clearTimeout(autoAdvanceTimer);
-                            setAutoAdvanceTimer(null);
-                          }
-                          
-                          setSelectedRecliner(recliner);
-                          setSelectedColor(recliner.colors[0]);
-                          triggerTiltGlow(carouselCardRefs.current[idx]!);
-                          
-                          // Start 4s auto-advance timer
-                          const timer = setTimeout(() => {
-                            setStep("upload");
-                          }, 4000);
-                          setAutoAdvanceTimer(timer);
-                        }}
-                      >
-                        <CardContent className="p-4 space-y-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                          <div className="relative overflow-hidden rounded-lg bg-muted p-2 h-[220px] md:h-[280px]" style={{ aspectRatio: '4 / 3' }}>
-                            <img 
-                              src={recliner.colors[0].image}
-                              alt={recliner.model}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                          <h3 className="font-bold text-center">{recliner.model}</h3>
-                          <p className="text-sm text-muted-foreground text-center">{recliner.price}</p>
-                          
-                          {/* Color dots */}
-                          <div className="flex justify-center gap-2">
-                            {recliner.colors.map((color, colorIdx) => (
-                              <button
-                                key={colorIdx}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  
-                                  // Clear timer
-                                  if (autoAdvanceTimer) {
-                                    clearTimeout(autoAdvanceTimer);
-                                    setAutoAdvanceTimer(null);
-                                  }
-                                  
-                                  setSelectedRecliner(recliner);
-                                  setSelectedColor(color);
-                                  triggerTiltGlow(carouselCardRefs.current[idx]!);
-                                  
-                                  // Start 4s auto-advance timer
-                                  const timer = setTimeout(() => {
-                                    setStep("upload");
-                                  }, 4000);
-                                  setAutoAdvanceTimer(timer);
-                                }}
-                                className={`w-4 h-4 rounded-full border-2 transition-all ${
-                                  selectedRecliner.model === recliner.model && selectedColor.name === color.name
-                                    ? 'border-primary scale-125'
-                                    : 'border-muted hover:scale-110'
-                                }`}
-                                style={{ backgroundColor: color.hex }}
-                                title={color.name}
-                              />
-                            ))}
-                          </div>
-
-                          {/* Big orange Next button - only in selected card */}
-                          {isSelected && (
-                            <Button
+                      <CardContent className="p-4 space-y-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                        <div className="relative overflow-hidden rounded-lg bg-muted p-2" style={{ aspectRatio: '4 / 3', maxHeight: '280px' }}>
+                          <img 
+                            src={recliner.colors[0].image}
+                            alt={recliner.model}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <h3 className="font-bold text-center">{recliner.model}</h3>
+                        <p className="text-sm text-muted-foreground text-center">{recliner.price}</p>
+                        
+                        {/* Color dots */}
+                        <div className="flex justify-center gap-2">
+                          {recliner.colors.map((color, colorIdx) => (
+                            <button
+                              key={colorIdx}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
-                                setStep("upload");
+                                
+                                // Clear timer
+                                if (autoAdvanceTimer) {
+                                  clearTimeout(autoAdvanceTimer);
+                                  setAutoAdvanceTimer(null);
+                                }
+                                
+                                setSelectedRecliner(recliner);
+                                setSelectedColor(color);
+                                triggerTiltGlow(carouselCardRefs.current[idx]!);
+                                
+                                // Start 4s auto-advance timer
+                                const timer = setTimeout(() => {
+                                  setStep("upload");
+                                }, 4000);
+                                setAutoAdvanceTimer(timer);
                               }}
-                              className="w-full h-12 text-lg font-semibold mt-4"
-                              style={{
-                                background: 'hsl(var(--primary))',
-                                boxShadow: '0 4px 12px rgba(243, 122, 29, 0.3)'
-                              }}
-                            >
-                              {i18n.language === 'ar' ? 'التالي' : 'Next'}
-                            </Button>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </CarouselItem>
+                              className={`w-4 h-4 rounded-full border-2 transition-all ${
+                                selectedRecliner.model === recliner.model && selectedColor.name === color.name
+                                  ? 'border-primary scale-125'
+                                  : 'border-muted hover:scale-110'
+                              }`}
+                              style={{ backgroundColor: color.hex }}
+                              title={color.name}
+                            />
+                          ))}
+                        </div>
+
+                        {/* Big orange Next button - only in selected card */}
+                        {isSelected && (
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+                              setStep("upload");
+                            }}
+                            className="w-full h-12 text-lg font-semibold mt-4"
+                            style={{
+                              background: 'hsl(var(--primary))',
+                              boxShadow: '0 4px 12px rgba(243, 122, 29, 0.3)'
+                            }}
+                          >
+                            {i18n.language === 'ar' ? 'التالي' : 'Next'}
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
                   );
                 })}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+              </div>
+            </div>
 
             <div
               className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer"

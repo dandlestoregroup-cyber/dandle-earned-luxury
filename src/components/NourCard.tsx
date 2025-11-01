@@ -1,5 +1,6 @@
-import { Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import Lottie from "lottie-react";
+import { Upload, Eye, Sparkles } from "lucide-react";
 
 interface NourCardProps {
   onClick: () => void;
@@ -8,72 +9,67 @@ interface NourCardProps {
 const NourCard = ({ onClick }: NourCardProps) => {
   return (
     <Card 
-      className="group cursor-pointer hover:shadow-2xl hover:scale-[1.03] transition-all duration-700 overflow-hidden border-0 rounded-3xl relative"
+      className="group cursor-pointer hover:shadow-2xl hover:scale-[1.02] transition-all duration-700 overflow-hidden border-0 rounded-3xl relative"
       onClick={onClick}
-      style={{ boxShadow: 'var(--shadow-hero)' }}
+      style={{ boxShadow: '0 20px 60px -10px rgba(251, 146, 60, 0.25)' }}
     >
       <CardContent className="p-0">
-        <div className="relative min-h-[20rem] flex flex-col items-center justify-center text-center p-8 overflow-hidden">
-          {/* Hero gradient with depth */}
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-accent/10 to-background animate-gradient" 
-               style={{ backgroundSize: '200% 200%' }} />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,hsl(var(--accent)/0.25),transparent_70%)] 
-                          group-hover:bg-[radial-gradient(circle_at_50%_120%,hsl(var(--accent)/0.4),transparent_80%)] 
+        <div className="relative min-h-[24rem] flex flex-col items-center justify-center text-center p-8 overflow-hidden bg-gradient-to-br from-orange-50/80 via-rose-50/60 to-amber-50/40">
+          {/* Peach glow backdrop */}
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-400/10 via-rose-300/8 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,146,60,0.15),transparent_70%)] 
+                          group-hover:bg-[radial-gradient(circle_at_50%_50%,rgba(251,146,60,0.25),transparent_80%)] 
                           transition-all duration-1000" />
           
-          {/* Shimmer watermark (Nour breathing motion) */}
-          <div className="absolute inset-0 overflow-hidden opacity-20">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/30 to-transparent 
-                            animate-shimmer-breath" 
-                 style={{ width: '200%' }} />
-          </div>
-          
-          {/* Floating particles with parallax depth */}
-          <div className="absolute inset-0 opacity-40">
-            <div className="absolute top-1/4 left-1/4 w-3 h-3 rounded-full bg-accent/50 animate-parallax" 
-                 style={{ animationDelay: '0s' }} />
-            <div className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-accent/40 animate-float" 
-                 style={{ animationDelay: '0.7s' }} />
-            <div className="absolute bottom-1/3 left-1/2 w-2.5 h-2.5 rounded-full bg-accent/30 animate-parallax" 
-                 style={{ animationDelay: '1.4s' }} />
-          </div>
-          
-          <div className="relative z-10 space-y-5">
-            {/* Icon with intense glow on hover */}
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full 
-                            bg-gradient-to-br from-accent/30 to-accent/10 
-                            group-hover:from-accent/50 group-hover:to-accent/20 
-                            transition-all duration-700 animate-soft-pulse 
-                            shadow-lg group-hover:shadow-2xl 
-                            group-hover:shadow-accent/40">
-              <Sparkles className="w-12 h-12 text-accent group-hover:scale-125 transition-transform duration-500" />
+          {/* Lottie animation (placeholder - will work when JSON is added) */}
+          <div className="relative z-10 w-32 h-32 mb-4 opacity-90 group-hover:opacity-100 transition-opacity">
+            <div className="w-full h-full flex items-center justify-center">
+              <Sparkles className="w-16 h-16 text-orange-500 animate-pulse" />
             </div>
-            
-            {/* Title with text pulse */}
-            <div className="animate-text-pulse">
-              <h3 className="text-4xl font-bold mb-2 bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent">
+          </div>
+          
+          <div className="relative z-10 space-y-6 max-w-md mx-auto">
+            {/* Title */}
+            <div>
+              <h3 className="text-5xl font-bold mb-2 bg-gradient-to-r from-orange-600 via-rose-500 to-orange-500 bg-clip-text text-transparent">
                 Nour
               </h3>
-              <p className="text-xl font-semibold text-foreground/90">
+              <p className="text-xl font-semibold text-gray-700">
                 AI Comfort Stylist
               </p>
             </div>
             
-            {/* Refined microcopy - "See It. Feel It. Live It." */}
-            <p className="text-base max-w-sm mx-auto text-muted-foreground leading-relaxed font-medium">
-              See It. Feel It. Live It.<br />
-              <span className="text-sm opacity-80">Visualize your perfect comfort in seconds</span>
-            </p>
+            {/* 3-step guide */}
+            <div className="grid grid-cols-3 gap-3 text-left">
+              <div className="flex flex-col items-center text-center space-y-2">
+                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                  <Upload className="w-5 h-5 text-orange-600" />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Upload Room</span>
+              </div>
+              <div className="flex flex-col items-center text-center space-y-2">
+                <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
+                  <Eye className="w-5 h-5 text-rose-600" />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Pick Spot</span>
+              </div>
+              <div className="flex flex-col items-center text-center space-y-2">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-amber-600" />
+                </div>
+                <span className="text-xs font-medium text-gray-600">See Magic</span>
+              </div>
+            </div>
             
-            {/* CTA with shimmer effect */}
-            <div className="pt-3">
-              <div className="inline-block px-6 py-2 rounded-full 
-                              bg-accent/15 text-accent 
+            {/* CTA */}
+            <div className="pt-2">
+              <div className="inline-block px-8 py-3 rounded-full 
+                              bg-gradient-to-r from-orange-500 to-rose-500 text-white
                               text-sm font-bold 
-                              group-hover:bg-accent group-hover:text-accent-foreground 
+                              group-hover:from-orange-600 group-hover:to-rose-600
                               transition-all duration-500
-                              shadow-md group-hover:shadow-lg group-hover:shadow-accent/30">
-                Start Your Journey →
+                              shadow-lg shadow-orange-500/30 group-hover:shadow-xl group-hover:shadow-orange-500/40">
+                Try Nour Now →
               </div>
             </div>
           </div>
