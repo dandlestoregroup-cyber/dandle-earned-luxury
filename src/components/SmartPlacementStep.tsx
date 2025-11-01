@@ -37,13 +37,12 @@ export const SmartPlacementStep = ({
           <button
             key={o.label}
             onClick={() => handleOptionClick(o.label)}
-            className={`group relative w-40 h-40 rounded-3xl overflow-hidden shadow-lg transition transform hover:scale-105 bg-gradient-to-br from-primary/20 to-primary/40 ${
+            className={`group relative w-40 h-40 rounded-3xl overflow-hidden shadow-lg transition transform hover:scale-105 bg-card border border-border ${
               selectedOption === o.label ? 'ring-4 ring-primary' : ''
             }`}
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <span className="absolute bottom-2 left-2 text-white text-sm font-semibold">{o.label}</span>
-            <span className="absolute top-2 left-2 text-white text-xs">{o.benefit}</span>
+            <span className="absolute bottom-2 left-2 text-foreground text-sm font-semibold">{o.label}</span>
+            <span className="absolute top-2 left-2 text-muted-foreground text-xs">{o.benefit}</span>
           </button>
         ))}
       </div>

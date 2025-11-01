@@ -84,6 +84,8 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const [showIntro, setShowIntro] = useState(false);
   const [analyzingCountdown, setAnalyzingCountdown] = useState(15);
   const analyzingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const stepRef = useRef(step);
+  useEffect(() => { stepRef.current = step; }, [step]);
 
   // Show intro overlay on first open
   useEffect(() => {
@@ -370,6 +372,8 @@ If no free wall is visible, suggest asking for another angle.`
             
             // Set 20s timeout fallback
             analyzingTimeoutRef.current = setTimeout(() => {
+              // Only fire if still analyzing
+              if (stepRef.current !== "analyzing") return;
               toast({ 
                 title: "Analysis taking longer than expected", 
                 description: "Please try uploading another image",
@@ -952,14 +956,14 @@ If no free wall is visible, suggest asking for another angle.`
                 Let's find the perfect corner — together.
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto pr-1">
                 {suggestions.map((s) => (
                   <motion.button
                     key={s.id}
                     onClick={() => setChosen(s)}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`group relative rounded-2xl overflow-hidden border bg-card p-4 text-left transition-all
+                    className={`group relative rounded-2xl overflow-hidden border bg-card text-foreground p-4 text-left transition-all
                       ${chosen?.id === s.id ? "border-primary shadow-[0_0_0_2px_rgba(251,146,60,0.35)]" : "border-border hover:border-primary/50"}`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
