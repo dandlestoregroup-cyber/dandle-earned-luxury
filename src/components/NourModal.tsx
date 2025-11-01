@@ -243,6 +243,53 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
 
       if (error) throw error;
 
+      // Handle specific error types from analyzeRoom
+      if (data?.error === 'invalid_image') {
+        console.log("Invalid image detected:", data.message);
+        toast({ 
+          title: i18n.language === 'ar' ? 'صورة غير صالحة' : 'Invalid Image', 
+          description: data.message || (i18n.language === 'ar' 
+            ? 'يرجى تحميل صورة لغرفة أو مساحة معيشة، وليس لقطعة أثاث فردية'
+            : 'Please upload a photo of a room or living space, not an individual piece of furniture'),
+          variant: 'destructive' 
+        });
+        // Clear timers
+        if (analyzingTimeoutRef.current) {
+          clearTimeout(analyzingTimeoutRef.current);
+          analyzingTimeoutRef.current = null;
+        }
+        if (countdownIntervalRef.current) {
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
+        setStep('upload');
+        setRoomImage(null);
+        return;
+      }
+
+      if (data?.error === 'validation_failed') {
+        console.log("Image validation failed:", data.message);
+        toast({ 
+          title: i18n.language === 'ar' ? 'فشل التحقق من الصورة' : 'Validation Failed', 
+          description: data.message || (i18n.language === 'ar' 
+            ? 'تعذر التحقق من الصورة. يرجى المحاولة مرة أخرى'
+            : 'Unable to validate image. Please try again'),
+          variant: 'destructive' 
+        });
+        // Clear timers
+        if (analyzingTimeoutRef.current) {
+          clearTimeout(analyzingTimeoutRef.current);
+          analyzingTimeoutRef.current = null;
+        }
+        if (countdownIntervalRef.current) {
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
+        setStep('upload');
+        setRoomImage(null);
+        return;
+      }
+
       let list: Placement[] = Array.isArray(data?.suggestions) ? data.suggestions : [];
 
       // Defensive normalization + de-duplication (quantize by ~2%)

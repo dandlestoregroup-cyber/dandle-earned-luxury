@@ -22,7 +22,82 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    // Call Gemini 2.5 Flash with vision for spatial analysis
+    // Step 1: Validate that the image is actually a room
+    console.log("Step 1: Validating image is a room...");
+    const validationRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `You are an image validation expert. Analyze this image and determine if it shows a room or living space suitable for furniture placement.
+
+VALID IMAGES: Living rooms, bedrooms, offices, any indoor space with visible floor area
+INVALID IMAGES: Close-ups of furniture, individual objects (chairs, tables, etc.), outdoor scenes, people, abstract images
+
+Respond with ONLY a JSON object:
+{
+  "is_valid_room": true/false,
+  "reason": "Brief explanation"
+}
+
+If the image shows an individual piece of furniture (like a chair) or a close-up of an object rather than a room, set is_valid_room to false.`
+              },
+              {
+                type: "image_url",
+                image_url: { url: roomImageBase64 }
+              }
+            ]
+          }
+        ],
+      }),
+    });
+
+    if (!validationRes.ok) {
+      console.error("Validation AI error:", validationRes.status, await validationRes.text());
+      return new Response(
+        JSON.stringify({ 
+          error: "validation_failed",
+          message: "Unable to validate image. Please try again."
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const validationData = await validationRes.json();
+    const validationContent = validationData?.choices?.[0]?.message?.content || "";
+    console.log("Validation response:", validationContent);
+
+    let validationResult;
+    try {
+      const cleanContent = validationContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      validationResult = JSON.parse(cleanContent);
+      
+      if (!validationResult.is_valid_room) {
+        console.log("Image validation failed:", validationResult.reason);
+        return new Response(
+          JSON.stringify({ 
+            error: "invalid_image",
+            message: validationResult.reason || "This image doesn't appear to be a room. Please upload a photo of a living space with visible floor area."
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    } catch (parseError) {
+      console.error("Failed to parse validation response:", parseError);
+      // If we can't validate, proceed with caution
+    }
+
+    // Step 2: Proceed with placement analysis
+    console.log("Step 2: Analyzing room for placement zones...");
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
