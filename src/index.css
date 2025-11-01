@@ -314,14 +314,12 @@ All colors MUST be HSL.
   }
   
   /* Hide scrollbar utility */
-  .hide-scrollbar,
-  .no-scrollbar {
+  .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
   
-  .hide-scrollbar::-webkit-scrollbar,
-  .no-scrollbar::-webkit-scrollbar {
+  .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
 }

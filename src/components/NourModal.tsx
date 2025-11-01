@@ -81,6 +81,21 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const [suggestions, setSuggestions] = useState<Placement[]>([]);
   const [chosen, setChosen] = useState<Placement | null>(null);
   const [customPlacement, setCustomPlacement] = useState("");
+  const [showIntro, setShowIntro] = useState(false);
+
+  // Show intro overlay on first open
+  useEffect(() => {
+    if (open) {
+      const hasSeenIntro = localStorage.getItem('nour-intro-seen');
+      if (!hasSeenIntro) {
+        setShowIntro(true);
+        setTimeout(() => {
+          setShowIntro(false);
+          localStorage.setItem('nour-intro-seen', 'true');
+        }, 7000);
+      }
+    }
+  }, [open]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const greetingRef = useRef<HTMLDivElement>(null);
@@ -479,10 +494,10 @@ If no free wall is visible, suggest asking for another angle.`
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         ref={dialogContentRef}
-        className={`nour-wrapper relative ${
+        className={`nour-wrapper overflow-hidden ${
           step === 'greeting' 
             ? 'w-screen h-screen max-w-none max-h-[100vh] border-0 bg-transparent shadow-none p-0' 
-            : 'max-w-4xl max-h-[calc(100dvh-72px)] overflow-y-auto'
+            : 'max-w-4xl max-h-[90vh]'
         }`}
         style={{
           background: step === 'greeting' ? 'transparent' : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
@@ -525,6 +540,35 @@ If no free wall is visible, suggest asking for another angle.`
           </DialogDescription>
         </DialogHeader>
 
+        {/* Intro Overlay */}
+        {showIntro && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] overflow-y-auto flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-gradient-to-br from-orange-50 via-rose-50 to-amber-50 rounded-3xl p-8 max-w-md mx-4 text-center shadow-2xl my-8"
+            >
+              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-400 to-rose-400 rounded-full flex items-center justify-center">
+                <Sparkles className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-3xl font-bold mb-3 bg-gradient-to-r from-orange-600 to-rose-600 bg-clip-text text-transparent">
+                Welcome to Nour ✨
+              </h3>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                Just upload a photo of your space, and I'll help you see exactly how our comfort pieces will look in your home.
+              </p>
+              <div className="mt-6 text-sm text-gray-500 animate-pulse">
+                Starting in a moment...
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
 
         {step === "greeting" && (
           <motion.div 
@@ -601,73 +645,136 @@ If no free wall is visible, suggest asking for another angle.`
           <div className="space-y-6 py-4">
             <p className="text-center text-muted-foreground">{t('selectRecliner')}</p>
             
-            {/* CAROUSEL — fixed, mobile-first, RTL-safe */}
-            <div
-              id="nour-carousel"
-              dir="ltr"
-              className="relative -mx-4 px-4 overflow-x-auto hide-scrollbar snap-x snap-mandatory flex gap-4"
-              style={{ scrollPaddingInline: '24px', overscrollBehaviorX: 'contain' }}
-            >
-              {RECLINERS.map((recliner, idx) => {
-                const isSelected = selectedRecliner.model === recliner.model;
-                return (
-                  <button
-                    key={recliner.model}
-                    onClick={() => {
-                      setSelectedRecliner(recliner);
-                      setSelectedColor(recliner.colors[0]);
-                      setStep('upload'); // auto-advance, no extra confirm
-                    }}
-                    className="snap-center flex-shrink-0 rounded-2xl bg-white ring-1 ring-black/5 shadow-sm transition-transform"
-                    style={{
-                      width: 'clamp(240px, 84vw, 300px)',
-                      transform: `scale(${isSelected ? 1.03 : 0.96})`,
-                    }}
-                  >
-                    <div className="p-3">
-                      {/* Image frame locked to 4:3 */}
-                      <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-neutral-50">
-                        <img
-                          src={recliner.colors[0].image}
-                          alt={recliner.model}
-                          className="absolute inset-0 w-full h-full object-contain"
-                          width={1200}
-                          height={900}
-                          loading="eager"
-                          decoding="async"
-                        />
-                      </div>
+            <div className="w-full max-w-2xl mx-auto overflow-hidden">
+              <div 
+                className="flex gap-4 overflow-x-auto no-scrollbar px-3 -mx-3 pb-4 snap-x snap-mandatory scroll-smooth"
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  WebkitOverflowScrolling: "touch",
+                  scrollSnapType: "x mandatory",
+                }}
+              >
+                {RECLINERS.map((recliner, idx) => {
+                  const isSelected = selectedRecliner.model === recliner.model;
+                  
+                  return (
+                    <Card 
+                      key={idx}
+                      ref={(el) => (carouselCardRefs.current[idx] = el)}
+                      className={`cursor-pointer transition-all duration-300 snap-center flex-shrink-0 ${
+                        isSelected 
+                          ? 'ring-[6px] ring-primary/80 shadow-2xl' 
+                          : 'hover:shadow-md'
+                      }`}
+                      style={{
+                        width: "260px",
+                        transform: `scale(${isSelected ? 1.05 : 0.92})`,
+                        transition: "transform 0.3s ease-in-out",
+                      }}
+                      onClick={() => {
+                        // Clear any existing timer
+                        if (autoAdvanceTimer) {
+                          clearTimeout(autoAdvanceTimer);
+                          setAutoAdvanceTimer(null);
+                        }
+                        
+                        setSelectedRecliner(recliner);
+                        setSelectedColor(recliner.colors[0]);
+                        triggerTiltGlow(carouselCardRefs.current[idx]!);
+                        
+                        // Start 4s auto-advance timer
+                        const timer = setTimeout(() => {
+                          setStep("upload");
+                        }, 4000);
+                        setAutoAdvanceTimer(timer);
+                      }}
+                    >
+                      <CardContent className="p-4 space-y-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                        <div className="relative overflow-hidden rounded-lg bg-muted p-2" style={{ aspectRatio: '4 / 3', maxHeight: '280px' }}>
+                          <img 
+                            src={recliner.colors[0].image}
+                            alt={recliner.model}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <h3 className="font-bold text-center">{recliner.model}</h3>
+                        <p className="text-sm text-muted-foreground text-center">{recliner.price}</p>
+                        
+                        {/* Color dots */}
+                        <div className="flex justify-center gap-2">
+                          {recliner.colors.map((color, colorIdx) => (
+                            <button
+                              key={colorIdx}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                
+                                // Clear timer
+                                if (autoAdvanceTimer) {
+                                  clearTimeout(autoAdvanceTimer);
+                                  setAutoAdvanceTimer(null);
+                                }
+                                
+                                setSelectedRecliner(recliner);
+                                setSelectedColor(color);
+                                triggerTiltGlow(carouselCardRefs.current[idx]!);
+                                
+                                // Start 4s auto-advance timer
+                                const timer = setTimeout(() => {
+                                  setStep("upload");
+                                }, 4000);
+                                setAutoAdvanceTimer(timer);
+                              }}
+                              className={`w-4 h-4 rounded-full border-2 transition-all ${
+                                selectedRecliner.model === recliner.model && selectedColor.name === color.name
+                                  ? 'border-primary scale-125'
+                                  : 'border-muted hover:scale-110'
+                              }`}
+                              style={{ backgroundColor: color.hex }}
+                              title={color.name}
+                            />
+                          ))}
+                        </div>
 
-                      {/* Text */}
-                      <div className="mt-3 text-left">
-                        <div className="text-base font-medium">{recliner.model}</div>
-                        <div className="text-sm text-neutral-500">{recliner.price}</div>
-                      </div>
-
-                      {/* Color dots */}
-                      <div className="mt-3 flex items-center gap-2">
-                        {recliner.colors.map((c) => (
-                          <span
-                            key={c.name}
+                        {/* Big orange Next button - only in selected card */}
+                        {isSelected && (
+                          <Button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedRecliner(recliner);
-                              setSelectedColor(c);
-                              setStep('upload');
+                              if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+                              setStep("upload");
                             }}
-                            className="w-4 h-4 rounded-full border-2 border-white ring-1 ring-black/10"
-                            style={{ background: c.hex }}
-                            title={c.name}
-                          />
-                        ))}
-                      </div>
+                            className="w-full h-12 text-lg font-semibold mt-4"
+                            style={{
+                              background: 'hsl(var(--primary))',
+                              boxShadow: '0 4px 12px rgba(243, 122, 29, 0.3)'
+                            }}
+                          >
+                            {i18n.language === 'ar' ? 'التالي' : 'Next'}
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
 
-                      {/* Next hint (optional) */}
-                      <div className="mt-4 text-center text-xs text-neutral-500">Tap card to continue</div>
-                    </div>
-                  </button>
-                );
-              })}
+            <div
+              className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                {t('uploadPlaceholder')}
+              </p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
             </div>
           </div>
         )}
