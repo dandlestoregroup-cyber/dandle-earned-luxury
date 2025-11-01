@@ -234,40 +234,46 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   };
 
   // Fetch AI placement suggestions
+  // Fetch AI placement suggestions (now using analyzeRoom for real coordinates)
   const fetchPlacementSuggestions = async (dataUrl: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke("nour-chat", {
-        body: {
-          type: "placement",
-          image: dataUrl,
-          prompt: `You are an interior-design expert.
-Given the uploaded room photo, list exactly 3 concise, distinct, realistic locations where a recliner would fit.
-Return ONLY a JSON array of objects with keys:
-"id" (1,2,3), "title" (<=6 words), "subtitle" (<=12 words), "why" (<=20 words).
-Use only visible elements from photo. Do not invent furniture or architectural features.
-If no free wall is visible, suggest asking for another angle.`
-        }
+      const { data, error } = await supabase.functions.invoke("analyzeRoom", {
+        body: { roomImageBase64: dataUrl },
       });
 
       if (error) throw error;
 
-      let list: Placement[] = [];
-      try {
-        if (data?.type === "placement" && data?.content) {
-          // Strip markdown code fences if present
-          let jsonContent = data.content.trim();
-          if (jsonContent.startsWith('```json')) {
-            jsonContent = jsonContent.replace(/^```json\s*\n/, '').replace(/\n```$/, '');
-          } else if (jsonContent.startsWith('```')) {
-            jsonContent = jsonContent.replace(/^```\s*\n/, '').replace(/\n```$/, '');
-          }
-          list = JSON.parse(jsonContent);
-        }
-      } catch (e) {
-        console.error("Failed to parse placement suggestions:", e);
+      let list: Placement[] = Array.isArray(data?.suggestions) ? data.suggestions : [];
+
+      // Defensive normalization + de-duplication (quantize by ~2%)
+      const seen = new Set<string>();
+      const normalized: Placement[] = [];
+      for (const s of list) {
+        const coords: any = (s as any)?.coordinates ?? {};
+        const x = typeof coords.x === 'number' ? coords.x : 50;
+        const y = typeof coords.y === 'number' ? coords.y : 50;
+        const width = typeof coords.width === 'number' ? coords.width : 15;
+        const height = typeof coords.height === 'number' ? coords.height : 20;
+        const key = `${Math.round(x/2)*2}-${Math.round(y/2)*2}`;
+        if (seen.has(key)) continue; // drop near-duplicates that overlap same spot
+        seen.add(key);
+        normalized.push({
+          id: s.id ?? normalized.length + 1,
+          title: s.title || 'Placement option',
+          subtitle: s.subtitle || 'Recommended spot',
+          why: s.why || 'Good spatial fit',
+          feasibility_score: typeof s.feasibility_score === 'number' ? s.feasibility_score : 0.8,
+          coordinates: { x, y, width, height },
+        });
       }
-      setSuggestions(list.slice(0, 3));
-      
+
+      // Prefer up to 4 unique, high-feasibility zones
+      const finalSuggestions = normalized
+        .filter(z => z.feasibility_score >= 0.8)
+        .slice(0, 4);
+
+      setSuggestions(finalSuggestions);
+
       // Clear timeout and countdown interval
       if (analyzingTimeoutRef.current) {
         clearTimeout(analyzingTimeoutRef.current);
@@ -277,10 +283,18 @@ If no free wall is visible, suggest asking for another angle.`
         clearInterval(countdownIntervalRef.current);
         countdownIntervalRef.current = null;
       }
+
+      if (finalSuggestions.length === 0) {
+        toast({ title: 'No valid placement zones detected', description: 'Try another angle with more floor visible.', variant: 'destructive' });
+        setStep('upload');
+        setRoomImage(null);
+        return;
+      }
+
       setStep("placement");
     } catch (error) {
       console.error("Placement suggestions error:", error);
-      toast({ title: "Failed to generate placement suggestions", variant: "destructive" });
+      toast({ title: "Failed to analyze room", description: "Please try another photo.", variant: "destructive" });
       // On error, reset to upload and clear timers
       if (analyzingTimeoutRef.current) {
         clearTimeout(analyzingTimeoutRef.current);
@@ -488,6 +502,14 @@ If no free wall is visible, suggest asking for another angle.`
       setIsLoading(false);
     }
   };
+
+  // Auto-start rendering when entering render step with a valid selection
+  useEffect(() => {
+    if (step === 'render' && chosen && !renderedImage && !isLoading) {
+      handleRender();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, chosen]);
 
   // Egyptian compliment after render (FIX #6)
   const showEgyptianCompliment = () => {

@@ -114,12 +114,26 @@ Return ONLY the JSON array, no markdown, no extra text.`
         throw new Error("Invalid suggestions format");
       }
       
-      // Validate and filter suggestions by feasibility
-      suggestions = suggestions
-        .filter(s => (s.feasibility_score || 0) >= 0.8)
-        .slice(0, 3)
-        .map(s => ({
-          id: s.id || 1,
+      // Validate and filter suggestions by feasibility + de-duplicate near-identical coordinates
+      const deduped: any[] = [];
+      const seen = new Set<string>();
+      for (const s of Array.isArray(suggestions) ? suggestions : []) {
+        const c = s.coordinates || {};
+        const x = typeof c.x === 'number' ? c.x : 50;
+        const y = typeof c.y === 'number' ? c.y : 50;
+        const w = typeof c.width === 'number' ? c.width : 15;
+        const h = typeof c.height === 'number' ? c.height : 20;
+        const key = `${Math.round(x/2)*2}-${Math.round(y/2)*2}`; // quantize to ~2%
+        if (seen.has(key)) continue;
+        seen.add(key);
+        deduped.push({ ...s, coordinates: { x, y, width: w, height: h } });
+      }
+
+      suggestions = deduped
+        .filter((s) => (s.feasibility_score || 0) >= 0.8)
+        .slice(0, 4)
+        .map((s, i) => ({
+          id: s.id || i + 1,
           title: s.title || "Placement option",
           subtitle: s.subtitle || "Recommended spot",
           why: s.why || "Good spatial fit",
