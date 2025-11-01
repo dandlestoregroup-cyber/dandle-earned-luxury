@@ -20,6 +20,7 @@ const Navigation = () => {
   }, []);
 
   const navLinks = [
+    { label: "Home", href: "/", isRoute: true },
     { label: "Collection", href: "#collection" },
     { label: "AR View", href: "#ar-demo" },
     { label: "About", href: "#story" },
@@ -37,9 +38,12 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#" className="font-serif text-3xl font-bold tracking-tight">
+          <button 
+            onClick={() => navigate('/')} 
+            className="font-serif text-3xl font-bold tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+          >
             <span className="text-gradient-luxury">DANDLE</span>
-          </a>
+          </button>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
