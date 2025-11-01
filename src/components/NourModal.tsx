@@ -642,25 +642,26 @@ If no free wall is visible, suggest asking for another angle.`
         )}
 
         {step === "carousel" && (
-          <div className="space-y-8 py-6">
+          <div className="space-y-6 py-4 px-2 sm:px-4">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold">{i18n.language === 'ar' ? 'اختر الكرسي' : 'Choose Your Recliner'}</h2>
-              <p className="text-muted-foreground">{t('selectRecliner')}</p>
+              <h2 className="text-xl sm:text-2xl font-bold">{i18n.language === 'ar' ? 'اختر الكرسي' : 'Choose Your Recliner'}</h2>
+              <p className="text-sm sm:text-base text-muted-foreground">{t('selectRecliner')}</p>
             </div>
             
-            <div className="w-full max-w-3xl mx-auto px-4">
+            <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
               <Carousel 
                 opts={{ 
                   align: "center",
-                  loop: true 
+                  loop: true,
+                  containScroll: "trimSnaps"
                 }}
                 className="w-full"
               >
-                <CarouselContent>
+                <CarouselContent className="-ml-2 md:-ml-4">
                   {RECLINERS.map((recliner, idx) => (
-                    <CarouselItem key={idx}>
+                    <CarouselItem key={idx} className="pl-2 md:pl-4 basis-full">
                       <Card 
-                        className="cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl border-2"
+                        className="cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl border-2 max-w-[320px] sm:max-w-[400px] mx-auto"
                         onClick={() => {
                           setSelectedRecliner(recliner);
                           setSelectedColor(recliner.colors[0]);
@@ -670,12 +671,11 @@ If no free wall is visible, suggest asking for another angle.`
                           setTimeout(() => setStep("upload"), 2000);
                         }}
                       >
-                        <CardContent className="p-6 space-y-4" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                        <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
                           <div 
-                            className="relative overflow-hidden rounded-xl bg-muted/30 mx-auto"
+                            className="relative overflow-hidden rounded-xl bg-muted/30 mx-auto w-full"
                             style={{ 
-                              width: '100%',
-                              maxWidth: '500px',
+                              maxWidth: '280px',
                               aspectRatio: '4 / 3'
                             }}
                           >
@@ -688,12 +688,12 @@ If no free wall is visible, suggest asking for another angle.`
                             />
                           </div>
                           
-                          <div className="text-center space-y-3">
-                            <h3 className="text-2xl font-bold">{recliner.model}</h3>
-                            <p className="text-xl font-semibold text-primary">{recliner.price}</p>
+                          <div className="text-center space-y-2 sm:space-y-3">
+                            <h3 className="text-lg sm:text-xl font-bold">{recliner.model}</h3>
+                            <p className="text-base sm:text-lg font-semibold text-primary">{recliner.price}</p>
                             
                             {/* Color selection */}
-                            <div className="flex justify-center gap-3 pt-2">
+                            <div className="flex justify-center gap-2 sm:gap-3 pt-1 sm:pt-2">
                               {recliner.colors.map((color, colorIdx) => (
                                 <button
                                   key={colorIdx}
@@ -702,7 +702,7 @@ If no free wall is visible, suggest asking for another angle.`
                                     setSelectedRecliner(recliner);
                                     setSelectedColor(color);
                                   }}
-                                  className={`w-8 h-8 rounded-full border-4 transition-all hover:scale-110 ${
+                                  className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 sm:border-4 transition-all hover:scale-110 ${
                                     selectedRecliner.model === recliner.model && selectedColor.name === color.name
                                       ? 'border-primary scale-125 shadow-lg'
                                       : 'border-muted-foreground/30'
@@ -719,7 +719,7 @@ If no free wall is visible, suggest asking for another angle.`
                                 e.stopPropagation();
                                 setStep("upload");
                               }}
-                              className="w-full h-14 text-lg font-semibold mt-6 rounded-xl"
+                              className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold mt-4 sm:mt-6 rounded-xl"
                               style={{
                                 background: 'hsl(var(--primary))',
                                 boxShadow: '0 4px 16px rgba(243, 122, 29, 0.4)'
@@ -734,11 +734,11 @@ If no free wall is visible, suggest asking for another angle.`
                   ))}
                 </CarouselContent>
                 <CarouselPrevious 
-                  className="left-2 md:-left-12"
+                  className="left-1 sm:left-2 md:-left-12 h-8 w-8 sm:h-10 sm:w-10"
                   aria-label="Previous recliner model"
                 />
                 <CarouselNext 
-                  className="right-2 md:-right-12"
+                  className="right-1 sm:right-2 md:-right-12 h-8 w-8 sm:h-10 sm:w-10"
                   aria-label="Next recliner model"
                 />
               </Carousel>
