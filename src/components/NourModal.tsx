@@ -340,12 +340,12 @@ If no free wall is visible, suggest asking for another angle.`
             offsetY = (img.height - cropHeight) / 2;
           }
 
-          canvas.width = 1920;
-          canvas.height = 1080;
+          canvas.width = 1280;
+          canvas.height = 720;
           const ctx = canvas.getContext('2d');
           if (ctx) {
-            ctx.drawImage(img, offsetX, offsetY, cropWidth, cropHeight, 0, 0, 1920, 1080);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            ctx.drawImage(img, offsetX, offsetY, cropWidth, cropHeight, 0, 0, 1280, 720);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
             setRoomImage(dataUrl);
             
             // Extract colors and animate background
@@ -932,7 +932,7 @@ If no free wall is visible, suggest asking for another angle.`
                 transition={{ delay: 0.6 }}
                 className="text-sm text-muted-foreground/70"
               >
-                This usually takes 10-15 seconds
+                Usually takes 5-10 seconds
               </motion.p>
             </div>
             
