@@ -546,12 +546,13 @@ If no free wall is visible, suggest asking for another angle.`
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] overflow-y-auto flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            style={{ WebkitOverflowScrolling: 'touch' }}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-gradient-to-br from-orange-50 via-rose-50 to-amber-50 rounded-3xl p-8 max-w-md mx-4 text-center shadow-2xl"
+              className="bg-gradient-to-br from-orange-50 via-rose-50 to-amber-50 rounded-3xl p-8 max-w-md mx-4 text-center shadow-2xl my-8"
             >
               <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-400 to-rose-400 rounded-full flex items-center justify-center">
                 <Sparkles className="w-10 h-10 text-white" />
@@ -575,7 +576,7 @@ If no free wall is visible, suggest asking for another angle.`
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-50 flex items-center justify-center"
+            className="fixed inset-0 z-50 flex items-center justify-center min-h-[90vh] md:min-h-[80vh]"
             style={{
               background: 'rgba(0, 0, 0, 0.45)',
               backdropFilter: 'blur(12px)',
@@ -646,7 +647,7 @@ If no free wall is visible, suggest asking for another angle.`
             
             <div className="w-full max-w-2xl mx-auto overflow-hidden">
               <div 
-                className="flex gap-4 overflow-x-auto pb-4 px-1 snap-x snap-mandatory hide-scrollbar scroll-smooth"
+                className="flex gap-4 overflow-x-auto no-scrollbar px-3 -mx-3 pb-4 snap-x snap-mandatory scroll-smooth"
                 style={{
                   scrollbarWidth: "none",
                   msOverflowStyle: "none",
@@ -661,15 +662,13 @@ If no free wall is visible, suggest asking for another angle.`
                     <Card 
                       key={idx}
                       ref={(el) => (carouselCardRefs.current[idx] = el)}
-                      className={`cursor-pointer transition-all duration-300 flex-shrink-0 ${
+                      className={`cursor-pointer transition-all duration-300 snap-center flex-shrink-0 ${
                         isSelected 
                           ? 'ring-[6px] ring-primary/80 shadow-2xl' 
                           : 'hover:shadow-md'
                       }`}
                       style={{
-                        minWidth: "280px",
-                        maxWidth: "280px",
-                        scrollSnapAlign: "center",
+                        width: "260px",
                         transform: `scale(${isSelected ? 1.05 : 0.92})`,
                         transition: "transform 0.3s ease-in-out",
                       }}

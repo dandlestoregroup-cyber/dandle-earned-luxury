@@ -23,6 +23,10 @@ export default {
     "aspect-[4/3]",
     "scroll-snap-type-x",
     "scroll-snap-align-center",
+    "snap-center",
+    "no-scrollbar",
+    "min-h-[90vh]",
+    "md:min-h-[80vh]",
   ],
   theme: {
     container: {
@@ -150,6 +154,7 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in-up": "fade-in-up 0.6s ease-out",
+        "fade-in": "fade-in-up 0.3s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "shimmer": "shimmer 2s infinite linear"
       },
