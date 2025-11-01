@@ -92,16 +92,11 @@ serve(async (req) => {
         }
         
         // Enhance prompt with spatial constraints
-        const spatialPrompt = `CRITICAL SPATIAL RULES:
-1. Place the ${reclinerModel} recliner ONLY in the marked zone at coordinates (${coordinates.x}%, ${coordinates.y}%)
-2. Recliner dimensions: ${coordinates.width}% width × ${coordinates.height}% height of room
-3. Color: ${reclinerColor}
-4. Must sit ON THE FLOOR aligned with room perspective
-5. Scale: chair ≈ 1/3 height of nearby sofa, 1/4 width of tables
-6. NO overlapping with existing furniture
-7. NO floating or incorrect perspective
-
-If you cannot place it realistically in this zone, respond with: "SPATIAL_ERROR: Cannot place furniture without overlap"
+        const spatialPrompt = `PLACEMENT INSTRUCTIONS (Always return an edited image, never text):
+1) Place the ${reclinerModel} recliner strictly within the rectangle at (${coordinates.x}%, ${coordinates.y}%) with size ${coordinates.width}% x ${coordinates.height}% of the room image.
+2) Color: ${reclinerColor}. Sit ON THE FLOOR, correct scale and perspective.
+3) Match lighting/shadows. Do not remove/replace existing objects. Avoid overlapping; if tight, scale down or nudge within ±5% but stay inside the box.
+4) Output must be an IMAGE ONLY. Do not include any textual responses or error markers.
 
 ${renderPrompt}`;
         
@@ -150,24 +145,47 @@ ${renderPrompt}`;
       console.log("Image generation response:", JSON.stringify(data).slice(0, 200));
       
       const textResponse = data?.choices?.[0]?.message?.content || "";
-      
-      // Check for spatial error from AI
-      if (textResponse.includes("SPATIAL_ERROR")) {
-        console.log("Spatial error detected in AI response");
-        return new Response(
-          JSON.stringify({ 
-            error: "No space detected for this layout. Try another angle.",
-            type: "spatial_error"
+      let imageUrl: string | undefined = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+      // Retry once if no image or model hinted at spatial concerns
+      if ((!imageUrl) || textResponse.includes("SPATIAL_ERROR")) {
+        console.log("First attempt returned no image or spatial warning. Retrying with softened prompt.");
+        let fallbackPrompt = renderPrompt;
+        if (placementData?.coordinates) {
+          const c = placementData.coordinates;
+          const model = placementData.reclinerModel;
+          const color = placementData.reclinerColor;
+          fallbackPrompt = `Return an EDITED IMAGE ONLY (no text): Place the ${model} recliner (${color}) approximately within the rectangle at (${c.x}%, ${c.y}%), size ${c.width}% x ${c.height}% of the room. If overlap risk, scale down and nudge inward up to 10%. Always keep floor contact, correct perspective, and matching lighting/shadows. Never refuse.`;
+        }
+
+        const retryRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-image-preview",
+            messages: placementData ? [
+              ...messages.slice(0, -1),
+              { ...messages[messages.length - 1], content: fallbackPrompt }
+            ] : messages,
+            modalities: ["image", "text"],
           }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        });
+
+        if (retryRes.ok) {
+          const retryData = await retryRes.json();
+          imageUrl = retryData?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        } else {
+          console.warn("Retry image request failed with status:", retryRes.status);
+        }
       }
-      
-      const imageUrl: string | undefined = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
       if (!imageUrl) {
-        console.error("No image URL in response:", JSON.stringify(data).slice(0, 500));
+        console.error("No image URL after attempts");
         return new Response(
-          JSON.stringify({ error: "No image returned from AI", type: "generation_error" }), 
+          JSON.stringify({ error: "Could not generate image for this placement.", type: "generation_error" }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
