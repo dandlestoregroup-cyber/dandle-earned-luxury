@@ -64,7 +64,7 @@ type Placement = {
 
 const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const { t, i18n } = useTranslation();
-  const [step, setStep] = useState<"greeting" | "carousel" | "upload" | "placement" | "render" | "chat">("greeting");
+  const [step, setStep] = useState<"greeting" | "carousel" | "upload" | "analyzing" | "placement" | "render" | "chat">("greeting");
   const [roomImage, setRoomImage] = useState<string | null>(null);
   const [placementInstruction, setPlacementInstruction] = useState<string>("");
   const [selectedRecliner, setSelectedRecliner] = useState(RECLINERS[0]);
@@ -82,6 +82,8 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const [chosen, setChosen] = useState<Placement | null>(null);
   const [customPlacement, setCustomPlacement] = useState("");
   const [showIntro, setShowIntro] = useState(false);
+  const [analyzingCountdown, setAnalyzingCountdown] = useState(15);
+  const [analyzingTimeout, setAnalyzingTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Show intro overlay on first open
   useEffect(() => {
@@ -102,6 +104,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const dialogContentRef = useRef<HTMLDivElement>(null);
   const sliderContainerRef = useRef<HTMLDivElement>(null);
   const carouselCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
   const chimeAudioRef = useRef<HTMLAudioElement | null>(null);
   const tickAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -163,8 +166,14 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
       if (autoAdvanceTimer) {
         clearTimeout(autoAdvanceTimer);
       }
+      if (analyzingTimeout) {
+        clearTimeout(analyzingTimeout);
+      }
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+      }
     };
-  }, [autoAdvanceTimer]);
+  }, [autoAdvanceTimer, analyzingTimeout]);
 
   // Button hover animation
   useEffect(() => {
@@ -240,9 +249,31 @@ If no free wall is visible, suggest asking for another angle.`
         console.error("Failed to parse placement suggestions:", e);
       }
       setSuggestions(list.slice(0, 3));
+      
+      // Clear timeout and countdown interval
+      if (analyzingTimeout) {
+        clearTimeout(analyzingTimeout);
+        setAnalyzingTimeout(null);
+      }
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+        countdownIntervalRef.current = null;
+      }
+      setStep("placement");
     } catch (error) {
       console.error("Placement suggestions error:", error);
       toast({ title: "Failed to generate placement suggestions", variant: "destructive" });
+      // On error, reset to upload and clear timers
+      if (analyzingTimeout) {
+        clearTimeout(analyzingTimeout);
+        setAnalyzingTimeout(null);
+      }
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+        countdownIntervalRef.current = null;
+      }
+      setStep("upload");
+      setRoomImage(null);
     }
   };
 
@@ -281,11 +312,6 @@ If no free wall is visible, suggest asking for another angle.`
     if (file) {
       const reader = new FileReader();
       
-      // Dynamic progress narration
-      setUploadProgress("Reading your room's story...");
-      setTimeout(() => setUploadProgress("Spotting your comfort zone..."), 800);
-      setTimeout(() => setUploadProgress("Preparing your canvas..."), 1600);
-      
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
@@ -315,14 +341,44 @@ If no free wall is visible, suggest asking for another angle.`
             const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
             setRoomImage(dataUrl);
             
-            // Extract colors and animate background (FIX #1)
+            // Extract colors and animate background
             extractAndApplyColors(dataUrl);
             
-            // Fetch AI placement suggestions
-            fetchPlacementSuggestions(dataUrl);
+            // Move to analyzing step
+            setStep("analyzing");
+            setAnalyzingCountdown(15);
             
-            setUploadProgress("");
-            setStep("placement");
+            // Start countdown
+            const countdownInterval = setInterval(() => {
+              setAnalyzingCountdown(prev => {
+                if (prev <= 1) {
+                  clearInterval(countdownInterval);
+                  return 0;
+                }
+                return prev - 1;
+              });
+            }, 1000);
+            countdownIntervalRef.current = countdownInterval;
+            
+            // Set 20s timeout fallback
+            const timeout = setTimeout(() => {
+              toast({ 
+                title: "Analysis taking longer than expected", 
+                description: "Please try uploading another image",
+                variant: "destructive" 
+              });
+              setStep("upload");
+              setRoomImage(null);
+              if (countdownIntervalRef.current) {
+                clearInterval(countdownIntervalRef.current);
+                countdownIntervalRef.current = null;
+              }
+            }, 20000);
+            
+            setAnalyzingTimeout(timeout);
+            
+            // Fetch AI placement suggestions (will clear timeout when done)
+            fetchPlacementSuggestions(dataUrl);
           }
         };
         img.src = event.target?.result as string;
@@ -806,6 +862,80 @@ If no free wall is visible, suggest asking for another angle.`
               </>
             )}
           </div>
+        )}
+
+        {step === "analyzing" && roomImage && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.4 }}
+            className="flex flex-col items-center justify-center py-16 space-y-8"
+          >
+            {/* Animated spinner */}
+            <div className="relative w-32 h-32">
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/30 to-accent/10 rounded-full" />
+              <div className="absolute inset-0 border-4 border-accent/20 rounded-full" />
+              <div className="absolute inset-0 border-4 border-accent border-t-transparent rounded-full animate-spin" 
+                   style={{ animationDuration: '1s' }} />
+              
+              {/* Orange shimmer sweep */}
+              <div className="absolute inset-0 overflow-hidden rounded-full">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/50 to-transparent" 
+                     style={{ 
+                       backgroundSize: '200% 100%',
+                       animation: 'shimmer 2s infinite linear'
+                     }} />
+              </div>
+              
+              {/* Countdown in center */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.span 
+                  key={analyzingCountdown}
+                  initial={{ scale: 1.2, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-2xl font-bold text-accent"
+                >
+                  {analyzingCountdown}
+                </motion.span>
+              </div>
+            </div>
+            
+            {/* Status text with fade animation */}
+            <div className="space-y-3 text-center max-w-md">
+              <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-2xl font-semibold text-accent"
+              >
+                Reading your room…
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-lg text-muted-foreground"
+              >
+                Finding best comfort spots…
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="text-sm text-muted-foreground/70"
+              >
+                This usually takes 10-15 seconds
+              </motion.p>
+            </div>
+            
+            <div 
+              role="status" 
+              aria-live="polite" 
+              aria-label="Analyzing room layout"
+              className="sr-only"
+            />
+          </motion.div>
         )}
 
         {step === "placement" && roomImage && (
