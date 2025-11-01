@@ -83,7 +83,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const [customPlacement, setCustomPlacement] = useState("");
   const [showIntro, setShowIntro] = useState(false);
   const [analyzingCountdown, setAnalyzingCountdown] = useState(15);
-  const [analyzingTimeout, setAnalyzingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const analyzingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Show intro overlay on first open
   useEffect(() => {
@@ -166,14 +166,15 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
       if (autoAdvanceTimer) {
         clearTimeout(autoAdvanceTimer);
       }
-      if (analyzingTimeout) {
-        clearTimeout(analyzingTimeout);
+      if (analyzingTimeoutRef.current) {
+        clearTimeout(analyzingTimeoutRef.current);
+        analyzingTimeoutRef.current = null;
       }
       if (countdownIntervalRef.current) {
         clearInterval(countdownIntervalRef.current);
       }
     };
-  }, [autoAdvanceTimer, analyzingTimeout]);
+  }, [autoAdvanceTimer]);
 
   // Button hover animation
   useEffect(() => {
@@ -258,9 +259,9 @@ If no free wall is visible, suggest asking for another angle.`
       setSuggestions(list.slice(0, 3));
       
       // Clear timeout and countdown interval
-      if (analyzingTimeout) {
-        clearTimeout(analyzingTimeout);
-        setAnalyzingTimeout(null);
+      if (analyzingTimeoutRef.current) {
+        clearTimeout(analyzingTimeoutRef.current);
+        analyzingTimeoutRef.current = null;
       }
       if (countdownIntervalRef.current) {
         clearInterval(countdownIntervalRef.current);
@@ -271,9 +272,9 @@ If no free wall is visible, suggest asking for another angle.`
       console.error("Placement suggestions error:", error);
       toast({ title: "Failed to generate placement suggestions", variant: "destructive" });
       // On error, reset to upload and clear timers
-      if (analyzingTimeout) {
-        clearTimeout(analyzingTimeout);
-        setAnalyzingTimeout(null);
+      if (analyzingTimeoutRef.current) {
+        clearTimeout(analyzingTimeoutRef.current);
+        analyzingTimeoutRef.current = null;
       }
       if (countdownIntervalRef.current) {
         clearInterval(countdownIntervalRef.current);
@@ -368,7 +369,7 @@ If no free wall is visible, suggest asking for another angle.`
             countdownIntervalRef.current = countdownInterval;
             
             // Set 20s timeout fallback
-            const timeout = setTimeout(() => {
+            analyzingTimeoutRef.current = setTimeout(() => {
               toast({ 
                 title: "Analysis taking longer than expected", 
                 description: "Please try uploading another image",
@@ -381,8 +382,6 @@ If no free wall is visible, suggest asking for another angle.`
                 countdownIntervalRef.current = null;
               }
             }, 20000);
-            
-            setAnalyzingTimeout(timeout);
             
             // Fetch AI placement suggestions (will clear timeout when done)
             fetchPlacementSuggestions(dataUrl);
@@ -557,10 +556,10 @@ If no free wall is visible, suggest asking for another angle.`
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         ref={dialogContentRef}
-        className={`nour-wrapper overflow-hidden ${
+        className={`nour-wrapper ${
           step === 'greeting' 
-            ? 'w-screen h-screen max-w-none max-h-[100vh] border-0 bg-transparent shadow-none p-0' 
-            : 'max-w-4xl max-h-[90vh]'
+            ? 'overflow-hidden w-screen h-screen max-w-none max-h-[100vh] border-0 bg-transparent shadow-none p-0' 
+            : 'max-w-4xl max-h-[90vh] overflow-y-auto'
         }`}
         style={{
           background: step === 'greeting' ? 'transparent' : 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)',
@@ -960,14 +959,14 @@ If no free wall is visible, suggest asking for another angle.`
                     onClick={() => setChosen(s)}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`group relative rounded-2xl overflow-hidden border bg-white/5 backdrop-blur-lg p-4 text-left transition-all
-                      ${chosen?.id === s.id ? "border-orange-400 shadow-[0_0_0_2px_rgba(251,146,60,0.35)]" : "border-white/10 hover:border-orange-400/50"}`}
+                    className={`group relative rounded-2xl overflow-hidden border bg-card p-4 text-left transition-all
+                      ${chosen?.id === s.id ? "border-primary shadow-[0_0_0_2px_rgba(251,146,60,0.35)]" : "border-border hover:border-primary/50"}`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="relative">
                       <div className="text-lg font-medium">{s.title}</div>
-                      <div className="text-sm text-white/70">{s.subtitle}</div>
-                      <div className="text-xs text-white/50 mt-2">"{s.why}"</div>
+                      <div className="text-sm text-muted-foreground">{s.subtitle}</div>
+                      <div className="text-xs text-muted-foreground mt-2">"{s.why}"</div>
                     </div>
                     <div className="absolute bottom-3 right-3 text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
                       Feels right here →
@@ -979,13 +978,13 @@ If no free wall is visible, suggest asking for another angle.`
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.15 }}
-                  className="relative rounded-2xl border border-dashed border-white/20 bg-white/5 backdrop-blur-lg p-4 flex flex-col justify-center items-center text-center"
+                  className="relative rounded-2xl border border-dashed border-border bg-card p-4 flex flex-col justify-center items-center text-center"
                 >
                   <textarea
                     value={customPlacement}
                     onChange={(e) => setCustomPlacement(e.target.value)}
                     placeholder="Or describe your own spot…"
-                    className="w-full bg-transparent placeholder-white/40 text-sm resize-none focus:outline-none"
+                    className="w-full bg-transparent placeholder:text-muted-foreground text-sm text-foreground resize-none focus:outline-none"
                     rows={3}
                   />
                   <button
@@ -999,11 +998,11 @@ If no free wall is visible, suggest asking for another angle.`
               </div>
 
               <div className="flex justify-between items-center pt-4">
-                <button onClick={() => setStep("upload")} className="text-white/70 hover:text-white">← Back</button>
+                <button onClick={() => setStep("upload")} className="text-muted-foreground hover:text-foreground">← Back</button>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => fetchPlacementSuggestions(roomImage!)}
-                    className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-sm"
+                    className="px-4 py-2 rounded-full bg-muted hover:bg-muted/80 text-sm text-foreground"
                   >
                     Try again
                   </button>
