@@ -465,9 +465,26 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
         }
       });
 
-      if (error) throw error;
+      console.log("Render response:", data);
 
+      if (error) {
+        console.error("Supabase invoke error:", error);
+        throw error;
+      }
+
+      // Handle error responses from edge function
+      if (data?.type === "validation_error" || data?.type === "spatial_error" || data?.type === "generation_error") {
+        toast({ 
+          title: "Rendering failed", 
+          description: data.error || "Could not generate image. Please try another placement.",
+          variant: "destructive" 
+        });
+        return;
+      }
+
+      // Handle successful image generation
       if (data?.type === "image" && data?.content) {
+        console.log("Image received, setting rendered image");
         setRenderedImage(data.content);
         setEditCount(editCount + 1);
         
@@ -484,16 +501,11 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
           description: t('editsRemaining', { count: 3 - editCount - 1 })
         });
 
-        // Show Arabic calligraphy compliment (FIX #6)
+        // Show Arabic calligraphy compliment
         showEgyptianCompliment();
-      } else if (data?.type === "validation_error" || data?.type === "spatial_error") {
-        toast({ 
-          title: "Placement issue detected", 
-          description: data.error || "Cannot place recliner without blocking furniture. Please select another zone.",
-          variant: "destructive" 
-        });
       } else {
-        throw new Error("Invalid response format");
+        console.error("Unexpected response format:", data);
+        throw new Error(`Invalid response: ${JSON.stringify(data)}`);
       }
     } catch (error: any) {
       console.error("Render error:", error);

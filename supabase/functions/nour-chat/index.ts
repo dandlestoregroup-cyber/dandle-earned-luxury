@@ -76,16 +76,18 @@ serve(async (req) => {
       let renderPrompt = messages[messages.length - 1]?.content;
       
       if (placementData) {
+        console.log("Placement data received:", JSON.stringify(placementData));
         const { coordinates, feasibility_score, reclinerModel, reclinerColor } = placementData;
         
         // Enforce spatial validation
         if (!coordinates || feasibility_score < 0.8) {
+          console.log("Validation failed - coordinates:", coordinates, "feasibility:", feasibility_score);
           return new Response(
             JSON.stringify({ 
               error: "No space detected for this layout. Try another angle or zone.",
               type: "validation_error" 
             }),
-            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
           );
         }
         
@@ -145,28 +147,32 @@ ${renderPrompt}`;
       }
 
       const data = await res.json();
+      console.log("Image generation response:", JSON.stringify(data).slice(0, 200));
+      
       const textResponse = data?.choices?.[0]?.message?.content || "";
       
       // Check for spatial error from AI
       if (textResponse.includes("SPATIAL_ERROR")) {
+        console.log("Spatial error detected in AI response");
         return new Response(
           JSON.stringify({ 
             error: "No space detected for this layout. Try another angle.",
             type: "spatial_error"
           }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       
       const imageUrl: string | undefined = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
       if (!imageUrl) {
-        console.error("No image URL in response", JSON.stringify(data).slice(0, 500));
-        return new Response(JSON.stringify({ error: "No image returned" }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        console.error("No image URL in response:", JSON.stringify(data).slice(0, 500));
+        return new Response(
+          JSON.stringify({ error: "No image returned from AI", type: "generation_error" }), 
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
 
+      console.log("Image generated successfully, URL length:", imageUrl.length);
       return new Response(
         JSON.stringify({ type: "image", content: imageUrl, message: "Image generated" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
