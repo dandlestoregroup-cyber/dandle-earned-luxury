@@ -43,17 +43,23 @@ All colors MUST be HSL.
     
     /* DANDLE Custom Tokens */
     --brand-orange: 24 90% 53%; /* #F37A1D */
+    --brand-orange-glow: 24 90% 60%; /* Lighter orange for glow */
     --brand-text: 0 0% 20%; /* #333333 */
     --brand-white: 0 0% 100%; /* #FFFFFF */
     --brand-beige: 36 52% 90%; /* #F5E6D3 */
     
     --gradient-luxury: linear-gradient(135deg, hsl(24 90% 53%), hsl(24 90% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(24 90% 53% / 0.15), hsl(24 90% 60% / 0.25));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(36 52% 90%));
+    --gradient-shimmer: linear-gradient(90deg, transparent, hsl(24 90% 53% / 0.3), transparent);
     
     --shadow-luxury: 0 20px 50px -10px hsl(24 90% 53% / 0.3);
     --shadow-brand: 0 0 40px hsl(24 90% 53% / 0.2);
+    --shadow-hero: 0 25px 60px -15px hsl(24 90% 53% / 0.4);
+    --shadow-glow-intense: 0 0 60px hsl(24 90% 53% / 0.5);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-cinematic: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -211,6 +217,52 @@ All colors MUST be HSL.
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
+  }
+
+  /* Shimmer watermark animation */
+  @keyframes shimmer-breath {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translateX(-100%);
+    }
+    50% {
+      opacity: 0.6;
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer-breath {
+    animation: shimmer-breath 6s ease-in-out infinite;
+  }
+
+  /* Text pulse for hero */
+  @keyframes text-pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.02);
+    }
+  }
+
+  .animate-text-pulse {
+    animation: text-pulse 3s ease-in-out infinite;
+  }
+
+  /* Depth parallax effect */
+  @keyframes parallax-float {
+    0%, 100% {
+      transform: translateY(0) translateZ(0);
+    }
+    50% {
+      transform: translateY(-10px) translateZ(10px);
+    }
+  }
+
+  .animate-parallax {
+    animation: parallax-float 4s ease-in-out infinite;
   }
 }
 

@@ -71,6 +71,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
   const [chatInput, setChatInput] = useState("");
   const [hasGreeted, setHasGreeted] = useState(false);
   const [autoAdvanceTimer, setAutoAdvanceTimer] = useState<NodeJS.Timeout | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const greetingRef = useRef<HTMLDivElement>(null);
@@ -222,6 +223,12 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
+      
+      // Dynamic progress narration
+      setUploadProgress("Reading your room's story...");
+      setTimeout(() => setUploadProgress("Spotting your comfort zone..."), 800);
+      setTimeout(() => setUploadProgress("Preparing your canvas..."), 1600);
+      
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
@@ -254,6 +261,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
             // Extract colors and animate background (FIX #1)
             extractAndApplyColors(dataUrl);
             
+            setUploadProgress("");
             setStep("placement");
           }
         };
@@ -674,30 +682,63 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
 
         {step === "upload" && (
           <div className="space-y-6 py-4">
-            <p className="text-center text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-              {i18n.language === 'ar' ? 'ارفع صورة لغرفتك لبدء التجربة' : 'Upload a photo of your room to start'}
-            </p>
-            <div
-              className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                {t('uploadPlaceholder')}
-              </p>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileUpload}
-              />
-            </div>
-            <div className="flex justify-center">
-              <Button variant="outline" onClick={() => setStep("carousel")}>
-                {i18n.language === 'ar' ? 'رجوع' : 'Back'}
-              </Button>
-            </div>
+            {uploadProgress ? (
+              <div className="flex flex-col items-center justify-center py-8 space-y-6">
+                {/* AI Pulse Scanning Overlay */}
+                <div className="relative w-32 h-32">
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/30 to-accent/10 rounded-full animate-pulse" />
+                  <div className="absolute inset-0 border-4 border-accent/40 rounded-full animate-ping" style={{ animationDuration: '1.5s' }} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Upload className="w-16 h-16 text-accent animate-bounce" style={{ animationDuration: '1s' }} />
+                  </div>
+                </div>
+                
+                {/* Dynamic Progress Narration */}
+                <motion.p 
+                  key={uploadProgress}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="text-center text-lg font-medium text-accent"
+                >
+                  {uploadProgress}
+                </motion.p>
+              </div>
+            ) : (
+              <>
+                <p className="text-center text-muted-foreground" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                  {i18n.language === 'ar' ? 'ارفع صورة لغرفتك لبدء التجربة' : 'Upload a photo of your room to start'}
+                </p>
+                <div
+                  className="relative border-2 border-dashed rounded-xl p-12 text-center hover:border-accent/60 hover:bg-accent/5 transition-all duration-500 cursor-pointer group overflow-hidden"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {/* Shimmer effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 -translate-x-full group-hover:translate-x-full" 
+                       style={{ transitionProperty: 'transform, opacity', transitionDuration: '1.5s' }} />
+                  
+                  <Upload className="w-14 h-14 mx-auto mb-4 text-muted-foreground group-hover:text-accent transition-colors duration-300" />
+                  <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                    {t('uploadPlaceholder')}
+                  </p>
+                  <p className="text-xs text-muted-foreground/60 mt-2">
+                    {i18n.language === 'ar' ? 'اسحب أو انقر للتحميل' : 'Drag or click to upload'}
+                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <Button variant="outline" onClick={() => setStep("carousel")} className="hover:bg-accent/10">
+                    {i18n.language === 'ar' ? 'رجوع' : 'Back'}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -716,21 +757,57 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
         {step === "render" && (
           <div className="space-y-4">
             {isLoading ? (
-              <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                <div className="relative w-16 h-16">
-                  <div className="absolute inset-0 border-4 border-primary/20 rounded-full" />
-                  <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col items-center justify-center py-16 space-y-6"
+              >
+                {/* Cinematic Shimmer Sweep */}
+                <div className="relative w-24 h-24">
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/30 to-accent/10 rounded-full" />
+                  <div className="absolute inset-0 border-4 border-accent/20 rounded-full" />
+                  <div className="absolute inset-0 border-4 border-accent border-t-transparent rounded-full animate-spin" 
+                       style={{ animationDuration: '1.2s' }} />
+                  
+                  {/* Orange shimmer sweep */}
+                  <div className="absolute inset-0 overflow-hidden rounded-full">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/50 to-transparent animate-shimmer" 
+                         style={{ 
+                           backgroundSize: '200% 100%',
+                           animation: 'shimmer 2s infinite linear'
+                         }} />
+                  </div>
                 </div>
-                <p className="text-muted-foreground animate-pulse" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-                  {t('rendering')}
-                </p>
+                
+                {/* Motion Caption */}
+                <div className="space-y-2 text-center">
+                  <motion.p 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-xl font-semibold text-accent"
+                  >
+                    Designing your comfort...
+                  </motion.p>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-sm text-muted-foreground"
+                    dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+                  >
+                    {i18n.language === 'ar' ? 'نقوم بإنشاء رؤيتك المثالية...' : 'Creating your perfect vision...'}
+                  </motion.p>
+                </div>
+                
                 <div 
                   role="status" 
                   aria-live="polite" 
                   aria-label={t('rendering')}
                   className="sr-only"
                 />
-              </div>
+              </motion.div>
             ) : renderedImage ? (
               <>
                 <Label className="text-center block" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
