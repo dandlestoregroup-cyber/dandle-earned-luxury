@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import ColorThief from "colorthief";
+import { SmartPlacementStep } from "./SmartPlacementStep";
 
 interface NourModalProps {
   open: boolean;
@@ -60,6 +61,13 @@ type Placement = {
   title: string; 
   subtitle: string; 
   why: string;
+  feasibility_score: number;
+  coordinates: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
 };
 
 const NourModal = ({ open, onOpenChange }: NourModalProps) => {
@@ -400,6 +408,11 @@ If no free wall is visible, suggest asking for another angle.`
   const handleRender = async (imageToRender?: string) => {
     const targetImage = imageToRender || roomImage;
     if (!targetImage) return;
+    
+    if (!chosen) {
+      toast({ title: "Please select a placement zone first", variant: "destructive" });
+      return;
+    }
 
     if (editCount >= 3) {
       toast({ title: t('editsRemaining', { count: 0 }), variant: "destructive" });
@@ -415,17 +428,17 @@ If no free wall is visible, suggest asking for another angle.`
     console.log(`Model assertion: ${modelId}, SKU check: ${skuCheck}`);
 
     try {
-      const placementLine = chosen
-        ? `Place the recliner at: ${chosen.title} — ${chosen.subtitle}.`
-        : placementInstruction 
-          ? ` ${placementInstruction}.`
-          : "";
-      
-      const prompt = `Insert a ${selectedRecliner.model} recliner in ${selectedColor.name} into this room.${placementLine ? ' ' + placementLine : ''} CRITICAL: Preserve ALL existing furniture - do not remove or replace any objects. Only add the new recliner. Match lighting, shadows, and perspective perfectly. Use only visible elements from photo. Do not invent furniture or architectural features. If no free wall is visible, ask for another angle instead of guessing.`;
+      const prompt = `Insert a ${selectedRecliner.model} recliner in ${selectedColor.name} into this room at the marked location. CRITICAL: Preserve ALL existing furniture - do not remove or replace any objects. Only add the new recliner. Match lighting, shadows, and perspective perfectly. The recliner must sit ON THE FLOOR, properly scaled and aligned with room perspective.`;
       
       const { data, error } = await supabase.functions.invoke("nour-chat", {
         body: {
           type: "image",
+          placementData: {
+            coordinates: chosen.coordinates,
+            feasibility_score: chosen.feasibility_score,
+            reclinerModel: selectedRecliner.model,
+            reclinerColor: selectedColor.name
+          },
           messages: [
             {
               role: "user",
@@ -459,6 +472,12 @@ If no free wall is visible, suggest asking for another angle.`
 
         // Show Arabic calligraphy compliment (FIX #6)
         showEgyptianCompliment();
+      } else if (data?.type === "validation_error" || data?.type === "spatial_error") {
+        toast({ 
+          title: "Placement issue detected", 
+          description: data.error || "Cannot place recliner without blocking furniture. Please select another zone.",
+          variant: "destructive" 
+        });
       } else {
         throw new Error("Invalid response format");
       }
@@ -949,81 +968,15 @@ If no free wall is visible, suggest asking for another angle.`
         )}
 
         {step === "placement" && roomImage && (
-          <div className="relative w-full max-w-5xl mx-auto px-6">
-            <div className="absolute -inset-40 bg-gradient-radial from-orange-400/10 via-rose-400/5 to-transparent blur-3xl animate-pulse" />
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative space-y-6">
-              <h2 className="text-2xl md:text-3xl font-semibold text-center">
-                Let's find the perfect corner — together.
-              </h2>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto pr-1">
-                {suggestions.map((s) => (
-                  <motion.button
-                    key={s.id}
-                    onClick={() => setChosen(s)}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`group relative rounded-2xl overflow-hidden border bg-card text-foreground p-4 text-left transition-all
-                      ${chosen?.id === s.id ? "border-primary shadow-[0_0_0_2px_rgba(251,146,60,0.35)]" : "border-border hover:border-primary/50"}`}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative">
-                      <div className="text-lg font-medium">{s.title}</div>
-                      <div className="text-sm text-muted-foreground">{s.subtitle}</div>
-                      <div className="text-xs text-muted-foreground mt-2">"{s.why}"</div>
-                    </div>
-                    <div className="absolute bottom-3 right-3 text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Feels right here →
-                    </div>
-                  </motion.button>
-                ))}
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.15 }}
-                  className="relative rounded-2xl border border-dashed border-border bg-card p-4 flex flex-col justify-center items-center text-center"
-                >
-                  <textarea
-                    value={customPlacement}
-                    onChange={(e) => setCustomPlacement(e.target.value)}
-                    placeholder="Or describe your own spot…"
-                    className="w-full bg-transparent placeholder:text-muted-foreground text-sm text-foreground resize-none focus:outline-none"
-                    rows={3}
-                  />
-                  <button
-                    onClick={() => customPlacement && setChosen({ id: 99, title: "Custom", subtitle: customPlacement, why: "Your choice" })}
-                    disabled={!customPlacement}
-                    className="mt-3 px-3 py-1 rounded-full bg-orange-500/80 text-white text-xs disabled:opacity-40"
-                  >
-                    Use this →
-                  </button>
-                </motion.div>
-              </div>
-
-              <div className="flex justify-between items-center pt-4">
-                <button onClick={() => setStep("upload")} className="text-muted-foreground hover:text-foreground">← Back</button>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => fetchPlacementSuggestions(roomImage!)}
-                    className="px-4 py-2 rounded-full bg-muted hover:bg-muted/80 text-sm text-foreground"
-                  >
-                    Try again
-                  </button>
-                  <button
-                    onClick={() => {
-                      setStep("render");
-                      handleRender();
-                    }}
-                    disabled={!chosen}
-                    className="px-6 py-2 rounded-full bg-orange-500 text-white font-medium disabled:opacity-40"
-                  >
-                    Render my comfort
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+          <SmartPlacementStep
+            roomImageBase64={roomImage}
+            placementSuggestions={suggestions}
+            onPlacementSelected={(placement) => {
+              setChosen(placement);
+              setStep("render");
+            }}
+            onBack={() => setStep("upload")}
+          />
         )}
 
         {step === "render" && (

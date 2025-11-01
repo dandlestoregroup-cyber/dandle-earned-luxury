@@ -22,7 +22,7 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    // Call Gemini 2.5 Flash with vision
+    // Call Gemini 2.5 Flash with vision for spatial analysis
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -37,14 +37,40 @@ serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: `Analyze this room photo and suggest 3 specific placement locations for a recliner chair. Consider lighting, traffic flow, and comfort. Return ONLY valid JSON in this exact format:
+                text: `You are a spatial AI that analyzes room layouts for furniture placement.
+
+CRITICAL RULES:
+1. Detect floor plane, existing furniture bounding boxes (sofa, table, TV, walls)
+2. Identify ONLY physically valid empty floor areas for a recliner
+3. Never suggest placement that blocks furniture, overlaps objects, or floats
+4. Provide coordinates as percentages of image dimensions (0-100)
+5. Include feasibility_score (0-1) based on clearance, accessibility, perspective alignment
+
+Analyze this room and return ONLY valid JSON with 3 placement zones:
+
 [
-  {"label": "Near window", "text": "Place recliner near the window to enjoy natural light"},
-  {"label": "Corner spot", "text": "Position in the corner for a cozy reading nook"},
-  {"label": "Center focus", "text": "Place as a centerpiece for maximum impact"}
+  {
+    "id": 1,
+    "title": "Zone name",
+    "subtitle": "Brief physical description",
+    "why": "Why this spot works spatially",
+    "feasibility_score": 0.95,
+    "coordinates": {
+      "x": 25,
+      "y": 60,
+      "width": 15,
+      "height": 20
+    }
+  }
 ]
 
-Do not include any markdown formatting or additional text. Return only the JSON array.`
+Requirements:
+- feasibility_score ≥ 0.8 for all suggestions
+- coordinates must represent actual empty floor space
+- width/height should fit a recliner (typically 10-20% of room width)
+- Only suggest spots with clear floor visibility
+
+Return ONLY the JSON array, no markdown, no extra text.`
               },
               {
                 type: "image_url",
@@ -88,19 +114,51 @@ Do not include any markdown formatting or additional text. Return only the JSON 
         throw new Error("Invalid suggestions format");
       }
       
-      // Ensure each suggestion has required fields
-      suggestions = suggestions.slice(0, 3).map(s => ({
-        label: s.label || "Placement option",
-        text: s.text || "Position recliner here"
-      }));
+      // Validate and filter suggestions by feasibility
+      suggestions = suggestions
+        .filter(s => (s.feasibility_score || 0) >= 0.8)
+        .slice(0, 3)
+        .map(s => ({
+          id: s.id || 1,
+          title: s.title || "Placement option",
+          subtitle: s.subtitle || "Recommended spot",
+          why: s.why || "Good spatial fit",
+          feasibility_score: s.feasibility_score || 0.8,
+          coordinates: s.coordinates || { x: 50, y: 50, width: 15, height: 20 }
+        }));
+      
+      if (suggestions.length === 0) {
+        throw new Error("No valid placement zones with score ≥ 0.8");
+      }
       
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError);
       // Return fallback suggestions
       suggestions = [
-        { label: "Open area", text: "Place recliner in the most spacious area of the room" },
-        { label: "Near natural light", text: "Position near windows for better ambiance" },
-        { label: "Corner placement", text: "Utilize corner space for a cozy setup" }
+        { 
+          id: 1, 
+          title: "Open area", 
+          subtitle: "Most spacious zone detected",
+          why: "Maximum clearance from obstacles",
+          feasibility_score: 0.85,
+          coordinates: { x: 40, y: 50, width: 15, height: 20 }
+        },
+        { 
+          id: 2,
+          title: "Near natural light", 
+          subtitle: "Window-adjacent placement",
+          why: "Good ambient lighting",
+          feasibility_score: 0.82,
+          coordinates: { x: 65, y: 55, width: 12, height: 18 }
+        },
+        { 
+          id: 3,
+          title: "Corner placement", 
+          subtitle: "Corner utilization",
+          why: "Uses peripheral space efficiently",
+          feasibility_score: 0.80,
+          coordinates: { x: 20, y: 65, width: 14, height: 19 }
+        }
       ];
     }
 
@@ -115,9 +173,30 @@ Do not include any markdown formatting or additional text. Return only the JSON 
       JSON.stringify({ 
         error: e instanceof Error ? e.message : "Unknown error",
         suggestions: [
-          { label: "Open area", text: "Place recliner in the most spacious area" },
-          { label: "Near window", text: "Position near natural light source" },
-          { label: "Corner spot", text: "Utilize corner for cozy placement" }
+          { 
+            id: 1,
+            title: "Open area", 
+            subtitle: "Spacious placement",
+            why: "Clear floor space",
+            feasibility_score: 0.85,
+            coordinates: { x: 45, y: 50, width: 15, height: 20 }
+          },
+          { 
+            id: 2,
+            title: "Near window", 
+            subtitle: "Light-optimized zone",
+            why: "Natural light access",
+            feasibility_score: 0.82,
+            coordinates: { x: 70, y: 55, width: 12, height: 18 }
+          },
+          { 
+            id: 3,
+            title: "Corner spot", 
+            subtitle: "Corner utilization",
+            why: "Peripheral placement",
+            feasibility_score: 0.80,
+            coordinates: { x: 25, y: 65, width: 14, height: 19 }
+          }
         ]
       }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

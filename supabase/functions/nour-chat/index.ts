@@ -10,7 +10,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { type, messages, image, prompt } = await req.json();
+    const { type, messages, image, prompt, placementData } = await req.json();
     
     // Handle placement suggestions request
     if (type === "placement" && image && prompt) {
@@ -72,6 +72,40 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     if (isImageRequest) {
+      // Validate placement data if provided
+      let renderPrompt = messages[messages.length - 1]?.content;
+      
+      if (placementData) {
+        const { coordinates, feasibility_score, reclinerModel, reclinerColor } = placementData;
+        
+        // Enforce spatial validation
+        if (!coordinates || feasibility_score < 0.8) {
+          return new Response(
+            JSON.stringify({ 
+              error: "No space detected for this layout. Try another angle or zone.",
+              type: "validation_error" 
+            }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        
+        // Enhance prompt with spatial constraints
+        const spatialPrompt = `CRITICAL SPATIAL RULES:
+1. Place the ${reclinerModel} recliner ONLY in the marked zone at coordinates (${coordinates.x}%, ${coordinates.y}%)
+2. Recliner dimensions: ${coordinates.width}% width × ${coordinates.height}% height of room
+3. Color: ${reclinerColor}
+4. Must sit ON THE FLOOR aligned with room perspective
+5. Scale: chair ≈ 1/3 height of nearby sofa, 1/4 width of tables
+6. NO overlapping with existing furniture
+7. NO floating or incorrect perspective
+
+If you cannot place it realistically in this zone, respond with: "SPATIAL_ERROR: Cannot place furniture without overlap"
+
+${renderPrompt}`;
+        
+        renderPrompt = spatialPrompt;
+      }
+      
       // Use Lovable AI image model (Nano banana)
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
@@ -81,7 +115,10 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           model: "google/gemini-2.5-flash-image-preview",
-          messages,
+          messages: placementData ? [
+            ...messages.slice(0, -1),
+            { ...messages[messages.length - 1], content: renderPrompt }
+          ] : messages,
           modalities: ["image", "text"],
         }),
       });
@@ -108,6 +145,19 @@ serve(async (req) => {
       }
 
       const data = await res.json();
+      const textResponse = data?.choices?.[0]?.message?.content || "";
+      
+      // Check for spatial error from AI
+      if (textResponse.includes("SPATIAL_ERROR")) {
+        return new Response(
+          JSON.stringify({ 
+            error: "No space detected for this layout. Try another angle.",
+            type: "spatial_error"
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
       const imageUrl: string | undefined = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
       if (!imageUrl) {
         console.error("No image URL in response", JSON.stringify(data).slice(0, 500));
