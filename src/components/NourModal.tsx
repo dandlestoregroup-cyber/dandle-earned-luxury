@@ -243,7 +243,14 @@ If no free wall is visible, suggest asking for another angle.`
       let list: Placement[] = [];
       try {
         if (data?.type === "placement" && data?.content) {
-          list = JSON.parse(data.content);
+          // Strip markdown code fences if present
+          let jsonContent = data.content.trim();
+          if (jsonContent.startsWith('```json')) {
+            jsonContent = jsonContent.replace(/^```json\s*\n/, '').replace(/\n```$/, '');
+          } else if (jsonContent.startsWith('```')) {
+            jsonContent = jsonContent.replace(/^```\s*\n/, '').replace(/\n```$/, '');
+          }
+          list = JSON.parse(jsonContent);
         }
       } catch (e) {
         console.error("Failed to parse placement suggestions:", e);
