@@ -33,6 +33,20 @@ export const SmartPlacementStep = ({
   const [selectedZone, setSelectedZone] = useState<PlacementZone | null>(null);
   const [hoveredZone, setHoveredZone] = useState<number | null>(null);
 
+  // Defensive guard: ensure valid suggestions array exists
+  if (!placementSuggestions || !Array.isArray(placementSuggestions) || placementSuggestions.length === 0) {
+    return (
+      <div className="w-full max-h-[70vh] overflow-y-auto px-4 py-2">
+        <div className="text-center space-y-2 mb-6">
+          <h2 className="text-2xl font-bold">Analyzing your room...</h2>
+          <p className="text-sm text-muted-foreground">
+            AI is detecting floor zones and furniture placement
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const handleZoneClick = (zone: PlacementZone) => {
     setSelectedZone(zone);
     toast.success("AI verified: fits without blocking furniture", {
@@ -68,22 +82,26 @@ export const SmartPlacementStep = ({
         />
         
         {/* Placement Zone Overlays */}
-        {placementSuggestions.map((zone) => (
-          <motion.div
-            key={zone.id}
-            className={`absolute border-4 rounded-lg cursor-pointer transition-all duration-300 ${
-              selectedZone?.id === zone.id
-                ? 'border-accent bg-accent/30 shadow-[0_0_30px_rgba(243,122,29,0.6)]'
-                : hoveredZone === zone.id
-                ? 'border-accent/70 bg-accent/20'
-                : 'border-accent/40 bg-accent/10'
-            }`}
-            style={{
-              left: `${zone.coordinates.x}%`,
-              top: `${zone.coordinates.y}%`,
-              width: `${zone.coordinates.width}%`,
-              height: `${zone.coordinates.height}%`,
-            }}
+        {placementSuggestions.map((zone) => {
+          // Safe coordinate extraction with defaults
+          const { x = 50, y = 50, width = 15, height = 20 } = zone.coordinates || {};
+          
+          return (
+            <motion.div
+              key={zone.id}
+              className={`absolute border-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                selectedZone?.id === zone.id
+                  ? 'border-accent bg-accent/30 shadow-[0_0_30px_rgba(243,122,29,0.6)]'
+                  : hoveredZone === zone.id
+                  ? 'border-accent/70 bg-accent/20'
+                  : 'border-accent/40 bg-accent/10'
+              }`}
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                width: `${width}%`,
+                height: `${height}%`,
+              }}
             onClick={() => handleZoneClick(zone)}
             onMouseEnter={() => setHoveredZone(zone.id)}
             onMouseLeave={() => setHoveredZone(null)}
@@ -113,8 +131,9 @@ export const SmartPlacementStep = ({
                 }}
               />
             )}
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Zone Details Cards */}
