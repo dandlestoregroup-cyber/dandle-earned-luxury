@@ -172,6 +172,11 @@ All colors MUST be HSL.
     animation: ken-burns 4s ease-in-out infinite;
   }
 
+  /* Gradient radial utility */
+  .bg-gradient-radial {
+    background: radial-gradient(var(--tw-gradient-stops));
+  }
+
   /* Breathing pulse glow for CTA */
   @keyframes pulse-glow {
     0%, 100% {

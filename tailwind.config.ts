@@ -4,6 +4,17 @@ export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
+  safelist: [
+    "bg-gradient-radial",
+    "from-orange-400/10",
+    "via-rose-400/5",
+    "to-transparent",
+    "border-orange-400",
+    "border-orange-400/50",
+    "shadow-[0_0_0_2px_rgba(251,146,60,0.35)]",
+    "group-hover:opacity-100",
+    "hover:border-orange-400/50",
+  ],
   theme: {
     container: {
       center: true,

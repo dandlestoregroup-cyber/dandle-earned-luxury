@@ -10,7 +10,51 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { type, messages } = await req.json();
+    const { type, messages, image, prompt } = await req.json();
+    
+    // Handle placement suggestions request
+    if (type === "placement" && image && prompt) {
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: prompt },
+                { type: "image_url", image_url: { url: image } }
+              ]
+            }
+          ],
+        }),
+      });
+
+      if (!res.ok) {
+        const t = await res.text();
+        console.error("Placement AI error:", res.status, t);
+        return new Response(JSON.stringify({ error: "Failed to generate placement suggestions" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const data = await res.json();
+      const content = data?.choices?.[0]?.message?.content || "[]";
+      
+      return new Response(
+        JSON.stringify({ type: "placement", content }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
     if (!Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "Invalid payload: messages[] required" }), {
         status: 400,
