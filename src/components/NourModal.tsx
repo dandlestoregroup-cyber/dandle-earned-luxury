@@ -660,7 +660,7 @@ const NourModal = ({ open, onOpenChange }: NourModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         ref={dialogContentRef}
-        className={`nour-wrapper ${
+        className={`nour-wrapper [&>button]:z-[100] [&>button]:bg-background/80 [&>button]:backdrop-blur-sm [&>button]:hover:bg-background ${
           step === 'greeting' 
             ? 'overflow-hidden w-screen h-screen max-w-none max-h-[100vh] border-0 bg-transparent shadow-none p-0' 
             : 'max-w-4xl max-h-[90vh] overflow-y-auto'
