@@ -25,9 +25,9 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.03 }}
+      whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.25 }}
-      className="group relative overflow-hidden rounded-lg bg-warm-white shadow-subtle cursor-pointer"
+      className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
       <img
@@ -36,14 +36,32 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         className="w-full h-64 object-cover"
         loading="lazy"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="absolute bottom-4 left-4 right-4 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-        <p className="font-headline text-xl">{product.name}</p>
-        <p className="font-body text-sm opacity-90">{product.tagline}</p>
-        <p className="font-body text-sm mt-1">{getPriceDisplay()}</p>
-        <p className="mt-2 font-headline text-base">
-          {product.comingSoon ? "Coming Soon" : "Customize · View in AR"}
+      <div className="p-6 space-y-4">
+        <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
+          Dandle {product.name}
+        </h3>
+        <p className="font-body text-lg text-dandle-orange">
+          {product.tagline}
         </p>
+        <p className="font-headline text-2xl text-dandle-orange">
+          {getPriceDisplay()}
+        </p>
+        {product.colors && (
+          <div className="flex gap-3">
+            {product.colors.map((color, idx) => (
+              <button
+                key={idx}
+                className="w-12 h-12 rounded-full border-2 border-warm-beige bg-warm-white flex items-center justify-center font-body text-charcoal/60 hover:border-dandle-orange transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {color.charAt(0).toUpperCase()}
+              </button>
+            ))}
+          </div>
+        )}
+        <button className="w-full py-3 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg hover:from-bronze/40 hover:to-warm-beige transition-all">
+          Customize Now
+        </button>
       </div>
     </motion.div>
   );
