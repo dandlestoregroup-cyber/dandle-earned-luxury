@@ -8,57 +8,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* DANDLE Brand Colors */
-    --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 0 0% 20%; /* #333333 - Primary text */
+    /* DANDLE Quiet-Luxury v5 Colors */
+    --nile-blue: 216 58% 36%; /* #274B8F */
+    --dandle-orange: 14 100% 60%; /* #FF6B35 */
+    --warm-beige: 36 52% 90%; /* #F5E6D3 */
+    --bronze: 38 36% 56%; /* #B8956A */
+    --charcoal: 0 0% 10%; /* #1A1A1A */
+    --warm-white: 60 33% 98%; /* #FAF9F6 */
     
-    --background-beige: 36 52% 90%; /* #F5E6D3 - Secondary background */
+    --background: 60 33% 98%; /* Warm White */
+    --foreground: 0 0% 10%; /* Charcoal */
+    
+    --card: 60 33% 98%;
+    --card-foreground: 0 0% 10%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 20%;
+    --popover: 60 33% 98%;
+    --popover-foreground: 0 0% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%;
+    --primary: 216 58% 36%; /* Nile Blue */
+    --primary-foreground: 60 33% 98%;
 
-    --primary: 0 0% 20%; /* #333333 */
-    --primary-foreground: 0 0% 100%;
+    --secondary: 36 52% 90%; /* Warm Beige */
+    --secondary-foreground: 0 0% 10%;
 
-    --secondary: 36 52% 90%; /* #F5E6D3 - Beige */
-    --secondary-foreground: 0 0% 20%;
-
-    --muted: 0 0% 96%;
+    --muted: 36 52% 90%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 24 90% 53%; /* #F37A1D - Brand Orange */
-    --accent-foreground: 0 0% 100%;
+    --accent: 14 100% 60%; /* Dandle Orange */
+    --accent-foreground: 60 33% 98%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 60 33% 98%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 24 90% 53%;
+    --border: 36 52% 85%;
+    --input: 36 52% 85%;
+    --ring: 38 36% 56%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
     
-    /* DANDLE Custom Tokens */
-    --brand-orange: 24 90% 53%; /* #F37A1D */
-    --brand-orange-glow: 24 90% 60%; /* Lighter orange for glow */
-    --brand-text: 0 0% 20%; /* #333333 */
-    --brand-white: 0 0% 100%; /* #FFFFFF */
-    --brand-beige: 36 52% 90%; /* #F5E6D3 */
+    /* Quiet-Luxury Custom Tokens */
+    --gradient-luxury: linear-gradient(135deg, hsl(38 36% 56%), hsl(38 36% 66%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 10% / 0.4), transparent);
+    --gradient-subtle: linear-gradient(180deg, hsl(60 33% 98%), hsl(36 52% 90%));
     
-    --gradient-luxury: linear-gradient(135deg, hsl(24 90% 53%), hsl(24 90% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(24 90% 53% / 0.15), hsl(24 90% 60% / 0.25));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(36 52% 90%));
-    --gradient-shimmer: linear-gradient(90deg, transparent, hsl(24 90% 53% / 0.3), transparent);
+    --shadow-subtle: 0 4px 14px rgba(0, 0, 0, 0.06);
+    --shadow-luxury: 0 10px 30px -10px hsl(38 36% 56% / 0.3);
     
-    --shadow-luxury: 0 20px 50px -10px hsl(24 90% 53% / 0.3);
-    --shadow-brand: 0 0 40px hsl(24 90% 53% / 0.2);
-    --shadow-hero: 0 25px 60px -15px hsl(24 90% 53% / 0.4);
-    --shadow-glow-intense: 0 0 60px hsl(24 90% 53% / 0.5);
-    
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-cinematic: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
@@ -79,35 +75,33 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 0 0% 20%; /* #333333 */
-    --foreground: 0 0% 100%;
+    --background: 0 0% 10%;
+    --foreground: 60 33% 98%;
     
-    --background-beige: 36 52% 25%;
-
     --card: 0 0% 15%;
-    --card-foreground: 0 0% 100%;
+    --card-foreground: 60 33% 98%;
 
     --popover: 0 0% 15%;
-    --popover-foreground: 0 0% 100%;
+    --popover-foreground: 60 33% 98%;
 
-    --primary: 24 90% 53%; /* Brand Orange in dark mode */
-    --primary-foreground: 0 0% 100%;
+    --primary: 14 100% 60%;
+    --primary-foreground: 60 33% 98%;
 
     --secondary: 36 52% 25%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 60 33% 98%;
 
     --muted: 0 0% 30%;
     --muted-foreground: 0 0% 70%;
 
-    --accent: 24 90% 53%; /* #F37A1D */
-    --accent-foreground: 0 0% 100%;
+    --accent: 14 100% 60%;
+    --accent-foreground: 60 33% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 60 33% 98%;
 
     --border: 0 0% 30%;
     --input: 0 0% 30%;
-    --ring: 24 90% 53%;
+    --ring: 38 36% 56%;
   }
 }
 
@@ -118,24 +112,25 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 400;
-    letter-spacing: 0.2pt;
     line-height: 1.4;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Lato', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.5pt;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
     line-height: 1.1;
   }
   
-  /* Playfair Display for premium slogans only */
-  .font-premium {
+  /* Body text font */
+  .font-body {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Headline font */
+  .font-headline {
     font-family: 'Playfair Display', serif;
-    font-weight: 500;
-    font-style: italic;
   }
   
   /* Warm gradient appears before React hydrates (FIX: dead initial load) */
@@ -282,45 +277,45 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  /* DANDLE Typography Classes */
-  .text-brand-orange {
-    color: hsl(var(--brand-orange));
+  /* Quiet-Luxury Utilities */
+  .bg-charcoal {
+    background-color: hsl(var(--charcoal));
   }
   
-  .bg-brand-beige {
-    background-color: hsl(var(--brand-beige));
+  .bg-warm-beige {
+    background-color: hsl(var(--warm-beige));
   }
   
-  .text-gradient-luxury {
-    background: linear-gradient(135deg, hsl(24 90% 53%), hsl(24 90% 60%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .bg-warm-white {
+    background-color: hsl(var(--warm-white));
+  }
+  
+  .text-charcoal {
+    color: hsl(var(--charcoal));
+  }
+  
+  .text-bronze {
+    color: hsl(var(--bronze));
+  }
+  
+  .text-warm-white {
+    color: hsl(var(--warm-white));
+  }
+  
+  .shadow-subtle {
+    box-shadow: var(--shadow-subtle);
   }
   
   .shadow-luxury {
     box-shadow: var(--shadow-luxury);
   }
   
-  .shadow-brand {
-    box-shadow: var(--shadow-brand);
+  .btn-primary {
+    @apply bg-[hsl(var(--bronze))] text-[hsl(var(--warm-white))] px-6 py-3 rounded-sm hover:bg-[hsl(38_36%_46%)] transition-colors font-body;
   }
   
-  /* Logo Treatment */
-  .dandle-logo {
-    font-family: 'Lato', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: -0.5pt;
-    color: hsl(var(--brand-orange));
-  }
-  
-  /* Tagline Treatment */
-  .dandle-tagline {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-weight: 500;
-    color: hsl(var(--brand-text));
+  .btn-ghost {
+    @apply border border-white/80 text-white px-6 py-3 rounded-sm hover:bg-white/10 transition-colors font-body;
   }
   
   /* Hide scrollbar utility */

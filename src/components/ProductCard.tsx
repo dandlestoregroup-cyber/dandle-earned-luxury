@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import { Product } from "@/types/product";
 
 interface ProductCardProps {
@@ -17,7 +16,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   const getPriceDisplay = () => {
-    if (product.comingSoon) return "Coming Soon";
+    if (product.comingSoon) return "Notify Me";
     if (product.priceManual && product.pricePower) {
       return `${formatPrice(product.priceManual)} - ${formatPrice(product.pricePower)}`;
     }
@@ -25,67 +24,28 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   return (
-    <div
-      className="group relative bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-luxury transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+    <motion.div
+      whileHover={{ y: -4, scale: 1.03 }}
+      transition={{ duration: 0.25 }}
+      className="group relative overflow-hidden rounded-lg bg-warm-white shadow-subtle cursor-pointer"
       onClick={onClick}
     >
-      {/* Image Container */}
-      <div className="relative h-64 overflow-hidden bg-muted">
-        <img
-          src={product.imageUrl}
-          alt={`${product.name} - ${product.tagline}`}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          loading="lazy"
-        />
-        {product.comingSoon && (
-          <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground">
-            Coming Soon
-          </Badge>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
-
-      {/* Content */}
-      <div className="p-6">
-        <h3 className="font-serif text-2xl font-semibold mb-1 text-card-foreground">
-          {product.name}
-        </h3>
-        <p className="text-accent text-sm font-medium mb-3">
-          {product.tagline}
+      <img
+        src={product.imageUrl}
+        alt={`Dandle ${product.name} Recliner — ${product.tagline}`}
+        className="w-full h-64 object-cover"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute bottom-4 left-4 right-4 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+        <p className="font-headline text-xl">{product.name}</p>
+        <p className="font-body text-sm opacity-90">{product.tagline}</p>
+        <p className="font-body text-sm mt-1">{getPriceDisplay()}</p>
+        <p className="mt-2 font-headline text-base">
+          {product.comingSoon ? "Coming Soon" : "Customize · View in AR"}
         </p>
-
-        {/* Price */}
-        <div className="mb-4">
-          <p className="text-2xl font-bold text-gradient-luxury">
-            {getPriceDisplay()}
-          </p>
-        </div>
-
-        {/* Colors */}
-        <div className="flex gap-2 mb-4">
-          {product.colors.slice(0, 3).map((color, index) => (
-            <div
-              key={index}
-              className="w-8 h-8 rounded-full border-2 border-gold/30 bg-muted flex items-center justify-center"
-              title={color}
-            >
-              <span className="text-xs text-muted-foreground">
-                {color.charAt(0)}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <Button
-          variant={product.comingSoon ? "ghost" : "luxury"}
-          className="w-full"
-          disabled={product.comingSoon}
-        >
-          {product.comingSoon ? "Notify Me" : "Customize Now"}
-        </Button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

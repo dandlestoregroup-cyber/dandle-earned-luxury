@@ -81,6 +81,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        nileBlue: "hsl(var(--nile-blue))",
+        dandleOrange: "hsl(var(--dandle-orange))",
+        warmBeige: "hsl(var(--warm-beige))",
+        bronze: "hsl(var(--bronze))",
+        charcoal: "hsl(var(--charcoal))",
+        warmWhite: "hsl(var(--warm-white))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -88,8 +94,10 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
+        headline: ['Playfair Display', 'serif'],
+        body: ['Inter', 'sans-serif'],
         serif: ['Playfair Display', 'serif'],
-        sans: ['Lato', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
       letterSpacing: {
         'headline': '0.5pt',
