@@ -302,6 +302,14 @@ All colors MUST be HSL.
     color: hsl(var(--warm-white));
   }
   
+  .text-dandle-orange {
+    color: hsl(var(--dandle-orange));
+  }
+  
+  .bg-dandle-orange {
+    background-color: hsl(var(--dandle-orange));
+  }
+  
   .shadow-subtle {
     box-shadow: var(--shadow-subtle);
   }

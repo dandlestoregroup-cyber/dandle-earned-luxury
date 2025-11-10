@@ -161,17 +161,19 @@ const NourChat = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-accent/20">
+    <div className="min-h-screen flex flex-col bg-warm-beige">
       <Navigation />
       
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
-        <div className="bg-card rounded-lg shadow-lg h-[calc(100vh-12rem)] flex flex-col">
-          <div className="p-6 border-b border-border">
+        <div className="bg-warm-white rounded-lg shadow-luxury h-[calc(100vh-12rem)] flex flex-col">
+          <div className="p-6 border-b border-bronze/20">
             <div className="flex items-center gap-3">
-              <Sparkles className="w-8 h-8 text-primary" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-dandle-orange to-pink-500 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Nour AI Assistant</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-2xl font-headline font-bold text-charcoal">Nour AI Assistant</h1>
+                <p className="text-sm text-charcoal/60">
                   Chat with me or ask me to generate images!
                 </p>
               </div>
@@ -181,15 +183,17 @@ const NourChat = () => {
           <ScrollArea className="flex-1 p-6" ref={scrollRef}>
             {messages.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-                <Sparkles className="w-16 h-16 text-primary/50" />
+                <div className="w-20 h-20 rounded-full bg-gradient-to-r from-dandle-orange to-pink-500 flex items-center justify-center">
+                  <Sparkles className="w-10 h-10 text-white" />
+                </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground mb-2">
+                  <h2 className="text-xl font-headline font-semibold text-charcoal mb-2">
                     Hi! I'm Nour 👋
                   </h2>
-                  <p className="text-muted-foreground">
+                  <p className="text-charcoal/60">
                     Ask me anything or request image generation!
                   </p>
-                  <p className="text-sm text-muted-foreground mt-2">
+                  <p className="text-sm text-charcoal/60 mt-2">
                     Try: "Generate image of a sunset over mountains"
                   </p>
                 </div>
@@ -237,7 +241,7 @@ const NourChat = () => {
             </div>
           </ScrollArea>
 
-          <div className="p-6 border-t border-border">
+          <div className="p-6 border-t border-border bg-warm-white">
             <div className="flex gap-2">
               <Input
                 value={input}
@@ -245,12 +249,13 @@ const NourChat = () => {
                 onKeyPress={handleKeyPress}
                 placeholder="Type a message or ask for an image..."
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 bg-white border-bronze/20 focus:border-dandle-orange"
               />
               <Button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
                 size="icon"
+                className="bg-gradient-to-r from-dandle-orange to-pink-500 hover:from-dandle-orange/90 hover:to-pink-500/90"
               >
                 <Send className="w-4 h-4" />
               </Button>

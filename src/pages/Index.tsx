@@ -2,6 +2,7 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
+import ARDemo from "@/components/ARDemo";
 import ProductGallery from "@/components/ProductGallery";
 import SocialProof from "@/components/SocialProof";
 import Contact from "@/components/Contact";
@@ -16,6 +17,7 @@ const Index = () => {
         <Hero />
         <Quote />
         <PromiseGrid />
+        <ARDemo />
         <ProductGallery />
         <SocialProof />
         <Contact />
