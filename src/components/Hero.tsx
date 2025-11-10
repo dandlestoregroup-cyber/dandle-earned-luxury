@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import heroImage from "@/assets/hero-luxury-cairo.jpg";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -13,20 +14,20 @@ const Hero = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: "easeOut" }}
     >
-      {/* Video Background */}
+      {/* Stunning Hero Image */}
       <div className="absolute inset-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
+        <motion.img
+          src={heroImage}
+          alt="Luxury Dandle recliner in Cairo penthouse with pyramid view at golden hour sunset"
           className="w-full h-full object-cover"
-          poster="/images/relaxmax-hero-offwhite.jpg"
-        >
-          <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
-        </video>
+          loading="eager"
+          fetchPriority="high"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
+        />
         {/* Gradient Overlay - More Colorful */}
-        <div className="absolute inset-0 bg-gradient-to-br from-nile-blue/60 via-black/50 to-dandle-orange/40" />
+        <div className="absolute inset-0 bg-gradient-to-br from-nile-blue/50 via-black/40 to-dandle-orange/30" />
         {/* Animated Gradient Accent */}
         <motion.div 
           className="absolute inset-0 bg-gradient-to-tr from-transparent via-bronze/20 to-transparent"
