@@ -18,7 +18,9 @@ const Index = () => {
         <Quote />
         <PromiseGrid />
         <ARDemo />
-        <ProductGallery />
+        <div id="products">
+          <ProductGallery />
+        </div>
         <SocialProof />
         <Contact />
       </main>
