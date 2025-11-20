@@ -43,7 +43,7 @@ export const products: Product[] = [
       "Memory Foam Cushioning",
     ],
     targetAudience: "Wellness enthusiasts seeking therapy",
-    imageUrl: "https://picsum.photos/400/300?random=chair2",
+    imageUrl: "/images/relaxmax-brown-lifestyle.jpg",
   },
   {
     id: "diva",
@@ -59,7 +59,7 @@ export const products: Product[] = [
       "Bold Color Options",
     ],
     targetAudience: "Design-conscious taste makers",
-    imageUrl: "https://picsum.photos/400/300?random=chair3",
+    imageUrl: "/images/diva-red-front.jpg",
   },
   {
     id: "cozycompanion",
@@ -75,7 +75,7 @@ export const products: Product[] = [
       "Center Console with Storage",
     ],
     targetAudience: "Couples and families",
-    imageUrl: "/images/cozycompanion-yellow-front.jpg",
+    imageUrl: "/images/cozycompanion-beige-front.jpg",
   },
   {
     id: "easyup",
@@ -137,7 +137,7 @@ export const products: Product[] = [
       "Modern Aesthetics",
     ],
     targetAudience: "Urban dwellers with small spaces",
-    imageUrl: "https://picsum.photos/400/300?random=compact",
+    imageUrl: "/images/spacesaver-offwhite-reclined.jpg",
   },
   {
     id: "complete-set",
