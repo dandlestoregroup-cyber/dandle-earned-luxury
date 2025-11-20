@@ -33,7 +33,8 @@ export const products: Product[] = [
     id: "comfortplus",
     name: "Dandle ComfortPlus",
     tagline: "The Therapeutic Upgrade",
-    price: 41724,
+    priceManual: 29900,
+    pricePower: 36900,
     colors: ["Chic Red", "Tan Beige"],
     features: [
       "8-Point Rolling Massage System",
@@ -48,8 +49,8 @@ export const products: Product[] = [
     id: "diva",
     name: "Dandle Diva",
     tagline: "The Statement of Style",
-    priceManual: 35000,
-    pricePower: 37763,
+    priceManual: 23900,
+    pricePower: 30900,
     colors: ["Chic Red", "Pink Rose", "Sunshine Yellow"],
     features: [
       "360° Swivel Base",
@@ -64,8 +65,8 @@ export const products: Product[] = [
     id: "cozycompanion",
     name: "Dandle CozyCompanion",
     tagline: "The Anchor of Connection",
-    priceManual: 58000,
-    pricePower: 62690,
+    priceManual: 32900,
+    pricePower: 38900,
     colors: ["Ocean Blue", "Warm Grey"],
     features: [
       "Duo Seating Design",
@@ -80,7 +81,7 @@ export const products: Product[] = [
     id: "easyup",
     name: "Dandle EasyUp",
     tagline: "The Empowerment Tool",
-    price: 40375,
+    price: 42900,
     colors: ["Creamy Beige"],
     features: [
       "Power Lift Mechanism",
