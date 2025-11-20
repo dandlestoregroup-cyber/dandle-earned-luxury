@@ -20,8 +20,13 @@ const Hero = () => {
           className="w-full h-full object-cover"
           autoPlay
           loop
-          muted
           playsInline
+          preload="auto"
+          style={{ 
+            minWidth: '100%', 
+            minHeight: '100%',
+            objectFit: 'cover'
+          }}
         />
         {/* Gradient Overlay - More Colorful */}
         <div className="absolute inset-0 bg-gradient-to-br from-nile-blue/50 via-black/40 to-dandle-orange/30" />
