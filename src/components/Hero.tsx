@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import heroImage from "@/assets/hero-luxury-cairo.jpg";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -14,17 +13,15 @@ const Hero = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: "easeOut" }}
     >
-      {/* Stunning Hero Image */}
+      {/* Hero Video */}
       <div className="absolute inset-0">
-        <motion.img
-          src={heroImage}
-          alt="Luxury Dandle recliner in Cairo penthouse with pyramid view at golden hour sunset"
+        <video
+          src="/dandle-hero.mp4"
           className="w-full h-full object-cover"
-          loading="eager"
-          fetchPriority="high"
-          initial={{ scale: 1 }}
-          animate={{ scale: 1.05 }}
-          transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
+          autoPlay
+          loop
+          muted
+          playsInline
         />
         {/* Gradient Overlay - More Colorful */}
         <div className="absolute inset-0 bg-gradient-to-br from-nile-blue/50 via-black/40 to-dandle-orange/30" />
