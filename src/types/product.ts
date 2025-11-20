@@ -82,7 +82,7 @@ export const products: Product[] = [
     name: "Dandle EasyUp",
     tagline: "The Empowerment Tool",
     price: 42900,
-    colors: ["Creamy Beige"],
+    colors: ["Creamy Beige", "Urban Charcoal"],
     features: [
       "Power Lift Mechanism",
       "Zero-Gravity Positioning",
@@ -90,7 +90,7 @@ export const products: Product[] = [
       "Easy-Clean Fabric",
     ],
     targetAudience: "Seniors and mobility assistance",
-    imageUrl: "https://picsum.photos/400/300?random=chair5",
+    imageUrl: "/images/easyup-beige-front.jpg",
   },
   {
     id: "worknest",
