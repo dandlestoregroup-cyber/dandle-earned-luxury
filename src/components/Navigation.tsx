@@ -22,6 +22,7 @@ const Navigation = () => {
   const navLinks = [
     { label: "Home", href: "/", isRoute: true },
     { label: "Collection", href: "#collection" },
+    { label: "Complete Set", href: "/complete-set", isRoute: true },
     { label: "AR View", href: "#ar-demo" },
     { label: "About", href: "#story" },
     { label: "Contact", href: "#contact" },
