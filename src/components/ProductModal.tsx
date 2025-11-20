@@ -27,6 +27,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [cupHolder, setCupHolder] = useState(false);
   const [usbPort, setUsbPort] = useState(false);
   const [sidePocket, setSidePocket] = useState(false);
+  const [massageFeature, setMassageFeature] = useState(false);
   const [specialNotes, setSpecialNotes] = useState("");
   
   const { addItem } = useCart();
@@ -60,6 +61,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
     if (cupHolder) total += 450;
     if (usbPort) total += 750;
     if (sidePocket) total += 350;
+    if (massageFeature) total += 9000;
     
     return total;
   };
@@ -71,7 +73,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const handleCompleteOrder = () => {
     if (!product) return;
     
-    addItem(product, selectedColor, mechanism);
+    addItem(product, selectedColor, mechanism, massageFeature);
     navigate('/cart');
     onClose();
   };
@@ -280,6 +282,30 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 </label>
               </div>
             </div>
+
+            {/* Massage Feature - Only for eligible products */}
+            {(product.id === "relaxmax" || product.id === "worknest" || product.id === "spacesaver") && (
+              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
+                <h3 className="text-xl font-bold">Premium Therapy</h3>
+                
+                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-accent/30 hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5 hover:bg-accent/10 active:scale-95">
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      checked={massageFeature}
+                      onCheckedChange={(checked) => {
+                        playClickSound();
+                        setMassageFeature(checked as boolean);
+                      }}
+                    />
+                    <div>
+                      <p className="font-semibold">Massage Feature</p>
+                      <p className="text-sm text-muted-foreground">Professional-grade relaxation therapy</p>
+                    </div>
+                  </div>
+                  <span className="font-bold text-accent">+9,000 EGP</span>
+                </label>
+              </div>
+            )}
 
             {/* Special Additions */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">

@@ -20,10 +20,16 @@ const Cart = () => {
 
   const handleFormSubmit = (customerData: CustomerData) => {
     const orderDetails = items.map(item => {
-      const price = item.mechanism === 'power' 
+      let price = item.mechanism === 'power' 
         ? (item.product.pricePower || item.product.price || 0)
         : (item.product.priceManual || item.product.price || 0);
-      return `${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}) - ${formatPrice(price * item.quantity)}`;
+      
+      if (item.massageFeature) {
+        price += 9000;
+      }
+      
+      const massageText = item.massageFeature ? ' + Massage Feature' : '';
+      return `${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText}) - ${formatPrice(price * item.quantity)}`;
     }).join('%0A');
 
     const total = formatPrice(getTotalPrice());
@@ -111,11 +117,16 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
                     <p className="text-sm text-muted-foreground mb-2">
                       Color: {item.selectedColor}
                     </p>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <p className="text-sm text-muted-foreground mb-2">
                       Mechanism: {item.mechanism}
                     </p>
+                    {item.massageFeature && (
+                      <p className="text-sm text-accent font-semibold mb-2">
+                        ✨ Massage Feature Included
+                      </p>
+                    )}
                     <p className="text-lg font-semibold text-accent">
-                      {formatPrice(price)}
+                      {formatPrice(item.massageFeature ? price + 9000 : price)}
                     </p>
                   </div>
                   <div className="flex flex-col justify-between items-end">
