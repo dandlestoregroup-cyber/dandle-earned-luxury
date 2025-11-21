@@ -1,8 +1,5 @@
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Box, Loader2 } from "lucide-react";
-import { getProductARMedia, isARSupported, getARViewerUrl, Product3dMedia } from "@/lib/shopify-ar";
-import { toast } from "sonner";
+import { Lock } from "lucide-react";
 
 interface ShopifyARViewerProps {
   productHandle: string;
@@ -10,89 +7,28 @@ interface ShopifyARViewerProps {
 }
 
 export const ShopifyARViewer = ({ productHandle, productName }: ShopifyARViewerProps) => {
-  const [models, setModels] = useState<Product3dMedia[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [arSupported, setArSupported] = useState(false);
-
-  useEffect(() => {
-    const checkARAndFetchModels = async () => {
-      setArSupported(isARSupported());
-      
-      try {
-        const media = await getProductARMedia(productHandle);
-        setModels(media);
-      } catch (error) {
-        console.error('Error loading AR models:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkARAndFetchModels();
-  }, [productHandle]);
-
-  const handleViewInAR = (model: Product3dMedia) => {
-    const arUrl = getARViewerUrl(model);
-    
-    if (!arUrl) {
-      toast.error("AR not available for this device");
-      return;
-    }
-
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
-    if (isIOS) {
-      // iOS AR Quick Look
-      const anchor = document.createElement('a');
-      anchor.setAttribute('rel', 'ar');
-      anchor.href = arUrl;
-      anchor.click();
-    } else {
-      // Android Scene Viewer
-      window.location.href = arUrl;
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <Loader2 className="w-4 h-4 animate-spin" />
-        <span className="text-sm">Checking AR availability...</span>
-      </div>
-    );
-  }
-
-  if (!arSupported) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        AR viewing requires iOS or Android device
-      </div>
-    );
-  }
-
-  if (models.length === 0) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        No 3D models available for this product
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-2">
+    <div className="space-y-3 p-4 rounded-lg bg-muted/30 border-2 border-dashed border-accent/30">
+      <div className="flex items-center gap-2 mb-2">
+        <Lock className="w-4 h-4 text-muted-foreground" />
+        <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          Coming Soon
+        </span>
+      </div>
+      
       <Button
-        onClick={() => handleViewInAR(models[0])}
+        disabled
         variant="outline"
-        className="w-full"
+        className="w-full opacity-60 cursor-not-allowed"
       >
-        <Box className="w-4 h-4 mr-2" />
+        <Lock className="w-4 h-4 mr-2" />
         View in Your Space (AR)
       </Button>
-      {models.length > 1 && (
-        <p className="text-xs text-muted-foreground text-center">
-          {models.length} 3D models available
-        </p>
-      )}
+      
+      <div className="text-sm text-muted-foreground space-y-1">
+        <p className="font-medium">AR viewing will be available soon.</p>
+        <p className="text-xs">See your recliner in your room before you buy.</p>
+      </div>
     </div>
   );
 };
