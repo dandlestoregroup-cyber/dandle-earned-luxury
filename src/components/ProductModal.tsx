@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Product } from "@/types/product";
-import { useCart } from "@/contexts/CartContext";
-import { useNavigate } from "react-router-dom";
+import { useCartStore } from "@/stores/cartStore";
+import { toast } from "sonner";
 import { Gift, Trophy, Zap } from "lucide-react";
 
 interface ProductModalProps {
@@ -30,8 +30,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [massageFeature, setMassageFeature] = useState(false);
   const [specialNotes, setSpecialNotes] = useState("");
   
-  const { addItem } = useCart();
-  const navigate = useNavigate();
+  const addItem = useCartStore(state => state.addItem);
 
   // Click sound effect
   const playClickSound = () => {
@@ -72,9 +71,29 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
   const handleCompleteOrder = () => {
     if (!product) return;
-    
-    addItem(product, selectedColor, mechanism, massageFeature);
-    navigate('/cart');
+
+    // Get the first variant or selected variant
+    const selectedVariant = product.variants?.edges?.[0]?.node;
+    if (!selectedVariant) {
+      toast.error("No variant available");
+      return;
+    }
+
+    const cartItem = {
+      variantId: selectedVariant.id,
+      productId: product.shopifyId || product.id,
+      productName: product.name,
+      variantTitle: selectedVariant.title,
+      price: parseFloat(selectedVariant.price.amount),
+      quantity: 1,
+      imageUrl: product.imageUrl,
+      selectedOptions: selectedVariant.selectedOptions,
+      massageFeature: massageFeature,
+      massagePrice: massageFeature ? 9000 : undefined,
+    };
+
+    addItem(cartItem);
+    toast.success("Added to cart!");
     onClose();
   };
 
@@ -391,7 +410,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               size="lg"
               className="w-full text-lg font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              Complete Order ✨
+              <span className="text-xl font-bold">Add to Cart</span> ✨
             </Button>
           </div>
         </div>
