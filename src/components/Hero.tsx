@@ -1,9 +1,19 @@
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  };
   const navigate = useNavigate();
 
   return (
@@ -16,10 +26,12 @@ const Hero = () => {
       {/* Hero Video */}
       <div className="absolute inset-0">
         <video
+          ref={videoRef}
           src="/dandle-hero.mp4"
           className="w-full h-full object-cover"
           autoPlay
           loop
+          muted
           playsInline
           preload="auto"
           style={{ 
@@ -28,6 +40,19 @@ const Hero = () => {
             objectFit: 'cover'
           }}
         />
+        
+        {/* Mute/Unmute Button */}
+        <button
+          onClick={toggleMute}
+          className="absolute bottom-6 right-6 z-10 bg-background/80 hover:bg-background/90 backdrop-blur-sm p-3 rounded-full transition-all duration-300 hover:scale-110"
+          aria-label={isMuted ? "Unmute video" : "Mute video"}
+        >
+          {isMuted ? (
+            <VolumeX className="w-5 h-5 text-foreground" />
+          ) : (
+            <Volume2 className="w-5 h-5 text-foreground" />
+          )}
+        </button>
         {/* Gradient Overlay - More Colorful */}
         <div className="absolute inset-0 bg-gradient-to-br from-nile-blue/50 via-black/40 to-dandle-orange/30" />
         {/* Animated Gradient Accent */}
