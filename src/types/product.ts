@@ -1,15 +1,37 @@
 export interface Product {
   id: string;
+  shopifyId?: string;
   name: string;
   tagline: string;
   priceManual?: number;
   pricePower?: number;
   price?: number;
-  colors: string[];
+  colors?: string[];
   features: string[];
   targetAudience: string;
   imageUrl: string;
   comingSoon?: boolean;
+  variants?: {
+    edges: Array<{
+      node: {
+        id: string;
+        title: string;
+        price: {
+          amount: string;
+          currencyCode: string;
+        };
+        availableForSale: boolean;
+        selectedOptions: Array<{
+          name: string;
+          value: string;
+        }>;
+      };
+    }>;
+  };
+  options?: Array<{
+    name: string;
+    values: string[];
+  }>;
 }
 
 export const products: Product[] = [
