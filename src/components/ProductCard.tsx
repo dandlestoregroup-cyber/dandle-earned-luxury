@@ -23,13 +23,27 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     return product.price ? formatPrice(product.price) : "Contact for Price";
   };
 
+  const isBundle = product.name.toLowerCase().includes('complete set') || 
+                   product.name.toLowerCase().includes('bundle');
+
   return (
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.25 }}
-      className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
+      className={`overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer relative ${
+        isBundle ? 'ring-2 ring-dandle-orange/50' : ''
+      }`}
       onClick={onClick}
     >
+      {isBundle && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-gradient-to-r from-dandle-orange to-bronze px-3 py-1 rounded-full shadow-lg">
+            <span className="text-white font-headline text-sm font-semibold">
+              Bundle Deal
+            </span>
+          </div>
+        </div>
+      )}
       <div className="w-full aspect-[4/3] overflow-hidden">
         <img
           src={product.imageUrl}
