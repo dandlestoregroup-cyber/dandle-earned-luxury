@@ -9,6 +9,7 @@ import { Product } from "@/types/product";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { Gift, Trophy, Zap } from "lucide-react";
+import { ShopifyARViewer } from "@/components/ShopifyARViewer";
 
 interface ProductModalProps {
   product: Product | null;
@@ -125,6 +126,17 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             <div className="text-center space-y-2 animate-in fade-in-0 slide-in-from-top-2 duration-700">
               <p className="text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
               <p className="text-muted-foreground">Target: High-performing professionals</p>
+            </div>
+
+            {/* AR Viewer - Shopify Integration */}
+            <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-50">
+              <div className="bg-gradient-to-br from-accent/5 to-background p-6 rounded-lg border-2 border-accent/20">
+                <h3 className="text-xl font-bold mb-4 text-center">View in Your Space</h3>
+                <ShopifyARViewer 
+                  productHandle={product.id}
+                  productName={product.name}
+                />
+              </div>
             </div>
 
             {/* Mechanism Type - First */}
