@@ -10,6 +10,8 @@ import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { Gift, Trophy, Zap } from "lucide-react";
 import { ShopifyARViewer } from "@/components/ShopifyARViewer";
+import { InstalmentToggle } from "@/components/InstalmentToggle";
+import { EgyptianTrustBar } from "@/components/EgyptianTrustBar";
 
 interface ProductModalProps {
   product: Product | null;
@@ -123,9 +125,14 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
           <div className="p-6 space-y-8">
             {/* Price and Target */}
-            <div className="text-center space-y-2 animate-in fade-in-0 slide-in-from-top-2 duration-700">
+            <div className="text-center space-y-4 animate-in fade-in-0 slide-in-from-top-2 duration-700">
               <p className="text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
               <p className="text-muted-foreground">Target: High-performing professionals</p>
+              
+              {/* Instalment Calculator */}
+              <div className="max-w-md mx-auto">
+                <InstalmentToggle price={product.priceManual || product.price || 0} />
+              </div>
             </div>
 
             {/* AR Viewer - Shopify Integration */}
@@ -402,8 +409,11 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           </div>
 
           {/* Sticky Bottom Bar */}
-          <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between mb-3">
+          <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500 space-y-3">
+            {/* Egyptian Trust Bar */}
+            <EgyptianTrustBar />
+            
+            <div className="flex items-center justify-between">
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Total</p>
                 <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>

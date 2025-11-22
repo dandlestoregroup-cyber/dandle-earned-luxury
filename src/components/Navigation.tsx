@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/stores/cartStore";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const getTotalItems = useCartStore(state => state.getTotalItems);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'ar' : 'en';
+    i18n.changeLanguage(newLang);
+    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,13 +30,13 @@ const Navigation = () => {
   }, []);
 
   const navLinks = [
-    { label: "Home", href: "/", isRoute: true },
-    { label: "Collection", href: "#collection" },
-    { label: "Complete Set", href: "/complete-set", isRoute: true },
-    { label: "AR View", href: "#ar-demo" },
-    { label: "About", href: "#story" },
-    { label: "Contact", href: "#contact" },
-    { label: "Nour AI", href: "/nour-chat", isRoute: true },
+    { label: t('nav.home'), href: "/", isRoute: true },
+    { label: t('nav.collection'), href: "#collection" },
+    { label: t('nav.completeSet'), href: "/complete-set", isRoute: true },
+    { label: t('nav.arView'), href: "#ar-demo" },
+    { label: t('nav.about'), href: "#story" },
+    { label: t('nav.contact'), href: "#contact" },
+    { label: t('nav.nourAI'), href: "/nour-chat", isRoute: true },
   ];
 
   return (
@@ -68,9 +77,17 @@ const Navigation = () => {
                 </a>
               )
             ))}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              className="text-card-foreground"
+            >
+              <Languages className="w-5 h-5" />
+            </Button>
             <CartDrawer />
             <Button variant="hero" size="lg" onClick={() => navigate('/cart')}>
-              Shop Now
+              {t('nav.shopNow')}
             </Button>
           </div>
 
@@ -110,6 +127,17 @@ const Navigation = () => {
                 </a>
               )
             ))}
+            <Button
+              variant="ghost"
+              className="w-full justify-start mt-2"
+              onClick={() => {
+                toggleLanguage();
+                setIsOpen(false);
+              }}
+            >
+              <Languages className="w-5 h-5 mr-2" />
+              {i18n.language === 'en' ? 'العربية' : 'English'}
+            </Button>
             <Button 
               variant="hero" 
               size="lg" 
@@ -120,7 +148,7 @@ const Navigation = () => {
               }}
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
-              Cart ({getTotalItems()})
+              {t('nav.cart')} ({getTotalItems()})
             </Button>
           </div>
         )}

@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.analyzeRoom]
 verify_jwt = false
+
+[functions.valu-calc]
+verify_jwt = false
+
+[functions.sympl-calc]
+verify_jwt = false
