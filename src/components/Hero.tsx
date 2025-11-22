@@ -73,7 +73,7 @@ const Hero = () => {
           <span className="text-sm font-body text-warm-white">Crafted Since 2010</span>
         </motion.div>
 
-        <h1 className="font-headline text-2xl md:text-4xl lg:text-8xl font-bold mb-6">
+        <h1 className="font-headline text-5xl md:text-6xl lg:text-8xl font-bold mb-6">
           <span className="block bg-gradient-to-r from-warm-white via-warm-beige to-bronze bg-clip-text text-transparent">
             DANDLE
           </span>
