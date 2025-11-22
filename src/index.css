@@ -116,23 +116,46 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
     font-weight: 400;
-    line-height: 1.4;
+    line-height: 1.6;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    line-height: 1.1;
+    font-weight: 700;
+    line-height: 1.2;
   }
   
   /* Body text font */
   .font-body {
     font-family: 'Inter', sans-serif;
+    font-weight: 400;
   }
   
   /* Headline font */
   .font-headline {
     font-family: 'Playfair Display', serif;
+    font-weight: 700;
+  }
+  
+  /* Arabic RTL font */
+  [dir="rtl"] body,
+  [dir="rtl"] .font-body {
+    font-family: 'Cairo', 'Inter', sans-serif;
+  }
+  
+  [dir="rtl"] h1, 
+  [dir="rtl"] h2, 
+  [dir="rtl"] h3, 
+  [dir="rtl"] h4, 
+  [dir="rtl"] h5, 
+  [dir="rtl"] h6,
+  [dir="rtl"] .font-headline {
+    font-family: 'Cairo', 'Playfair Display', serif;
+  }
+  
+  /* Caption weight */
+  .font-caption {
+    font-weight: 300;
   }
   
   /* Warm gradient appears before React hydrates (FIX: dead initial load) */
@@ -276,6 +299,17 @@ All colors MUST be HSL.
   .animate-parallax {
     animation: parallax-float 4s ease-in-out infinite;
   }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
@@ -310,6 +344,25 @@ All colors MUST be HSL.
   
   .bg-dandle-orange {
     background-color: hsl(var(--dandle-orange));
+  }
+  
+  /* Global container */
+  .container {
+    @apply max-w-7xl mx-auto px-6;
+  }
+  
+  /* Section spacing */
+  .section-padding {
+    @apply py-20 md:py-20;
+  }
+  
+  .section-padding-mobile {
+    @apply py-12 md:py-20;
+  }
+  
+  /* Touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
   }
   
   .shadow-subtle {

@@ -29,8 +29,8 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   return (
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ duration: 0.25 }}
-      className={`overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer relative ${
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className={`overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer relative border-2 border-transparent hover:border-bronze/40 ${
         isBundle ? 'ring-2 ring-dandle-orange/50' : ''
       }`}
       onClick={onClick}
@@ -46,7 +46,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       )}
       <div className="w-full aspect-[4/3] overflow-hidden">
         <img
-          src={product.imageUrl}
+          src={`${product.imageUrl}?quality=80`}
           alt={`${product.name} Recliner — ${product.tagline}`}
           className="w-full h-full object-contain"
           loading="lazy"
@@ -75,7 +75,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
             ))}
           </div>
         )}
-        <button className="w-full py-3 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg hover:from-bronze/40 hover:to-warm-beige transition-all">
+        <button className="w-full py-3 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg hover:from-bronze/40 hover:to-warm-beige transition-all ease-out touch-target">
           Customize Now
         </button>
       </div>

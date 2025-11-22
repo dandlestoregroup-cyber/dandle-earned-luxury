@@ -6,6 +6,7 @@ import ARDemo from "@/components/ARDemo";
 import ProductGallery from "@/components/ProductGallery";
 import SocialProof from "@/components/SocialProof";
 import Contact from "@/components/Contact";
+import RaytexSection from "@/components/RaytexSection";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
@@ -23,6 +24,7 @@ const Index = () => {
         </div>
         <SocialProof />
         <Contact />
+        <RaytexSection />
       </main>
       <Footer />
       <WhatsAppFloat />
