@@ -58,7 +58,7 @@ const Hero = () => {
       </div>
 
       <motion.div
-        className="relative z-10 text-warm-white px-6 max-w-5xl"
+        className="relative z-10 text-warm-white px-4 sm:px-6 max-w-5xl mx-auto w-full"
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, type: "spring", stiffness: 80, damping: 20 }}
@@ -80,11 +80,11 @@ const Hero = () => {
           <span className="block text-warm-white mt-2">Because You've Earned It</span>
         </h1>
         
-        <p className="font-body text-base md:text-xl text-warm-beige/90 mb-10 max-w-2xl mx-auto px-4">
+        <p className="font-body text-sm md:text-xl text-warm-beige/90 mb-10 max-w-2xl mx-auto">
           Egyptian-crafted luxury recliners designed for those who value lasting comfort and quiet excellence
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button 
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
