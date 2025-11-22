@@ -108,11 +108,11 @@ const Hero = () => {
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
           <Button 
-            onClick={() => navigate('/nour-chat')}
-            className="group bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 text-warm-white px-8 py-6 text-lg font-body transition-all duration-300"
+            disabled
+            className="group bg-warm-white/10 backdrop-blur-md border border-warm-white/30 text-warm-white px-8 py-6 text-lg font-body opacity-60 cursor-not-allowed"
           >
             <Sparkles className="mr-2 w-5 h-5" />
-            View in Your Space
+            View in Your Space (Coming Soon)
           </Button>
         </div>
       </motion.div>
