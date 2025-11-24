@@ -166,7 +166,7 @@ const CheckoutForm = ({ onSubmit, onCancel }: CheckoutFormProps) => {
           </Button>
           <Button
             type="submit"
-            variant="luxury"
+            variant="default"
             size="lg"
             className="flex-1"
           >

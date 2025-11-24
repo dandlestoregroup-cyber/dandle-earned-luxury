@@ -1,12 +1,40 @@
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Volume2, VolumeX } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowRight, Volume2, VolumeX } from "lucide-react";
 
 const Hero = () => {
   const [isMuted, setIsMuted] = useState(true);
+  const [showStills, setShowStills] = useState(false);
+  const [currentFrame, setCurrentFrame] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Three-frame still sequence after scroll
+  const frames = [
+    { image: "/images/premium/frame-01.jpg", duration: 4000 },
+    { image: "/images/premium/frame-06.jpg", duration: 3000 },
+    { image: "/images/premium/frame-13.jpg", duration: 3000 },
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 30 && !showStills) {
+        setShowStills(true);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showStills]);
+
+  useEffect(() => {
+    if (!showStills) return;
+    
+    const timer = setInterval(() => {
+      setCurrentFrame((prev) => (prev + 1) % frames.length);
+    }, frames[currentFrame].duration);
+
+    return () => clearInterval(timer);
+  }, [showStills, currentFrame, frames]);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -14,7 +42,6 @@ const Hero = () => {
       setIsMuted(!isMuted);
     }
   };
-  const navigate = useNavigate();
 
   return (
     <motion.section
@@ -23,36 +50,54 @@ const Hero = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: "easeOut" }}
     >
-      {/* Hero Video */}
+      {/* Hero Video or Still Sequence */}
       <div className="absolute inset-0">
-        <video
-          ref={videoRef}
-          src="/dandle-hero.mp4"
-          className="w-full h-full object-cover brightness-90"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          style={{ 
-            minWidth: '100%', 
-            minHeight: '100%',
-            objectFit: 'cover'
-          }}
-        />
+        {!showStills ? (
+          <>
+            <video
+              ref={videoRef}
+              src="/dandle-hero.mp4"
+              className="w-full h-full object-cover brightness-90"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              style={{ 
+                minWidth: '100%', 
+                minHeight: '100%',
+                objectFit: 'cover'
+              }}
+            />
+            
+            {/* Mute/Unmute Button */}
+            <button
+              onClick={toggleMute}
+              className="absolute bottom-6 right-6 z-10 bg-background/80 hover:bg-background/90 backdrop-blur-sm p-3 rounded-full transition-all duration-200 hover:scale-110 touch-target"
+              aria-label={isMuted ? "Unmute video" : "Mute video"}
+            >
+              {isMuted ? (
+                <VolumeX className="w-5 h-5 text-foreground" />
+              ) : (
+                <Volume2 className="w-5 h-5 text-foreground" />
+              )}
+            </button>
+          </>
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentFrame}
+              src={frames[currentFrame].image}
+              alt=""
+              className="w-full h-full object-cover brightness-90"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0 }}
+            />
+          </AnimatePresence>
+        )}
         
-        {/* Mute/Unmute Button */}
-        <button
-          onClick={toggleMute}
-          className="absolute bottom-6 right-6 z-10 bg-background/80 hover:bg-background/90 backdrop-blur-sm p-3 rounded-full transition-all duration-300 hover:scale-110 touch-target"
-          aria-label={isMuted ? "Unmute video" : "Mute video"}
-        >
-          {isMuted ? (
-            <VolumeX className="w-5 h-5 text-foreground" />
-          ) : (
-            <Volume2 className="w-5 h-5 text-foreground" />
-          )}
-        </button>
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-black/60" />
       </div>
@@ -63,43 +108,21 @@ const Hero = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, type: "spring", stiffness: 80, damping: 20 }}
       >
-        {/* Floating Badge */}
-        <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/20 backdrop-blur-md border border-dandle-orange/40 mb-6"
-          animate={{ y: [0, -6, 0] }}
-          transition={{ repeat: Infinity, duration: 3, ease: "easeOut" }}
-        >
-          <Sparkles className="w-4 h-4 text-dandle-orange" />
-          <span className="text-sm font-body text-warm-white">Crafted Since 2010</span>
-        </motion.div>
-
-        <h1 className="font-headline text-5xl md:text-6xl lg:text-8xl font-bold mb-6">
-          <span className="block bg-gradient-to-r from-warm-white via-warm-beige to-bronze bg-clip-text text-transparent">
-            DANDLE
+        <h1 className="font-headline text-5xl md:text-6xl lg:text-8xl mb-6 font-normal">
+          <span className="block">DANDLE</span>
+          <span className="block text-4xl md:text-5xl lg:text-6xl mt-4 opacity-90">
+            الراحة المستحقة
           </span>
-          <span className="block text-warm-white mt-2">Because You've Earned It</span>
         </h1>
-        
-        <p className="font-body text-sm md:text-xl text-warm-beige/90 mb-10 max-w-2xl mx-auto">
-          Egyptian-crafted luxury recliners designed for those who value lasting comfort and quiet excellence
-        </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
           <Button 
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="group bg-gradient-to-r from-dandle-orange to-dandle-orange/80 hover:from-dandle-orange/90 hover:to-dandle-orange/70 text-white px-8 py-6 text-lg font-body shadow-elegant hover:shadow-glow transition-all duration-300 ease-out touch-target"
+            className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-medium shadow-elegant hover:shadow-glow transition-all duration-200 ease-out touch-target"
           >
-            Explore Collection
-            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
-          <Button 
-            disabled
-            className="group bg-warm-white/10 backdrop-blur-md border border-warm-white/30 text-warm-white px-8 py-6 text-lg font-body opacity-60 cursor-not-allowed touch-target"
-          >
-            <Sparkles className="mr-2 w-5 h-5" />
-            View in Your Space (Coming Soon)
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
           </Button>
         </div>
       </motion.div>

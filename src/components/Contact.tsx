@@ -93,7 +93,7 @@ const Contact = () => {
 
               <div className="mt-8">
                 <Button
-                  variant="hero"
+                  variant="default"
                   size="lg"
                   className="w-full touch-target"
                   onClick={handleWhatsAppContact}
