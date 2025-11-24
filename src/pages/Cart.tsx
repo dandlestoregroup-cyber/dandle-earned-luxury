@@ -64,7 +64,7 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
             <p className="text-muted-foreground mb-8">
               Start adding luxury recliners to your collection
             </p>
-            <Button onClick={() => navigate('/')} variant="default" size="lg">
+            <Button onClick={() => navigate('/')} variant="luxury" size="lg">
               Explore Collection
             </Button>
           </div>
@@ -177,7 +177,7 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
               </div>
               <Button 
                 onClick={handleCheckoutClick} 
-                variant="default" 
+                variant="luxury" 
                 size="lg" 
                 className="w-full mb-3"
               >

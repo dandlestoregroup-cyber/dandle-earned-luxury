@@ -23,45 +23,47 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     return product.price ? formatPrice(product.price) : "Contact for Price";
   };
 
-  const isBundle = product.name.toLowerCase().includes('complete set') || 
-                   product.name.toLowerCase().includes('bundle');
-
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
-      className="overflow-hidden rounded-sm bg-background shadow-subtle cursor-pointer relative border border-border hover:border-primary/40"
+      whileHover={{ y: -4, scale: 1.02 }}
+      transition={{ duration: 0.25 }}
+      className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
       <div className="w-full aspect-[4/3] overflow-hidden">
         <img
-          src={`${product.imageUrl}?quality=80`}
-          alt=""
+          src={product.imageUrl}
+          alt={`${product.name} Recliner — ${product.tagline}`}
           className="w-full h-full object-contain"
           loading="lazy"
         />
       </div>
-      <div className="p-6 space-y-3">
-        <h3 className="font-headline text-xl md:text-2xl text-foreground font-normal">
+      <div className="p-6 space-y-4">
+        <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
           {product.name}
         </h3>
-        <p className="font-body text-sm text-muted-foreground font-normal">
+        <p className="font-body text-lg text-dandle-orange">
+          {product.tagline}
+        </p>
+        <p className="font-headline text-2xl text-dandle-orange">
           {getPriceDisplay()}
         </p>
         {product.colors && (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             {product.colors.map((color, idx) => (
               <button
                 key={idx}
-                className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center font-body text-xs text-muted-foreground hover:border-primary transition-colors duration-200"
+                className="w-12 h-12 rounded-full border-2 border-warm-beige bg-warm-white flex items-center justify-center font-body text-charcoal/60 hover:border-dandle-orange transition-colors"
                 onClick={(e) => e.stopPropagation()}
-                aria-label={color}
               >
                 {color.charAt(0).toUpperCase()}
               </button>
             ))}
           </div>
         )}
+        <button className="w-full py-3 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg hover:from-bronze/40 hover:to-warm-beige transition-all">
+          Customize Now
+        </button>
       </div>
     </motion.div>
   );

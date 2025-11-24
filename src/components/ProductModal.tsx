@@ -6,12 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Product } from "@/types/product";
-import { useCartStore } from "@/stores/cartStore";
-import { toast } from "sonner";
+import { useCart } from "@/contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 import { Gift, Trophy, Zap } from "lucide-react";
-import { ShopifyARViewer } from "@/components/ShopifyARViewer";
-import { InstalmentToggle } from "@/components/InstalmentToggle";
-import { EgyptianTrustBar } from "@/components/EgyptianTrustBar";
 
 interface ProductModalProps {
   product: Product | null;
@@ -33,7 +30,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [massageFeature, setMassageFeature] = useState(false);
   const [specialNotes, setSpecialNotes] = useState("");
   
-  const addItem = useCartStore(state => state.addItem);
+  const { addItem } = useCart();
+  const navigate = useNavigate();
 
   // Click sound effect
   const playClickSound = () => {
@@ -74,29 +72,9 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
   const handleCompleteOrder = () => {
     if (!product) return;
-
-    // Get the first variant or selected variant
-    const selectedVariant = product.variants?.edges?.[0]?.node;
-    if (!selectedVariant) {
-      toast.error("No variant available");
-      return;
-    }
-
-    const cartItem = {
-      variantId: selectedVariant.id,
-      productId: product.shopifyId || product.id,
-      productName: product.name,
-      variantTitle: selectedVariant.title,
-      price: parseFloat(selectedVariant.price.amount),
-      quantity: 1,
-      imageUrl: product.imageUrl,
-      selectedOptions: selectedVariant.selectedOptions,
-      massageFeature: massageFeature,
-      massagePrice: massageFeature ? 9000 : undefined,
-    };
-
-    addItem(cartItem);
-    toast.success("Added to cart!");
+    
+    addItem(product, selectedColor, mechanism, massageFeature);
+    navigate('/cart');
     onClose();
   };
 
@@ -125,25 +103,9 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
           <div className="p-6 space-y-8">
             {/* Price and Target */}
-            <div className="text-center space-y-4 animate-in fade-in-0 slide-in-from-top-2 duration-700">
+            <div className="text-center space-y-2 animate-in fade-in-0 slide-in-from-top-2 duration-700">
               <p className="text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
               <p className="text-muted-foreground">Target: High-performing professionals</p>
-              
-              {/* Instalment Calculator */}
-              <div className="max-w-md mx-auto">
-                <InstalmentToggle price={product.priceManual || product.price || 0} />
-              </div>
-            </div>
-
-            {/* AR Viewer - Shopify Integration */}
-            <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-50">
-              <div className="bg-gradient-to-br from-accent/5 to-background p-6 rounded-lg border-2 border-accent/20">
-                <h3 className="text-xl font-bold mb-4 text-center">View in Your Space</h3>
-                <ShopifyARViewer 
-                  productHandle={product.id}
-                  productName={product.name}
-                />
-              </div>
             </div>
 
             {/* Mechanism Type - First */}
@@ -409,11 +371,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           </div>
 
           {/* Sticky Bottom Bar */}
-          <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500 space-y-3">
-            {/* Egyptian Trust Bar */}
-            <EgyptianTrustBar />
-            
-            <div className="flex items-center justify-between">
+          <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center justify-between mb-3">
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Total</p>
                 <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>
@@ -432,7 +391,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               size="lg"
               className="w-full text-lg font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              <span className="text-xl font-bold">Add to Cart</span> ✨
+              Complete Order ✨
             </Button>
           </div>
         </div>

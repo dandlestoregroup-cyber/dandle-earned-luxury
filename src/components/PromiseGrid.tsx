@@ -7,8 +7,8 @@ const PromiseGrid = () => {
     },
     {
       icon: "📱",
-      title: "AR Visualization (Coming Soon)",
-      text: "Soon you'll see it in your space before you buy",
+      title: "AR Visualization",
+      text: "See it in your space before you buy",
     },
     {
       icon: "🚚",

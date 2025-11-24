@@ -11,9 +11,9 @@ const WhatsAppFloat = () => {
 
   return (
     <Button
-      variant="default"
+      variant="accent"
       size="icon"
-      className="fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-luxury hover:shadow-glow"
+      className="fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-luxury hover:shadow-gold animate-pulse hover:animate-none"
       onClick={handleWhatsAppClick}
       aria-label="Contact us on WhatsApp"
     >

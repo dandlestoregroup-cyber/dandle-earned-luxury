@@ -33,13 +33,13 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="section-padding bg-warm-beige">
-      <div className="container mx-auto px-6 md:px-6">
+    <section id="contact" className="py-20 bg-cream">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in-up">
-          <h2 className="font-headline text-2xl md:text-5xl font-bold mb-4 text-foreground">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Visit Our Showrooms
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Experience Dandle recliners in person. Our expert team is ready to
             help you find your perfect match.
           </p>
@@ -49,7 +49,7 @@ const Contact = () => {
           {/* Contact Info */}
           <div className="space-y-8 animate-fade-in-up">
             <div>
-              <h3 className="font-headline text-2xl font-semibold mb-6 text-foreground">
+              <h3 className="font-serif text-2xl font-semibold mb-6 text-foreground">
                 Get in Touch
               </h3>
 
@@ -93,9 +93,9 @@ const Contact = () => {
 
               <div className="mt-8">
                 <Button
-                  variant="default"
+                  variant="hero"
                   size="lg"
-                  className="w-full touch-target"
+                  className="w-full"
                   onClick={handleWhatsAppContact}
                 >
                   Connect via WhatsApp
@@ -106,14 +106,14 @@ const Contact = () => {
 
           {/* Showrooms */}
           <div className="animate-fade-in-up" style={{ animationDelay: "200ms" }}>
-            <h3 className="font-headline text-2xl font-semibold mb-6 text-foreground">
+            <h3 className="font-serif text-2xl font-semibold mb-6 text-foreground">
               Our Locations
             </h3>
             <div className="space-y-4">
               {showrooms.map((showroom, index) => (
                 <div
                   key={index}
-                  className="bg-background rounded-lg p-6 border border-gold/20 hover:shadow-luxury transition-all duration-300 ease-out"
+                  className="bg-background rounded-lg p-6 border border-gold/20 hover:shadow-luxury transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex gap-3">
