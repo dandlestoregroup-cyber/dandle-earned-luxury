@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
+import PremiumGallery from "@/components/PremiumGallery";
 import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
 import ARDemo from "@/components/ARDemo";
@@ -16,6 +17,7 @@ const Index = () => {
       <Navigation />
       <main>
         <Hero />
+        <PremiumGallery />
         <Quote />
         <PromiseGrid />
         <ARDemo />
