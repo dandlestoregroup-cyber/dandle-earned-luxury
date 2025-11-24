@@ -21,10 +21,8 @@ const ProductGallery = () => {
   };
 
   return (
-    <section id="collection" className="bg-warm-beige py-24 px-6 text-center">
-      <h2 className="font-headline text-3xl md:text-5xl mb-12 text-charcoal">
-        Our Collection
-      </h2>
+    <section id="collection" className="bg-background py-24 px-6">
+      {/* No header - let images speak */}
       
       {isLoading && (
         <div className="flex justify-center items-center py-12">

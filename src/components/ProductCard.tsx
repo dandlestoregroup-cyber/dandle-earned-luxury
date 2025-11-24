@@ -28,56 +28,40 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className={`overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer relative border-2 border-transparent hover:border-bronze/40 ${
-        isBundle ? 'ring-2 ring-dandle-orange/50' : ''
-      }`}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2 }}
+      className="overflow-hidden rounded-sm bg-background shadow-subtle cursor-pointer relative border border-border hover:border-primary/40"
       onClick={onClick}
     >
-      {isBundle && (
-        <div className="absolute top-4 right-4 z-10">
-          <div className="bg-gradient-to-r from-dandle-orange to-bronze px-3 py-1 rounded-full shadow-lg">
-            <span className="text-white font-headline text-sm font-semibold">
-              Bundle Deal
-            </span>
-          </div>
-        </div>
-      )}
       <div className="w-full aspect-[4/3] overflow-hidden">
         <img
           src={`${product.imageUrl}?quality=80`}
-          alt={`${product.name} Recliner — ${product.tagline}`}
+          alt=""
           className="w-full h-full object-contain"
           loading="lazy"
         />
       </div>
-      <div className="p-6 space-y-4">
-        <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
+      <div className="p-6 space-y-3">
+        <h3 className="font-headline text-xl md:text-2xl text-foreground font-normal">
           {product.name}
         </h3>
-        <p className="font-body text-lg text-dandle-orange">
-          {product.tagline}
-        </p>
-        <p className="font-headline text-2xl text-dandle-orange">
+        <p className="font-body text-sm text-muted-foreground font-normal">
           {getPriceDisplay()}
         </p>
         {product.colors && (
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             {product.colors.map((color, idx) => (
               <button
                 key={idx}
-                className="w-12 h-12 rounded-full border-2 border-warm-beige bg-warm-white flex items-center justify-center font-body text-charcoal/60 hover:border-dandle-orange transition-colors"
+                className="w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center font-body text-xs text-muted-foreground hover:border-primary transition-colors duration-200"
                 onClick={(e) => e.stopPropagation()}
+                aria-label={color}
               >
                 {color.charAt(0).toUpperCase()}
               </button>
             ))}
           </div>
         )}
-        <button className="w-full py-3 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg hover:from-bronze/40 hover:to-warm-beige transition-all ease-out touch-target">
-          Customize Now
-        </button>
       </div>
     </motion.div>
   );

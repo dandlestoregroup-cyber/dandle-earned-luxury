@@ -8,56 +8,65 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* DANDLE Quiet-Luxury v5 Colors */
-    --nile-blue: 216 58% 36%; /* #274B8F */
-    --dandle-orange: 14 100% 60%; /* #FF6B35 */
-    --warm-beige: 36 52% 90%; /* #F5E6D3 */
-    --bronze: 38 36% 56%; /* #B8956A */
-    --charcoal: 0 0% 10%; /* #1A1A1A */
-    --warm-white: 60 33% 98%; /* #FAF9F6 */
+    /* DANDLE Whisper Edition - Desaturated UI (images provide color) */
+    --bronze: 30 40% 50%; /* Primary - unchanged */
+    --accent-muted: 30 8% 70%; /* 20% saturation */
+    --stone-light: 30 5% 90%;
+    --stone-dark: 30 5% 30%;
+    --stone-bg: 30 8% 98%;
+    --text-primary: 30 5% 20%;
+    --text-secondary: 30 5% 50%;
     
-    --background: 60 33% 98%; /* Warm White */
-    --foreground: 0 0% 10%; /* Charcoal */
+    /* Legacy color names mapped to new system */
+    --nile-blue: 30 8% 70%;
+    --dandle-orange: 30 8% 70%;
+    --warm-beige: 30 5% 90%;
+    --charcoal: 30 5% 20%;
+    --warm-white: 30 5% 98%;
     
-    --card: 60 33% 98%;
-    --card-foreground: 0 0% 10%;
+    --background: 30 8% 98%;
+    --foreground: 30 5% 20%;
+    
+    --card: 30 8% 98%;
+    --card-foreground: 30 5% 20%;
 
-    --popover: 60 33% 98%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 30 8% 98%;
+    --popover-foreground: 30 5% 20%;
 
-    --primary: 216 58% 36%; /* Nile Blue */
-    --primary-foreground: 60 33% 98%;
+    --primary: 30 40% 50%; /* Bronze */
+    --primary-foreground: 30 5% 98%;
 
-    --secondary: 36 52% 90%; /* Warm Beige */
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 30 5% 90%;
+    --secondary-foreground: 30 5% 20%;
 
-    --muted: 36 52% 90%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 30 5% 90%;
+    --muted-foreground: 30 5% 50%;
 
-    --accent: 14 100% 60%; /* Dandle Orange */
-    --accent-foreground: 60 33% 98%;
+    --accent: 30 8% 70%;
+    --accent-foreground: 30 5% 20%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 33% 98%;
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 30 5% 98%;
 
-    --border: 36 52% 85%;
-    --input: 36 52% 85%;
-    --ring: 38 36% 56%;
+    --border: 30 5% 85%;
+    --input: 30 5% 85%;
+    --ring: 30 40% 50%;
 
     --radius: 0.25rem;
     
-    /* Quiet-Luxury Custom Tokens */
-    --gradient-luxury: linear-gradient(135deg, hsl(38 36% 56%), hsl(38 36% 66%));
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 10% / 0.4), transparent);
-    --gradient-subtle: linear-gradient(180deg, hsl(60 33% 98%), hsl(36 52% 90%));
+    /* Whisper Edition - Minimal gradients */
+    --gradient-luxury: linear-gradient(135deg, hsl(30 40% 50%), hsl(30 40% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(30 5% 20% / 0.4), transparent);
+    --gradient-subtle: linear-gradient(180deg, hsl(30 8% 98%), hsl(30 5% 90%));
     
     --shadow-subtle: 0 4px 14px rgba(0, 0, 0, 0.06);
-    --shadow-luxury: 0 10px 30px -10px hsl(38 36% 56% / 0.3);
-    --shadow-elegant: 0 10px 30px -10px rgba(255, 107, 53, 0.3);
-    --shadow-glow: 0 0 40px rgba(255, 107, 53, 0.4);
+    --shadow-luxury: 0 10px 30px -10px hsl(30 40% 50% / 0.3);
+    --shadow-elegant: 0 8px 20px -8px hsl(30 40% 50% / 0.25);
+    --shadow-glow: 0 0 30px hsl(30 40% 50% / 0.3);
     
-    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-cinematic: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Whisper transitions - max 200ms */
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-instant: none;
 
     --sidebar-background: 0 0% 98%;
 
@@ -115,26 +124,31 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
-    font-weight: 400;
+    font-weight: 400; /* Book weight - only for story/content */
     line-height: 1.6;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
-    font-weight: 700;
+    font-weight: 400; /* Book weight - whisper edition */
     line-height: 1.2;
   }
   
-  /* Body text font */
+  /* Body text font - Book weight only */
   .font-body {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
   }
   
-  /* Headline font */
+  /* Headline font - Book weight only */
   .font-headline {
     font-family: 'Playfair Display', serif;
-    font-weight: 700;
+    font-weight: 400;
+  }
+  
+  /* Action elements - Medium weight only */
+  button, .action, .font-medium {
+    font-weight: 500;
   }
   
   /* Arabic RTL font */

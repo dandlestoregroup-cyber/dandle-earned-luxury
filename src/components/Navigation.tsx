@@ -86,7 +86,7 @@ const Navigation = () => {
               <Languages className="w-5 h-5" />
             </Button>
             <CartDrawer />
-            <Button variant="hero" size="lg" onClick={() => navigate('/cart')}>
+            <Button variant="default" size="lg" onClick={() => navigate('/cart')}>
               {t('nav.shopNow')}
             </Button>
           </div>
@@ -139,7 +139,7 @@ const Navigation = () => {
               {i18n.language === 'en' ? 'العربية' : 'English'}
             </Button>
             <Button 
-              variant="hero" 
+              variant="default" 
               size="lg" 
               className="w-full mt-4"
               onClick={() => {
