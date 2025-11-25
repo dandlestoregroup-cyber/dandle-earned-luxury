@@ -118,7 +118,6 @@ const Hero = () => {
           className="w-full h-full object-cover"
           autoPlay
           loop={false}
-          muted
           playsInline
           preload="auto"
           style={{ 
