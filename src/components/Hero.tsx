@@ -90,12 +90,16 @@ const Hero = () => {
   const toggleMute = () => {
     if (videoRef.current) {
       const newMutedState = !videoRef.current.muted;
+      console.log('Toggle mute clicked. Current:', videoRef.current.muted, 'New:', newMutedState);
       videoRef.current.muted = newMutedState;
       setIsMuted(newMutedState);
       setUserHasInteracted(true);
       
       // Save user preference to session
       sessionStorage.setItem('heroVideoMuted', String(newMutedState));
+      console.log('Video muted state after toggle:', videoRef.current.muted);
+    } else {
+      console.log('Video ref not available');
     }
   };
 
