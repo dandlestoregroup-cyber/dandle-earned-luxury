@@ -1,10 +1,38 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useRef, useState, useEffect } from "react";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(false); // Start unmuted for first play
+  const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
+
+  const handleVideoEnded = () => {
+    if (!hasPlayedOnce && videoRef.current) {
+      // First play just ended - now enable loop and mute
+      videoRef.current.loop = true;
+      videoRef.current.muted = true;
+      setIsMuted(true);
+      setHasPlayedOnce(true);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted);
+    }
+  };
+
+  useEffect(() => {
+    // Ensure video starts unmuted for first play
+    if (videoRef.current) {
+      videoRef.current.muted = false;
+    }
+  }, []);
 
   return (
     <motion.section
@@ -16,12 +44,15 @@ const Hero = () => {
       {/* Hero Video */}
       <div className="absolute inset-0">
         <video
+          ref={videoRef}
           src="/dandle-hero.mp4"
           className="w-full h-full object-cover"
           autoPlay
-          loop
+          loop={false}
+          muted={false}
           playsInline
           preload="auto"
+          onEnded={handleVideoEnded}
           style={{ 
             minWidth: '100%', 
             minHeight: '100%',
@@ -91,6 +122,20 @@ const Hero = () => {
           </Button>
         </div>
       </motion.div>
+
+      {/* Mute/Unmute Toggle Button */}
+      <motion.button
+        onClick={toggleMute}
+        className="absolute bottom-24 right-8 z-50 p-3 rounded-full bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 transition-all duration-300 group"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {isMuted ? (
+          <VolumeX className="w-5 h-5 text-warm-white" />
+        ) : (
+          <Volume2 className="w-5 h-5 text-warm-white" />
+        )}
+      </motion.button>
 
       {/* Scroll Indicator */}
       <motion.div
