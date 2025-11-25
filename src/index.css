@@ -345,4 +345,13 @@ All colors MUST be HSL.
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* Product gallery scrollbar hide */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

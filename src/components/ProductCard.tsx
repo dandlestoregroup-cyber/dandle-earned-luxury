@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Product } from "@/types/product";
+import { getLovableProduct } from "@/catalog/lovableCatalog";
 
 interface ProductCardProps {
   product: Product;
@@ -7,6 +8,10 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onClick }: ProductCardProps) => {
+  // Try to load hero image from Lovable catalog (master)
+  const lovableProduct = getLovableProduct(product.id);
+  const heroImage = lovableProduct?.heroImage.src || product.imageUrl;
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-EG", {
       style: "currency",
@@ -30,9 +35,9 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
-      <div className="w-full aspect-[4/3] overflow-hidden">
+      <div className="w-full aspect-[4/3] overflow-hidden bg-muted">
         <img
-          src={product.imageUrl}
+          src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
           className="w-full h-full object-contain"
           loading="lazy"

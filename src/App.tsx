@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
 import CompleteSet from "./pages/CompleteSet";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/cart" element={<Cart />} />
             <Route path="/nour-chat" element={<NourChat />} />
             <Route path="/complete-set" element={<CompleteSet />} />
+            <Route path="/products/:handle" element={<ProductDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

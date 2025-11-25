@@ -9,6 +9,8 @@ import { Product } from "@/types/product";
 import { useCart } from "@/contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Gift, Trophy, Zap } from "lucide-react";
+import { getLovableProduct } from "@/catalog/lovableCatalog";
+import { ProductImageGallery } from "@/components/product/ProductImageGallery";
 
 interface ProductModalProps {
   product: Product | null;
@@ -79,6 +81,15 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   };
 
   if (!product) return null;
+
+  // Load gallery from Lovable catalog if available
+  const lovableProduct = getLovableProduct(product.id);
+  const gallery = lovableProduct?.gallery.length
+    ? lovableProduct.gallery
+    : lovableProduct?.heroImage
+    ? [lovableProduct.heroImage]
+    : [];
+  const hasGallery = gallery.length > 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
