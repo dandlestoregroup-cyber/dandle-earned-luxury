@@ -7,32 +7,97 @@ import { useRef, useState, useEffect } from "react";
 const Hero = () => {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(false); // Start unmuted for first play
+  const [isMuted, setIsMuted] = useState(true); // Default muted for button display
   const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
+  const [userHasInteracted, setUserHasInteracted] = useState(false);
 
-  const handleVideoEnded = () => {
-    if (!hasPlayedOnce && videoRef.current) {
-      // First play just ended - now enable loop and mute
-      videoRef.current.loop = true;
-      videoRef.current.muted = true;
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Check if user has a saved preference
+    const savedMutePreference = sessionStorage.getItem('heroVideoMuted');
+    const userPrefersMuted = savedMutePreference === 'true';
+
+    // Mobile autoplay requires muted, desktop can start unmuted
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Mobile: Start muted for autoplay compatibility
+      video.muted = true;
       setIsMuted(true);
-      setHasPlayedOnce(true);
+      
+      // If user previously unmuted, respect that after first interaction
+      if (savedMutePreference === 'false') {
+        const attemptUnmute = () => {
+          video.muted = false;
+          setIsMuted(false);
+          document.removeEventListener('touchstart', attemptUnmute);
+        };
+        document.addEventListener('touchstart', attemptUnmute, { once: true });
+      }
+    } else {
+      // Desktop: Start unmuted for first play (unless user previously muted)
+      if (savedMutePreference === null) {
+        video.muted = false;
+        setIsMuted(false);
+      } else {
+        video.muted = userPrefersMuted;
+        setIsMuted(userPrefersMuted);
+      }
     }
-  };
+
+    // Handle first play completion
+    const handleTimeUpdate = () => {
+      if (!hasPlayedOnce && video.currentTime > 0 && video.duration > 0) {
+        // Check if we're near the end (within 0.5 seconds)
+        if (video.duration - video.currentTime < 0.5) {
+          setHasPlayedOnce(true);
+          
+          // Only auto-mute if user hasn't manually changed the setting
+          if (!userHasInteracted) {
+            video.muted = true;
+            setIsMuted(true);
+            sessionStorage.setItem('heroVideoMuted', 'true');
+          }
+        }
+      }
+    };
+
+    const handleEnded = () => {
+      if (!hasPlayedOnce) {
+        setHasPlayedOnce(true);
+        video.loop = true;
+        
+        // Only auto-mute if user hasn't manually changed the setting
+        if (!userHasInteracted) {
+          video.muted = true;
+          setIsMuted(true);
+          sessionStorage.setItem('heroVideoMuted', 'true');
+        }
+      }
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('ended', handleEnded);
+
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('ended', handleEnded);
+    };
+  }, [hasPlayedOnce, userHasInteracted]);
 
   const toggleMute = () => {
     if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
+      const newMutedState = !videoRef.current.muted;
+      videoRef.current.muted = newMutedState;
+      setIsMuted(newMutedState);
+      setUserHasInteracted(true);
+      
+      // Save user preference to session
+      sessionStorage.setItem('heroVideoMuted', String(newMutedState));
     }
   };
-
-  useEffect(() => {
-    // Ensure video starts unmuted for first play
-    if (videoRef.current) {
-      videoRef.current.muted = false;
-    }
-  }, []);
 
   return (
     <motion.section
@@ -49,10 +114,9 @@ const Hero = () => {
           className="w-full h-full object-cover"
           autoPlay
           loop={false}
-          muted={false}
+          muted
           playsInline
           preload="auto"
-          onEnded={handleVideoEnded}
           style={{ 
             minWidth: '100%', 
             minHeight: '100%',
@@ -126,9 +190,11 @@ const Hero = () => {
       {/* Mute/Unmute Toggle Button */}
       <motion.button
         onClick={toggleMute}
-        className="absolute bottom-24 right-8 z-50 p-3 rounded-full bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 transition-all duration-300 group"
+        className="absolute bottom-24 right-8 p-3 rounded-full bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 transition-all duration-300 group"
+        style={{ zIndex: 1001 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        aria-label={isMuted ? "Unmute video" : "Mute video"}
       >
         {isMuted ? (
           <VolumeX className="w-5 h-5 text-warm-white" />
