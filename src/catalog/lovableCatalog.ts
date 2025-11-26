@@ -23,43 +23,19 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "diva",
     title: "Diva Recliner",
     subtitle: "Statement Luxury Seating",
-    aspectRatio: 1.79, // 2752/1536
+    aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/diva/diva-hero-01.jpg",
+      src: "/images/diva-red-front.jpg",
       width: 2752,
       height: 1536,
       alt: "Diva Recliner - Red Leather Statement Piece"
     },
     gallery: [
       {
-        src: "/src/assets/products/diva/diva-gallery-01.jpg",
+        src: "/images/diva-red-front.jpg",
         width: 2752,
         height: 1536,
         alt: "Diva Recliner - Front View"
-      },
-      {
-        src: "/src/assets/products/diva/diva-gallery-02.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "Diva Recliner - Side Angle"
-      },
-      {
-        src: "/src/assets/products/diva/diva-gallery-03.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "Diva Recliner - Detail Shot"
-      },
-      {
-        src: "/src/assets/products/diva/diva-gallery-04.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "Diva Recliner - Lifestyle Scene"
-      },
-      {
-        src: "/src/assets/products/diva/diva-gallery-05.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "Diva Recliner - Close-up"
       }
     ]
   },
@@ -69,17 +45,29 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Ultimate Comfort Engineering",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/relaxmax/relaxmax-hero-01.jpg",
+      src: "/images/relaxmax-hero-offwhite.jpg",
       width: 2752,
       height: 1536,
       alt: "RelaxMax Recliner - Off-White Hero"
     },
     gallery: [
       {
-        src: "/src/assets/products/relaxmax/relaxmax-gallery-01.jpg",
+        src: "/images/relaxmax-lifestyle-day.png",
         width: 2752,
         height: 1536,
-        alt: "RelaxMax Recliner - Detail View"
+        alt: "RelaxMax Recliner - Day Lifestyle"
+      },
+      {
+        src: "/images/relaxmax-lifestyle-night.png",
+        width: 2752,
+        height: 1536,
+        alt: "RelaxMax Recliner - Night Lifestyle"
+      },
+      {
+        src: "/images/relaxmax-brown-lifestyle.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "RelaxMax Recliner - Brown Lifestyle"
       }
     ]
   },
@@ -89,35 +77,23 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Two-Seater Power Recliner",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/cozycompanion/cozycompanion-hero-01.jpg",
+      src: "/images/cozycompanion-beige-front.jpg",
       width: 2752,
       height: 1536,
       alt: "CozyCompanion Loveseat - Beige Hero"
     },
     gallery: [
       {
-        src: "/src/assets/products/cozycompanion/cozycompanion-gallery-01.jpg",
+        src: "/images/cozycompanion-yellow-front.jpg",
         width: 2752,
         height: 1536,
         alt: "CozyCompanion - Yellow Front View"
       },
       {
-        src: "/src/assets/products/cozycompanion/cozycompanion-gallery-02.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "CozyCompanion - Angle View"
-      },
-      {
-        src: "/src/assets/products/cozycompanion/cozycompanion-gallery-03.jpg",
+        src: "/images/cozycompanion-couple-lifestyle.jpg",
         width: 2752,
         height: 1536,
         alt: "CozyCompanion - Lifestyle Couple"
-      },
-      {
-        src: "/src/assets/products/cozycompanion/cozycompanion-gallery-04.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "CozyCompanion - Side Detail"
       }
     ]
   },
@@ -127,25 +103,12 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Executive Productivity Chair",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/worknest/worknest-hero-01.jpg",
+      src: "/images/diva-red-front.jpg",
       width: 2752,
       height: 1536,
       alt: "WorkNest Recliner - Hero Shot"
     },
-    gallery: [
-      {
-        src: "/src/assets/products/worknest/worknest-gallery-01.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "WorkNest - Front View"
-      },
-      {
-        src: "/src/assets/products/worknest/worknest-gallery-02.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "WorkNest - Side Angle"
-      }
-    ]
+    gallery: []
   },
   {
     productHandle: "spacesaver",
@@ -153,12 +116,19 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Wall-Hugger Technology",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/spacesaver/spacesaver-hero-01.jpg",
+      src: "/images/spacesaver-offwhite-reclined.jpg",
       width: 2752,
       height: 1536,
       alt: "SpaceSaver Recliner - Off-White"
     },
-    gallery: [] // More images coming soon
+    gallery: [
+      {
+        src: "/images/spacesaver-offwhite-side.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "SpaceSaver - Side View"
+      }
+    ]
   },
   {
     productHandle: "comfortplus",
@@ -166,12 +136,12 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Enhanced Ergonomic Design",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/comfortplus/comfortplus-hero-01.jpg",
+      src: "/images/relaxmax-hero-offwhite.jpg",
       width: 2752,
       height: 1536,
       alt: "ComfortPlus Recliner - Hero"
     },
-    gallery: [] // More images coming soon
+    gallery: []
   },
   {
     productHandle: "easyup",
@@ -179,17 +149,35 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Power Lift Assistance",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/easyup/easyup-hero-01.jpg",
+      src: "/images/easyup-beige-front.jpg",
       width: 2752,
       height: 1536,
       alt: "EasyUp Lift Recliner - Beige"
     },
     gallery: [
       {
-        src: "/src/assets/products/easyup/easyup-gallery-01.jpg",
+        src: "/images/easyup-beige-lifted.jpg",
         width: 2752,
         height: 1536,
         alt: "EasyUp - Lifted Position"
+      },
+      {
+        src: "/images/easyup-compact-charcoal-front.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "EasyUp Compact - Charcoal Front"
+      },
+      {
+        src: "/images/easyup-compact-charcoal-reclined.png",
+        width: 2752,
+        height: 1536,
+        alt: "EasyUp Compact - Charcoal Reclined"
+      },
+      {
+        src: "/images/easyup-compact-charcoal-side.png",
+        width: 2752,
+        height: 1536,
+        alt: "EasyUp Compact - Charcoal Side"
       }
     ]
   },
@@ -199,38 +187,32 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Curated Room Configurations",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/src/assets/products/complete-set/complete-set-hero-01.jpg",
+      src: "/images/complete-set-classic.jpg",
       width: 2752,
       height: 1536,
-      alt: "Complete Set - Clean Hero (No Watermark)"
+      alt: "Complete Set - Classic Configuration"
     },
     gallery: [
       {
-        src: "/src/assets/products/complete-set/complete-set-gallery-01.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "Complete Set - Classic Configuration"
-      },
-      {
-        src: "/src/assets/products/complete-set/complete-set-gallery-02.jpg",
+        src: "/images/complete-set-coastal-modern.jpg",
         width: 2752,
         height: 1536,
         alt: "Complete Set - Coastal Modern"
       },
       {
-        src: "/src/assets/products/complete-set/complete-set-gallery-03.jpg",
+        src: "/images/complete-set-family-modern.jpg",
         width: 2752,
         height: 1536,
         alt: "Complete Set - Family Modern"
       },
       {
-        src: "/src/assets/products/complete-set/complete-set-gallery-04.jpg",
+        src: "/images/complete-set-modern-fireplace.jpg",
         width: 2752,
         height: 1536,
         alt: "Complete Set - Modern Fireplace"
       },
       {
-        src: "/src/assets/products/complete-set/complete-set-gallery-05.jpg",
+        src: "/images/complete-set-sunset-fireplace.jpg",
         width: 2752,
         height: 1536,
         alt: "Complete Set - Sunset Fireplace"
