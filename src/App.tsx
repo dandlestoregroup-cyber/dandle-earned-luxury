@@ -10,6 +10,7 @@ import NourChat from "./pages/NourChat";
 import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
+import GenerateImages from "./pages/admin/GenerateImages";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/nour-chat" element={<NourChat />} />
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
+            <Route path="/admin/generate-images" element={<GenerateImages />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
