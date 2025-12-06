@@ -38,32 +38,50 @@ const REFERENCE_IMAGES: ReferenceImage[] = [
   { id: "15", url: "/images/complete-set-family-modern.jpg", product: "Complete Set", handle: "complete-set", description: "Family modern" },
 ];
 
-// Generation presets with brand-consistent prompts
+// Composition rules for 85% product fill
+const COMPOSITION_RULES = `
+CRITICAL COMPOSITION REQUIREMENTS:
+- Product MUST occupy exactly 85% of the total image area (±2% tolerance)
+- Product MUST be perfectly centered in frame (both horizontally and vertically)
+- Product MUST be shown in FULL - absolutely NO cropping of any elements
+- Preserve 100% of original product design, colors, textures, stitching, and details
+- NO stretching or distortion - maintain original product proportions exactly
+- Output resolution: 2752x1536 pixels (aspect ratio 16:9)
+- Ultra-sharp focus, professional studio lighting quality
+- Color accuracy: exact match to reference image colors
+`;
+
+// Generation presets with brand-consistent prompts + 85% fill rule
 const GENERATION_PRESETS = [
   {
     id: "lifestyle-day",
     label: "Lifestyle Day",
-    prompt: "Transform this recliner into a lifestyle scene: Modern Egyptian penthouse apartment, warm natural sunlight streaming through floor-to-ceiling windows overlooking Cairo, Mediterranean indoor plants, neutral cream and beige palette with bronze accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet luxury aesthetic, aspirational but understated. Ultra high resolution.",
+    prompt: `${COMPOSITION_RULES}
+SCENE: Transform this recliner into a lifestyle scene - Modern Egyptian penthouse apartment, warm natural sunlight streaming through floor-to-ceiling windows overlooking Cairo, Mediterranean indoor plants, neutral cream and beige palette with bronze accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet luxury aesthetic, aspirational but understated.`,
   },
   {
     id: "lifestyle-night",
     label: "Lifestyle Night", 
-    prompt: "Transform this recliner into an evening scene: Luxurious Egyptian living room at golden hour, warm ambient lighting from designer lamps, soft shadows, cozy atmosphere with a cup of tea on side table. Rich warm tones, bronze and champagne accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet luxury aesthetic. Ultra high resolution.",
+    prompt: `${COMPOSITION_RULES}
+SCENE: Transform this recliner into an evening scene - Luxurious Egyptian living room at golden hour, warm ambient lighting from designer lamps, soft shadows, cozy atmosphere with a cup of tea on side table. Rich warm tones, bronze and champagne accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet luxury aesthetic.`,
   },
   {
     id: "reclined-view",
     label: "Reclined Position",
-    prompt: "Show this recliner in fully reclined position: Same chair design but extended footrest visible, backrest reclined to relaxation angle. Clean studio background with soft gradient, professional product photography lighting. Subtle champagne-gold DANDLE watermark. Ultra high resolution.",
+    prompt: `${COMPOSITION_RULES}
+SCENE: Show this recliner in fully reclined position - Same chair design but extended footrest visible, backrest reclined to relaxation angle. Clean studio background with soft gradient, professional product photography lighting. Subtle champagne-gold DANDLE watermark.`,
   },
   {
     id: "angle-side",
     label: "Side Angle",
-    prompt: "Show this recliner from a 45-degree side profile angle: Emphasize the elegant silhouette and premium craftsmanship details. Clean neutral background, professional studio lighting with soft shadows. Subtle champagne-gold DANDLE watermark. Ultra high resolution.",
+    prompt: `${COMPOSITION_RULES}
+SCENE: Show this recliner from a 45-degree side profile angle - Emphasize the elegant silhouette and premium craftsmanship details. Clean neutral background, professional studio lighting with soft shadows. Subtle champagne-gold DANDLE watermark.`,
   },
   {
     id: "detail-texture",
     label: "Detail Texture",
-    prompt: "Close-up macro shot of this recliner's upholstery: Show premium leather or fabric texture, stitching details, armrest craftsmanship. Shallow depth of field, professional product photography. Emphasize quality materials. Subtle champagne-gold DANDLE watermark. Ultra high resolution.",
+    prompt: `${COMPOSITION_RULES}
+SCENE: Close-up macro shot of this recliner's upholstery - Show premium leather or fabric texture, stitching details, armrest craftsmanship. Shallow depth of field, professional product photography. Emphasize quality materials. Subtle champagne-gold DANDLE watermark.`,
   },
 ];
 
