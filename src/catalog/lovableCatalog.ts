@@ -103,10 +103,10 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Executive Productivity Chair",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/images/diva-red-front.jpg",
+      src: "/images/worknest-blue-front.webp",
       width: 2752,
       height: 1536,
-      alt: "WorkNest Recliner - Hero Shot"
+      alt: "WorkNest Recliner - Blue with Swivel Table"
     },
     gallery: []
   },
@@ -116,12 +116,18 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Wall-Hugger Technology",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/images/spacesaver-offwhite-reclined.jpg",
+      src: "/images/spacesaver-red-front.webp",
       width: 2752,
       height: 1536,
-      alt: "SpaceSaver Recliner - Off-White"
+      alt: "SpaceSaver Recliner - Red Leather"
     },
     gallery: [
+      {
+        src: "/images/spacesaver-offwhite-reclined.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "SpaceSaver - Off-White Reclined"
+      },
       {
         src: "/images/spacesaver-offwhite-side.jpg",
         width: 2752,
@@ -136,12 +142,19 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Enhanced Ergonomic Design",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/images/relaxmax-hero-offwhite.jpg",
+      src: "/images/comfortplus-tan-front.webp",
       width: 2752,
       height: 1536,
-      alt: "ComfortPlus Recliner - Hero"
+      alt: "ComfortPlus Recliner - Tan Leather"
     },
-    gallery: []
+    gallery: [
+      {
+        src: "/images/relaxmax-hero-offwhite.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "ComfortPlus - Off-White Variant"
+      }
+    ]
   },
   {
     productHandle: "easyup",
@@ -149,20 +162,40 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Power Lift Assistance",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/images/easyup-beige-front.jpg",
+      src: "/images/easyup-standard-grey-front.webp",
       width: 2752,
       height: 1536,
-      alt: "EasyUp Lift Recliner - Beige"
+      alt: "EasyUp Standard Lift Recliner - Grey"
     },
     gallery: [
+      {
+        src: "/images/easyup-beige-front.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "EasyUp - Beige Front"
+      },
       {
         src: "/images/easyup-beige-lifted.jpg",
         width: 2752,
         height: 1536,
         alt: "EasyUp - Lifted Position"
-      },
+      }
+    ]
+  },
+  {
+    productHandle: "easyup-compact",
+    title: "EasyUp Compact Lift Recliner",
+    subtitle: "Compact Power Lift",
+    aspectRatio: 1.79,
+    heroImage: {
+      src: "/images/easyup-compact-grey-front.webp",
+      width: 2752,
+      height: 1536,
+      alt: "EasyUp Compact Lift Recliner - Grey"
+    },
+    gallery: [
       {
-        src: "/images/easyup-compact-charcoal-front.jpg",
+        src: "/images/easyup-compact-charcoal-front.png",
         width: 2752,
         height: 1536,
         alt: "EasyUp Compact - Charcoal Front"
