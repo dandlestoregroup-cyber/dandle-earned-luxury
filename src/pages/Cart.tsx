@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import CheckoutForm, { CustomerData } from '@/components/CheckoutForm';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
   const navigate = useNavigate();
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const formatPrice = (num: number) => `${num.toLocaleString('en-US')} EGP`;
 
@@ -18,23 +21,119 @@ const Cart = () => {
     setShowCheckoutForm(true);
   };
 
-  const handleFormSubmit = (customerData: CustomerData) => {
-    const orderDetails = items.map(item => {
-      let price = item.mechanism === 'power' 
-        ? (item.product.pricePower || item.product.price || 0)
-        : (item.product.priceManual || item.product.price || 0);
-      
-      if (item.massageFeature) {
-        price += 9000;
-      }
-      
-      const massageText = item.massageFeature ? ' + Massage Feature' : '';
-      return `${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText}) - ${formatPrice(price * item.quantity)}`;
-    }).join('%0A');
+  const handleFormSubmit = async (customerData: CustomerData) => {
+    setIsProcessing(true);
 
-    const total = formatPrice(getTotalPrice());
-    
-    const customerInfo = `
+    try {
+      // Prepare cart items for the edge function
+      const cartItems = items.map(item => {
+        let price = item.mechanism === 'power' 
+          ? (item.product.pricePower || item.product.price || 0)
+          : (item.product.priceManual || item.product.price || 0);
+        
+        if (item.massageFeature) {
+          price += 9000;
+        }
+
+        return {
+          productId: item.product.id,
+          productName: item.product.name,
+          variantTitle: `${item.selectedColor}, ${item.mechanism}`,
+          color: item.selectedColor,
+          mechanism: item.mechanism,
+          quantity: item.quantity,
+          price,
+          massageFeature: item.massageFeature,
+          handle: item.product.id.toLowerCase().replace(/\s+/g, '-'),
+        };
+      });
+
+      // Call edge function to create Shopify order
+      const { data, error } = await supabase.functions.invoke('create-order', {
+        body: {
+          customer: customerData,
+          items: cartItems,
+          totalPrice: getTotalPrice(),
+        },
+      });
+
+      let orderReference = '';
+      let trackingUrl = '';
+      let productLinks: Array<{ name: string; url: string }> = [];
+
+      if (error) {
+        console.error('Error creating order:', error);
+        // Generate fallback reference
+        orderReference = `DN-${Date.now().toString(36).toUpperCase()}`;
+        toast.error('Order sync pending', {
+          description: 'Your order will be processed via WhatsApp.',
+        });
+      } else if (data?.success) {
+        orderReference = data.order.reference;
+        trackingUrl = data.order.trackingUrl;
+        productLinks = data.productLinks || [];
+        toast.success('Order created!', {
+          description: `Reference: ${orderReference}`,
+        });
+      } else {
+        // Use fallback reference from edge function
+        orderReference = data?.fallback?.reference || `DN-${Date.now().toString(36).toUpperCase()}`;
+      }
+
+      // Build WhatsApp message with order details and links
+      const orderDetails = items.map(item => {
+        let price = item.mechanism === 'power' 
+          ? (item.product.pricePower || item.product.price || 0)
+          : (item.product.priceManual || item.product.price || 0);
+        
+        if (item.massageFeature) {
+          price += 9000;
+        }
+        
+        const massageText = item.massageFeature ? ' + Massage' : '';
+        const handle = item.product.id.toLowerCase().replace(/\s+/g, '-');
+        return `• ${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText})%0A  ${formatPrice(price * item.quantity)}%0A  🔗 dandle.eg/product/${handle}`;
+      }).join('%0A%0A');
+
+      const total = formatPrice(getTotalPrice());
+      
+      // Build enhanced WhatsApp message
+      const message = `🛍️ *New Order ${orderReference}*%0A%0A` +
+        `👤 *Customer:* ${customerData.name}%0A` +
+        `📱 ${customerData.phone}%0A` +
+        `${customerData.email ? `📧 ${customerData.email}%0A` : ''}%0A` +
+        `📍 *Delivery Address:*%0A` +
+        `${customerData.address}%0A` +
+        `${customerData.city}, ${customerData.governorate}%0A%0A` +
+        `${customerData.notes ? `📝 *Notes:* ${customerData.notes}%0A%0A` : ''}` +
+        `📦 *Order Items:*%0A${orderDetails}%0A%0A` +
+        `💰 *Total: ${total}*%0A%0A` +
+        `${trackingUrl ? `🔗 Track Order: ${trackingUrl}` : ''}`;
+      
+      window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
+      clearCart();
+      navigate('/');
+      
+    } catch (err) {
+      console.error('Checkout error:', err);
+      
+      // Fallback to original WhatsApp flow
+      const orderDetails = items.map(item => {
+        let price = item.mechanism === 'power' 
+          ? (item.product.pricePower || item.product.price || 0)
+          : (item.product.priceManual || item.product.price || 0);
+        
+        if (item.massageFeature) {
+          price += 9000;
+        }
+        
+        const massageText = item.massageFeature ? ' + Massage Feature' : '';
+        return `${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText}) - ${formatPrice(price * item.quantity)}`;
+      }).join('%0A');
+
+      const total = formatPrice(getTotalPrice());
+      
+      const customerInfo = `
 *Customer Details:*
 Name: ${customerData.name}
 Phone: ${customerData.phone}
@@ -46,11 +145,14 @@ ${customerData.city}, ${customerData.governorate}
 
 ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
 
-    const message = `Hello! I'd like to place an order:%0A%0A${customerInfo}%0A*Order Details:*%0A${orderDetails}%0A%0A*Total: ${total}*`;
-    
-    window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
-    clearCart();
-    navigate('/');
+      const message = `Hello! I'd like to place an order:%0A%0A${customerInfo}%0A*Order Details:*%0A${orderDetails}%0A%0A*Total: ${total}*`;
+      
+      window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
+      clearCart();
+      navigate('/');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (items.length === 0) {
@@ -84,6 +186,7 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
               variant="ghost"
               onClick={() => setShowCheckoutForm(false)}
               className="mb-6"
+              disabled={isProcessing}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Cart
@@ -91,6 +194,7 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
             <CheckoutForm
               onSubmit={handleFormSubmit}
               onCancel={() => setShowCheckoutForm(false)}
+              isProcessing={isProcessing}
             />
           </div>
         ) : (
