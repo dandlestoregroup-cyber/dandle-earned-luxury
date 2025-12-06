@@ -11,9 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
-// Reference images from compressed batch (hosted on Replit)
-const REFERENCE_BASE_URL = "https://53ba442d-0103-4dbc-a0d5-4cfe858dc7bb-00-1jrlt3i06lbw7.picard.replit.dev/products";
-
+// Reference images from local public/images folder
 interface ReferenceImage {
   id: string;
   url: string;
@@ -23,23 +21,21 @@ interface ReferenceImage {
 }
 
 const REFERENCE_IMAGES: ReferenceImage[] = [
-  { id: "01", url: `${REFERENCE_BASE_URL}/01.webp`, product: "RelaxMax", handle: "relaxmax", description: "Manual variant" },
-  { id: "02", url: `${REFERENCE_BASE_URL}/02.webp`, product: "RelaxMax", handle: "relaxmax", description: "Power variant" },
-  { id: "03", url: `${REFERENCE_BASE_URL}/03.webp`, product: "Diva", handle: "diva", description: "Manual red" },
-  { id: "04", url: `${REFERENCE_BASE_URL}/04.webp`, product: "Diva", handle: "diva", description: "Power variant" },
-  { id: "05", url: `${REFERENCE_BASE_URL}/05.webp`, product: "Diva", handle: "diva", description: "Angle shot" },
-  { id: "06", url: `${REFERENCE_BASE_URL}/06.webp`, product: "ComfortPlus", handle: "comfortplus", description: "Manual variant" },
-  { id: "07", url: `${REFERENCE_BASE_URL}/07.webp`, product: "ComfortPlus", handle: "comfortplus", description: "Power variant" },
-  { id: "08", url: `${REFERENCE_BASE_URL}/08.webp`, product: "CozyCompanion", handle: "cozycompanion", description: "Beige front" },
-  { id: "09", url: `${REFERENCE_BASE_URL}/09.webp`, product: "CozyCompanion", handle: "cozycompanion", description: "Yellow variant" },
-  { id: "10", url: `${REFERENCE_BASE_URL}/10.webp`, product: "EasyUp", handle: "easyup", description: "Standard lift" },
-  { id: "11", url: `${REFERENCE_BASE_URL}/11.webp`, product: "EasyUp Compact", handle: "easyup-compact", description: "Compact lift" },
-  { id: "12", url: `${REFERENCE_BASE_URL}/12.webp`, product: "WorkNest", handle: "worknest", description: "Coming soon" },
-  { id: "13", url: `${REFERENCE_BASE_URL}/13.webp`, product: "SpaceSaver", handle: "spacesaver", description: "Variant 1" },
-  { id: "14", url: `${REFERENCE_BASE_URL}/14.webp`, product: "SpaceSaver", handle: "spacesaver", description: "Variant 2" },
-  { id: "15", url: `${REFERENCE_BASE_URL}/15.webp`, product: "Complete Set", handle: "complete-set", description: "Classic setup" },
-  { id: "16", url: `${REFERENCE_BASE_URL}/16.webp`, product: "Complete Set", handle: "complete-set", description: "Coastal modern" },
-  { id: "17", url: `${REFERENCE_BASE_URL}/17.webp`, product: "Complete Set", handle: "complete-set", description: "Family modern" },
+  { id: "01", url: "/images/relaxmax-hero-offwhite.jpg", product: "RelaxMax", handle: "relaxmax", description: "Hero off-white" },
+  { id: "02", url: "/images/relaxmax-brown-lifestyle.jpg", product: "RelaxMax", handle: "relaxmax", description: "Brown lifestyle" },
+  { id: "03", url: "/images/diva-red-front.jpg", product: "Diva", handle: "diva", description: "Red front" },
+  { id: "04", url: "/images/cozycompanion-beige-front.jpg", product: "CozyCompanion", handle: "cozycompanion", description: "Beige front" },
+  { id: "05", url: "/images/cozycompanion-yellow-front.jpg", product: "CozyCompanion", handle: "cozycompanion", description: "Yellow front" },
+  { id: "06", url: "/images/cozycompanion-couple-lifestyle.jpg", product: "CozyCompanion", handle: "cozycompanion", description: "Couple lifestyle" },
+  { id: "07", url: "/images/easyup-beige-front.jpg", product: "EasyUp", handle: "easyup", description: "Beige front" },
+  { id: "08", url: "/images/easyup-beige-lifted.jpg", product: "EasyUp", handle: "easyup", description: "Beige lifted" },
+  { id: "09", url: "/images/easyup-compact-charcoal-front.jpg", product: "EasyUp Compact", handle: "easyup-compact", description: "Charcoal front" },
+  { id: "10", url: "/images/easyup-compact-charcoal-reclined.png", product: "EasyUp Compact", handle: "easyup-compact", description: "Charcoal reclined" },
+  { id: "11", url: "/images/spacesaver-offwhite-reclined.jpg", product: "SpaceSaver", handle: "spacesaver", description: "Off-white reclined" },
+  { id: "12", url: "/images/spacesaver-offwhite-side.jpg", product: "SpaceSaver", handle: "spacesaver", description: "Off-white side" },
+  { id: "13", url: "/images/complete-set-classic.jpg", product: "Complete Set", handle: "complete-set", description: "Classic" },
+  { id: "14", url: "/images/complete-set-coastal-modern.jpg", product: "Complete Set", handle: "complete-set", description: "Coastal modern" },
+  { id: "15", url: "/images/complete-set-family-modern.jpg", product: "Complete Set", handle: "complete-set", description: "Family modern" },
 ];
 
 // Generation presets with brand-consistent prompts
@@ -81,15 +77,13 @@ interface ProductPriority {
 }
 
 const PRODUCT_PRIORITIES: ProductPriority[] = [
-  { handle: "comfortplus", name: "ComfortPlus", priority: "high", referenceIds: ["06", "07"], presetsToGenerate: ["lifestyle-day", "lifestyle-night", "reclined-view", "angle-side"] },
-  { handle: "diva", name: "Diva", priority: "high", referenceIds: ["03", "04", "05"], presetsToGenerate: ["lifestyle-day", "lifestyle-night", "angle-side"] },
-  { handle: "cozycompanion", name: "CozyCompanion", priority: "high", referenceIds: ["08", "09"], presetsToGenerate: ["lifestyle-day", "angle-side"] },
+  { handle: "diva", name: "Diva", priority: "high", referenceIds: ["03"], presetsToGenerate: ["lifestyle-day", "lifestyle-night", "angle-side"] },
+  { handle: "cozycompanion", name: "CozyCompanion", priority: "high", referenceIds: ["04", "05", "06"], presetsToGenerate: ["lifestyle-day", "angle-side"] },
   { handle: "relaxmax", name: "RelaxMax", priority: "medium", referenceIds: ["01", "02"], presetsToGenerate: ["lifestyle-night"] },
-  { handle: "easyup", name: "EasyUp", priority: "medium", referenceIds: ["10"], presetsToGenerate: ["lifestyle-day"] },
-  { handle: "easyup-compact", name: "EasyUp Compact", priority: "medium", referenceIds: ["11"], presetsToGenerate: ["lifestyle-day"] },
-  { handle: "complete-set", name: "Complete Set", priority: "medium", referenceIds: ["15", "16", "17"], presetsToGenerate: [] },
-  { handle: "worknest", name: "WorkNest", priority: "skip", referenceIds: ["12"], presetsToGenerate: [] },
-  { handle: "spacesaver", name: "SpaceSaver", priority: "skip", referenceIds: ["13", "14"], presetsToGenerate: [] },
+  { handle: "easyup", name: "EasyUp", priority: "medium", referenceIds: ["07", "08"], presetsToGenerate: ["lifestyle-day"] },
+  { handle: "easyup-compact", name: "EasyUp Compact", priority: "medium", referenceIds: ["09", "10"], presetsToGenerate: ["lifestyle-day"] },
+  { handle: "spacesaver", name: "SpaceSaver", priority: "medium", referenceIds: ["11", "12"], presetsToGenerate: ["lifestyle-day"] },
+  { handle: "complete-set", name: "Complete Set", priority: "medium", referenceIds: ["13", "14", "15"], presetsToGenerate: [] },
 ];
 
 interface GenerationJob {
@@ -128,6 +122,18 @@ const GenerateImages = () => {
     return preset?.prompt || "";
   };
 
+  // Convert local image to base64
+  const imageToBase64 = async (url: string): Promise<string> => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
   const handleSingleGenerate = async () => {
     if (!selectedProduct || !selectedPreset || !selectedReference) {
       toast.error("Please select product, preset, and reference image");
@@ -141,9 +147,12 @@ const GenerateImages = () => {
       const reference = REFERENCE_IMAGES.find(r => r.id === selectedReference);
       if (!reference) throw new Error("Reference not found");
 
+      // Convert local image to base64
+      const imageBase64 = await imageToBase64(reference.url);
+
       const { data, error } = await supabase.functions.invoke('generate-product-image', {
         body: {
-          referenceImageUrl: reference.url,
+          imageBase64,
           prompt: getCurrentPrompt(),
           productHandle: selectedProduct,
           imageType: `${selectedPreset}-${selectedReference}`
@@ -227,9 +236,12 @@ const GenerateImages = () => {
           throw new Error("Reference or preset not found");
         }
 
+        // Convert local image to base64
+        const imageBase64 = await imageToBase64(reference.url);
+
         const { data, error } = await supabase.functions.invoke('generate-product-image', {
           body: {
-            referenceImageUrl: reference.url,
+            imageBase64,
             prompt: preset.prompt,
             productHandle: job.productHandle,
             imageType: job.presetId

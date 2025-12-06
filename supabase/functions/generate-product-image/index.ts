@@ -12,19 +12,28 @@ serve(async (req) => {
   }
 
   try {
-    const { referenceImageUrl, prompt, productHandle, imageType } = await req.json();
+    const { imageBase64, referenceImageUrl, prompt, productHandle, imageType } = await req.json();
     
     console.log(`Generating image for ${productHandle}/${imageType}`);
 
-    // Fetch reference image and convert to base64
-    const imageResponse = await fetch(referenceImageUrl);
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch reference image: ${imageResponse.statusText}`);
+    let imageDataUrl: string;
+
+    // Use provided base64 directly, or fetch from URL as fallback
+    if (imageBase64) {
+      console.log("Using provided base64 image data");
+      imageDataUrl = imageBase64;
+    } else if (referenceImageUrl) {
+      console.log(`Fetching reference image from: ${referenceImageUrl}`);
+      const imageResponse = await fetch(referenceImageUrl);
+      if (!imageResponse.ok) {
+        throw new Error(`Failed to fetch reference image: ${imageResponse.statusText}`);
+      }
+      const imageBuffer = await imageResponse.arrayBuffer();
+      const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
+      imageDataUrl = `data:image/jpeg;base64,${base64Image}`;
+    } else {
+      throw new Error("Either imageBase64 or referenceImageUrl is required");
     }
-    
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
-    const imageDataUrl = `data:image/jpeg;base64,${base64Image}`;
 
     // Call Lovable AI for image-to-image generation
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
