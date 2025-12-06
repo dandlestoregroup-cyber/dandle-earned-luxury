@@ -4,10 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/contexts/CartContext";
+import { Loader2 } from "lucide-react";
 
 interface CheckoutFormProps {
   onSubmit: (data: CustomerData) => void;
   onCancel: () => void;
+  isProcessing?: boolean;
 }
 
 export interface CustomerData {
@@ -20,7 +22,7 @@ export interface CustomerData {
   notes?: string;
 }
 
-const CheckoutForm = ({ onSubmit, onCancel }: CheckoutFormProps) => {
+const CheckoutForm = ({ onSubmit, onCancel, isProcessing = false }: CheckoutFormProps) => {
   const { getTotalPrice } = useCart();
   const [formData, setFormData] = useState<CustomerData>({
     name: "",
@@ -161,6 +163,7 @@ const CheckoutForm = ({ onSubmit, onCancel }: CheckoutFormProps) => {
             size="lg"
             className="flex-1"
             onClick={onCancel}
+            disabled={isProcessing}
           >
             Back to Cart
           </Button>
@@ -169,8 +172,16 @@ const CheckoutForm = ({ onSubmit, onCancel }: CheckoutFormProps) => {
             variant="luxury"
             size="lg"
             className="flex-1"
+            disabled={isProcessing}
           >
-            Continue to WhatsApp
+            {isProcessing ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Continue to WhatsApp'
+            )}
           </Button>
         </div>
       </form>
