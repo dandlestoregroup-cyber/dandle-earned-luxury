@@ -35,11 +35,11 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
-      <div className="w-full aspect-[4/3] overflow-hidden bg-muted">
+      <div className="w-full aspect-[16/10] overflow-hidden bg-warm-white flex items-center justify-center p-4">
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
           loading="lazy"
         />
       </div>
