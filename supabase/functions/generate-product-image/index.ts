@@ -35,6 +35,23 @@ serve(async (req) => {
       throw new Error("Either imageBase64 or referenceImageUrl is required");
     }
 
+    // Enforce 85% product fill rule in all prompts
+    const compositionEnforcement = `
+CRITICAL OUTPUT REQUIREMENTS (MUST FOLLOW):
+1. OUTPUT DIMENSIONS: Generate image at exactly 2752x1536 pixels (16:9 aspect ratio)
+2. PRODUCT FILL: The recliner product MUST occupy exactly 85% of the total image area (±2% tolerance)
+3. CENTERING: Product MUST be perfectly centered both horizontally and vertically
+4. NO CROPPING: Show the COMPLETE product - no parts cut off at edges
+5. NO DISTORTION: Maintain exact original product proportions - no stretching or squashing
+6. COLOR PRESERVATION: 100% accurate color match to reference image - no color shifts
+7. DESIGN PRESERVATION: Preserve 100% of product details - stitching, textures, materials, shape
+8. RESOLUTION: Ultra-sharp, professional studio quality, no blur or artifacts
+
+`;
+    
+    const enhancedPrompt = compositionEnforcement + prompt;
+    console.log("Enhanced prompt with composition rules applied");
+
     // Call Lovable AI for image-to-image generation
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -55,7 +72,7 @@ serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: prompt
+                text: enhancedPrompt
               },
               {
                 type: "image_url",
