@@ -9,6 +9,7 @@ import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
 import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
+import OrderStatus from "./pages/OrderStatus";
 import NotFound from "./pages/NotFound";
 import GenerateImages from "./pages/admin/GenerateImages";
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/nour-chat" element={<NourChat />} />
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
+            <Route path="/order/:reference" element={<OrderStatus />} />
             <Route path="/admin/generate-images" element={<GenerateImages />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
