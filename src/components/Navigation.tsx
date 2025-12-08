@@ -3,7 +3,9 @@ import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
+import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { useNavigate } from "react-router-dom";
+import CartDrawer from "@/components/CartDrawer";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,18 +69,8 @@ const Navigation = () => {
                 </a>
               )
             ))}
-            <button
-              onClick={() => navigate('/cart')}
-              className="relative text-card-foreground hover:text-accent transition-colors"
-            >
-              <ShoppingCart className="w-6 h-6" />
-              {getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {getTotalItems()}
-                </span>
-              )}
-            </button>
-            <Button variant="hero" size="lg" onClick={() => navigate('/cart')}>
+            <CartDrawer />
+            <Button variant="hero" size="lg" onClick={() => navigate('/#collection')}>
               Shop Now
             </Button>
           </div>
