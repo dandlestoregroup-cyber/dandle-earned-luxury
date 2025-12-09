@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import CheckoutForm, { CustomerData } from '@/components/CheckoutForm';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { generateInvoice } from '@/utils/generateInvoice';
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
@@ -80,6 +81,38 @@ const Cart = () => {
         orderReference = data?.fallback?.reference || `DN-${Date.now().toString(36).toUpperCase()}`;
       }
 
+      // Generate and download PDF invoice
+      const pdf = generateInvoice({
+        reference: orderReference,
+        name: customerData.name,
+        phone: customerData.phone,
+        address: `${customerData.address}, ${customerData.city}, ${customerData.governorate}`,
+        items: items.map(item => {
+          let price = item.mechanism === 'power'
+            ? (item.product.pricePower || item.product.price || 0)
+            : (item.product.priceManual || item.product.price || 0);
+
+          if (item.massageFeature) {
+            price += 9000;
+          }
+
+          return {
+            title: `${item.product.name} (${item.selectedColor}, ${item.mechanism})`,
+            quantity: item.quantity,
+            price: price * item.quantity
+          };
+        }),
+        total: getTotalPrice()
+      });
+
+      // Download PDF
+      const url = URL.createObjectURL(pdf);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${orderReference}-Invoice.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+
       // Build WhatsApp message with order details and links
       const orderDetails = items.map(item => {
         let price = item.mechanism === 'power' 
@@ -96,19 +129,20 @@ const Cart = () => {
       }).join('%0A%0A');
 
       const total = formatPrice(getTotalPrice());
-      
-      // Build enhanced WhatsApp message
-      const message = `🛍️ *New Order ${orderReference}*%0A%0A` +
-        `👤 *Customer:* ${customerData.name}%0A` +
+      const orderTrackingUrl = trackingUrl || `https://dandle.store/order/${orderReference}`;
+
+      // Build enhanced WhatsApp message with Arabic text
+      const message = `🛋️ طلب جديد - ${orderReference}%0A%0A` +
+        `👤 ${customerData.name}%0A` +
         `📱 ${customerData.phone}%0A` +
-        `${customerData.email ? `📧 ${customerData.email}%0A` : ''}%0A` +
-        `📍 *Delivery Address:*%0A` +
-        `${customerData.address}%0A` +
+        `${customerData.email ? `📧 ${customerData.email}%0A` : ''}` +
+        `📍 ${customerData.address}%0A` +
         `${customerData.city}, ${customerData.governorate}%0A%0A` +
-        `${customerData.notes ? `📝 *Notes:* ${customerData.notes}%0A%0A` : ''}` +
-        `📦 *Order Items:*%0A${orderDetails}%0A%0A` +
-        `💰 *Total: ${total}*%0A%0A` +
-        `${trackingUrl ? `🔗 Track Order: ${trackingUrl}` : ''}`;
+        `${customerData.notes ? `📝 ملاحظات: ${customerData.notes}%0A%0A` : ''}` +
+        `🪑 المنتجات:%0A${orderDetails}%0A%0A` +
+        `💰 الإجمالي: ${total}%0A%0A` +
+        `🔗 تتبع الطلب: ${orderTrackingUrl}%0A%0A` +
+        `✅ تم تنزيل الفاتورة PDF`;
       
       window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
       clearCart();
