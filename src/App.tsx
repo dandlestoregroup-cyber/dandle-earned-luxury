@@ -12,6 +12,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Order from "./pages/Order";
 import NotFound from "./pages/NotFound";
 import GenerateImages from "./pages/admin/GenerateImages";
+import ExportData from "./pages/admin/ExportData";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<Order />} />
             <Route path="/admin/generate-images" element={<GenerateImages />} />
+            <Route path="/admin/export" element={<ExportData />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
