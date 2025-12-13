@@ -43,43 +43,49 @@ const ProductGallery = () => {
   };
 
   return (
-    <section id="collection" className="bg-warm-beige py-24 px-6 text-center">
-      <h2 className="font-headline text-3xl md:text-5xl mb-12 text-charcoal">
-        Our Collection
-      </h2>
-      
-      {loading && (
-        <div className="grid md:grid-cols-3 gap-8 max-w-screen-xl mx-auto">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="space-y-4">
-              <Skeleton className="aspect-[4/3] w-full rounded-lg" />
-              <Skeleton className="h-8 w-3/4 mx-auto" />
-              <Skeleton className="h-6 w-1/2 mx-auto" />
-            </div>
-          ))}
+    <section id="collection" className="bg-background py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="font-headline text-3xl md:text-4xl text-foreground mb-3">
+            Our Collection
+          </h2>
+          <p className="font-body text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
+            Handcrafted in Cairo, designed for earned luxury
+          </p>
         </div>
-      )}
-      
-      {error && (
-        <div className="text-destructive bg-destructive/10 p-4 rounded-lg max-w-md mx-auto mb-8">
-          <p>Unable to load live pricing. Showing catalog prices.</p>
-        </div>
-      )}
-      
-      {!loading && (
-        <div className="grid md:grid-cols-3 gap-8 max-w-screen-xl mx-auto">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              shopifyData={getShopifyData(product.id)}
-              onClick={() => handleProductClick(product)}
-            />
-          ))}
-        </div>
-      )}
+        
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-[16/9] w-full rounded-lg" />
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-destructive bg-destructive/10 p-4 rounded-lg max-w-md mx-auto mb-8">
+            <p className="text-sm">Unable to load live pricing. Showing catalog prices.</p>
+          </div>
+        )}
+        
+        {!loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                shopifyData={getShopifyData(product.id)}
+                onClick={() => handleProductClick(product)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
-      {/* Product Modal */}
       <ProductModal
         product={selectedProduct}
         isOpen={isModalOpen}

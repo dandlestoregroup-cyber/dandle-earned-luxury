@@ -56,42 +56,42 @@ const ProductCard = ({ product, shopifyData, onClick }: ProductCardProps) => {
 
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ duration: 0.25 }}
-      className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2 }}
+      className="overflow-hidden rounded-lg bg-card shadow-subtle cursor-pointer group"
       onClick={onClick}
     >
-      <div className="w-full aspect-[4/3] overflow-hidden bg-muted relative">
+      <div className="w-full aspect-[16/9] overflow-hidden bg-muted relative">
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
           loading="lazy"
         />
         {!isAvailable && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <span className="text-white font-medium px-4 py-2 bg-black/70 rounded-md">
+            <span className="text-white font-medium px-4 py-2 bg-black/70 rounded-md text-sm">
               Coming Soon
             </span>
           </div>
         )}
       </div>
-      <div className="p-6 space-y-4">
-        <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
+      <div className="p-5 space-y-3">
+        <h3 className="font-headline text-xl text-foreground">
           {product.name}
         </h3>
-        <p className="font-body text-lg text-dandle-orange">
+        <p className="font-body text-sm text-muted-foreground line-clamp-1">
           {product.tagline}
         </p>
-        <p className="font-headline text-2xl text-dandle-orange">
+        <p className="font-body text-lg font-medium text-foreground">
           {getPriceDisplay()}
         </p>
         {product.colors && (
-          <div className="flex gap-3">
-            {product.colors.map((color, idx) => (
+          <div className="flex gap-2">
+            {product.colors.slice(0, 4).map((color, idx) => (
               <button
                 key={idx}
-                className="w-12 h-12 rounded-full border-2 border-warm-beige bg-warm-white flex items-center justify-center font-body text-charcoal/60 hover:border-dandle-orange transition-colors"
+                className="w-8 h-8 rounded-full border border-border bg-background flex items-center justify-center font-body text-xs text-muted-foreground hover:border-bronze transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 {color.charAt(0).toUpperCase()}
@@ -99,7 +99,7 @@ const ProductCard = ({ product, shopifyData, onClick }: ProductCardProps) => {
             ))}
           </div>
         )}
-        <button className="w-full py-3 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg hover:from-bronze/40 hover:to-warm-beige transition-all">
+        <button className="w-full py-3 rounded-md bg-bronze text-white font-body font-medium hover:bg-bronze/90 transition-colors min-h-[48px]">
           Customize Now
         </button>
       </div>
