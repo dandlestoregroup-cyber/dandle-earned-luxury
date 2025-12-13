@@ -61,11 +61,12 @@ const ProductCard = ({ product, shopifyData, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-card shadow-subtle cursor-pointer group"
       onClick={onClick}
     >
-      <div className="w-full aspect-[16/9] overflow-hidden bg-muted relative">
+      {/* Product Image - CONTAINED, never overflows */}
+      <div className="relative w-full bg-muted border-b border-border/30" style={{ aspectRatio: '4/5' }}>
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-contain p-4"
           loading="lazy"
         />
         {!isAvailable && (
@@ -76,6 +77,8 @@ const ProductCard = ({ product, shopifyData, onClick }: ProductCardProps) => {
           </div>
         )}
       </div>
+      
+      {/* Product Info */}
       <div className="p-5 space-y-3">
         <h3 className="font-headline text-xl text-foreground">
           {product.name}
@@ -91,7 +94,7 @@ const ProductCard = ({ product, shopifyData, onClick }: ProductCardProps) => {
             {product.colors.slice(0, 4).map((color, idx) => (
               <button
                 key={idx}
-                className="w-8 h-8 rounded-full border border-border bg-background flex items-center justify-center font-body text-xs text-muted-foreground hover:border-bronze transition-colors"
+                className="w-8 h-8 rounded-full border border-border bg-background flex items-center justify-center font-body text-xs text-muted-foreground hover:border-bronze transition-colors min-w-[32px] min-h-[32px]"
                 onClick={(e) => e.stopPropagation()}
               >
                 {color.charAt(0).toUpperCase()}
