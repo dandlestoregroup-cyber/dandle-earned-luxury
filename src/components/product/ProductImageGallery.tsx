@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
+import { LovableImage } from "@/catalog/lovableCatalog";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface GalleryImage {
-  src: string;
-  alt: string;
-}
-
 interface ProductImageGalleryProps {
-  images: GalleryImage[];
-  aspectRatio?: string | number;
+  images: LovableImage[];
+  aspectRatio: number;
   altPrefix: string;
 }
 
