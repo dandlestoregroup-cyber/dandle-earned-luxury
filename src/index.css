@@ -8,13 +8,13 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* DANDLE Quiet-Luxury v5 Colors */
-    --nile-blue: 216 58% 36%; /* #274B8F */
-    --dandle-orange: 14 100% 60%; /* #FF6B35 */
-    --warm-beige: 36 52% 90%; /* #F5E6D3 */
-    --bronze: 38 36% 56%; /* #B8956A */
-    --charcoal: 0 0% 10%; /* #1A1A1A */
-    --warm-white: 60 33% 98%; /* #FAF9F6 */
+    /* DANDLE Whisper Edition Colors (Desaturated) */
+    --nile-blue: 220 45% 35%;
+    --dandle-orange: 16 30% 55%;
+    --warm-beige: 34 35% 92%;
+    --bronze: 32 40% 52%;
+    --charcoal: 0 0% 10%;
+    --warm-white: 40 25% 98%;
     
     --background: 60 33% 98%; /* Warm White */
     --foreground: 0 0% 10%; /* Charcoal */
@@ -121,8 +121,9 @@ All colors MUST be HSL.
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.1;
+    letter-spacing: -0.01em;
   }
   
   /* Body text font */
