@@ -1,13 +1,28 @@
 import { motion } from "framer-motion";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
+import { formatShopifyPrice } from "@/hooks/useShopifyProducts";
+
+interface ShopifyData {
+  minPrice: number;
+  maxPrice: number;
+  currencyCode: string;
+  availableForSale: boolean;
+  variants: Array<{
+    id: string;
+    title: string;
+    price: number;
+    available: boolean;
+  }>;
+}
 
 interface ProductCardProps {
   product: Product;
+  shopifyData?: ShopifyData | null;
   onClick: () => void;
 }
 
-const ProductCard = ({ product, onClick }: ProductCardProps) => {
+const ProductCard = ({ product, shopifyData, onClick }: ProductCardProps) => {
   // Try to load hero image from Lovable catalog (master)
   const lovableProduct = getLovableProduct(product.id);
   const heroImage = lovableProduct?.heroImage.src || product.imageUrl;
@@ -21,12 +36,23 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   const getPriceDisplay = () => {
+    // Use live Shopify data if available
+    if (shopifyData) {
+      if (shopifyData.minPrice === shopifyData.maxPrice) {
+        return formatShopifyPrice(shopifyData.minPrice, shopifyData.currencyCode);
+      }
+      return `${formatShopifyPrice(shopifyData.minPrice, shopifyData.currencyCode)} - ${formatShopifyPrice(shopifyData.maxPrice, shopifyData.currencyCode)}`;
+    }
+    
+    // Fallback to static data
     if (product.comingSoon) return "Notify Me";
     if (product.priceManual && product.pricePower) {
       return `${formatPrice(product.priceManual)} - ${formatPrice(product.pricePower)}`;
     }
     return product.price ? formatPrice(product.price) : "Contact for Price";
   };
+
+  const isAvailable = shopifyData ? shopifyData.availableForSale : !product.comingSoon;
 
   return (
     <motion.div
@@ -35,13 +61,20 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
-      <div className="w-full aspect-[4/3] overflow-hidden bg-muted">
+      <div className="w-full aspect-[4/3] overflow-hidden bg-muted relative">
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
           className="w-full h-full object-cover"
           loading="lazy"
         />
+        {!isAvailable && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <span className="text-white font-medium px-4 py-2 bg-black/70 rounded-md">
+              Coming Soon
+            </span>
+          </div>
+        )}
       </div>
       <div className="p-6 space-y-4">
         <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
