@@ -64,6 +64,18 @@ export const lovableCatalog: LovableProduct[] = [
     },
     gallery: [
       {
+        src: "/images/hero-lifestyle-penthouse.jpg",
+        width: 1920,
+        height: 1080,
+        alt: "RelaxMax Recliner - Cairo Penthouse Sunset"
+      },
+      {
+        src: "/images/hero-lifestyle-reading.jpg",
+        width: 1920,
+        height: 1080,
+        alt: "RelaxMax Recliner - Library Reading Nook"
+      },
+      {
         src: "/images/relaxmax-lifestyle-day.png",
         width: 2752,
         height: 1536,
@@ -74,18 +86,6 @@ export const lovableCatalog: LovableProduct[] = [
         width: 2752,
         height: 1536,
         alt: "RelaxMax Recliner - Night Lifestyle"
-      },
-      {
-        src: "/images/relaxmax-brown-lifestyle.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "RelaxMax Recliner - Brown Lifestyle"
-      },
-      {
-        src: "/images/hero-lifestyle-library.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "RelaxMax Recliner - Egyptian Library"
       }
     ]
   },
@@ -264,6 +264,12 @@ export const lovableCatalog: LovableProduct[] = [
     },
     gallery: [
       {
+        src: "/images/hero-lifestyle-evening.jpg",
+        width: 1920,
+        height: 1080,
+        alt: "Complete Set - Evening Family Room"
+      },
+      {
         src: "/images/complete-set-coastal-modern.jpg",
         width: 2752,
         height: 1536,
@@ -280,12 +286,6 @@ export const lovableCatalog: LovableProduct[] = [
         width: 2752,
         height: 1536,
         alt: "Complete Set - Modern Fireplace"
-      },
-      {
-        src: "/images/complete-set-sunset-fireplace.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "Complete Set - Sunset Fireplace"
       }
     ]
   }
