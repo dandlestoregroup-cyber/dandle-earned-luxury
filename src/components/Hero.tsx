@@ -51,7 +51,7 @@ export default function Hero() {
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Background Layer */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 z-0">
         {/* Video Layer */}
         <div 
           className={`absolute inset-0 transition-opacity duration-500 ${
@@ -65,7 +65,9 @@ export default function Hero() {
               loop
               muted
               playsInline
+              preload="auto"
               onError={() => setVideoError(true)}
+              onLoadedData={() => console.log('Video loaded successfully')}
               poster="/images/relaxmax-hero-offwhite.jpg"
               className="w-full h-full object-cover"
             >
@@ -101,7 +103,7 @@ export default function Hero() {
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-32 md:bottom-36 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-32 md:bottom-36 left-1/2 -translate-x-1/2 flex gap-2 z-20">
         <button
           onClick={() => setCurrentSlide('video')}
           className={`w-2 h-2 rounded-full transition-all ${
@@ -122,7 +124,7 @@ export default function Hero() {
       </div>
 
       {/* Content Layer */}
-      <div className="relative h-full flex flex-col items-center justify-end pb-20 md:pb-28">
+      <div className="relative z-20 h-full flex flex-col items-center justify-end pb-20 md:pb-28">
         <a
           href="/#collection"
           className="bg-bronze text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-bronze/90 transition-all duration-300 shadow-lg hover:shadow-xl min-h-[48px] min-w-[48px] inline-flex items-center"
