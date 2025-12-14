@@ -70,6 +70,7 @@ export default function Hero() {
               onLoadedData={() => console.log('Video loaded successfully')}
               poster="/images/relaxmax-hero-offwhite.jpg"
               className="w-full h-full object-cover"
+              style={{ imageRendering: 'auto', WebkitBackfaceVisibility: 'hidden' }}
             >
               <source src="/dandle-hero.mp4" type="video/mp4" />
             </video>
@@ -94,6 +95,8 @@ export default function Hero() {
               src={src}
               alt={`Dandle Lifestyle ${index + 1}`}
               className="w-full h-full object-cover"
+              style={{ imageRendering: 'auto', WebkitBackfaceVisibility: 'hidden' }}
+              loading="eager"
             />
           </div>
         ))}
