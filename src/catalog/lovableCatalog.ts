@@ -36,6 +36,18 @@ export const lovableCatalog: LovableProduct[] = [
         width: 2752,
         height: 1536,
         alt: "Diva Recliner - Front View"
+      },
+      {
+        src: "/images/diva-pink-lifestyle.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "Diva Recliner - Pink Rose Lifestyle"
+      },
+      {
+        src: "/images/diva-yellow-lifestyle.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "Diva Recliner - Yellow Modern Apartment"
       }
     ]
   },
@@ -68,6 +80,12 @@ export const lovableCatalog: LovableProduct[] = [
         width: 2752,
         height: 1536,
         alt: "RelaxMax Recliner - Brown Lifestyle"
+      },
+      {
+        src: "/images/hero-lifestyle-library.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "RelaxMax Recliner - Egyptian Library"
       }
     ]
   },
@@ -94,6 +112,12 @@ export const lovableCatalog: LovableProduct[] = [
         width: 2752,
         height: 1536,
         alt: "CozyCompanion - Lifestyle Couple"
+      },
+      {
+        src: "/images/hero-lifestyle-couple.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "CozyCompanion - Cairo Family Room"
       }
     ]
   },
@@ -108,7 +132,14 @@ export const lovableCatalog: LovableProduct[] = [
       height: 1536,
       alt: "WorkNest Recliner - Blue with Swivel Table"
     },
-    gallery: []
+    gallery: [
+      {
+        src: "/images/worknest-brown-office.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "WorkNest Recliner - Brown Home Office"
+      }
+    ]
   },
   {
     productHandle: "spacesaver",
@@ -153,6 +184,12 @@ export const lovableCatalog: LovableProduct[] = [
         width: 2752,
         height: 1536,
         alt: "ComfortPlus - Off-White Variant"
+      },
+      {
+        src: "/images/comfortplus-red-spa.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "ComfortPlus - Red Spa Setting"
       }
     ]
   },
