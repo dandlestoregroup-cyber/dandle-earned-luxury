@@ -5,7 +5,6 @@ const LIFESTYLE_IMAGES = [
   "/images/hero-lifestyle-reading.jpg",
   "/images/hero-lifestyle-morning.jpg",
   "/images/hero-lifestyle-evening.jpg",
-  "/images/hero-lifestyle-library.jpg",
   "/images/hero-lifestyle-couple.jpg",
 ];
 
