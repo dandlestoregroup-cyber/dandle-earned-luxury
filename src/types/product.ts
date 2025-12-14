@@ -27,7 +27,7 @@ export const products: Product[] = [
       "Premium Leather Upholstery",
     ],
     targetAudience: "High-performing professionals",
-    imageUrl: "/images/relaxmax-hero-offwhite.jpg",
+    imageUrl: "/images/relaxmax-offwhite-card.jpg",
   },
   {
     id: "comfortplus",
@@ -43,7 +43,7 @@ export const products: Product[] = [
       "Memory Foam Cushioning",
     ],
     targetAudience: "Wellness enthusiasts seeking therapy",
-    imageUrl: "/images/relaxmax-brown-lifestyle.jpg",
+    imageUrl: "/images/comfortplus-tan-card.jpg",
   },
   {
     id: "diva",
@@ -59,7 +59,7 @@ export const products: Product[] = [
       "Bold Color Options",
     ],
     targetAudience: "Design-conscious taste makers",
-    imageUrl: "/images/diva-red-front.jpg",
+    imageUrl: "/images/diva-red-card.jpg",
   },
   {
     id: "cozycompanion",
@@ -75,7 +75,7 @@ export const products: Product[] = [
       "Center Console with Storage",
     ],
     targetAudience: "Couples and families",
-    imageUrl: "/images/cozycompanion-beige-front.jpg",
+    imageUrl: "/images/cozycompanion-beige-card.jpg",
   },
   {
     id: "easyup",
@@ -90,7 +90,7 @@ export const products: Product[] = [
       "Easy-Clean Fabric",
     ],
     targetAudience: "Seniors and mobility assistance",
-    imageUrl: "/images/easyup-beige-front.jpg",
+    imageUrl: "/images/easyup-grey-card.jpg",
   },
   {
     id: "easyup-compact",
@@ -105,7 +105,7 @@ export const products: Product[] = [
       "Enhanced Safety Features",
     ],
     targetAudience: "Seniors and mobility assistance in smaller spaces",
-    imageUrl: "/images/easyup-compact-charcoal-front.jpg",
+    imageUrl: "/images/easyup-compact-grey-card.jpg",
   },
   {
     id: "worknest",
@@ -121,7 +121,7 @@ export const products: Product[] = [
       "Laptop Storage",
     ],
     targetAudience: "Remote workers and executives",
-    imageUrl: "https://picsum.photos/400/300?random=tech",
+    imageUrl: "/images/worknest-blue-card.jpg",
   },
   {
     id: "spacesaver",
@@ -137,7 +137,7 @@ export const products: Product[] = [
       "Modern Aesthetics",
     ],
     targetAudience: "Urban dwellers with small spaces",
-    imageUrl: "/images/spacesaver-offwhite-reclined.jpg",
+    imageUrl: "/images/spacesaver-red-card.jpg",
   },
   {
     id: "complete-set",
@@ -153,6 +153,6 @@ export const products: Product[] = [
       "Full Home Comfort Solution",
     ],
     targetAudience: "Families seeking complete home solutions",
-    imageUrl: "https://picsum.photos/400/300?random=set",
+    imageUrl: "/images/complete-set-card.jpg",
   },
 ];
