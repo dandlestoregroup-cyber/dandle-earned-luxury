@@ -1,10 +1,12 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 
 const LIFESTYLE_IMAGES = [
+  "/images/hero-lifestyle-penthouse.jpg",
+  "/images/hero-lifestyle-reading.jpg",
+  "/images/hero-lifestyle-morning.jpg",
+  "/images/hero-lifestyle-evening.jpg",
   "/images/hero-lifestyle-library.jpg",
   "/images/hero-lifestyle-couple.jpg",
-  "/images/relaxmax-lifestyle-day.png",
-  "/images/relaxmax-lifestyle-night.png",
 ];
 
 const VIDEO_DURATION = 15000; // 15 seconds
