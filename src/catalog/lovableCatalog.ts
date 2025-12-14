@@ -17,17 +17,17 @@ export interface LovableProduct {
   aspectRatio: number;  // width/height for perfect containers
 }
 
-// 27 HD Product Images - Lovable as Visual Master
+// Full-frame 4:5 product card images + lifestyle gallery
 export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "diva",
     title: "Diva Recliner",
     subtitle: "Statement Luxury Seating",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/diva-red-front.jpg",
-      width: 2752,
-      height: 1536,
+      src: "/images/diva-red-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "Diva Recliner - Red Leather Statement Piece"
     },
     gallery: [
@@ -55,11 +55,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "relaxmax",
     title: "RelaxMax Recliner",
     subtitle: "Ultimate Comfort Engineering",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/relaxmax-hero-offwhite.jpg",
-      width: 2752,
-      height: 1536,
+      src: "/images/relaxmax-offwhite-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "RelaxMax Recliner - Off-White Hero"
     },
     gallery: [
@@ -93,11 +93,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "cozycompanion",
     title: "CozyCompanion Loveseat",
     subtitle: "Two-Seater Power Recliner",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/cozycompanion-beige-front.jpg",
-      width: 2752,
-      height: 1536,
+      src: "/images/cozycompanion-beige-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "CozyCompanion Loveseat - Beige Hero"
     },
     gallery: [
@@ -125,11 +125,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "worknest",
     title: "WorkNest Recliner",
     subtitle: "Executive Productivity Chair",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/worknest-blue-front.webp",
-      width: 2752,
-      height: 1536,
+      src: "/images/worknest-blue-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "WorkNest Recliner - Blue with Swivel Table"
     },
     gallery: [
@@ -145,11 +145,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "spacesaver",
     title: "SpaceSaver Recliner",
     subtitle: "Wall-Hugger Technology",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/spacesaver-red-front.webp",
-      width: 2752,
-      height: 1536,
+      src: "/images/spacesaver-red-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "SpaceSaver Recliner - Red Leather"
     },
     gallery: [
@@ -171,11 +171,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "comfortplus",
     title: "ComfortPlus Recliner",
     subtitle: "Enhanced Ergonomic Design",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/comfortplus-tan-front.webp",
-      width: 2752,
-      height: 1536,
+      src: "/images/comfortplus-tan-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "ComfortPlus Recliner - Tan Leather"
     },
     gallery: [
@@ -197,11 +197,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "easyup",
     title: "EasyUp Lift Recliner",
     subtitle: "Power Lift Assistance",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/easyup-standard-grey-front.webp",
-      width: 2752,
-      height: 1536,
+      src: "/images/easyup-grey-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "EasyUp Standard Lift Recliner - Grey"
     },
     gallery: [
@@ -223,11 +223,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "easyup-compact",
     title: "EasyUp Compact Lift Recliner",
     subtitle: "Compact Power Lift",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/easyup-compact-grey-front.webp",
-      width: 2752,
-      height: 1536,
+      src: "/images/easyup-compact-grey-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "EasyUp Compact Lift Recliner - Grey"
     },
     gallery: [
@@ -255,11 +255,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "complete-set",
     title: "Complete Living Room Set",
     subtitle: "Curated Room Configurations",
-    aspectRatio: 1.79,
+    aspectRatio: 0.8,
     heroImage: {
-      src: "/images/complete-set-classic.jpg",
-      width: 2752,
-      height: 1536,
+      src: "/images/complete-set-card.jpg",
+      width: 1024,
+      height: 1280,
       alt: "Complete Set - Classic Configuration"
     },
     gallery: [
