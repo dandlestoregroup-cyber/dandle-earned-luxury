@@ -1,36 +1,122 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
+
+const LIFESTYLE_IMAGES = [
+  "/images/hero-lifestyle-library.jpg",
+  "/images/hero-lifestyle-couple.jpg",
+  "/images/relaxmax-lifestyle-day.png",
+  "/images/relaxmax-lifestyle-night.png",
+];
+
+const VIDEO_DURATION = 15000; // 15 seconds
+const IMAGE_DURATION = 4000; // 4 seconds
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoError, setVideoError] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState<'video' | number>('video');
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const advanceSlide = useCallback(() => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide(prev => {
+        if (prev === 'video') {
+          return 0;
+        } else if (prev >= LIFESTYLE_IMAGES.length - 1) {
+          return 'video';
+        } else {
+          return prev + 1;
+        }
+      });
+      setIsTransitioning(false);
+    }, 500);
+  }, []);
+
+  useEffect(() => {
+    const duration = currentSlide === 'video' ? VIDEO_DURATION : IMAGE_DURATION;
+    const timer = setTimeout(advanceSlide, duration);
+    return () => clearTimeout(timer);
+  }, [currentSlide, advanceSlide]);
+
+  // Preload images
+  useEffect(() => {
+    LIFESTYLE_IMAGES.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Layer - sticky positioning for proper scroll behavior */}
+      {/* Background Layer */}
       <div className="absolute inset-0 -z-10">
-        {!videoError ? (
-          <video
-            ref={videoRef}
-            autoPlay
-            loop
-            muted
-            playsInline
-            onError={() => setVideoError(true)}
-            poster="/images/relaxmax-hero-offwhite.jpg"
-            className="w-full h-full object-cover"
+        {/* Video Layer */}
+        <div 
+          className={`absolute inset-0 transition-opacity duration-500 ${
+            currentSlide === 'video' && !isTransitioning ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          {!videoError ? (
+            <video
+              ref={videoRef}
+              autoPlay
+              loop
+              muted
+              playsInline
+              onError={() => setVideoError(true)}
+              poster="/images/relaxmax-hero-offwhite.jpg"
+              className="w-full h-full object-cover"
+            >
+              <source src="/dandle-hero.mp4" type="video/mp4" />
+            </video>
+          ) : (
+            <img 
+              src="/images/relaxmax-hero-offwhite.jpg"
+              alt="Dandle Luxury Recliner"
+              className="w-full h-full object-cover"
+            />
+          )}
+        </div>
+
+        {/* Image Layers */}
+        {LIFESTYLE_IMAGES.map((src, index) => (
+          <div
+            key={src}
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              currentSlide === index && !isTransitioning ? 'opacity-100' : 'opacity-0'
+            }`}
           >
-            <source src="/dandle-hero.mp4" type="video/mp4" />
-          </video>
-        ) : (
-          <img 
-            src="/images/relaxmax-hero-offwhite.jpg"
-            alt="Dandle Luxury Recliner"
-            className="w-full h-full object-cover"
-          />
-        )}
+            <img
+              src={src}
+              alt={`Dandle Lifestyle ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
         
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      </div>
+
+      {/* Slide Indicators */}
+      <div className="absolute bottom-32 md:bottom-36 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        <button
+          onClick={() => setCurrentSlide('video')}
+          className={`w-2 h-2 rounded-full transition-all ${
+            currentSlide === 'video' ? 'bg-bronze w-6' : 'bg-white/50 hover:bg-white/70'
+          }`}
+          aria-label="Show video"
+        />
+        {LIFESTYLE_IMAGES.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              currentSlide === index ? 'bg-bronze w-6' : 'bg-white/50 hover:bg-white/70'
+            }`}
+            aria-label={`Show image ${index + 1}`}
+          />
+        ))}
       </div>
 
       {/* Content Layer */}
