@@ -61,12 +61,12 @@ const ProductCard = ({ product, shopifyData, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-card shadow-subtle cursor-pointer group"
       onClick={onClick}
     >
-      {/* Product Image - CONTAINED with clear boundaries */}
-      <div className="relative w-full bg-muted/50 border-b border-border/40 shadow-inner" style={{ aspectRatio: '4/5' }}>
+      {/* Product Image - FULL FRAME coverage */}
+      <div className="relative w-full" style={{ aspectRatio: '4/5' }}>
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="absolute inset-0 w-full h-full object-contain p-6 max-w-full max-h-full"
+          className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
         />
         {!isAvailable && (
