@@ -126,15 +126,15 @@ export default function Hero() {
         ))}
         
         {/* Subtle Vignette Overlay - reduced opacity for clarity */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent pointer-events-none" />
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-32 md:bottom-36 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+      <div className="absolute bottom-24 md:bottom-32 left-1/2 -translate-x-1/2 flex gap-2 z-30">
         <button
           onClick={() => setCurrentSlide('video')}
-          className={`w-2 h-2 rounded-full transition-all ${
-            currentSlide === 'video' ? 'bg-bronze w-6' : 'bg-white/50 hover:bg-white/70'
+          className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+            currentSlide === 'video' ? 'bg-bronze w-8' : 'bg-white/60 hover:bg-white/80'
           }`}
           aria-label="Show video"
         />
@@ -142,8 +142,8 @@ export default function Hero() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              currentSlide === index ? 'bg-bronze w-6' : 'bg-white/50 hover:bg-white/70'
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              currentSlide === index ? 'bg-bronze w-8' : 'bg-white/60 hover:bg-white/80'
             }`}
             aria-label={`Show image ${index + 1}`}
           />
