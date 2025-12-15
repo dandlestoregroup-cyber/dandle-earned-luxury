@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
+import BackgroundAudio from "@/components/BackgroundAudio";
+import MusicControl from "@/components/MusicControl";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
@@ -22,6 +24,8 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <BackgroundAudio />
+        <MusicControl />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
