@@ -87,16 +87,6 @@ export default function Hero() {
               className="w-full h-full object-cover"
             />
           )}
-            >
-              <source src="/dandle-hero.mp4" type="video/mp4" />
-            </video>
-          ) : (
-            <img 
-              src="/images/relaxmax-hero-offwhite.jpg"
-              alt="Dandle Luxury Recliner"
-              className="w-full h-full object-cover"
-            />
-          )}
         </div>
 
         {/* Image Layers */}
