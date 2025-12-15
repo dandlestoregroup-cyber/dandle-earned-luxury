@@ -16,19 +16,35 @@ const Index = () => {
       <Navigation />
       <main>
         <Hero />
-        <Quote />
-        <PromiseGrid />
+
+        <section id="about">
+          <Quote />
+        </section>
+
+        <section id="promise">
+          <PromiseGrid />
+        </section>
+
         <ARDemo />
-        <div id="products">
-          <ProductGallery />
-        </div>
-        <SocialProof />
-        <Contact />
+
+        <section id="collection">
+          <div id="products">
+            <ProductGallery />
+          </div>
+        </section>
+
+        <section id="reviews">
+          <SocialProof />
+        </section>
+
+        <section id="contact">
+          <Contact />
+        </section>
       </main>
       <Footer />
       <WhatsAppFloat />
       <MobileBottomNav />
-      
+
       {/* Bottom padding for mobile nav */}
       <div className="h-16 md:hidden" />
     </div>

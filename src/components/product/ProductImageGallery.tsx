@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LovableImage } from "@/catalog/lovableCatalog";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ export const ProductImageGallery = ({
 }: ProductImageGalleryProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const mobileScrollerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -28,14 +29,21 @@ export const ProductImageGallery = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        setSelectedIndex(i => Math.max(0, i - 1));
+        setSelectedIndex((i) => Math.max(0, i - 1));
       } else if (e.key === "ArrowRight") {
-        setSelectedIndex(i => Math.min(images.length - 1, i + 1));
+        setSelectedIndex((i) => Math.min(images.length - 1, i + 1));
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [images.length]);
+
+  // Keep index valid if images change
+  useEffect(() => {
+    setSelectedIndex((i) => Math.min(i, Math.max(0, images.length - 1)));
+  }, [images.length]);
+
+  const selectedImage = useMemo(() => images[selectedIndex], [images, selectedIndex]);
 
   if (images.length === 0) {
     return (
@@ -48,9 +56,16 @@ export const ProductImageGallery = ({
     );
   }
 
-  const selectedImage = images[selectedIndex];
   const canGoPrev = selectedIndex > 0;
   const canGoNext = selectedIndex < images.length - 1;
+
+  const scrollToMobileIndex = (idx: number) => {
+    const container = mobileScrollerRef.current;
+    if (!container) return;
+
+    const itemWidth = container.clientWidth;
+    container.scrollTo({ left: itemWidth * idx, behavior: "smooth" });
+  };
 
   return (
     <div className="w-full space-y-4">
@@ -74,7 +89,7 @@ export const ProductImageGallery = ({
                 variant="outline"
                 size="icon"
                 className="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm"
-                onClick={() => setSelectedIndex(i => i - 1)}
+                onClick={() => setSelectedIndex((i) => i - 1)}
                 aria-label="Previous image"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -85,7 +100,7 @@ export const ProductImageGallery = ({
                 variant="outline"
                 size="icon"
                 className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm"
-                onClick={() => setSelectedIndex(i => i + 1)}
+                onClick={() => setSelectedIndex((i) => i + 1)}
                 aria-label="Next image"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -125,13 +140,13 @@ export const ProductImageGallery = ({
       {isMobile && images.length > 1 && (
         <div className="relative">
           <div
-            className="flex overflow-x-auto snap-x snap-mandatory gap-2 scrollbar-hide"
+            ref={mobileScrollerRef}
+            className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
             style={{ scrollBehavior: "smooth" }}
             onScroll={(e) => {
-              const scrollLeft = e.currentTarget.scrollLeft;
-              const itemWidth = e.currentTarget.scrollWidth / images.length;
-              const index = Math.round(scrollLeft / itemWidth);
-              setSelectedIndex(index);
+              const container = e.currentTarget;
+              const index = Math.round(container.scrollLeft / Math.max(1, container.clientWidth));
+              setSelectedIndex(Math.min(images.length - 1, Math.max(0, index)));
             }}
           >
             {images.map((img, idx) => (
@@ -157,12 +172,7 @@ export const ProductImageGallery = ({
                 key={idx}
                 onClick={() => {
                   setSelectedIndex(idx);
-                  // Scroll to index
-                  const container = document.querySelector('.snap-x');
-                  if (container) {
-                    const itemWidth = container.scrollWidth / images.length;
-                    container.scrollTo({ left: itemWidth * idx, behavior: 'smooth' });
-                  }
+                  scrollToMobileIndex(idx);
                 }}
                 className={`w-2 h-2 rounded-full transition-all ${
                   idx === selectedIndex
@@ -185,3 +195,4 @@ export const ProductImageGallery = ({
     </div>
   );
 };
+
