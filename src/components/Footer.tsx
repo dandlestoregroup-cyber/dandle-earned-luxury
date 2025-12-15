@@ -4,10 +4,10 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { label: "Warranty Information", href: "#warranty" },
-    { label: "Care Guide", href: "#care" },
-    { label: "Gifting Options", href: "#gifting" },
-    { label: "Privacy Policy", href: "#privacy" },
+    { label: "Collection", href: "#collection" },
+    { label: "Products", href: "#products" },
+    { label: "Reviews", href: "#reviews" },
+    { label: "Contact", href: "#contact" },
   ];
 
   return (

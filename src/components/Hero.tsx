@@ -1,12 +1,12 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 
 const LIFESTYLE_IMAGES = [
-  "/images/hero-lifestyle-penthouse.jpg",
-  "/images/hero-lifestyle-diva.jpg",
-  "/images/hero-lifestyle-couple.jpg",
-  "/images/hero-lifestyle-morning.jpg",
-  "/images/hero-lifestyle-evening.jpg",
-  "/images/hero-lifestyle-nile.jpg",
+  "/images/user-diva-screenshot.jpg", // Diva (real)
+  "/images/diva-pink-lifestyle.jpg", // Diva (pink)
+  "/images/worknest-brown-office.jpg", // WorkNest (brown)
+  "/images/worknest-blue-front.webp", // WorkNest (light navy)
+  "/images/easyup-compact-charcoal-front.png", // Grey/charcoal
+  "/images/user-complete-set.jpg" // Complete Set (real)
 ];
 
 const VIDEO_DURATION = 15000; // 15 seconds
@@ -73,9 +73,20 @@ export default function Hero() {
               style={{ 
                 imageRendering: 'auto', 
                 WebkitBackfaceVisibility: 'hidden',
-                // Crop the top portion to hide logo
-                objectPosition: 'center 60%'
+                // Crop top branding + keep full-bleed
+                objectPosition: 'center 70%',
+                clipPath: 'inset(10% 0 0 0)'
               }}
+            >
+              <source src="/dandle-hero.mp4" type="video/mp4" />
+            </video>
+          ) : (
+            <img 
+              src="/images/relaxmax-hero-offwhite.jpg"
+              alt="Dandle Luxury Recliner"
+              className="w-full h-full object-cover"
+            />
+          )}
             >
               <source src="/dandle-hero.mp4" type="video/mp4" />
             </video>
