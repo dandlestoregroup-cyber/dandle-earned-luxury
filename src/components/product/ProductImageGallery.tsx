@@ -79,6 +79,8 @@ export const ProductImageGallery = ({
           alt={`${altPrefix} - ${selectedImage.alt}`}
           className="w-full h-full object-contain"
           loading="eager"
+          decoding="async"
+          fetchPriority="high"
         />
 
         {/* Navigation Arrows (Desktop) */}
@@ -130,6 +132,7 @@ export const ProductImageGallery = ({
                 alt={img.alt}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                decoding="async"
               />
             </button>
           ))}
@@ -160,6 +163,7 @@ export const ProductImageGallery = ({
                   alt={`${altPrefix} - ${img.alt}`}
                   className="w-full h-full object-contain"
                   loading={idx === 0 ? "eager" : "lazy"}
+                  decoding="async"
                 />
               </div>
             ))}
