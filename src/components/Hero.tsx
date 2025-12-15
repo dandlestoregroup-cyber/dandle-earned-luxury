@@ -2,11 +2,11 @@ import { useRef, useState, useEffect, useCallback } from "react";
 
 const LIFESTYLE_IMAGES = [
   "/images/hero-lifestyle-penthouse.jpg",
-  "/images/hero-lifestyle-reading.jpg",
+  "/images/hero-lifestyle-diva.jpg",
+  "/images/hero-lifestyle-couple.jpg",
   "/images/hero-lifestyle-morning.jpg",
   "/images/hero-lifestyle-evening.jpg",
   "/images/hero-lifestyle-nile.jpg",
-  "/images/hero-lifestyle-couple.jpg",
 ];
 
 const VIDEO_DURATION = 15000; // 15 seconds
@@ -70,7 +70,12 @@ export default function Hero() {
               onLoadedData={() => console.log('Video loaded successfully')}
               poster="/images/relaxmax-hero-offwhite.jpg"
               className="w-full h-full object-cover"
-              style={{ imageRendering: 'auto', WebkitBackfaceVisibility: 'hidden' }}
+              style={{ 
+                imageRendering: 'auto', 
+                WebkitBackfaceVisibility: 'hidden',
+                // Crop the top portion to hide logo
+                objectPosition: 'center 60%'
+              }}
             >
               <source src="/dandle-hero.mp4" type="video/mp4" />
             </video>
@@ -101,8 +106,8 @@ export default function Hero() {
           </div>
         ))}
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        {/* Subtle Vignette Overlay - reduced opacity for clarity */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
       </div>
 
       {/* Slide Indicators */}
