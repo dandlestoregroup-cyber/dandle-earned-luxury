@@ -89,7 +89,7 @@ export default function Hero() {
           )}
         </div>
 
-        {/* Image Layers */}
+        {/* Image Layers - Optimized for mobile */}
         {LIFESTYLE_IMAGES.map((src, index) => (
           <div
             key={src}
@@ -97,13 +97,31 @@ export default function Hero() {
               currentSlide === index && !isTransitioning ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <img
-              src={src}
-              alt={`Dandle Lifestyle ${index + 1}`}
-              className="w-full h-full object-cover"
-              style={{ imageRendering: 'auto', WebkitBackfaceVisibility: 'hidden' }}
-              loading="eager"
-            />
+            <picture>
+              <source
+                media="(max-width: 640px)"
+                srcSet={src}
+                sizes="100vw"
+              />
+              <source
+                media="(max-width: 1024px)"
+                srcSet={src}
+                sizes="100vw"
+              />
+              <img
+                src={src}
+                alt={`Dandle Lifestyle ${index + 1}`}
+                className="w-full h-full object-cover"
+                style={{ 
+                  imageRendering: 'auto', 
+                  WebkitBackfaceVisibility: 'hidden',
+                  willChange: currentSlide === index ? 'opacity' : 'auto'
+                }}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                fetchPriority={index === 0 ? "high" : "low"}
+              />
+            </picture>
           </div>
         ))}
         
