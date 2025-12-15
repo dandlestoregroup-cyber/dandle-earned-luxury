@@ -32,12 +32,6 @@ export const lovableCatalog: LovableProduct[] = [
     },
     gallery: [
       {
-        src: "/images/user-diva-screenshot.jpg",
-        width: 864,
-        height: 1536,
-        alt: "Diva Recliner - Luxury Lifestyle (Cairo skyline)",
-      },
-      {
         src: "/images/diva-red-front.jpg",
         width: 2752,
         height: 1536,
@@ -54,6 +48,12 @@ export const lovableCatalog: LovableProduct[] = [
         width: 2752,
         height: 1536,
         alt: "Diva Recliner - Yellow Modern Apartment",
+      },
+      {
+        src: "/images/diva-red-card.jpg",
+        width: 1024,
+        height: 1280,
+        alt: "Diva Recliner - Red Leather Detail",
       },
     ],
   },

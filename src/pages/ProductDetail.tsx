@@ -17,6 +17,7 @@ import { StarRating } from "@/components/product/StarRating";
 import { ProductTabs } from "@/components/product/ProductTabs";
 import { ProductRecommendations } from "@/components/product/ProductRecommendations";
 import { StickyMobileBar } from "@/components/product/StickyMobileBar";
+import { ProductSEO } from "@/components/seo/ProductSEO";
 import { Button } from "@/components/ui/button";
 import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { ShoppingCart, Loader2, MessageCircle, Sparkles } from "lucide-react";
@@ -139,6 +140,17 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ProductSEO
+        title={product.title}
+        subtitle={product.subtitle}
+        handle={handle!}
+        basePrice={productDetail.basePrice}
+        rating={productDetail.rating}
+        reviewCount={productDetail.reviewCount}
+        heroImageSrc={product.heroImage.src}
+        currency={productDetail.currency}
+        isAvailable={isAvailable}
+      />
       <Navigation />
 
       <main className="max-w-7xl mx-auto px-4 py-8 mt-20">
