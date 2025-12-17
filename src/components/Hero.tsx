@@ -1,12 +1,11 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 
 const LIFESTYLE_IMAGES = [
-  "/images/user-diva-screenshot.jpg", // Diva (real)
-  "/images/diva-pink-lifestyle.jpg", // Diva (pink)
-  "/images/worknest-brown-office.jpg", // WorkNest (brown)
-  "/images/worknest-blue-front.webp", // WorkNest (light navy)
-  "/images/easyup-compact-charcoal-front.png", // Grey/charcoal
-  "/images/user-complete-set.jpg" // Complete Set (real)
+  "/images/diva-pink-lifestyle.jpg",
+  "/images/worknest-brown-office.jpg",
+  "/images/worknest-blue-front.webp",
+  "/images/easyup-compact-charcoal-front.png",
+  "/images/user-complete-set.jpg"
 ];
 
 const VIDEO_DURATION = 15000; // 15 seconds
@@ -69,14 +68,7 @@ export default function Hero() {
               onError={() => setVideoError(true)}
               onLoadedData={() => console.log('Video loaded successfully')}
               poster="/images/relaxmax-hero-offwhite.jpg"
-              className="w-full h-full object-cover"
-              style={{ 
-                imageRendering: 'auto', 
-                WebkitBackfaceVisibility: 'hidden',
-                // Crop top branding + keep full-bleed
-                objectPosition: 'center 70%',
-                clipPath: 'inset(10% 0 0 0)'
-              }}
+              className="w-full h-full object-contain"
             >
               <source src="/dandle-hero.mp4" type="video/mp4" />
             </video>
@@ -84,23 +76,23 @@ export default function Hero() {
             <img 
               src="/images/relaxmax-hero-offwhite.jpg"
               alt="Dandle Luxury Recliner"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           )}
         </div>
 
-        {/* Image Layers - Product-dominant, fully visible */}
+        {/* Image Layers - Fullscreen, product not cropped */}
         {LIFESTYLE_IMAGES.map((src, index) => (
           <div
             key={src}
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
+            className={`absolute inset-0 transition-opacity duration-500 ${
               currentSlide === index && !isTransitioning ? 'opacity-100' : 'opacity-0'
             }`}
           >
             <img
               src={src}
               alt={`Dandle Lifestyle ${index + 1}`}
-              className="max-w-[85%] max-h-[80%] md:max-w-[80%] md:max-h-[80%] w-auto h-auto object-contain"
+              className="w-full h-full object-contain"
               style={{ 
                 imageRendering: 'auto', 
                 WebkitBackfaceVisibility: 'hidden',
