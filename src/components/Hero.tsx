@@ -1,13 +1,12 @@
 import { useRef, useState, useEffect, useCallback } from "react";
-import { ChevronDown } from "lucide-react";
 
 const LIFESTYLE_IMAGES = [
-  "/images/hero-lifestyle-penthouse.jpg",
-  "/images/hero-lifestyle-diva.jpg",
-  "/images/hero-lifestyle-reading.jpg",
-  "/images/hero-lifestyle-evening.jpg",
-  "/images/hero-lifestyle-morning.jpg",
-  "/images/hero-lifestyle-couple.jpg"
+  "/images/user-diva-screenshot.jpg", // Diva (real)
+  "/images/diva-pink-lifestyle.jpg", // Diva (pink)
+  "/images/worknest-brown-office.jpg", // WorkNest (brown)
+  "/images/worknest-blue-front.webp", // WorkNest (light navy)
+  "/images/easyup-compact-charcoal-front.png", // Grey/charcoal
+  "/images/user-complete-set.jpg" // Complete Set (real)
 ];
 
 const VIDEO_DURATION = 15000; // 15 seconds
@@ -50,12 +49,12 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative h-[80vh] w-full overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden">
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         {/* Video Layer */}
         <div 
-          className={`absolute inset-0 flex items-center justify-center p-[5%] transition-opacity duration-500 ${
+          className={`absolute inset-0 transition-opacity duration-500 ${
             currentSlide === 'video' && !isTransitioning ? 'opacity-100' : 'opacity-0'
           }`}
         >
@@ -70,11 +69,13 @@ export default function Hero() {
               onError={() => setVideoError(true)}
               onLoadedData={() => console.log('Video loaded successfully')}
               poster="/images/relaxmax-hero-offwhite.jpg"
-              className="max-w-full max-h-full w-full h-full object-cover rounded-lg"
+              className="w-full h-full object-cover"
               style={{ 
                 imageRendering: 'auto', 
                 WebkitBackfaceVisibility: 'hidden',
-                objectPosition: 'center 70%'
+                // Crop top branding + keep full-bleed
+                objectPosition: 'center 70%',
+                clipPath: 'inset(10% 0 0 0)'
               }}
             >
               <source src="/dandle-hero.mp4" type="video/mp4" />
@@ -83,45 +84,53 @@ export default function Hero() {
             <img 
               src="/images/relaxmax-hero-offwhite.jpg"
               alt="Dandle Luxury Recliner"
-              width={1920}
-              height={1080}
-              className="max-w-full max-h-full object-cover rounded-lg"
+              className="w-full h-full object-cover"
             />
           )}
         </div>
 
-        {/* Image Layers - Lifestyle images with proper sizing */}
+        {/* Image Layers - Optimized for mobile */}
         {LIFESTYLE_IMAGES.map((src, index) => (
           <div
             key={src}
-            className={`absolute inset-0 flex items-center justify-center p-[5%] transition-opacity duration-500 ${
+            className={`absolute inset-0 transition-opacity duration-500 ${
               currentSlide === index && !isTransitioning ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <img
-              src={src}
-              alt={`Dandle Lifestyle ${index + 1}`}
-              width={1920}
-              height={1080}
-              className="max-w-full max-h-full w-full h-full object-cover rounded-lg"
-              style={{ 
-                imageRendering: 'auto', 
-                WebkitBackfaceVisibility: 'hidden',
-                willChange: currentSlide === index ? 'opacity' : 'auto'
-              }}
-              loading={index === 0 ? "eager" : "lazy"}
-              decoding="async"
-              fetchPriority={index === 0 ? "high" : "low"}
-            />
+            <picture>
+              <source
+                media="(max-width: 640px)"
+                srcSet={src}
+                sizes="100vw"
+              />
+              <source
+                media="(max-width: 1024px)"
+                srcSet={src}
+                sizes="100vw"
+              />
+              <img
+                src={src}
+                alt={`Dandle Lifestyle ${index + 1}`}
+                className="w-full h-full object-cover"
+                style={{ 
+                  imageRendering: 'auto', 
+                  WebkitBackfaceVisibility: 'hidden',
+                  willChange: currentSlide === index ? 'opacity' : 'auto'
+                }}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                fetchPriority={index === 0 ? "high" : "low"}
+              />
+            </picture>
           </div>
         ))}
         
-        {/* Subtle Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
+        {/* Subtle Vignette Overlay - reduced opacity for clarity */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent pointer-events-none" />
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-30">
+      <div className="absolute bottom-24 md:bottom-32 left-1/2 -translate-x-1/2 flex gap-2 z-30">
         <button
           onClick={() => setCurrentSlide('video')}
           className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
@@ -141,14 +150,13 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* Icon-only Scroll Indicator (Option B) */}
-      <div className="relative z-20 h-full flex flex-col items-center justify-end pb-8">
+      {/* Content Layer */}
+      <div className="relative z-20 h-full flex flex-col items-center justify-end pb-20 md:pb-28">
         <a
           href="/#collection"
-          className="bg-bronze/80 backdrop-blur-sm p-4 rounded-full hover:bg-bronze transition-all duration-300 shadow-lg hover:shadow-xl min-h-[48px] min-w-[48px] flex items-center justify-center"
-          aria-label="تسوق الآن - Shop Now"
+          className="bg-bronze text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-bronze/90 transition-all duration-300 shadow-lg hover:shadow-xl min-h-[48px] min-w-[48px] inline-flex items-center"
         >
-          <ChevronDown className="w-6 h-6 text-white" />
+          تسوق الآن
         </a>
       </div>
     </section>
