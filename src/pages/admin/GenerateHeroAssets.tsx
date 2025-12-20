@@ -75,27 +75,40 @@ const GenerateHeroAssets = () => {
     try {
       // Fetch the source image and convert to base64
       const sourceUrl = `/images/${heroSlides[slideIndex].source}`;
+      console.log('Fetching source image from:', sourceUrl);
+      
       const imgResponse = await fetch(sourceUrl);
-      if (!imgResponse.ok) throw new Error(`Failed to fetch source image: ${sourceUrl}`);
+      if (!imgResponse.ok) {
+        throw new Error(`Failed to fetch source image: ${sourceUrl} (status: ${imgResponse.status})`);
+      }
       
       const blob = await imgResponse.blob();
+      console.log('Source image blob size:', blob.size, 'type:', blob.type);
+      
       const base64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
         reader.onerror = reject;
         reader.readAsDataURL(blob);
       });
+      
+      console.log('Base64 length:', base64.length, 'prefix:', base64.substring(0, 50));
 
+      toast.info(`Calling AI to generate ${sizes[sizeIndex]} for slide ${slideIndex + 1}...`);
+      
       const { data, error } = await supabase.functions.invoke('generate-hero-images', {
         body: { slideIndex, sizeIndex, sourceImageBase64: base64 }
       });
 
+      console.log('Edge function response:', data, error);
+
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       
       setImageStatus(prev => ({ ...prev, [key]: 'done' }));
       setImageUrls(prev => ({ ...prev, [key]: data.publicUrl }));
       toast.success(`Generated slide ${slideIndex + 1} - ${sizes[sizeIndex]}`);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Image generation error:', err);
       setImageStatus(prev => ({ ...prev, [key]: 'error' }));
       toast.error(`Failed: slide ${slideIndex + 1} - ${sizes[sizeIndex]}`);
