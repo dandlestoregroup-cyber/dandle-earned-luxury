@@ -73,9 +73,21 @@ const GenerateHeroAssets = () => {
     setImageStatus(prev => ({ ...prev, [key]: 'loading' }));
 
     try {
-      const sourceUrl = `${window.location.origin}/images/${heroSlides[slideIndex].source}`;
+      // Fetch the source image and convert to base64
+      const sourceUrl = `/images/${heroSlides[slideIndex].source}`;
+      const imgResponse = await fetch(sourceUrl);
+      if (!imgResponse.ok) throw new Error(`Failed to fetch source image: ${sourceUrl}`);
+      
+      const blob = await imgResponse.blob();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
       const { data, error } = await supabase.functions.invoke('generate-hero-images', {
-        body: { slideIndex, sizeIndex, sourceImageUrl: sourceUrl }
+        body: { slideIndex, sizeIndex, sourceImageBase64: base64 }
       });
 
       if (error) throw error;
