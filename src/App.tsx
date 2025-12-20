@@ -12,6 +12,13 @@ import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
 import NotFound from "./pages/NotFound";
 import GenerateImages from "./pages/admin/GenerateImages";
+import About from "./pages/trust/About";
+import Warranty from "./pages/trust/Warranty";
+import Delivery from "./pages/trust/Delivery";
+import FAQ from "./pages/trust/FAQ";
+import Payment from "./pages/trust/Payment";
+import Installation from "./pages/trust/Installation";
+import Returns from "./pages/trust/Returns";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +37,13 @@ const App = () => (
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
             <Route path="/admin/generate-images" element={<GenerateImages />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/warranty" element={<Warranty />} />
+            <Route path="/delivery" element={<Delivery />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/installation" element={<Installation />} />
+            <Route path="/returns" element={<Returns />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

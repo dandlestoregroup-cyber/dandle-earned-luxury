@@ -187,11 +187,11 @@ const OrderStatus = () => {
                     {order.status === 'PENDING' ? (
                       "Your order has been received and is awaiting confirmation. Our team will contact you shortly via WhatsApp."
                     ) : order.status === 'CONFIRMED' ? (
-                      "Your order is confirmed and will enter production soon."
+                      "Your order is confirmed and will enter production soon. Delivery takes up to 14 days."
                     ) : order.status === 'IN_PROGRESS' ? (
-                      "Your recliner is being crafted with care by our artisans."
+                      "Your recliner is being crafted with care by our artisans. Delivery takes up to 14 days."
                     ) : order.status === 'SHIPPED' ? (
-                      "Your order is on its way! Expect delivery within 2-3 business days."
+                      "Your order is on its way! We confirm your delivery appointment via WhatsApp/phone."
                     ) : order.status === 'DELIVERED' ? (
                       "Your order has been delivered. Enjoy your new Dandle recliner!"
                     ) : (
