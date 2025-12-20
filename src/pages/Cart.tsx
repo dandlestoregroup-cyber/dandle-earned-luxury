@@ -279,6 +279,27 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
                   </div>
                 </div>
               </div>
+
+              {/* Trust Box */}
+              <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 mb-6 space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-green-500">✓</span>
+                  <span>40% deposit, 60% on delivery</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-green-500">✓</span>
+                  <span>2-5 year warranty included</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-green-500">✓</span>
+                  <span>Free delivery scheduling</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-green-500">✓</span>
+                  <span>WhatsApp support 7 days/week</span>
+                </div>
+              </div>
+
               <Button 
                 onClick={handleCheckoutClick} 
                 variant="luxury" 
