@@ -1,21 +1,28 @@
 import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { label: "Warranty Information", href: "#warranty" },
-    { label: "Care Guide", href: "#care" },
-    { label: "Gifting Options", href: "#gifting" },
-    { label: "Privacy Policy", href: "#privacy" },
+    { label: "About Us", href: "/about" },
+    { label: "Warranty", href: "/warranty" },
+    { label: "Delivery", href: "/delivery" },
+    { label: "FAQ", href: "/faq" },
+  ];
+
+  const customerService = [
+    { label: "Payment", href: "/payment" },
+    { label: "Installation", href: "/installation" },
+    { label: "Returns", href: "/returns" },
   ];
 
   return (
     <footer className="bg-card text-card-foreground py-12 border-t border-gold/20">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div>
             <h3 className="font-serif text-3xl font-bold mb-4">
               <span className="text-gradient-luxury">DANDLE</span>
             </h3>
@@ -56,12 +63,31 @@ const Footer = () => {
             <ul className="space-y-2">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-card-foreground/80 hover:text-accent transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h4 className="font-semibold mb-4 text-card-foreground">
+              Customer Service
+            </h4>
+            <ul className="space-y-2">
+              {customerService.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.href}
+                    className="text-card-foreground/80 hover:text-accent transition-colors"
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>

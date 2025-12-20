@@ -105,25 +105,25 @@ const Hero = () => {
 
   return (
     <motion.section
-      className="relative h-screen flex items-center justify-center text-center overflow-hidden"
+      className="relative h-[70vh] w-full flex items-center justify-center text-center overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: "easeOut" }}
     >
       {/* Hero Video */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black">
         <video
           ref={videoRef}
           src="/dandle-hero.mp4"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
           autoPlay
           loop={false}
           playsInline
           preload="auto"
-          style={{ 
-            minWidth: '100%', 
-            minHeight: '100%',
-            objectFit: 'cover'
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain'
           }}
         />
         {/* Gradient Overlay - More Colorful */}

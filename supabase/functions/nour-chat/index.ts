@@ -213,8 +213,8 @@ ${renderPrompt}`;
 
 Knowledge base:
 - Models: RelaxMax (21,900 EGP), Diva (23,900 EGP), ComfortPlus (29,900 EGP), CozyCompanion (32,900 EGP), EasyUp (42,900 EGP)
-- Manufacturing: 7-14 days
-- Delivery: Cairo 1-3 days, Alexandria 3-5 days, Upper Egypt 7-10 days  
+- Delivery: up to 14 days across Egypt
+- We confirm delivery appointment via WhatsApp/phone
 - Payment: 40% down, 60% on delivery after inspection
 - Installment: 610-1080 EGP/month (6-36 months with interest)
 - Warranty: 2y motor, 5y frame, 1y upholstery + free transit insurance + 48h swap if damaged
