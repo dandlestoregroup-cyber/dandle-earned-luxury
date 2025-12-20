@@ -8,11 +8,7 @@ import HeroCarousel from "./HeroCarousel";
 import { useHeroAnalytics } from "@/hooks/useHeroAnalytics";
 
 const LOCAL_STORAGE_KEY = 'dandle_hero_video_seen';
-const VIDEO_SRC = '/videos/dandle-gifting-hero.mp4';
-const FALLBACK_VIDEO_SRC = '/dandle-hero.mp4';
-
-// Music URL will be fetched from storage after generation
-const MUSIC_URL = ''; // Set after generation via admin page
+const VIDEO_SRC = '/dandle-hero.mp4';
 
 interface HeroGiftingSeasonProps {
   useGeneratedImages?: boolean;
@@ -21,7 +17,7 @@ interface HeroGiftingSeasonProps {
 
 const HeroGiftingSeason = ({ 
   useGeneratedImages = false,
-  musicUrl = MUSIC_URL 
+  musicUrl = ''
 }: HeroGiftingSeasonProps) => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<'video' | 'carousel'>('video');
@@ -36,21 +32,6 @@ const HeroGiftingSeason = ({
       setPhase('carousel');
       setHasSeenVideo(true);
     }
-  }, []);
-
-  // Check video availability
-  useEffect(() => {
-    const checkVideo = async () => {
-      try {
-        const response = await fetch(VIDEO_SRC, { method: 'HEAD' });
-        if (!response.ok) {
-          setVideoSrc(FALLBACK_VIDEO_SRC);
-        }
-      } catch {
-        setVideoSrc(FALLBACK_VIDEO_SRC);
-      }
-    };
-    checkVideo();
   }, []);
 
   const handleVideoEnd = () => {
