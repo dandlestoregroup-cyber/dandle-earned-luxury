@@ -15,6 +15,7 @@ const Footer = () => {
     { label: "Payment", href: "/payment" },
     { label: "Installation", href: "/installation" },
     { label: "Returns", href: "/returns" },
+    { label: "Contact Us", href: "/contact" },
   ];
 
   return (
