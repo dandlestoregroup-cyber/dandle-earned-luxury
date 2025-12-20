@@ -33,7 +33,7 @@ serve(async (req) => {
   }
 
   try {
-    const { slideIndex, sizeIndex, sourceImageUrl } = await req.json();
+    const { slideIndex, sizeIndex, sourceImageBase64 } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -51,6 +51,9 @@ serve(async (req) => {
     if (!slide || !size) {
       throw new Error(`Invalid slideIndex (${slideIndex}) or sizeIndex (${sizeIndex})`);
     }
+    
+    // Source image is provided as base64 data URL from the frontend
+    const sourceImageUrl = sourceImageBase64;
 
     // Build the prompt based on whether it's EasyUp (background only) or color transform
     let prompt: string;
