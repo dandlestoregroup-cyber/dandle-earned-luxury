@@ -22,22 +22,18 @@ const SLIDE_DURATION = 6670; // 60 seconds / 9 slides = 6.67s per slide
 const MAX_LOOPS = 2;
 
 interface HeroCarouselProps {
-  musicUrl?: string;
   onReplayVideo?: () => void;
   useGeneratedImages?: boolean;
 }
 
 const HeroCarousel = ({ 
-  musicUrl, 
   onReplayVideo,
   useGeneratedImages = false 
 }: HeroCarouselProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
   const [loopCount, setLoopCount] = useState(1);
   const [isComplete, setIsComplete] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const { trackSlideView, trackCarouselComplete } = useHeroAnalytics();
 
@@ -84,19 +80,8 @@ const HeroCarousel = ({
   // Track slide views
   useEffect(() => {
     const slide = heroSlides[currentSlide];
-    trackSlideView(currentSlide, slide.color, isMuted, loopCount);
-  }, [currentSlide, isMuted, loopCount, trackSlideView]);
-
-  // Audio control
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isMuted || !isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch(console.error);
-      }
-    }
-  }, [isMuted, isPlaying]);
+    trackSlideView(currentSlide, slide.color, false, loopCount);
+  }, [currentSlide, loopCount, trackSlideView]);
 
   const handlePlayPause = () => {
     if (isComplete) {
@@ -110,10 +95,6 @@ const HeroCarousel = ({
     }
   };
 
-  const handleToggleMute = () => {
-    setIsMuted(prev => !prev);
-  };
-
   const handleReplay = () => {
     setIsComplete(false);
     setLoopCount(1);
@@ -123,15 +104,6 @@ const HeroCarousel = ({
 
   return (
     <div className="absolute inset-0 w-full h-full">
-      {/* Background Audio */}
-      {musicUrl && (
-        <audio
-          ref={audioRef}
-          src={musicUrl}
-          loop
-          preload="auto"
-        />
-      )}
 
       {/* Slides */}
       <AnimatePresence mode="sync">
@@ -203,12 +175,10 @@ const HeroCarousel = ({
       {!isComplete && (
         <HeroControls
           isPlaying={isPlaying}
-          isMuted={isMuted}
           progress={progress}
           loopCount={loopCount}
           maxLoops={MAX_LOOPS}
           onPlayPause={handlePlayPause}
-          onToggleMute={handleToggleMute}
         />
       )}
 
