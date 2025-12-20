@@ -128,7 +128,7 @@ Requirements:
     const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
 
     // Upload to Supabase Storage
-    const fileName = `hero/slide-${slideIndex + 1}-${size.name}.webp`;
+    const fileName = `hero/slide-${slideIndex}-${size.name}.webp`;
     
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('product-images')
