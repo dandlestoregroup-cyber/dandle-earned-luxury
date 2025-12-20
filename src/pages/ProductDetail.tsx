@@ -9,6 +9,7 @@ import {
 } from "@/lib/shopifySafeMerge";
 import { ProductImageGallery } from "@/components/product/ProductImageGallery";
 import { ProductMetafields } from "@/components/product/ProductMetafields";
+import { ARViewer } from "@/components/product/ARViewer";
 import { Button } from "@/components/ui/button";
 import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { ArrowLeft, ShoppingCart, Loader2 } from "lucide-react";
@@ -159,6 +160,15 @@ const ProductDetail = () => {
               <ShoppingCart className="w-5 h-5 mr-2" />
               {isAvailable ? "Add to Cart" : "Contact Us"}
             </Button>
+
+            {/* AR Viewer Component */}
+            <ARViewer
+              productTitle={product.title}
+              productHandle={product.productHandle}
+              // Add AR model URLs when 3D models are available
+              // usdzUrl={`/models/${product.productHandle}.usdz`}
+              // glbUrl={`/models/${product.productHandle}.glb`}
+            />
 
             <div className="pt-6 border-t border-border">
               <h3 className="font-headline text-xl mb-3">About This Product</h3>

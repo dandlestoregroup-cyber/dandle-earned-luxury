@@ -1,33 +1,53 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Sparkles, Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 
 const Hero = () => {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true); // Default muted for button display
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
   const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
   const [userHasInteracted, setUserHasInteracted] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  // Hero slides: images + video
+  const heroSlides = [
+    { type: 'video', src: '/dandle-hero.mp4' },
+    { type: 'image', src: '/images/relaxmax-lifestyle-night.png', alt: 'RelaxMax in elegant night setting' },
+    { type: 'image', src: '/images/cozycompanion-couple-lifestyle.jpg', alt: 'CozyCompanion couple enjoying comfort' },
+    { type: 'image', src: '/images/relaxmax-brown-lifestyle.jpg', alt: 'RelaxMax brown in lifestyle setting' },
+    { type: 'image', src: '/images/relaxmax-lifestyle-day.png', alt: 'RelaxMax in bright daytime setting' },
+    { type: 'image', src: '/images/relaxmax-hero-offwhite.jpg', alt: 'RelaxMax hero shot' },
+  ];
+
+  // Auto-advance slides
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(timer);
+  }, [isAutoPlaying, heroSlides.length]);
+
+  // Video handling
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Check if user has a saved preference
     const savedMutePreference = sessionStorage.getItem('heroVideoMuted');
     const userPrefersMuted = savedMutePreference === 'true';
-
-    // Mobile autoplay requires muted, desktop can start unmuted
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
+
     if (isMobile) {
-      // Mobile: Start muted for autoplay compatibility
       video.muted = true;
       setIsMuted(true);
-      
-      // If user previously unmuted, respect that after first interaction
+
       if (savedMutePreference === 'false') {
         const attemptUnmute = () => {
           video.muted = false;
@@ -37,7 +57,6 @@ const Hero = () => {
         document.addEventListener('touchstart', attemptUnmute, { once: true });
       }
     } else {
-      // Desktop: Start unmuted for first play (unless user previously muted)
       if (savedMutePreference === null) {
         video.muted = false;
         setIsMuted(false);
@@ -47,14 +66,11 @@ const Hero = () => {
       }
     }
 
-    // Handle first play completion
     const handleTimeUpdate = () => {
       if (!hasPlayedOnce && video.currentTime > 0 && video.duration > 0) {
-        // Check if we're near the end (within 0.5 seconds)
         if (video.duration - video.currentTime < 0.5) {
           setHasPlayedOnce(true);
-          
-          // Only auto-mute if user hasn't manually changed the setting
+
           if (!userHasInteracted) {
             video.muted = true;
             setIsMuted(true);
@@ -68,8 +84,7 @@ const Hero = () => {
       if (!hasPlayedOnce) {
         setHasPlayedOnce(true);
         video.loop = true;
-        
-        // Only auto-mute if user hasn't manually changed the setting
+
         if (!userHasInteracted) {
           video.muted = true;
           setIsMuted(true);
@@ -90,88 +105,139 @@ const Hero = () => {
   const toggleMute = () => {
     if (videoRef.current) {
       const newMutedState = !videoRef.current.muted;
-      console.log('Toggle mute clicked. Current:', videoRef.current.muted, 'New:', newMutedState);
       videoRef.current.muted = newMutedState;
       setIsMuted(newMutedState);
       setUserHasInteracted(true);
-      
-      // Save user preference to session
       sessionStorage.setItem('heroVideoMuted', String(newMutedState));
-      console.log('Video muted state after toggle:', videoRef.current.muted);
-    } else {
-      console.log('Video ref not available');
+    }
+
+    // Also control background audio if present
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(console.error);
+      } else {
+        audioRef.current.pause();
+      }
     }
   };
 
+  const nextSlide = () => {
+    setIsAutoPlaying(false);
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  };
+
+  const prevSlide = () => {
+    setIsAutoPlaying(false);
+    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+  };
+
+  const currentSlideData = heroSlides[currentSlide];
+
   return (
     <motion.section
-      className="relative h-[70vh] w-full flex items-center justify-center text-center overflow-hidden"
+      className="relative min-h-screen w-full flex items-center justify-center text-center overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: "easeOut" }}
     >
-      {/* Hero Video */}
-      <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black">
-        <video
-          ref={videoRef}
-          src="/dandle-hero.mp4"
-          className="w-full h-full object-contain"
-          autoPlay
-          loop={false}
-          playsInline
-          preload="auto"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain'
+      {/* Background Audio - Optional */}
+      <audio ref={audioRef} loop muted>
+        {/* Add your background music file here */}
+        {/* <source src="/hero-music.mp3" type="audio/mpeg" /> */}
+      </audio>
+
+      {/* Hero Slides (Images + Video) */}
+      <div className="absolute inset-0 w-full h-full">
+        <AnimatePresence mode="wait">
+          {currentSlideData.type === 'video' ? (
+            <motion.div
+              key="video"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 w-full h-full bg-black"
+            >
+              <video
+                ref={videoRef}
+                src={currentSlideData.src}
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                playsInline
+                preload="auto"
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key={`image-${currentSlide}`}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.7 }}
+              className="absolute inset-0 w-full h-full bg-black"
+            >
+              <img
+                src={currentSlideData.src}
+                alt={currentSlideData.alt}
+                className="w-full h-full object-cover object-center"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60" />
+
+        {/* Subtle animated gradient accent */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-tr from-nile-blue/20 via-transparent to-dandle-orange/20"
+          animate={{
+            opacity: [0.3, 0.5, 0.3],
           }}
-        />
-        {/* Gradient Overlay - More Colorful */}
-        <div className="absolute inset-0 bg-gradient-to-br from-nile-blue/50 via-black/40 to-dandle-orange/30" />
-        {/* Animated Gradient Accent */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-tr from-transparent via-bronze/20 to-transparent"
-          animate={{ 
-            opacity: [0.3, 0.6, 0.3],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ 
-            repeat: Infinity, 
+          transition={{
+            repeat: Infinity,
             duration: 8,
             ease: "easeInOut"
           }}
         />
       </div>
 
+      {/* Content Overlay with improved contrast */}
       <motion.div
-        className="relative z-10 text-warm-white px-6 max-w-5xl"
+        className="relative z-10 px-6 max-w-5xl"
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, type: "spring", stiffness: 80, damping: 20 }}
       >
-        {/* Floating Badge */}
+        {/* Floating Badge with better visibility */}
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/20 backdrop-blur-md border border-dandle-orange/40 mb-6"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-dandle-orange/60 mb-6 shadow-lg"
           animate={{ y: [0, -8, 0] }}
           transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
         >
           <Sparkles className="w-4 h-4 text-dandle-orange" />
-          <span className="text-sm font-body text-warm-white">Crafted Since 2010</span>
+          <span className="text-sm font-body text-white font-semibold">Crafted Since 2010</span>
         </motion.div>
 
-        <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-          <span className="block bg-gradient-to-r from-warm-white via-warm-beige to-bronze bg-clip-text text-transparent">
+        {/* Main heading with text shadow for better visibility */}
+        <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}>
+          <span className="block bg-gradient-to-r from-white via-warm-beige to-bronze bg-clip-text text-transparent">
             DANDLE
           </span>
-          <span className="block text-warm-white mt-2">Because You've Earned It</span>
+          <span className="block text-white mt-2">Because You've Earned It</span>
         </h1>
-        
-        <p className="font-body text-lg md:text-xl text-warm-beige/90 mb-10 max-w-2xl mx-auto">
-          Egyptian-crafted luxury recliners designed for those who value lasting comfort and quiet excellence
-        </p>
 
+        {/* Description with background for better readability */}
+        <div className="inline-block bg-black/30 backdrop-blur-sm rounded-lg px-6 py-3 mb-10">
+          <p className="font-body text-lg md:text-xl text-white leading-relaxed max-w-2xl" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.8)' }}>
+            Egyptian-crafted luxury recliners designed for those who value lasting comfort and quiet excellence
+          </p>
+        </div>
+
+        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button 
+          <Button
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
@@ -180,9 +246,9 @@ const Hero = () => {
             Explore Collection
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
-          <Button 
+          <Button
             onClick={() => navigate('/nour-chat')}
-            className="group bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 text-warm-white px-8 py-6 text-lg font-body transition-all duration-300"
+            className="group bg-white/90 backdrop-blur-md border-2 border-white hover:bg-white text-nile-blue px-8 py-6 text-lg font-body font-semibold transition-all duration-300 shadow-lg"
           >
             <Sparkles className="mr-2 w-5 h-5" />
             View in Your Space
@@ -190,35 +256,71 @@ const Hero = () => {
         </div>
       </motion.div>
 
-      {/* Mute/Unmute Toggle Button */}
+      {/* Carousel Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/40 backdrop-blur-md border border-white/30 hover:bg-black/60 transition-all duration-300 group"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="w-6 h-6 text-white" />
+      </button>
+
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/40 backdrop-blur-md border border-white/30 hover:bg-black/60 transition-all duration-300 group"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="w-6 h-6 text-white" />
+      </button>
+
+      {/* Slide Indicators */}
+      <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {heroSlides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              setCurrentSlide(index);
+              setIsAutoPlaying(false);
+            }}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === currentSlide
+                ? 'w-8 bg-dandle-orange'
+                : 'w-2 bg-white/50 hover:bg-white/80'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Mute/Unmute Toggle Button - Repositioned */}
       <motion.button
         onClick={toggleMute}
-        className="absolute bottom-24 right-8 p-3 rounded-full bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 transition-all duration-300 group"
-        style={{ zIndex: 1001 }}
+        className="absolute top-24 right-8 z-30 p-3 rounded-full bg-black/40 backdrop-blur-md border border-white/30 hover:bg-black/60 transition-all duration-300 group"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        aria-label={isMuted ? "Unmute video" : "Mute video"}
+        aria-label={isMuted ? "Unmute" : "Mute"}
       >
         {isMuted ? (
-          <VolumeX className="w-5 h-5 text-warm-white" />
+          <VolumeX className="w-5 h-5 text-white" />
         ) : (
-          <Volume2 className="w-5 h-5 text-warm-white" />
+          <Volume2 className="w-5 h-5 text-white" />
         )}
       </motion.button>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Indicator - Repositioned to avoid overlap */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        animate={{ y: [0, 8, 0], opacity: [0.4, 1, 0.4] }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
+        animate={{ y: [0, 8, 0], opacity: [0.6, 1, 0.6] }}
         transition={{ repeat: Infinity, duration: 2 }}
       >
-        <div className="w-6 h-10 rounded-full border-2 border-bronze/60 flex items-start justify-center p-2">
-          <motion.div 
-            className="w-1.5 h-1.5 bg-bronze rounded-full"
+        <div className="w-6 h-10 rounded-full border-2 border-white/80 flex items-start justify-center p-2 bg-black/20 backdrop-blur-sm">
+          <motion.div
+            className="w-1.5 h-1.5 bg-white rounded-full shadow-lg"
             animate={{ y: [0, 12, 0] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
           />
         </div>
+        <span className="text-xs text-white/80 font-body" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>Scroll</span>
       </motion.div>
     </motion.section>
   );
