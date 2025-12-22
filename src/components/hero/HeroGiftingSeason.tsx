@@ -80,62 +80,65 @@ const HeroGiftingSeason = ({
         )}
       </AnimatePresence>
 
-      {/* CTA Overlay - Always visible */}
+      {/* CTA Overlay - Always visible, properly positioned for mobile */}
       <motion.div
-        className="absolute z-20 px-6 max-w-5xl"
+        className="absolute inset-x-0 z-20 px-4 md:px-6 flex flex-col items-center justify-center"
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.6, type: "spring", stiffness: 80, damping: 20 }}
-        style={{ top: '50%', transform: 'translateY(-50%)' }}
+        style={{ top: '35%', transform: 'translateY(-50%)' }}
       >
         {/* Floating Badge */}
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-dandle-orange/60 mb-6 shadow-lg"
-          animate={{ y: [0, -8, 0] }}
+          className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-black/50 backdrop-blur-md border border-dandle-orange/60 mb-4 md:mb-6 shadow-lg"
+          animate={{ y: [0, -6, 0] }}
           transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
         >
-          <Sparkles className="w-4 h-4 text-dandle-orange" />
-          <span className="text-sm font-body text-white font-semibold">Crafted Since 2010</span>
+          <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-dandle-orange" />
+          <span className="text-xs md:text-sm font-body text-white font-semibold">Crafted Since 2010</span>
         </motion.div>
 
-        {/* Main heading */}
+        {/* Main heading - cleaner mobile layout */}
         <h1 
-          className="font-headline text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight"
-          style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}
+          className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 leading-tight text-center"
+          style={{ textShadow: '0 4px 30px rgba(0,0,0,0.9)' }}
         >
-          <span className="block bg-gradient-to-r from-white via-warm-beige to-bronze bg-clip-text text-transparent">
+          <span className="block text-white">
             DANDLE
           </span>
-          <span className="block text-white mt-2">Because You've Earned It</span>
+          <span className="block text-2xl md:text-4xl lg:text-5xl text-white/90 mt-1 md:mt-2 font-medium">
+            Because You've Earned It
+          </span>
         </h1>
 
-        {/* Description */}
-        <div className="inline-block bg-black/30 backdrop-blur-sm rounded-lg px-6 py-3 mb-10">
+        {/* Description - simplified for mobile */}
+        <div className="bg-black/40 backdrop-blur-sm rounded-lg px-4 md:px-6 py-2 md:py-3 mb-6 md:mb-8 max-w-lg">
           <p 
-            className="font-body text-lg md:text-xl text-white leading-relaxed max-w-2xl"
-            style={{ textShadow: '0 1px 10px rgba(0,0,0,0.8)' }}
+            className="font-body text-sm md:text-lg text-white/90 leading-relaxed text-center"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}
           >
-            Egyptian-crafted luxury recliners designed for those who value lasting comfort and quiet excellence
+            Egyptian-crafted luxury recliners for lasting comfort
           </p>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        {/* CTA Buttons - stack on mobile */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center w-full max-w-md">
           <Button
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="group bg-gradient-to-r from-dandle-orange to-dandle-orange/80 hover:from-dandle-orange/90 hover:to-dandle-orange/70 text-white px-8 py-6 text-lg font-body shadow-elegant hover:shadow-glow transition-all duration-300"
+            className="w-full sm:w-auto group bg-dandle-orange hover:bg-dandle-orange/90 text-white px-6 md:px-8 py-4 md:py-5 text-base md:text-lg font-body shadow-lg transition-all duration-300"
           >
             Explore Collection
-            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
           <Button
             onClick={() => navigate('/nour-chat')}
-            className="group bg-white/90 backdrop-blur-md border-2 border-white hover:bg-white text-nile-blue px-8 py-6 text-lg font-body font-semibold transition-all duration-300 shadow-lg"
+            variant="outline"
+            className="w-full sm:w-auto group bg-white/20 backdrop-blur-md border border-white/40 hover:bg-white/30 text-white px-6 md:px-8 py-4 md:py-5 text-base md:text-lg font-body transition-all duration-300"
           >
-            <Sparkles className="mr-2 w-5 h-5" />
-            View in Your Space
+            <Sparkles className="mr-2 w-4 h-4 md:w-5 md:h-5" />
+            View in AR
           </Button>
         </div>
       </motion.div>
