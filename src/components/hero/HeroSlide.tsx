@@ -73,39 +73,19 @@ const HeroSlide = ({
         />
       </picture>
 
-      {/* Color Badge */}
+      {/* Color Badge - Hidden on mobile to reduce clutter */}
       {colorName !== 'BACKGROUND_ONLY' && (
         <motion.div
-          className="absolute top-6 left-6 z-20"
+          className="absolute top-20 md:top-6 left-4 md:left-6 z-10 hidden md:block"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: isActive ? 1 : 0, x: isActive ? 0 : -20 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <div className="px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20">
+          <div className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20">
             <span className="text-xs text-white/90 font-body">{colorName}</span>
           </div>
         </motion.div>
       )}
-
-      {/* Arabic Message Overlay - Lower Third */}
-      <motion.div
-        className="absolute bottom-28 left-0 right-0 z-20 px-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 20 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-      >
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 
-            className="text-3xl md:text-5xl font-headline text-white mb-2"
-            style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}
-            dir="rtl"
-          >
-            {arabicMessage}
-          </h2>
-          {/* Gold Accent Underline */}
-          <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-dandle-orange to-transparent rounded-full" />
-        </div>
-      </motion.div>
     </motion.div>
   );
 };
