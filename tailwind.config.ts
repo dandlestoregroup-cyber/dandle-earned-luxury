@@ -93,6 +93,10 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      aspectRatio: {
+        '4/3': '4 / 3',
+        '3/2': '3 / 2',
+      },
       fontFamily: {
         headline: ['Playfair Display', 'serif'],
         body: ['Inter', 'sans-serif'],

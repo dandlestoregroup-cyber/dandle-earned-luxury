@@ -8,6 +8,7 @@ import SocialProof from "@/components/SocialProof";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import WorkWithUs from "@/components/WorkWithUs";
 
 const Index = () => {
   return (
@@ -22,6 +23,7 @@ const Index = () => {
           <ProductGallery />
         </div>
         <SocialProof />
+        <WorkWithUs />
         <Contact />
       </main>
       <Footer />
