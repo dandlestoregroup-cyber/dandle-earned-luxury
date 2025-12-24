@@ -5,16 +5,18 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
+    { label: "Our Story", href: "/our-story" },
     { label: "About Us", href: "/about" },
     { label: "Warranty", href: "/warranty" },
     { label: "Delivery", href: "/delivery" },
-    { label: "FAQ", href: "/faq" },
+    { label: "Careers", href: "/careers" },
   ];
 
   const customerService = [
     { label: "Payment", href: "/payment" },
     { label: "Installation", href: "/installation" },
     { label: "Returns", href: "/returns" },
+    { label: "FAQ", href: "/faq" },
     { label: "Contact Us", href: "/contact" },
   ];
 

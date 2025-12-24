@@ -9,19 +9,27 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import WorkWithUs from "@/components/WorkWithUs";
+import OfferRibbon from "@/components/OfferRibbon";
+import Testimonials from "@/components/Testimonials";
+import LifestyleGallery from "@/components/LifestyleGallery";
+import PressRecognition from "@/components/PressRecognition";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
+      <OfferRibbon />
       <main>
         <Hero />
         <Quote />
         <PromiseGrid />
+        <LifestyleGallery />
         <ARDemo />
         <div id="products">
           <ProductGallery />
         </div>
+        <Testimonials />
+        <PressRecognition />
         <SocialProof />
         <WorkWithUs />
         <Contact />
