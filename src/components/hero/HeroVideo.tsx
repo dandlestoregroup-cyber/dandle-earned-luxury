@@ -45,7 +45,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Video Element */}
+      {/* Video Element - High Quality */}
       <video
         ref={videoRef}
         src={src}
@@ -54,6 +54,12 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         muted
         playsInline
         onEnded={onEnded}
+        preload="auto"
+        style={{ 
+          imageRendering: 'auto',
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+        }}
       />
 
       {/* Soft radial vignette for cinematic feel */}

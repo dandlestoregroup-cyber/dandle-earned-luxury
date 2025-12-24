@@ -21,13 +21,13 @@ const HeroGiftingSeason = ({
   const [videoSrc, setVideoSrc] = useState(VIDEO_SRC);
   const { trackVideoComplete, resetTimer } = useHeroAnalytics();
 
-  // Check if returning visitor
+  // Check localStorage for analytics tracking only - video always plays first
   useEffect(() => {
     const seen = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (seen === 'true') {
-      setPhase('offer');
       setHasSeenVideo(true);
     }
+    // Always start with video phase - no skipping
   }, []);
 
   const handleVideoEnd = () => {
