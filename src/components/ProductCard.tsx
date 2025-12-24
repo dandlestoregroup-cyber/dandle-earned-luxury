@@ -39,7 +39,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover"
           loading="lazy"
         />
       </div>

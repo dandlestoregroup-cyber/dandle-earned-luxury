@@ -23,11 +23,11 @@ const Index = () => {
         <Hero />
         <Quote />
         <PromiseGrid />
+        <LifestyleGallery />
         <ARDemo />
         <div id="products">
           <ProductGallery />
         </div>
-        <LifestyleGallery />
         <Testimonials />
         <PressRecognition />
         <SocialProof />
