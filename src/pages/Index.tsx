@@ -12,7 +12,6 @@ import WorkWithUs from "@/components/WorkWithUs";
 import OfferRibbon from "@/components/OfferRibbon";
 import Testimonials from "@/components/Testimonials";
 import LifestyleGallery from "@/components/LifestyleGallery";
-import PressRecognition from "@/components/PressRecognition";
 
 const Index = () => {
   return (
@@ -29,7 +28,6 @@ const Index = () => {
         </div>
         <LifestyleGallery />
         <Testimonials />
-        <PressRecognition />
         <SocialProof />
         <WorkWithUs />
         <Contact />

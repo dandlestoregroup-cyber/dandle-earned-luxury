@@ -11,6 +11,11 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   // Try to load hero image from Lovable catalog (master)
   const lovableProduct = getLovableProduct(product.id);
   const heroImage = lovableProduct?.heroImage.src || product.imageUrl;
+  
+  // Get total image count (hero + gallery)
+  const totalImages = lovableProduct 
+    ? 1 + (lovableProduct.gallery?.length || 0) 
+    : 1;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-EG", {
@@ -35,13 +40,23 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
-      <div className="w-full aspect-[4/3] overflow-hidden bg-muted">
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
           className="w-full h-full object-cover object-center"
+          style={{ objectPosition: 'center center' }}
           loading="lazy"
         />
+        {/* Gallery image count badge */}
+        {totalImages > 1 && (
+          <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-charcoal/70 backdrop-blur-sm">
+            <svg className="w-3 h-3 text-warm-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="text-xs font-body text-warm-white">{totalImages}</span>
+          </div>
+        )}
       </div>
       <div className="p-6 space-y-4">
         <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
