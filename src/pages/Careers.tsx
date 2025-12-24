@@ -68,10 +68,7 @@ const Careers = () => {
   ];
 
   const openPositions = [
-    { title: "Master Upholsterer", department: "Craftsmanship", location: "Cairo", type: "Full-time" },
-    { title: "Quality Assurance Specialist", department: "Quality", location: "Cairo", type: "Full-time" },
-    { title: "Customer Experience Manager", department: "Support", location: "Cairo / Remote", type: "Full-time" },
-    { title: "Digital Marketing Specialist", department: "Marketing", location: "Cairo / Hybrid", type: "Full-time" }
+    { title: "Operations Manager", department: "Operations", location: "Cairo", type: "Full-time" }
   ];
 
   const handleApply = (position: string) => {
@@ -178,14 +175,13 @@ const Careers = () => {
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  className="aspect-4/3 bg-gradient-to-br from-nile-blue/20 to-dandle-orange/20 rounded-xl overflow-hidden"
+                  className="aspect-4/3 rounded-xl overflow-hidden"
                 >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <Users className="w-16 h-16 text-dandle-orange/50 mx-auto mb-4" />
-                      <p className="font-body text-foreground/50">Team photo coming soon</p>
-                    </div>
-                  </div>
+                  <img 
+                    src="/images/complete-set-family-modern.jpg" 
+                    alt="DANDLE workshop and team environment"
+                    className="w-full h-full object-cover"
+                  />
                 </motion.div>
               </div>
             </div>

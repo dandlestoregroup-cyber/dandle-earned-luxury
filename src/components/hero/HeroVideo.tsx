@@ -71,9 +71,9 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       {/* Brass particles floating upward */}
       <HeroParticles density={20} tone="brass" />
 
-      {/* Festive Season Badge - Simplified, no pulse */}
+      {/* Festive Season Badge - Below navigation */}
       <motion.div
-        className="absolute top-6 left-6 z-20"
+        className="absolute top-24 left-6 z-20"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : -20 }}
         transition={{ delay: 0.8, duration: 0.6 }}
@@ -89,7 +89,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       {/* Skip Button */}
       <motion.button
         onClick={onSkip}
-        className="absolute top-6 right-6 z-30 flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 hover:bg-black/60 transition-all duration-300"
+        className="absolute top-24 right-6 z-30 flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 hover:bg-black/60 transition-all duration-300"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1, duration: 0.5 }}

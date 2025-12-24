@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import HeritageTimeline from "@/components/HeritageTimeline";
-import PressRecognition from "@/components/PressRecognition";
 import { Heart, Sparkles, Shield, Users } from "lucide-react";
 
 const values = [
@@ -138,9 +137,6 @@ const OurStory = () => {
 
       {/* Timeline */}
       <HeritageTimeline />
-
-      {/* Stats */}
-      <PressRecognition />
 
       {/* CTA */}
       <section className="py-24 bg-secondary/30">

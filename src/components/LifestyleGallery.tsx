@@ -5,28 +5,34 @@ import Autoplay from "embla-carousel-autoplay";
 
 const lifestyleImages = [
   {
-    src: "/images/relaxmax-lifestyle-day.png",
-    alt: "RelaxMax in modern living room during golden hour",
-    caption: "Morning Serenity",
-    subtitle: "Start your day in absolute comfort"
+    src: "/images/complete-set-classic.jpg",
+    alt: "DANDLE recliner in elegant home living room",
+    caption: "At Home",
+    subtitle: "Where comfort meets family"
   },
   {
-    src: "/images/relaxmax-lifestyle-night.png", 
-    alt: "RelaxMax ambient evening lighting",
-    caption: "Evening Comfort",
-    subtitle: "Unwind as the sun sets"
+    src: "/images/worknest-blue-front.webp", 
+    alt: "WorkNest recliner in executive office setting",
+    caption: "Executive Office",
+    subtitle: "Productivity in supreme comfort"
   },
   {
-    src: "/images/cozycompanion-couple-lifestyle.jpg",
-    alt: "Couple enjoying CozyCompanion together",
-    caption: "Shared Moments",
-    subtitle: "Create memories together"
+    src: "/images/complete-set-coastal-modern.jpg",
+    alt: "Modern home office with DANDLE recliner",
+    caption: "Work From Home",
+    subtitle: "Your personal productivity sanctuary"
   },
   {
-    src: "/images/relaxmax-brown-lifestyle.jpg",
-    alt: "Luxury living room setup with RelaxMax",
-    caption: "Timeless Elegance",
-    subtitle: "Where luxury meets living"
+    src: "/images/complete-set-sunset-fireplace.jpg",
+    alt: "Luxury vacation rental with premium recliner",
+    caption: "Vacation Rental",
+    subtitle: "Elevate guest experiences"
+  },
+  {
+    src: "/images/complete-set-family-modern.jpg",
+    alt: "Boutique hotel suite with DANDLE comfort",
+    caption: "Boutique Hotel",
+    subtitle: "Premium hospitality comfort"
   }
 ];
 
@@ -116,7 +122,7 @@ const LifestyleGallery = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="absolute bottom-12 md:bottom-16 left-0 right-0 text-center px-4"
+                        className="absolute bottom-20 md:bottom-24 left-0 right-0 text-center px-4"
                       >
                         <h3 className="font-headline text-3xl md:text-5xl text-warm-white mb-2">
                           {image.caption}
