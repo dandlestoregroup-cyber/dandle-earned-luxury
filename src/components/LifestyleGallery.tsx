@@ -1,75 +1,172 @@
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 
 const lifestyleImages = [
   {
     src: "/images/relaxmax-lifestyle-day.png",
     alt: "RelaxMax in modern living room during golden hour",
-    caption: "Morning Serenity"
+    caption: "Morning Serenity",
+    subtitle: "Start your day in absolute comfort"
   },
   {
     src: "/images/relaxmax-lifestyle-night.png", 
     alt: "RelaxMax ambient evening lighting",
-    caption: "Evening Comfort"
+    caption: "Evening Comfort",
+    subtitle: "Unwind as the sun sets"
   },
   {
     src: "/images/cozycompanion-couple-lifestyle.jpg",
     alt: "Couple enjoying CozyCompanion together",
-    caption: "Shared Moments"
+    caption: "Shared Moments",
+    subtitle: "Create memories together"
   },
   {
     src: "/images/relaxmax-brown-lifestyle.jpg",
     alt: "Luxury living room setup with RelaxMax",
-    caption: "Timeless Elegance"
+    caption: "Timeless Elegance",
+    subtitle: "Where luxury meets living"
   }
 ];
 
 const LifestyleGallery = () => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { 
+      loop: true,
+      skipSnaps: false,
+      align: "center"
+    },
+    [Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })]
+  );
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  const scrollTo = useCallback((index: number) => {
+    emblaApi?.scrollTo(index);
+  }, [emblaApi]);
+
   return (
-    <section className="py-24 bg-background">
-      <div className="container mx-auto px-4">
+    <section className="py-16 md:py-24 bg-charcoal overflow-hidden">
+      <div className="container mx-auto px-4 mb-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center"
         >
           <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
             In Your Home
           </span>
-          <h2 className="font-headline text-4xl md:text-5xl text-foreground mt-3">
+          <h2 className="font-headline text-4xl md:text-5xl text-warm-white mt-3">
             Lifestyle Gallery
           </h2>
         </motion.div>
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          {lifestyleImages.map((image, index) => (
-            <motion.div
-              key={image.caption}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative aspect-[4/3] overflow-hidden rounded-sm"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-full object-cover transition-transform duration-[4000ms] ease-out group-hover:scale-110"
-              />
-              
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              {/* Caption */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                <p className="font-headline text-xl text-warm-white">
-                  {image.caption}
-                </p>
+      {/* Fullscreen Stacked Carousel */}
+      <div className="relative">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex touch-pan-y">
+            {lifestyleImages.map((image, index) => (
+              <div 
+                key={image.caption}
+                className="flex-[0_0_100%] min-w-0 relative"
+              >
+                <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden">
+                  {/* Ken Burns Effect on Active Slide */}
+                  <motion.img
+                    src={image.src}
+                    alt={image.alt}
+                    className="w-full h-full object-cover object-center"
+                    initial={{ scale: 1.1 }}
+                    animate={{ 
+                      scale: selectedIndex === index ? 1.15 : 1.1,
+                    }}
+                    transition={{ 
+                      duration: 8,
+                      ease: "easeOut"
+                    }}
+                  />
+                  
+                  {/* Gradient Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-charcoal/40 via-transparent to-charcoal/40" />
+                  
+                  {/* Caption Overlay with Parallax Effect */}
+                  <AnimatePresence mode="wait">
+                    {selectedIndex === index && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="absolute bottom-12 md:bottom-16 left-0 right-0 text-center px-4"
+                      >
+                        <h3 className="font-headline text-3xl md:text-5xl text-warm-white mb-2">
+                          {image.caption}
+                        </h3>
+                        <p className="font-body text-lg md:text-xl text-warm-white/80">
+                          {image.subtitle}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
-            </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Dot Indicators */}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3 z-10">
+          {lifestyleImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollTo(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                selectedIndex === index 
+                  ? "bg-bronze w-8" 
+                  : "bg-warm-white/40 hover:bg-warm-white/60"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
           ))}
         </div>
+
+        {/* Swipe Hint for Mobile */}
+        <motion.div 
+          className="absolute bottom-20 left-1/2 -translate-x-1/2 md:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 0.5 }}
+        >
+          <motion.div
+            animate={{ x: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="text-warm-white/60 text-sm font-body flex items-center gap-2"
+          >
+            <span>Swipe</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
