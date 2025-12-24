@@ -40,12 +40,11 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
+      <div className="relative w-full aspect-square overflow-hidden bg-muted">
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="w-full h-full object-cover object-center"
-          style={{ objectPosition: 'center center' }}
+          className="w-full h-full object-contain object-center"
           loading="lazy"
         />
         {/* Gallery image count badge */}
