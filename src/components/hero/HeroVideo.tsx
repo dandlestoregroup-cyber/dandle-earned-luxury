@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 
 interface HeroVideoProps {
   src: string;
@@ -44,7 +44,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Video Element */}
+      {/* Video Element - Full screen, no overlays */}
       <video
         ref={videoRef}
         src={src}
@@ -55,33 +55,23 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         onEnded={onEnded}
       />
 
-      {/* Dark Overlay for Text */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
+      {/* Minimal gradient for readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30 pointer-events-none" />
 
-      {/* Hero Overlay Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="text-center px-6"
-        >
-          <h1 
-            className="text-5xl md:text-7xl font-headline text-white mb-4"
-            style={{ textShadow: '0 2px 30px rgba(0,0,0,0.8)' }}
-            dir="rtl"
-          >
-            موسم الهدايا
-          </h1>
-          <p 
-            className="text-xl md:text-2xl text-white/90 font-body"
-            style={{ textShadow: '0 1px 15px rgba(0,0,0,0.8)' }}
-            dir="rtl"
-          >
-            راحتك، التزامنا
-          </p>
-        </motion.div>
-      </div>
+      {/* Festive Season Badge - Dec 2025 / Jan 2026 */}
+      <motion.div
+        className="absolute top-6 left-6 z-20"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : -20 }}
+        transition={{ delay: 0.8, duration: 0.6 }}
+      >
+        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/90 backdrop-blur-sm shadow-lg">
+          <Sparkles className="w-4 h-4 text-white animate-pulse" />
+          <span className="text-sm font-body text-white font-semibold tracking-wide">
+            Festive Season 2025
+          </span>
+        </div>
+      </motion.div>
 
       {/* Skip Button */}
       <motion.button
@@ -92,10 +82,9 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         transition={{ delay: 1, duration: 0.5 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        dir="rtl"
       >
-        <span className="text-sm text-white font-body">تخطي</span>
-        <ChevronLeft className="w-4 h-4 text-white" />
+        <span className="text-sm text-white font-body">Skip</span>
+        <ChevronRight className="w-4 h-4 text-white" />
       </motion.button>
 
       {/* Video Progress Bar */}
