@@ -5,7 +5,7 @@ import HeroOffer from "./HeroOffer";
 import { useHeroAnalytics } from "@/hooks/useHeroAnalytics";
 
 const LOCAL_STORAGE_KEY = 'dandle_hero_video_seen';
-const VIDEO_SRC = '/dandle-hero.mp4';
+const VIDEO_SRC = '/videos/festive-hero.mp4';
 
 interface HeroGiftingSeasonProps {
   useGeneratedImages?: boolean;
