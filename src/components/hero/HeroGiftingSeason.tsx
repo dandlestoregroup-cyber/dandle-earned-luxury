@@ -52,7 +52,7 @@ const HeroGiftingSeason = ({
 
   return (
     <motion.section
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[hsl(0_0%_10%)]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
