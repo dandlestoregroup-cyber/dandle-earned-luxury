@@ -1,324 +1,261 @@
-import { useEffect } from "react";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
-import { motion } from "framer-motion";
-import { 
-  Heart, 
-  Users, 
-  Sparkles, 
-  Briefcase, 
-  MapPin, 
-  Clock, 
-  Coffee, 
-  TrendingUp,
-  Shield,
-  Sun,
-  ArrowRight
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
+import RoleApplicationModal from "@/components/careers/RoleApplicationModal";
+import GeneralApplicationModal from "@/components/careers/GeneralApplicationModal";
+
+const cultureCards = [
+  {
+    title: "The Art of Deserving",
+    body: "We believe comfort is earned — and so is respect. We serve 'The Achiever,' and we hire them too. If you show up with discipline, care, and ownership, you will be seen here. Not with speeches, but with trust.",
+  },
+  {
+    title: "Uncompromising Precision",
+    body: "Quality isn't just a KPI; it is code. It's the way we hold a stitch, align a seam, or manage a spreadsheet. If it wobbles, if it's loose, if it's vague — it doesn't leave. We treat our work with the focus of a watchmaker.",
+  },
+  {
+    title: "The Flawless Engine",
+    body: "We move fast, but we don't move messy. We use technology to strip away the fluff of work. No drama. No chaos. Just clear handoffs, clean data, and quiet problem-solving. More impact with less noise.",
+    filter: "If you need drama to feel busy, Dandle won't suit you.",
+  },
+  {
+    title: "Proudly Lived With",
+    body: "Our pieces are meant to be used daily, not just looked at. We work the same way: responsibly, consistently, and with pride. We build the legacy we want to live in.",
+  },
+];
+
+const benefits = [
+  "Health & Security: Insurance support (by role and after probation).",
+  "Fair & Clear: Compensation that reflects your impact, not just your hours.",
+  "Skill Architecture: Structured training. You master the basics, then you raise the standard.",
+  "Balanced Life: We respect personal time. We don't glorify burnout; we glorify efficiency.",
+  "Human Connection: Team moments that feel real, not forced.",
+];
 
 const Careers = () => {
-  useEffect(() => {
-    document.title = "Careers - DANDLE | Join Our Team";
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        "content",
-        "Join the DANDLE family. Discover career opportunities with Egypt's leading luxury recliner brand. Culture of craftsmanship, growth, and earned success."
-      );
-    } else {
-      const meta = document.createElement("meta");
-      meta.name = "description";
-      meta.content = "Join the DANDLE family. Discover career opportunities with Egypt's leading luxury recliner brand. Culture of craftsmanship, growth, and earned success.";
-      document.head.appendChild(meta);
+  const [roleModalOpen, setRoleModalOpen] = useState(false);
+  const [generalModalOpen, setGeneralModalOpen] = useState(false);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
-  }, []);
-
-  const cultureValues = [
-    {
-      icon: Heart,
-      title: "Craftsmanship Pride",
-      description: "We take immense pride in every piece we create. Quality is not just a goal, it is who we are."
-    },
-    {
-      icon: Users,
-      title: "Family Spirit",
-      description: "At DANDLE, colleagues become family. We support each other through challenges and celebrate successes together."
-    },
-    {
-      icon: Sparkles,
-      title: "Earned Excellence",
-      description: "Just like our products, excellence here is earned through dedication, skill, and passion for what we do."
-    },
-    {
-      icon: TrendingUp,
-      title: "Growth Mindset",
-      description: "We invest in our people. From apprentices to master craftsmen, everyone has room to grow and develop."
-    }
-  ];
-
-  const benefits = [
-    { icon: Shield, title: "Health & Insurance", description: "Comprehensive health coverage for you and your family" },
-    { icon: Sun, title: "Work-Life Balance", description: "Flexible schedules and respect for personal time" },
-    { icon: Coffee, title: "Modern Workspace", description: "Comfortable, well-equipped facilities in a creative environment" },
-    { icon: TrendingUp, title: "Career Growth", description: "Clear pathways for advancement and skill development" },
-    { icon: Users, title: "Team Events", description: "Regular team outings, celebrations, and bonding activities" },
-    { icon: Briefcase, title: "Competitive Salary", description: "Fair compensation that rewards your expertise and contribution" }
-  ];
-
-  const openPositions = [
-    { title: "Operations Manager", department: "Operations", location: "Cairo", type: "Full-time" }
-  ];
-
-  const handleApply = (position: string) => {
-    const message = encodeURIComponent(`Hello! I'm interested in the ${position} position at DANDLE. I'd like to learn more about the opportunity.`);
-    window.open(`https://wa.me/201234567890?text=${message}`, '_blank');
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Helmet>
+        <title>Dandle Careers — Built for the Achiever</title>
+        <meta
+          name="description"
+          content="Join Dandle, the Swiss Knife of Comfort. A tech-enabled brand built on quiet precision. Explore roles and apply."
+        />
+      </Helmet>
+
       <Navigation />
 
-      <main className="pt-20">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-nile-blue/10 via-background to-dandle-orange/5 py-20">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="max-w-4xl mx-auto text-center"
-            >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/10 text-dandle-orange text-sm font-body mb-6">
-                <Briefcase className="w-4 h-4" />
-                We're Hiring
-              </span>
-              <h1 className="font-headline text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-nile-blue via-dandle-orange to-bronze bg-clip-text text-transparent">
-                Join the DANDLE Family
-              </h1>
-              <p className="font-body text-xl md:text-2xl text-foreground/80 leading-relaxed max-w-2xl mx-auto">
-                Build a career where craftsmanship meets passion. We're looking for talented individuals who believe in earned excellence.
+      <main className="bg-warm-white min-h-screen pt-20">
+        {/* SECTION 1: HERO */}
+        <section className="w-full px-6 py-20 md:py-24">
+          <div className="max-w-[1280px] mx-auto">
+            <h1 className="font-headline text-5xl md:text-7xl font-bold text-charcoal mb-4">
+              DANDLE CAREERS
+            </h1>
+            <h2 className="font-headline text-2xl md:text-3xl font-bold text-charcoal mb-3">
+              Built for the Achiever. Managed by Intelligence.
+            </h2>
+            <p className="text-xl text-charcoal mb-6">
+              Come Build What People Feel.
+            </p>
+            <p className="text-lg text-muted-foreground max-w-[600px] mb-8 leading-relaxed">
+              Dandle is the Swiss Knife of Comfort — practical, premium, and proudly used every day. Behind every piece is a team that treats craft like a signature and operations like a science. We hire people who chase precision, not noise.
+            </p>
+            <div className="flex flex-row gap-4 flex-wrap">
+              <Button
+                onClick={() => {
+                  scrollToSection("open-positions");
+                  setTimeout(() => setRoleModalOpen(true), 500);
+                }}
+                className="h-12 px-6 bg-charcoal text-warm-white hover:bg-charcoal/90 rounded-sm font-body"
+              >
+                Apply Now
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => scrollToSection("general-application")}
+                className="h-12 px-6 border-charcoal text-charcoal hover:bg-charcoal/5 rounded-sm font-body"
+              >
+                General Application
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 2: CULTURE CARDS */}
+        <section className="w-full px-6 py-24 bg-warm-white">
+          <div className="max-w-[1120px] mx-auto">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-charcoal text-center mb-12">
+              Our Culture — The Guardian's Code
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {cultureCards.map((card, index) => (
+                <div
+                  key={index}
+                  className="bg-card border border-border rounded-xl p-10 shadow-subtle"
+                >
+                  <h3 className="font-headline text-2xl font-bold text-charcoal mb-4">
+                    {card.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {card.body}
+                  </p>
+                  {card.filter && (
+                    <p className="text-sm italic text-muted-foreground/70 mt-4">
+                      {card.filter}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: WORKPLACE */}
+        <section className="w-full px-6 py-20">
+          <div className="max-w-[800px] mx-auto text-center">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-charcoal mb-6">
+              Where You'll Work
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Our environment is built for focus: real materials, real tools, real craft. Whether you are in the Cairo workshop or the digital cockpit, you will feel the rhythm: light, order, and logic — the kind of space that makes excellence easier to repeat.
+            </p>
+          </div>
+        </section>
+
+        {/* SECTION 4: BENEFITS */}
+        <section className="w-full px-6 py-24 bg-warm-beige/30">
+          <div className="max-w-[1000px] mx-auto">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-charcoal text-center mb-12">
+              Benefits — The Guardian's Pledge
+            </h2>
+            <div className="flex flex-col gap-5">
+              {benefits.map((benefit, index) => (
+                <div key={index} className="flex items-start gap-4">
+                  <Check className="w-6 h-6 text-bronze flex-shrink-0 mt-0.5" />
+                  <p className="text-lg text-charcoal">{benefit}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 5: OPEN POSITIONS */}
+        <section id="open-positions" className="w-full px-6 py-24">
+          <div className="max-w-[900px] mx-auto">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-charcoal mb-10">
+              Open Positions
+            </h2>
+
+            {/* Role Card */}
+            <div className="bg-card border-2 border-charcoal rounded-2xl p-8 md:p-12">
+              <h3 className="font-headline text-2xl md:text-3xl font-bold text-charcoal mb-2">
+                Executive Assistant (to the Executive Manager)
+              </h3>
+              <div className="flex flex-wrap gap-4 md:gap-6 text-sm text-muted-foreground mb-6">
+                <span>Department: Intelligence Office (The Cockpit)</span>
+                <span>Location: Cairo</span>
+                <span>Type: Full-time</span>
+              </div>
+
+              <p className="text-lg text-charcoal mb-6">
+                You are the Executive Manager's force multiplier. Not a secretary — an execution partner. You protect focus, convert priorities into structured actions, and keep the company's operational truth clean.
               </p>
-            </motion.div>
-          </div>
-        </section>
 
-        {/* Culture Section */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-16"
-              >
-                <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground">
-                  Our Culture
-                </h2>
-                <p className="font-body text-lg text-foreground/70 max-w-2xl mx-auto">
-                  At DANDLE, we don't just make recliners. We create an environment where talent thrives and craftsmanship is celebrated.
-                </p>
-              </motion.div>
+              <p className="font-bold text-charcoal mb-2">Mission:</p>
+              <p className="text-muted-foreground mb-8">
+                Make leadership decisions land in reality: clear owners, clear deadlines, clean documentation.
+              </p>
 
-              <div className="grid md:grid-cols-2 gap-8">
-                {cultureValues.map((value, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-muted/30 rounded-xl p-8 border border-bronze/10 hover:border-dandle-orange/30 transition-colors"
-                  >
-                    <value.icon className="w-10 h-10 text-dandle-orange mb-4" />
-                    <h3 className="font-headline text-xl font-semibold mb-3 text-foreground">
-                      {value.title}
-                    </h3>
-                    <p className="font-body text-foreground/70 leading-relaxed">
-                      {value.description}
-                    </p>
-                  </motion.div>
-                ))}
+              <div className="mb-8">
+                <h4 className="text-lg font-bold text-charcoal mb-3">What You Will Own</h4>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• <strong>The Executive Brief:</strong> Daily priorities, calendar control, and meeting readiness (no surprises).</li>
+                  <li>• <strong>The Follow-Through:</strong> Action items tracked until closed — no floating tasks.</li>
+                  <li>• <strong>The System Truth:</strong> Notion / Sheets accuracy. If it's not in the system, it didn't happen.</li>
+                  <li>• <strong>The Communication:</strong> Clear internal updates; polite, firm external coordination when needed.</li>
+                  <li>• <strong>The Rhythm:</strong> Weekly planning cadence, KPI snapshots, and clean reporting the Executive Manager can trust.</li>
+                </ul>
               </div>
+
+              <div className="mb-8">
+                <h4 className="text-lg font-bold text-charcoal mb-3">Who You Are</h4>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• <strong>Calm under pressure:</strong> You don't react — you resolve.</li>
+                  <li>• <strong>Structured thinker:</strong> You love checklists, templates, timestamps, and dashboards.</li>
+                  <li>• <strong>Discreet & trustworthy:</strong> You handle sensitive info with maturity and silence.</li>
+                  <li>• <strong>Clear communicator:</strong> Arabic essential; English is a strong asset.</li>
+                  <li>• <strong>Tech-ready:</strong> Comfortable with Notion, Google Sheets/Excel, WhatsApp Business, and learning fast.</li>
+                </ul>
+              </div>
+
+              <div className="mb-10">
+                <h4 className="text-lg font-bold text-charcoal mb-3">Scorecard (First 60–90 Days)</h4>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• <strong>Action closure rate:</strong> decisions become completed tasks, not notes.</li>
+                  <li>• <strong>Calendar accuracy:</strong> zero missed/unclear commitments.</li>
+                  <li>• <strong>Documentation quality:</strong> decisions + rationale logged same-day.</li>
+                  <li>• <strong>Time protection:</strong> fewer interruptions, fewer repeat questions, cleaner handoffs.</li>
+                </ul>
+              </div>
+
+              <Button
+                onClick={() => setRoleModalOpen(true)}
+                className="h-14 px-8 bg-charcoal text-warm-white hover:bg-charcoal/90 rounded-sm font-body text-lg"
+              >
+                Apply Now
+              </Button>
+              <p className="text-sm text-muted-foreground mt-3">
+                Send your CV + 5 lines: (1) your proudest 'mess → system' story (2) the tool you use best (3) why Dandle.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Team Environment Section */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                >
-                  <h2 className="font-headline text-3xl md:text-4xl font-bold mb-6 text-foreground">
-                    A Workplace You'll Love
-                  </h2>
-                  <div className="space-y-4 font-body text-foreground/80">
-                    <p>
-                      Our workshop in Cairo blends traditional craftsmanship with modern comfort. Natural light floods our workspace, and the aroma of fine leather fills the air.
-                    </p>
-                    <p>
-                      We believe the best work comes from happy people. That's why we've created an environment where creativity flows, ideas are welcomed, and every team member feels valued.
-                    </p>
-                    <p>
-                      From morning coffee rituals to Friday celebrations, we've built traditions that bring us together and make work feel like more than just a job.
-                    </p>
-                  </div>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  className="aspect-4/3 rounded-xl overflow-hidden"
-                >
-                  <img 
-                    src="/images/complete-set-family-modern.jpg" 
-                    alt="DANDLE workshop and team environment"
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Benefits Section */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-16"
-              >
-                <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground">
-                  Benefits & Perks
-                </h2>
-                <p className="font-body text-lg text-foreground/70">
-                  We take care of our team so they can focus on what they do best.
-                </p>
-              </motion.div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {benefits.map((benefit, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.05 }}
-                    className="bg-muted/30 rounded-lg p-6 border border-bronze/10"
-                  >
-                    <benefit.icon className="w-8 h-8 text-dandle-orange mb-3" />
-                    <h3 className="font-headline text-lg font-semibold mb-2 text-foreground">
-                      {benefit.title}
-                    </h3>
-                    <p className="font-body text-sm text-foreground/70">
-                      {benefit.description}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Open Positions Section */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-12"
-              >
-                <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground">
-                  Open Positions
-                </h2>
-                <p className="font-body text-lg text-foreground/70">
-                  Find your place in the DANDLE family.
-                </p>
-              </motion.div>
-
-              <div className="space-y-4">
-                {openPositions.map((position, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-background rounded-xl p-6 border border-bronze/10 hover:border-dandle-orange/30 transition-all hover:shadow-elegant"
-                  >
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div>
-                        <h3 className="font-headline text-xl font-semibold text-foreground mb-2">
-                          {position.title}
-                        </h3>
-                        <div className="flex flex-wrap gap-3 text-sm font-body text-foreground/60">
-                          <span className="flex items-center gap-1">
-                            <Briefcase className="w-4 h-4" />
-                            {position.department}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            {position.location}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {position.type}
-                          </span>
-                        </div>
-                      </div>
-                      <Button
-                        onClick={() => handleApply(position.title)}
-                        className="bg-dandle-orange hover:bg-dandle-orange/90 text-white font-body"
-                      >
-                        Apply Now
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* General Application */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="mt-12 text-center bg-gradient-to-r from-nile-blue/10 to-dandle-orange/10 rounded-xl p-8"
-              >
-                <h3 className="font-headline text-xl font-semibold mb-3 text-foreground">
-                  Don't see the right role?
-                </h3>
-                <p className="font-body text-foreground/70 mb-6">
-                  We're always looking for exceptional talent. Send us your CV and tell us how you'd contribute to the DANDLE family.
-                </p>
-                <Button
-                  onClick={() => handleApply("General Inquiry")}
-                  variant="outline"
-                  className="border-dandle-orange text-dandle-orange hover:bg-dandle-orange hover:text-white font-body"
-                >
-                  Send General Application
-                </Button>
-              </motion.div>
-            </div>
+        {/* SECTION 6: GENERAL APPLICATION */}
+        <section id="general-application" className="w-full px-6 py-24 bg-warm-beige/30">
+          <div className="max-w-[700px] mx-auto text-center">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-charcoal mb-6">
+              Don't See Your Role?
+            </h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              If you are exceptional, we want to meet you. We are always looking for Craftsmen, Digital Wizards, and Brand Voices.
+            </p>
+            <p className="text-base text-charcoal mb-8">
+              Send your CV + a short note:<br />
+              (1) What are you known for?<br />
+              (2) What do you want to master next?<br />
+              (3) Why Dandle?
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => setGeneralModalOpen(true)}
+              className="h-12 px-6 border-charcoal text-charcoal hover:bg-charcoal/5 rounded-sm font-body"
+            >
+              Send General Application
+            </Button>
           </div>
         </section>
       </main>
 
       <Footer />
-      <WhatsAppFloat />
-    </div>
+
+      <RoleApplicationModal open={roleModalOpen} onOpenChange={setRoleModalOpen} />
+      <GeneralApplicationModal open={generalModalOpen} onOpenChange={setGeneralModalOpen} />
+    </>
   );
 };
 
