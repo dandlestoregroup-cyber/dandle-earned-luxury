@@ -5,12 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
 import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
-import NotFound from "./pages/NotFound";
 import GenerateImages from "./pages/admin/GenerateImages";
 import GenerateHeroAssets from "./pages/admin/GenerateHeroAssets";
 import AdminLayout from "./components/AdminLayout";
@@ -22,12 +22,13 @@ import Payment from "./pages/trust/Payment";
 import Installation from "./pages/trust/Installation";
 import Returns from "./pages/trust/Returns";
 import Contact from "./pages/trust/Contact";
+import Careers from "./pages/Careers";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <CartProvider>
+  <CartProvider>
+    <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -49,13 +50,14 @@ const App = () => (
             <Route path="/installation" element={<Installation />} />
             <Route path="/returns" element={<Returns />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/careers" element={<Careers />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </CartProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </CartProvider>
 );
 
 export default App;
