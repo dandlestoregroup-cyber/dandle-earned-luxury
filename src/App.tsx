@@ -23,6 +23,7 @@ import Installation from "./pages/trust/Installation";
 import Returns from "./pages/trust/Returns";
 import Contact from "./pages/trust/Contact";
 import Careers from "./pages/Careers";
+import OurStory from "./pages/OurStory";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/returns" element={<Returns />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/our-story" element={<OurStory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
