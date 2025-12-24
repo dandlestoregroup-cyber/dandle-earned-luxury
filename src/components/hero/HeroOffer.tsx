@@ -48,9 +48,9 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
       transition={{ duration: 0.8 }}
     >
       {/* Background Image with Ken Burns */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden bg-[hsl(0_0%_10%)]">
         {isLoading ? (
-          <div className="w-full h-full bg-gradient-to-br from-nile-blue/20 to-dandle-orange/10 animate-pulse" />
+          <div className="w-full h-full bg-gradient-to-br from-[hsl(0_0%_10%)] via-[hsl(216_58%_36%/0.3)] to-[hsl(0_0%_10%)]" />
         ) : (
           <motion.img
             src={displayImage}
@@ -69,12 +69,14 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/40 pointer-events-none" />
 
-      {/* Atmospheric Effects */}
-      <HeroParticles density={18} tone="ivory" />
-      <HeroSnow density={12} />
+      {/* Atmospheric Effects - lower z-index */}
+      <div className="z-0">
+        <HeroParticles density={18} tone="ivory" />
+        <HeroSnow density={12} />
+      </div>
 
-      {/* Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-4">
+      {/* Content - higher z-index */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4">
         {/* Festive Badge */}
         <motion.div
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/90 backdrop-blur-sm mb-4 shadow-lg"
