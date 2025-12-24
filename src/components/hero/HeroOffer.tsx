@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Gift, RotateCcw } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowRight, Gift, RotateCcw } from "lucide-react";
+import HeroParticles from "./HeroParticles";
+import HeroSnow from "./HeroSnow";
+import HeroCountdown from "./HeroCountdown";
+import AnimatedHeadline from "./AnimatedHeadline";
 
 interface HeroOfferProps {
   onReplayVideo?: () => void;
 }
 
 const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
-  const navigate = useNavigate();
   const [offerImage, setOfferImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,8 +47,8 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      {/* Background Image */}
-      <div className="absolute inset-0">
+      {/* Background Image with Ken Burns */}
+      <div className="absolute inset-0 overflow-hidden">
         {isLoading ? (
           <div className="w-full h-full bg-gradient-to-br from-nile-blue/20 to-dandle-orange/10 animate-pulse" />
         ) : (
@@ -55,41 +57,49 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
             alt="Festive Season Offer"
             className="w-full h-full object-cover"
             initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 8, ease: "easeOut" }}
+            animate={{ scale: 1.02 }}
+            transition={{ duration: 12, ease: "easeOut" }}
           />
         )}
       </div>
 
+      {/* Soft radial vignette */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_30%,rgba(0,0,0,0.35)_100%)]" />
+
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/40 pointer-events-none" />
+
+      {/* Atmospheric Effects */}
+      <HeroParticles density={18} tone="ivory" />
+      <HeroSnow density={12} />
 
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-4">
         {/* Festive Badge */}
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/90 backdrop-blur-sm mb-6 shadow-lg"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/90 backdrop-blur-sm mb-4 shadow-lg"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
         >
           <Gift className="w-4 h-4 text-white" />
           <span className="text-sm font-body text-white font-semibold">
             Dec 2025 – Jan 2026
           </span>
-          <Sparkles className="w-4 h-4 text-white animate-pulse" />
         </motion.div>
 
-        {/* Main Heading */}
-        <motion.h1
+        {/* Countdown Timer */}
+        <div className="mb-6">
+          <HeroCountdown targetISO="2026-01-15T23:59:59+02:00" label="Festive ends in" />
+        </div>
+
+        {/* Animated Headline */}
+        <AnimatedHeadline 
           className="text-4xl md:text-6xl lg:text-7xl font-headline font-bold text-white text-center mb-4"
-          style={{ textShadow: '0 4px 30px rgba(0,0,0,0.9)' }}
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.7 }}
+          delay={0.6}
         >
           Festive Season Sale
-        </motion.h1>
+        </AnimatedHeadline>
 
         {/* Subtitle */}
         <motion.p
@@ -97,17 +107,17 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)' }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.6 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
         >
           Up to 30% Off Premium Recliners
         </motion.p>
 
-        {/* Offer Details */}
+        {/* Offer Details - Simplified */}
         <motion.div
-          className="bg-black/50 backdrop-blur-md rounded-xl px-6 py-4 mb-8 border border-dandle-orange/30"
+          className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-4 mb-8 border border-white/10"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.5 }}
+          transition={{ delay: 1.4, duration: 0.5 }}
         >
           <p className="text-white/90 text-center font-body text-lg">
             <span className="text-dandle-orange font-semibold">Free Delivery</span> on all orders • 
@@ -120,7 +130,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.1, duration: 0.6 }}
+          transition={{ delay: 1.6, duration: 0.6 }}
         >
           <Button
             onClick={() => {
@@ -136,7 +146,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
             <Button
               onClick={onReplayVideo}
               variant="outline"
-              className="w-full sm:w-auto group bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 text-white px-8 py-5 text-lg font-body transition-all duration-300"
+              className="w-full sm:w-auto group bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-5 text-lg font-body transition-all duration-300"
             >
               <RotateCcw className="mr-2 w-5 h-5" />
               Replay Video
@@ -152,14 +162,14 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
         transition={{ repeat: Infinity, duration: 2 }}
         initial={{ opacity: 0 }}
       >
-        <div className="w-6 h-10 rounded-full border-2 border-white/80 flex items-start justify-center p-2 bg-black/20 backdrop-blur-sm">
+        <div className="w-6 h-10 rounded-full border-2 border-white/60 flex items-start justify-center p-2 bg-black/20 backdrop-blur-sm">
           <motion.div
             className="w-1.5 h-1.5 bg-white rounded-full shadow-lg"
             animate={{ y: [0, 12, 0] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
           />
         </div>
-        <span className="text-xs text-white/80 font-body" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
+        <span className="text-xs text-white/70 font-body" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
           Scroll to Explore
         </span>
       </motion.div>

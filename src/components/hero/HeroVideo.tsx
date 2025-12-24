@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ChevronRight, Sparkles } from "lucide-react";
+import { ChevronRight, Gift } from "lucide-react";
+import HeroParticles from "./HeroParticles";
 
 interface HeroVideoProps {
   src: string;
@@ -44,7 +45,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Video Element - Full screen, no overlays */}
+      {/* Video Element */}
       <video
         ref={videoRef}
         src={src}
@@ -55,10 +56,16 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         onEnded={onEnded}
       />
 
-      {/* Minimal gradient for readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30 pointer-events-none" />
+      {/* Soft radial vignette for cinematic feel */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_40%,rgba(0,0,0,0.3)_100%)]" />
 
-      {/* Festive Season Badge - Dec 2025 / Jan 2026 */}
+      {/* Gradient for readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+
+      {/* Brass particles floating upward */}
+      <HeroParticles density={20} tone="brass" />
+
+      {/* Festive Season Badge - Simplified, no pulse */}
       <motion.div
         className="absolute top-6 left-6 z-20"
         initial={{ opacity: 0, x: -20 }}
@@ -66,7 +73,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         transition={{ delay: 0.8, duration: 0.6 }}
       >
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/90 backdrop-blur-sm shadow-lg">
-          <Sparkles className="w-4 h-4 text-white animate-pulse" />
+          <Gift className="w-4 h-4 text-white" />
           <span className="text-sm font-body text-white font-semibold tracking-wide">
             Festive Season 2025
           </span>
@@ -87,12 +94,15 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         <ChevronRight className="w-4 h-4 text-white" />
       </motion.button>
 
-      {/* Video Progress Bar */}
+      {/* Glowing Progress Bar */}
       <div className="absolute bottom-0 left-0 right-0 z-20">
-        <div className="w-full h-1 bg-white/20">
+        <div className="w-full h-1 bg-white/10">
           <motion.div
-            className="h-full bg-dandle-orange"
-            style={{ width: `${progress}%` }}
+            className="h-full bg-gradient-to-r from-dandle-orange via-amber-400 to-dandle-orange"
+            style={{ 
+              width: `${progress}%`,
+              animation: "glowPulse 2s ease-in-out infinite",
+            }}
             transition={{ duration: 0.1, ease: "linear" }}
           />
         </div>
