@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { ArrowLeft, ShoppingCart, Loader2, Shield, Truck, Wrench, Star } from "lucide-react";
+import { Helmet } from "react-helmet";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
@@ -89,8 +90,63 @@ const ProductDetail = () => {
     ? formatPrice(product.commerce.price, product.commerce.currencyCode)
     : "Price on request";
 
+  // Generate JSON-LD Product Schema
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.title,
+    "description": product.subtitle,
+    "brand": {
+      "@type": "Brand",
+      "name": "DANDLE"
+    },
+    "image": `https://dandle-earned-luxury.lovable.app${product.heroImage.src}`,
+    "url": `https://dandle-earned-luxury.lovable.app/product/${product.productHandle}`,
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": product.commerce?.currencyCode || "EGP",
+      "price": product.commerce?.price || "0",
+      "availability": isAvailable 
+        ? "https://schema.org/InStock" 
+        : "https://schema.org/OutOfStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "DANDLE Egypt"
+      }
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "127"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{product.title} | DANDLE Recliners - Earned Luxury</title>
+        <meta name="description" content={`${product.title} - ${product.subtitle}. Premium Egyptian recliner with 5-year warranty. Free delivery & installation.`} />
+        <link rel="canonical" href={`https://dandle-earned-luxury.lovable.app/product/${product.productHandle}`} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={`${product.title} | DANDLE`} />
+        <meta property="og:description" content={product.subtitle} />
+        <meta property="og:image" content={`https://dandle-earned-luxury.lovable.app${product.heroImage.src}`} />
+        <meta property="og:url" content={`https://dandle-earned-luxury.lovable.app/product/${product.productHandle}`} />
+        <meta property="og:type" content="product" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${product.title} | DANDLE`} />
+        <meta name="twitter:description" content={product.subtitle} />
+        <meta name="twitter:image" content={`https://dandle-earned-luxury.lovable.app${product.heroImage.src}`} />
+        
+        {/* Product Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
+      </Helmet>
+      
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 py-8 mt-20">
