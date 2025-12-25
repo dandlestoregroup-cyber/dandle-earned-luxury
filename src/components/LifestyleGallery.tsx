@@ -124,10 +124,10 @@ const LifestyleGallery = () => {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="absolute bottom-20 md:bottom-24 left-0 right-0 text-center px-4"
                       >
-                        <h3 className="font-headline text-3xl md:text-5xl text-warm-white mb-2">
+                        <h3 className="font-headline text-3xl md:text-5xl text-dandle-orange mb-2 drop-shadow-lg">
                           {image.caption}
                         </h3>
-                        <p className="font-body text-lg md:text-xl text-warm-white/80">
+                        <p className="font-body text-lg md:text-xl text-warm-white drop-shadow-md">
                           {image.subtitle}
                         </p>
                       </motion.div>
@@ -155,23 +155,19 @@ const LifestyleGallery = () => {
           ))}
         </div>
 
-        {/* Swipe Hint for Mobile */}
+        {/* Swipe Hint for Mobile - positioned above captions */}
         <motion.div 
-          className="absolute bottom-20 left-1/2 -translate-x-1/2 md:hidden"
+          className="absolute top-4 left-1/2 -translate-x-1/2 md:hidden z-20"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 0.5 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ delay: 2, duration: 3, times: [0, 0.1, 0.8, 1] }}
         >
-          <motion.div
-            animate={{ x: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="text-warm-white/60 text-sm font-body flex items-center gap-2"
-          >
-            <span>Swipe</span>
+          <div className="text-dandle-orange text-sm font-body flex items-center gap-2 bg-charcoal/70 px-3 py-1.5 rounded-full backdrop-blur-sm">
+            <span>Swipe to explore</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
