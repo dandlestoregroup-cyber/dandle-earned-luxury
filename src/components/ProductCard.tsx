@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -33,6 +34,9 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     return product.price ? formatPrice(product.price) : "Contact for Price";
   };
 
+  // Heritage Set uses 3:2 aspect ratio, others use square
+  const isHeritageSet = product.id === "complete-set";
+
   return (
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
@@ -40,11 +44,15 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
       onClick={onClick}
     >
-      <div className="relative w-full aspect-square overflow-hidden bg-muted">
+      {/* Image container with orange frame */}
+      <div className={cn(
+        "relative overflow-hidden bg-white border-4 border-dandle-orange rounded-t-lg",
+        isHeritageSet ? "aspect-[3/2]" : "aspect-square"
+      )}>
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="w-full h-full object-contain object-center"
+          className="w-full h-full object-contain object-center p-2"
           loading="lazy"
         />
         {/* Gallery image count badge */}
@@ -57,7 +65,8 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
           </div>
         )}
       </div>
-      <div className="p-6 space-y-4">
+      {/* Text section with separator */}
+      <div className="p-6 space-y-4 bg-white border-t-2 border-warm-beige">
         <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
           {product.name}
         </h3>

@@ -23,12 +23,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "diva",
     title: "Diva Recliner",
     subtitle: "Statement Luxury Seating",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/diva-red-front.jpg",
-      width: 2752,
-      height: 1536,
-      alt: "Diva Recliner - Red Leather Statement Piece"
+      src: "/images/dandle-diva.jpg",
+      width: 1024,
+      height: 1024,
+      alt: "Dandle Diva Signature Persona Lounge"
     },
     gallery: [
       {
@@ -43,12 +43,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "relaxmax",
     title: "RelaxMax Recliner",
     subtitle: "Ultimate Comfort Engineering",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/relaxmax-hero-offwhite.jpg",
-      width: 2752,
-      height: 1536,
-      alt: "RelaxMax Recliner - Off-White Hero"
+      src: "/images/dandle-relaxmax.jpg",
+      width: 1024,
+      height: 1024,
+      alt: "Dandle RelaxMax Flagship Standard Recliner"
     },
     gallery: [
       {
@@ -101,12 +101,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "worknest",
     title: "WorkNest Recliner",
     subtitle: "Executive Productivity Chair",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/worknest-blue-front.webp",
-      width: 2752,
-      height: 1536,
-      alt: "WorkNest Recliner - Blue with Swivel Table"
+      src: "/images/dandle-worknest.jpg",
+      width: 1024,
+      height: 1024,
+      alt: "Dandle WorkNest Productive Sanctuary"
     },
     gallery: []
   },
@@ -114,12 +114,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "spacesaver",
     title: "SpaceSaver Recliner",
     subtitle: "Wall-Hugger Technology",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/spacesaver-red-front.webp",
-      width: 2752,
-      height: 1536,
-      alt: "SpaceSaver Recliner - Red Leather"
+      src: "/images/dandle-spacesaver.jpg",
+      width: 1024,
+      height: 1024,
+      alt: "Dandle SpaceSaver Intelligent Footprint"
     },
     gallery: [
       {
@@ -140,12 +140,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "comfortplus",
     title: "ComfortPlus Recliner",
     subtitle: "Enhanced Ergonomic Design",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/comfortplus-tan-front.webp",
-      width: 2752,
-      height: 1536,
-      alt: "ComfortPlus Recliner - Tan Leather"
+      src: "/images/dandle-comfortplus.jpg",
+      width: 1024,
+      height: 1024,
+      alt: "Dandle ComfortPlus Rolling Massage Retreat"
     },
     gallery: [
       {
@@ -160,12 +160,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "easyup",
     title: "EasyUp Lift Recliner",
     subtitle: "Power Lift Assistance",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/easyup-standard-grey-front.webp",
-      width: 2752,
-      height: 1536,
-      alt: "EasyUp Standard Lift Recliner - Grey"
+      src: "/images/dandle-easyup-standard.jpg",
+      width: 1024,
+      height: 1024,
+      alt: "Dandle EasyUp Standard 90cm Power Lift"
     },
     gallery: [
       {
@@ -186,12 +186,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "easyup-compact",
     title: "EasyUp Compact Lift Recliner",
     subtitle: "Compact Power Lift",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/easyup-compact-grey-front.webp",
-      width: 2752,
-      height: 1536,
-      alt: "EasyUp Compact Lift Recliner - Grey"
+      src: "/images/dandle-easyup-compact.jpg",
+      width: 1024,
+      height: 1024,
+      alt: "Dandle EasyUp Compact Slim Power Lift"
     },
     gallery: [
       {
@@ -218,12 +218,12 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "complete-set",
     title: "Complete Living Room Set",
     subtitle: "Curated Room Configurations",
-    aspectRatio: 1.79,
+    aspectRatio: 1.5,
     heroImage: {
-      src: "/images/complete-set-classic.jpg",
-      width: 2752,
-      height: 1536,
-      alt: "Complete Set - Classic Configuration"
+      src: "/images/dandle-heritage-set.jpg",
+      width: 1536,
+      height: 1024,
+      alt: "Dandle Heritage Set Cinematic Suite"
     },
     gallery: [
       {
