@@ -72,7 +72,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   };
 
   const calculateCommission = () => {
-    return Math.round(calculateTotal() * 0.035);
+    return Math.round(calculateTotal() * 0.07); // 7% for registered resellers
   };
 
   const handleCompleteOrder = () => {
@@ -441,8 +441,9 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>
               </div>
               <div className="text-left">
-                <p className="text-sm text-muted-foreground">Service Charge (3.5%)</p>
+                <p className="text-sm text-muted-foreground">Reseller Service Charge (7%)</p>
                 <p className="text-2xl font-bold text-accent">{formatPrice(calculateCommission())} EGP</p>
+                <p className="text-xs text-muted-foreground/70">For registered resellers • Sales tracked by code</p>
               </div>
             </div>
             

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Eye } from "lucide-react";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { cn } from "@/lib/utils";
@@ -39,9 +40,9 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
+      whileHover={{ y: -8, scale: 1.02 }}
       transition={{ duration: 0.25 }}
-      className="overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer"
+      className="group overflow-hidden rounded-lg bg-white shadow-lg hover:shadow-2xl cursor-pointer transition-shadow duration-300"
       onClick={onClick}
     >
       {/* Image container with orange frame */}
@@ -52,9 +53,16 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         <img
           src={heroImage}
           alt={`${product.name} Recliner — ${product.tagline}`}
-          className="w-full h-full object-contain object-center p-2"
+          className="w-full h-full object-contain object-center p-2 transition-transform duration-500 ease-out group-hover:scale-110"
           loading="lazy"
         />
+        {/* Quick View overlay button */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span className="px-6 py-3 bg-charcoal/90 text-warm-white font-body text-sm rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-dandle-orange flex items-center gap-2 backdrop-blur-sm">
+            <Eye className="w-4 h-4" />
+            Quick View
+          </span>
+        </div>
         {/* Gallery image count badge */}
         {totalImages > 1 && (
           <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-charcoal/70 backdrop-blur-sm">
