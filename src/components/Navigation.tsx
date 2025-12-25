@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, Palette, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
@@ -23,6 +23,7 @@ const Navigation = () => {
 
   const navLinks = [
     { label: "Home", href: "/", isRoute: true },
+    { label: "Color Studio", href: "/color-studio", isRoute: true, isSpecial: true },
     { label: "Collection", href: "#collection" },
     { label: "Complete Set", href: "/complete-set", isRoute: true },
     { label: "AR View", href: "#ar-demo" },
@@ -51,7 +52,17 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              link.isRoute ? (
+              link.isSpecial ? (
+                <button
+                  key={link.href}
+                  onClick={() => navigate(link.href)}
+                  className="relative inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent/80 transition-colors group"
+                >
+                  <Palette className="w-4 h-4" />
+                  {link.label}
+                  <Sparkles className="w-3 h-3 absolute -top-1 -right-2 text-amber-500 animate-pulse" />
+                </button>
+              ) : link.isRoute ? (
                 <button
                   key={link.href}
                   onClick={() => navigate(link.href)}
@@ -89,7 +100,20 @@ const Navigation = () => {
         {isOpen && (
           <div className="md:hidden pb-6 animate-fade-in-up">
             {navLinks.map((link) => (
-              link.isRoute ? (
+              link.isSpecial ? (
+                <button
+                  key={link.href}
+                  onClick={() => {
+                    navigate(link.href);
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-2 py-3 text-accent font-semibold hover:text-accent/80 transition-colors text-left w-full"
+                >
+                  <Palette className="w-4 h-4" />
+                  {link.label}
+                  <Sparkles className="w-3 h-3 text-amber-500" />
+                </button>
+              ) : link.isRoute ? (
                 <button
                   key={link.href}
                   onClick={() => {

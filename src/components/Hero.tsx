@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Sparkles, Volume2, VolumeX, Palette } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 
@@ -170,8 +170,8 @@ const Hero = () => {
           Egyptian-crafted luxury recliners designed for those who value lasting comfort and quiet excellence
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button 
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center flex-wrap">
+          <Button
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
@@ -180,7 +180,25 @@ const Hero = () => {
             Explore Collection
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
-          <Button 
+          <motion.div
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          >
+            <Button
+              onClick={() => navigate('/color-studio')}
+              className="group relative bg-gradient-to-r from-purple-600 via-pink-500 to-dandle-orange hover:from-purple-500 hover:via-pink-400 hover:to-dandle-orange/90 text-white px-8 py-6 text-lg font-body shadow-elegant hover:shadow-glow transition-all duration-300 overflow-hidden"
+            >
+              <motion.span
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+              />
+              <Palette className="mr-2 w-5 h-5" />
+              Try Color Studio
+              <Sparkles className="ml-2 w-4 h-4 animate-pulse" />
+            </Button>
+          </motion.div>
+          <Button
             onClick={() => navigate('/nour-chat')}
             className="group bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 text-warm-white px-8 py-6 text-lg font-body transition-all duration-300"
           >

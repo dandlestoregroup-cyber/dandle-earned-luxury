@@ -11,6 +11,7 @@ import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
 import NotFound from "./pages/NotFound";
+import ColorStudio from "./pages/ColorStudio";
 import GenerateImages from "./pages/admin/GenerateImages";
 import AdminLayout from "./components/AdminLayout";
 import About from "./pages/trust/About";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/cart" element={<Cart />} />
             <Route path="/nour-chat" element={<NourChat />} />
             <Route path="/complete-set" element={<CompleteSet />} />
+            <Route path="/color-studio" element={<ColorStudio />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
             <Route path="/admin/generate-images" element={<AdminLayout><GenerateImages /></AdminLayout>} />
