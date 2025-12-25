@@ -426,7 +426,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               </div>
               <div className="text-left">
                 <p className="text-xs text-muted-foreground">Selling Charge</p>
-                <p className="text-sm font-medium text-accent">Included</p>
+                <p className="text-sm font-medium text-accent">{formatPrice(calculateCommission())} EGP</p>
               </div>
             </div>
             
