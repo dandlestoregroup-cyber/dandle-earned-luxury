@@ -42,13 +42,13 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "relaxmax",
     title: "RelaxMax Recliner",
-    subtitle: "Ultimate Comfort Engineering",
+    subtitle: "The Flagship 90cm Standard Recliner",
     aspectRatio: 1,
     heroImage: {
-      src: "/images/dandle-relaxmax.jpg",
+      src: "/images/dandle-relaxmax-flagship.webp",
       width: 1024,
       height: 1024,
-      alt: "Dandle RelaxMax Flagship Standard Recliner"
+      alt: "Dandle RelaxMax: The flagship 90cm standard recliner. Iconic cinematic luxury and perfectly balanced proportions."
     },
     gallery: [
       {
@@ -74,13 +74,13 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "cozycompanion",
     title: "CozyCompanion Loveseat",
-    subtitle: "Two-Seater Power Recliner",
+    subtitle: "Premium Two-Seater Couch Recliner",
     aspectRatio: 1.79,
     heroImage: {
-      src: "/images/cozycompanion-beige-front.jpg",
+      src: "/images/dandle-cozycompanion-hero.webp",
       width: 2752,
       height: 1536,
-      alt: "CozyCompanion Loveseat - Beige Hero"
+      alt: "Dandle CozyCompanion: A premium two-seated couch recliner. Boutique comfort designed for intimate, upscale living."
     },
     gallery: [
       {

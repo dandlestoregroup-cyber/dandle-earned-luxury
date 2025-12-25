@@ -108,10 +108,12 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gold/10 text-center text-card-foreground/60 text-sm">
+        <div className="pt-8 border-t border-gold/10 text-center text-card-foreground/60 text-sm space-y-2">
           <p>
-            © {currentYear} Dandle Store Group. All rights reserved. | Crafted
-            with care for those who appreciate earned luxury.
+            © {currentYear} Dandle Store Group. Dandle™, RelaxMax™, and CozyCompanion™ are trademarks of Dandle Store Group.
+          </p>
+          <p className="text-xs">
+            Designs protected by international design patents.
           </p>
         </div>
       </div>
