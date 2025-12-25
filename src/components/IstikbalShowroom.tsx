@@ -8,7 +8,7 @@ const IstikbalShowroom = () => {
     const message = encodeURIComponent(
       "Hello DANDLE! I'd like to book an appointment to visit the Istikbal showroom and experience your recliners. Please let me know available slots."
     );
-    window.open(`https://wa.me/201000000000?text=${message}`, "_blank");
+    window.open(`https://wa.me/201222804255?text=${message}`, "_blank");
   };
 
   return (
@@ -81,7 +81,7 @@ const IstikbalShowroom = () => {
                 variant="outline"
                 size="lg"
                 className="border-warm-white/30 text-warm-white hover:bg-warm-white/10 font-body px-8 py-6 rounded-full"
-                onClick={() => window.open("tel:+201000000000")}
+                onClick={() => window.open("tel:+201222804255")}
               >
                 <Phone className="w-5 h-5 mr-2" />
                 Call Showroom
