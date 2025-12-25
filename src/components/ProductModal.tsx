@@ -22,6 +22,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || "");
   const [mechanism, setMechanism] = useState<"manual" | "power">("manual");
   const [baseType, setBaseType] = useState<"fixed" | "swivel" | "swivel360">("fixed");
+  const [cozyBaseType, setCozyBaseType] = useState<"rocking" | "stable">("stable");
   
   // Add-ons state
   const [giftWrap, setGiftWrap] = useState(false);
@@ -31,6 +32,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [sidePocket, setSidePocket] = useState(false);
   const [massageFeature, setMassageFeature] = useState(false);
   const [specialNotes, setSpecialNotes] = useState("");
+  
+  const isCozyCompanion = product?.id === "cozycompanion";
   
   const { addItem } = useCart();
   const navigate = useNavigate();
@@ -186,66 +189,115 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               </RadioGroup>
             </div>
 
-            {/* Base Type - Third */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-              <h3 className="text-xl font-bold">Base Type</h3>
-              
-              <RadioGroup value={baseType} onValueChange={(value: string) => {
-                playClickSound();
-                setBaseType(value as any);
-              }} className="space-y-3">
-                <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
-                    baseType === "fixed"
-                      ? 'border-accent bg-accent/10 shadow-lg'
-                      : 'border-border hover:border-accent/50 hover:bg-accent/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <RadioGroupItem value="fixed" id="fixed" />
-                    <div>
-                      <p className="font-bold text-lg">Fixed Base</p>
-                      <p className="text-sm text-muted-foreground">Free</p>
+            {/* Base Type - Third (Standard Products) */}
+            {!isCozyCompanion && (
+              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
+                <h3 className="text-xl font-bold">Base Type</h3>
+                
+                <RadioGroup value={baseType} onValueChange={(value: string) => {
+                  playClickSound();
+                  setBaseType(value as any);
+                }} className="space-y-3">
+                  <label
+                    className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                      baseType === "fixed"
+                        ? 'border-accent bg-accent/10 shadow-lg'
+                        : 'border-border hover:border-accent/50 hover:bg-accent/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="fixed" id="fixed" />
+                      <div>
+                        <p className="font-bold text-lg">Fixed Base</p>
+                        <p className="text-sm text-muted-foreground">Free</p>
+                      </div>
                     </div>
-                  </div>
-                  {baseType === "fixed" && (
-                    <Zap className="w-5 h-5 text-accent animate-in zoom-in-50 duration-300" />
-                  )}
-                </label>
+                    {baseType === "fixed" && (
+                      <Zap className="w-5 h-5 text-accent animate-in zoom-in-50 duration-300" />
+                    )}
+                  </label>
 
-                <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
-                    baseType === "swivel"
-                      ? 'border-accent bg-accent/10 shadow-lg'
-                      : 'border-border hover:border-accent/50 hover:bg-accent/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <RadioGroupItem value="swivel" id="swivel" />
-                    <div>
-                      <p className="font-bold text-lg">Swivel Base</p>
+                  <label
+                    className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                      baseType === "swivel"
+                        ? 'border-accent bg-accent/10 shadow-lg'
+                        : 'border-border hover:border-accent/50 hover:bg-accent/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="swivel" id="swivel" />
+                      <div>
+                        <p className="font-bold text-lg">Swivel Base</p>
+                      </div>
                     </div>
-                  </div>
-                  <span className="font-bold text-accent">+1,200 EGP</span>
-                </label>
+                    <span className="font-bold text-accent">+1,200 EGP</span>
+                  </label>
 
-                <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
-                    baseType === "swivel360"
-                      ? 'border-accent bg-accent/10 shadow-lg'
-                      : 'border-border hover:border-accent/50 hover:bg-accent/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <RadioGroupItem value="swivel360" id="swivel360" />
-                    <div>
-                      <p className="font-bold text-lg">Swivel + 360° Rotation</p>
+                  <label
+                    className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                      baseType === "swivel360"
+                        ? 'border-accent bg-accent/10 shadow-lg'
+                        : 'border-border hover:border-accent/50 hover:bg-accent/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="swivel360" id="swivel360" />
+                      <div>
+                        <p className="font-bold text-lg">Swivel + 360° Rotation</p>
+                      </div>
                     </div>
-                  </div>
-                  <span className="font-bold text-accent">+2,500 EGP</span>
-                </label>
-              </RadioGroup>
-            </div>
+                    <span className="font-bold text-accent">+2,500 EGP</span>
+                  </label>
+                </RadioGroup>
+              </div>
+            )}
+
+            {/* CozyCompanion Base Type - Rocking or Stable */}
+            {isCozyCompanion && (
+              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
+                <h3 className="text-xl font-bold">Configure Your CozyCompanion</h3>
+                <p className="text-muted-foreground text-sm">Choose your preferred base experience</p>
+                
+                <RadioGroup value={cozyBaseType} onValueChange={(value: string) => {
+                  playClickSound();
+                  setCozyBaseType(value as "rocking" | "stable");
+                }} className="space-y-3">
+                  <label
+                    className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                      cozyBaseType === "rocking"
+                        ? 'border-accent bg-accent/10 shadow-lg'
+                        : 'border-border hover:border-accent/50 hover:bg-accent/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="rocking" id="rocking" />
+                      <div>
+                        <p className="font-bold text-lg">Rocking Base</p>
+                        <p className="text-sm text-muted-foreground">Soothing movement</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-accent">Free</span>
+                  </label>
+
+                  <label
+                    className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                      cozyBaseType === "stable"
+                        ? 'border-accent bg-accent/10 shadow-lg'
+                        : 'border-border hover:border-accent/50 hover:bg-accent/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="stable" id="stable" />
+                      <div>
+                        <p className="font-bold text-lg">Stable Base</p>
+                        <p className="text-sm text-muted-foreground">Grounded luxury</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-accent">Free</span>
+                  </label>
+                </RadioGroup>
+              </div>
+            )}
 
             {/* Last Touch Section */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
@@ -294,10 +346,10 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               </div>
             </div>
 
-            {/* Massage Feature - Only for eligible products */}
-            {(product.id === "relaxmax" || product.id === "worknest" || product.id === "spacesaver") && (
+            {/* Massage Feature - For eligible products including CozyCompanion */}
+            {(product.id === "relaxmax" || product.id === "worknest" || product.id === "spacesaver" || product.id === "cozycompanion") && (
               <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
-                <h3 className="text-xl font-bold">Premium Therapy</h3>
+                <h3 className="text-xl font-bold">{isCozyCompanion ? "Optional Add-On" : "Premium Therapy"}</h3>
                 
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-accent/30 hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5 hover:bg-accent/10 active:scale-95">
                   <div className="flex items-center gap-3">
@@ -309,8 +361,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                       }}
                     />
                     <div>
-                      <p className="font-semibold">Massage Feature</p>
-                      <p className="text-sm text-muted-foreground">Professional-grade relaxation therapy</p>
+                      <p className="font-semibold">Integrated Massage System</p>
+                      <p className="text-sm text-muted-foreground">{isCozyCompanion ? "Premium therapeutic upgrade" : "Professional-grade relaxation therapy"}</p>
                     </div>
                   </div>
                   <span className="font-bold text-accent">+9,000 EGP</span>

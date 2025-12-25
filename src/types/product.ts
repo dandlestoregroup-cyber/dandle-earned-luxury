@@ -16,7 +16,7 @@ export const products: Product[] = [
   {
     id: "relaxmax",
     name: "Dandle RelaxMax",
-    tagline: "The Wellness Sanctuary",
+    tagline: "The Flagship 90cm Standard Recliner",
     priceManual: 21900,
     pricePower: 28900,
     colors: ["Urban Charcoal", "Off White", "Elephant Grey"],
@@ -27,7 +27,7 @@ export const products: Product[] = [
       "Premium Leather Upholstery",
     ],
     targetAudience: "High-performing professionals",
-    imageUrl: "/images/dandle-relaxmax.jpg",
+    imageUrl: "/images/dandle-relaxmax-flagship.webp",
   },
   {
     id: "comfortplus",
@@ -64,7 +64,7 @@ export const products: Product[] = [
   {
     id: "cozycompanion",
     name: "Dandle CozyCompanion",
-    tagline: "The Anchor of Connection",
+    tagline: "Premium Two-Seater Couch Recliner",
     priceManual: 42000,
     pricePower: 54000,
     colors: ["Ocean Blue", "Warm Grey"],
@@ -75,7 +75,7 @@ export const products: Product[] = [
       "Center Console with Storage",
     ],
     targetAudience: "Couples and families",
-    imageUrl: "/images/cozycompanion-beige-front.jpg",
+    imageUrl: "/images/dandle-cozycompanion-hero.webp",
   },
   {
     id: "easyup",

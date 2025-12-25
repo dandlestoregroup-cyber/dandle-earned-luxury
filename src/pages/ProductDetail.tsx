@@ -219,15 +219,41 @@ const ProductDetail = () => {
             <TabsContent value="overview" className="mt-0">
               <div className="prose prose-lg max-w-none">
                 <h3 className="font-headline text-2xl text-foreground mb-4">About This Product</h3>
-                <p className="font-body text-muted-foreground leading-relaxed">
-                  Handcrafted in Cairo, Egypt with premium materials and meticulous attention to detail. 
-                  The {product.title} represents the pinnacle of Egyptian furniture craftsmanship, 
-                  combining traditional techniques with modern ergonomic design.
-                </p>
-                <p className="font-body text-muted-foreground leading-relaxed mt-4">
-                  Every piece is assembled by master craftsmen with decades of experience, 
-                  ensuring unparalleled quality and comfort that will last for generations.
-                </p>
+                {product.productHandle === "relaxmax" ? (
+                  <>
+                    <p className="font-body text-muted-foreground leading-relaxed">
+                      The definitive expression of solitary luxury. Engineered with a precision 90cm width, 
+                      the RelaxMax offers a perfectly balanced silhouette for the ultimate home-cinematic retreat.
+                    </p>
+                    <p className="font-body text-muted-foreground leading-relaxed mt-4">
+                      Handcrafted in Cairo, Egypt with premium materials and meticulous attention to detail, 
+                      combining traditional techniques with modern ergonomic design.
+                    </p>
+                  </>
+                ) : product.productHandle === "cozycompanion" ? (
+                  <>
+                    <p className="font-body text-muted-foreground leading-relaxed">
+                      Shared intimacy meets bespoke engineering. A two-seated couch recliner that adapts to your lifestyle, 
+                      featuring customizable bases and an optional integrated massage system.
+                    </p>
+                    <p className="font-body text-muted-foreground leading-relaxed mt-4">
+                      Every piece is assembled by master craftsmen with decades of experience, 
+                      ensuring unparalleled quality and comfort that will last for generations.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-body text-muted-foreground leading-relaxed">
+                      Handcrafted in Cairo, Egypt with premium materials and meticulous attention to detail. 
+                      The {product.title} represents the pinnacle of Egyptian furniture craftsmanship, 
+                      combining traditional techniques with modern ergonomic design.
+                    </p>
+                    <p className="font-body text-muted-foreground leading-relaxed mt-4">
+                      Every piece is assembled by master craftsmen with decades of experience, 
+                      ensuring unparalleled quality and comfort that will last for generations.
+                    </p>
+                  </>
+                )}
               </div>
               {product.commerce?.metafields && (
                 <div className="mt-8">
