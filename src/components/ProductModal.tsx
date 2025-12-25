@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { Gift, Trophy, Zap } from "lucide-react";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { ProductImageGallery } from "@/components/product/ProductImageGallery";
+import { ColorFabricSelector } from "@/components/ColorFabricSelector";
+import { colorNameToFabricId, getFabricColorById, allFabricColors } from "@/data/fabricColors";
 
 interface ProductModalProps {
   product: Product | null;
@@ -19,9 +21,27 @@ interface ProductModalProps {
 }
 
 const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
-  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || "");
+  // Get available fabric IDs for this product
+  const getAvailableFabricIds = (productColors: string[] = []): string[] => {
+    // Map product color names to fabric IDs, or use all fabrics if no specific colors
+    if (productColors.length === 0 || productColors[0] === "Coordinated Styles") {
+      return allFabricColors.map(f => f.id);
+    }
+    return productColors.map(colorName => colorNameToFabricId[colorName] || 'alexandria-linen');
+  };
+
+  const availableFabricIds = getAvailableFabricIds(product?.colors);
+  const [selectedFabricId, setSelectedFabricId] = useState(availableFabricIds[0] || "alexandria-linen");
   const [mechanism, setMechanism] = useState<"manual" | "power">("manual");
   const [baseType, setBaseType] = useState<"fixed" | "swivel" | "swivel360">("fixed");
+
+  // Reset selection when product changes
+  useEffect(() => {
+    if (product) {
+      const newAvailableFabricIds = getAvailableFabricIds(product.colors);
+      setSelectedFabricId(newAvailableFabricIds[0] || "alexandria-linen");
+    }
+  }, [product?.id]);
   
   // Add-ons state
   const [giftWrap, setGiftWrap] = useState(false);
@@ -74,8 +94,12 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
   const handleCompleteOrder = () => {
     if (!product) return;
-    
-    addItem(product, selectedColor, mechanism, massageFeature);
+
+    // Get the fabric name for the cart
+    const selectedFabric = getFabricColorById(selectedFabricId);
+    const colorName = selectedFabric ? `${selectedFabric.name} (${selectedFabric.fabric})` : selectedFabricId;
+
+    addItem(product, colorName, mechanism, massageFeature);
     navigate('/cart');
     onClose();
   };
@@ -157,33 +181,24 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               </RadioGroup>
             </div>
 
-            {/* Color Selection - Second */}
+            {/* Premium Fabric & Color Selection - Second */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
-              <h3 className="text-xl font-bold">Choose Your Color</h3>
-              
-              <RadioGroup value={selectedColor} onValueChange={(value) => {
-                playClickSound();
-                setSelectedColor(value);
-              }} className="grid grid-cols-2 gap-3">
-                {product.colors?.map((color) => (
-                  <label
-                    key={color}
-                    className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
-                      selectedColor === color 
-                        ? 'border-accent bg-accent/10 scale-105 shadow-lg' 
-                        : 'border-border hover:border-accent/50 hover:bg-accent/5'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <RadioGroupItem value={color} id={color} />
-                      <span className="font-semibold">{color}</span>
-                    </div>
-                    {selectedColor === color && (
-                      <Zap className="w-5 h-5 text-accent animate-in zoom-in-50 duration-300" />
-                    )}
-                  </label>
-                ))}
-              </RadioGroup>
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-xl font-bold">Select Your Fabric & Color</h3>
+                <div className="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent" />
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Handcrafted from premium materials for lasting comfort and elegance
+              </p>
+
+              <ColorFabricSelector
+                selectedColorId={selectedFabricId}
+                onColorSelect={(colorId) => {
+                  playClickSound();
+                  setSelectedFabricId(colorId);
+                }}
+                availableColorIds={availableFabricIds}
+              />
             </div>
 
             {/* Base Type - Third */}

@@ -19,7 +19,7 @@ export const products: Product[] = [
     tagline: "The Wellness Sanctuary",
     priceManual: 21900,
     pricePower: 28900,
-    colors: ["Urban Charcoal", "Off White", "Elephant Grey"],
+    colors: ["Nile Sapphire Blue", "Alexandria Linen", "Desert Grey", "Coastal Fog Grey", "Amber Sand"],
     features: [
       "170° Zero-Gravity Recline",
       "Smart Storage Compartments",
@@ -35,7 +35,7 @@ export const products: Product[] = [
     tagline: "The Therapeutic Upgrade",
     priceManual: 29900,
     pricePower: 36900,
-    colors: ["Chic Red", "Tan Beige"],
+    colors: ["Nile Mist Terracotta", "Amber Sand", "Mocha Taupe", "Clay Pottery"],
     features: [
       "8-Point Rolling Massage System",
       "Heating Elements (Back & Legs)",
@@ -51,7 +51,7 @@ export const products: Product[] = [
     tagline: "The Statement of Style",
     priceManual: 23900,
     pricePower: 30900,
-    colors: ["Chic Red", "Pink Rose", "Sunshine Yellow"],
+    colors: ["Nile Mist Terracotta", "Papyrus Stripe", "Giza Gold Weave", "Oasis Green", "Clay Pottery"],
     features: [
       "360° Swivel Base",
       "Zero-Gravity Recline",
@@ -67,7 +67,7 @@ export const products: Product[] = [
     tagline: "The Anchor of Connection",
     priceManual: 42000,
     pricePower: 54000,
-    colors: ["Ocean Blue", "Warm Grey"],
+    colors: ["Nile Sapphire Blue", "Mocha Taupe", "Blue Nile Denim", "Coastal Fog Grey"],
     features: [
       "Duo Seating Design",
       "Independent Reclining Controls",
@@ -82,7 +82,7 @@ export const products: Product[] = [
     name: "Dandle EasyUp",
     tagline: "The Empowerment Tool",
     price: 42900,
-    colors: ["Creamy Beige", "Urban Charcoal"],
+    colors: ["Alexandria Linen", "Desert Grey", "Sandstorm Ochre", "Amber Sand"],
     features: [
       "Power Lift Mechanism",
       "Zero-Gravity Positioning",
@@ -97,7 +97,7 @@ export const products: Product[] = [
     name: "Dandle EasyUp Compact",
     tagline: "The Compact Empowerment Tool",
     price: 46900,
-    colors: ["Urban Charcoal"],
+    colors: ["Desert Grey", "Coastal Fog Grey", "Mocha Taupe"],
     features: [
       "Power Lift Mechanism",
       "Compact Design for Small Spaces",
@@ -113,7 +113,7 @@ export const products: Product[] = [
     tagline: "The Productivity Haven",
     priceManual: 26900,
     pricePower: 33900,
-    colors: ["Slate Grey", "Espresso Brown"],
+    colors: ["Coastal Fog Grey", "Mocha Taupe", "Desert Sage", "Blue Nile Denim"],
     features: [
       "Integrated Work Table",
       "Wireless Charging Pad",
@@ -129,7 +129,7 @@ export const products: Product[] = [
     tagline: "The Smart Solution",
     priceManual: 24900,
     pricePower: 29900,
-    colors: ["Stone Grey", "Navy Blue"],
+    colors: ["Desert Grey", "Blue Nile Denim", "Oasis Green", "Alexandria Linen"],
     features: [
       "Compact Design",
       "Wall-Hugger Technology",
