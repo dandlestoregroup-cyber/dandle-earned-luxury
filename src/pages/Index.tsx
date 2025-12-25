@@ -12,6 +12,7 @@ import WorkWithUs from "@/components/WorkWithUs";
 import OfferRibbon from "@/components/OfferRibbon";
 import Testimonials from "@/components/Testimonials";
 import LifestyleGallery from "@/components/LifestyleGallery";
+import IstikbalShowroom from "@/components/IstikbalShowroom";
 
 const Index = () => {
   return (
@@ -27,6 +28,7 @@ const Index = () => {
           <ProductGallery />
         </div>
         <LifestyleGallery />
+        <IstikbalShowroom />
         <Testimonials />
         <SocialProof />
         <WorkWithUs />
