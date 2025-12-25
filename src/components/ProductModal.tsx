@@ -21,7 +21,7 @@ interface ProductModalProps {
 const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || "");
   const [mechanism, setMechanism] = useState<"manual" | "power">("manual");
-  const [baseType, setBaseType] = useState<"fixed" | "swivel" | "swivel360">("fixed");
+  const [baseType, setBaseType] = useState<"fixed" | "swivel">("fixed");
   const [cozyBaseType, setCozyBaseType] = useState<"rocking" | "stable">("stable");
   
   // Add-ons state
@@ -58,7 +58,6 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
     
     // Base type pricing
     if (baseType === "swivel") total += 1200;
-    if (baseType === "swivel360") total += 2500;
     
     // Add-ons pricing
     if (giftWrap) total += 1500;
@@ -233,21 +232,6 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <span className="font-bold text-accent">+1,200 EGP</span>
                   </label>
 
-                  <label
-                    className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
-                      baseType === "swivel360"
-                        ? 'border-accent bg-accent/10 shadow-lg'
-                        : 'border-border hover:border-accent/50 hover:bg-accent/5'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <RadioGroupItem value="swivel360" id="swivel360" />
-                      <div>
-                        <p className="font-bold text-lg">Swivel + 360° Rotation</p>
-                      </div>
-                    </div>
-                    <span className="font-bold text-accent">+2,500 EGP</span>
-                  </label>
                 </RadioGroup>
               </div>
             )}
@@ -441,9 +425,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>
               </div>
               <div className="text-left">
-                <p className="text-sm text-muted-foreground">Reseller Service Charge (7%)</p>
-                <p className="text-2xl font-bold text-accent">{formatPrice(calculateCommission())} EGP</p>
-                <p className="text-xs text-muted-foreground/70">For registered resellers • Sales tracked by code</p>
+                <p className="text-xs text-muted-foreground">Selling Charge</p>
+                <p className="text-sm font-medium text-accent">Included</p>
               </div>
             </div>
             
