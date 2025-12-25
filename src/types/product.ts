@@ -122,6 +122,7 @@ export const products: Product[] = [
     ],
     targetAudience: "Remote workers and executives",
     imageUrl: "/images/dandle-worknest.jpg",
+    comingSoon: true,
   },
   {
     id: "spacesaver",
@@ -138,6 +139,7 @@ export const products: Product[] = [
     ],
     targetAudience: "Urban dwellers with small spaces",
     imageUrl: "/images/dandle-spacesaver.jpg",
+    comingSoon: true,
   },
   {
     id: "complete-set",
