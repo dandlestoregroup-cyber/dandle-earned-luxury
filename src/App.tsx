@@ -7,7 +7,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart";
-import NourChat from "./pages/NourChat";
+import NourComingSoon from "./pages/NourComingSoon";
 import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
@@ -37,7 +37,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/nour-chat" element={<NourChat />} />
+            <Route path="/nour-chat" element={<NourComingSoon />} />
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />

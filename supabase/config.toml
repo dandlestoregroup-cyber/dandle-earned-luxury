@@ -20,3 +20,9 @@ verify_jwt = false
 
 [functions.generate-hero-music]
 verify_jwt = false
+
+[functions.generate-sitemap]
+verify_jwt = false
+
+[functions.submit-career-application]
+verify_jwt = false

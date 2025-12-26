@@ -11,10 +11,10 @@ const lifestyleImages = [
     subtitle: "Where comfort meets family"
   },
   {
-    src: "/images/worknest-blue-front.webp", 
-    alt: "WorkNest recliner in executive office setting",
-    caption: "Executive Office",
-    subtitle: "Productivity in supreme comfort"
+    src: "/images/lifestyle-cairo-penthouse.jpg", 
+    alt: "Luxury Cairo penthouse with DANDLE recliner",
+    caption: "Cairo Penthouse",
+    subtitle: "Elevated Egyptian living"
   },
   {
     src: "/images/complete-set-coastal-modern.jpg",
