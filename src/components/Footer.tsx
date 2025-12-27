@@ -10,6 +10,8 @@ const Footer = () => {
     { label: "Warranty", href: "/warranty" },
     { label: "Delivery", href: "/delivery" },
     { label: "Careers", href: "/careers" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
   ];
 
   const customerService = [

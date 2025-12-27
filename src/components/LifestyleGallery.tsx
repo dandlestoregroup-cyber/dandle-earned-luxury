@@ -95,19 +95,18 @@ const LifestyleGallery = () => {
                 className="flex-[0_0_100%] min-w-0 relative"
               >
                 <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden">
-                  {/* Ken Burns Effect on Active Slide */}
-                  <motion.img
+                  {/* Ken Burns Effect - Alternating zoom in/out */}
+                  <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-full object-cover object-center"
-                    initial={{ scale: 1.1 }}
-                    animate={{ 
-                      scale: selectedIndex === index ? 1.15 : 1.1,
-                    }}
-                    transition={{ 
-                      duration: 8,
-                      ease: "easeOut"
-                    }}
+                    className={`w-full h-full object-cover object-center ${
+                      selectedIndex === index 
+                        ? index % 2 === 0 
+                          ? "animate-ken-burns-in" 
+                          : "animate-ken-burns-out"
+                        : ""
+                    }`}
+                    style={{ transform: selectedIndex !== index ? "scale(1.05)" : undefined }}
                   />
                   
                   {/* Gradient Overlays */}
