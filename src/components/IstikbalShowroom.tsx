@@ -113,23 +113,13 @@ const IstikbalShowroom = () => {
                   Where Quality Meets Comfort
                 </p>
                 
-                <div className="flex justify-center gap-8 pt-4">
-                  <div className="text-center">
-                    <span className="font-headline text-3xl text-dandle-orange">9+</span>
-                    <p className="text-warm-white/60 text-sm font-body">Models</p>
-                  </div>
-                  <div className="text-center">
-                    <span className="font-headline text-3xl text-dandle-orange">15+</span>
-                    <p className="text-warm-white/60 text-sm font-body">Colors</p>
-                  </div>
-                  <div className="text-center">
-                    <span className="font-headline text-3xl text-dandle-orange">1</span>
-                    <p className="text-warm-white/60 text-sm font-body">Visit</p>
-                  </div>
-                </div>
+                <p className="text-warm-white/80 text-lg font-body leading-relaxed max-w-md mx-auto pt-4">
+                  Walk in curious. Sit down. Feel the difference. 
+                  Leave knowing exactly what comfort means to you.
+                </p>
 
-                <p className="text-warm-white/50 text-sm font-body italic pt-4">
-                  One visit is all it takes to find your perfect recliner
+                <p className="text-warm-white/50 text-sm font-body italic pt-2">
+                  The moment you sit, you&apos;ll understand.
                 </p>
               </div>
             </div>
