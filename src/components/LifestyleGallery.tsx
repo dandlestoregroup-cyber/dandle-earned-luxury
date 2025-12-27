@@ -17,6 +17,12 @@ const lifestyleImages = [
     subtitle: "Elevated Egyptian living"
   },
   {
+    src: "/images/lifestyle-reading-nook.jpg",
+    alt: "Cozy reading nook with DANDLE recliner and bookshelves",
+    caption: "Reading Nook",
+    subtitle: "Your personal escape"
+  },
+  {
     src: "/images/complete-set-sunset-fireplace.jpg",
     alt: "Luxury vacation rental with premium recliner",
     caption: "Vacation Rental",
