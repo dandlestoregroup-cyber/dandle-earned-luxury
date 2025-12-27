@@ -8,34 +8,34 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* DANDLE Brand Bible Colors */
-    --dandle-brown: 15 28% 19%; /* #3E2723 - Deep Brown */
-    --dandle-orange: 27 80% 52%; /* #E67E22 - Accent Orange */
-    --warm-cream: 36 47% 95%; /* #FAF7F2 - Background Cream */
+    /* DANDLE Quiet-Luxury v5 Colors */
+    --nile-blue: 216 58% 36%; /* #274B8F */
+    --dandle-orange: 14 100% 60%; /* #FF6B35 */
     --warm-beige: 36 52% 90%; /* #F5E6D3 */
     --bronze: 38 36% 56%; /* #B8956A */
-    --nile-blue: 216 58% 36%; /* #274B8F - Legacy */
+    --charcoal: 0 0% 10%; /* #1A1A1A */
+    --warm-white: 60 33% 98%; /* #FAF9F6 */
+    
+    --background: 60 33% 98%; /* Warm White */
+    --foreground: 0 0% 10%; /* Charcoal */
+    
+    --card: 60 33% 98%;
+    --card-foreground: 0 0% 10%;
 
-    --background: 36 47% 95%; /* Warm Cream #FAF7F2 */
-    --foreground: 15 28% 19%; /* Deep Brown #3E2723 */
+    --popover: 60 33% 98%;
+    --popover-foreground: 0 0% 10%;
 
-    --card: 36 47% 95%;
-    --card-foreground: 15 28% 19%;
-
-    --popover: 36 47% 95%;
-    --popover-foreground: 15 28% 19%;
-
-    --primary: 15 28% 19%; /* Deep Brown #3E2723 */
-    --primary-foreground: 36 47% 95%;
+    --primary: 24 90% 50%; /* Warm Orange */
+    --primary-foreground: 60 33% 98%;
 
     --secondary: 36 52% 90%; /* Warm Beige */
-    --secondary-foreground: 15 28% 19%;
+    --secondary-foreground: 0 0% 10%;
 
     --muted: 36 52% 90%;
-    --muted-foreground: 15 28% 40%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 27 80% 52%; /* Dandle Orange #E67E22 */
-    --accent-foreground: 36 47% 95%;
+    --accent: 14 100% 60%; /* Dandle Orange */
+    --accent-foreground: 60 33% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 60 33% 98%;
@@ -114,26 +114,25 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.4;
   }
-
+  
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
     line-height: 1.1;
   }
-
+  
   /* Body text font */
   .font-body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
-
+  
   /* Headline font */
   .font-headline {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    font-family: 'Playfair Display', serif;
   }
   
   /* Warm gradient appears before React hydrates (FIX: dead initial load) */
@@ -277,6 +276,31 @@ All colors MUST be HSL.
   .animate-parallax {
     animation: parallax-float 4s ease-in-out infinite;
   }
+
+  /* Quiet-luxury particle float (upward drift) */
+  @keyframes dandleFloat {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(14px, -125vh, 0); }
+  }
+
+  /* Soft festive snow drift (downward) */
+  @keyframes dandleSnow {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(10px, 110vh, 0); }
+  }
+
+  /* Glowing progress bar */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 8px hsl(var(--dandle-orange) / 0.6); }
+    50% { box-shadow: 0 0 16px hsl(var(--dandle-orange) / 0.9); }
+  }
+
+  /* Accessibility - respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .dandle-particles, .dandle-snow { 
+      display: none !important; 
+    }
+  }
 }
 
 @layer utilities {
@@ -354,104 +378,5 @@ All colors MUST be HSL.
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
-
-  /* Corner Brackets - Brand Bible Design Element */
-  .corner-brackets {
-    position: relative;
-  }
-
-  .corner-brackets::before,
-  .corner-brackets::after {
-    content: '';
-    position: absolute;
-    width: 55px;
-    height: 55px;
-    border-color: hsl(27 80% 52%); /* #E67E22 */
-    border-style: solid;
-    border-width: 0;
-    pointer-events: none;
-  }
-
-  .corner-brackets::before {
-    top: 40px;
-    left: 40px;
-    border-top-width: 3px;
-    border-left-width: 3px;
-  }
-
-  .corner-brackets::after {
-    bottom: 40px;
-    right: 40px;
-    border-bottom-width: 3px;
-    border-right-width: 3px;
-  }
-
-  /* Corner brackets variant for smaller elements */
-  .corner-brackets-sm {
-    position: relative;
-  }
-
-  .corner-brackets-sm::before,
-  .corner-brackets-sm::after {
-    content: '';
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border-color: hsl(27 80% 52%);
-    border-style: solid;
-    border-width: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-
-  .corner-brackets-sm::before {
-    top: 20px;
-    left: 20px;
-    border-top-width: 2px;
-    border-left-width: 2px;
-  }
-
-  .corner-brackets-sm::after {
-    bottom: 20px;
-    right: 20px;
-    border-bottom-width: 2px;
-    border-right-width: 2px;
-  }
-
-  /* Hover effect for corner brackets */
-  .corner-brackets-hover:hover::before,
-  .corner-brackets-hover:hover::after {
-    border-color: hsl(15 28% 19%); /* #3E2723 */
-  }
-
-  /* Brand Bible text utilities */
-  .text-dandle-brown {
-    color: hsl(15 28% 19%); /* #3E2723 */
-  }
-
-  .bg-dandle-brown {
-    background-color: hsl(15 28% 19%); /* #3E2723 */
-  }
-
-  .bg-warm-cream {
-    background-color: hsl(36 47% 95%); /* #FAF7F2 */
-  }
-
-  .text-warm-cream {
-    color: hsl(36 47% 95%); /* #FAF7F2 */
-  }
-
-  /* Three-word truth styling (ALL CAPS with period) */
-  .three-word-truth {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: hsl(27 80% 52%);
-  }
-
-  .three-word-truth::after {
-    content: '.';
   }
 }

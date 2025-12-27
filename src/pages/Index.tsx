@@ -4,16 +4,21 @@ import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
 import ARDemo from "@/components/ARDemo";
 import ProductGallery from "@/components/ProductGallery";
-import Partners from "@/components/Partners";
 import SocialProof from "@/components/SocialProof";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import WorkWithUs from "@/components/WorkWithUs";
+import OfferRibbon from "@/components/OfferRibbon";
+import Testimonials from "@/components/Testimonials";
+import LifestyleGallery from "@/components/LifestyleGallery";
+import IstikbalShowroom from "@/components/IstikbalShowroom";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
+      <OfferRibbon />
       <main>
         <Hero />
         <Quote />
@@ -22,10 +27,11 @@ const Index = () => {
         <div id="products">
           <ProductGallery />
         </div>
-        <div id="partners">
-          <Partners />
-        </div>
+        <LifestyleGallery />
+        <IstikbalShowroom />
+        <Testimonials />
         <SocialProof />
+        <WorkWithUs />
         <Contact />
       </main>
       <Footer />
