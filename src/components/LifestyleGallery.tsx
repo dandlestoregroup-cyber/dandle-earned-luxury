@@ -17,12 +17,6 @@ const lifestyleImages = [
     subtitle: "Elevated Egyptian living"
   },
   {
-    src: "/images/complete-set-coastal-modern.jpg",
-    alt: "Modern home office with DANDLE recliner",
-    caption: "Work From Home",
-    subtitle: "Your personal productivity sanctuary"
-  },
-  {
     src: "/images/complete-set-sunset-fireplace.jpg",
     alt: "Luxury vacation rental with premium recliner",
     caption: "Vacation Rental",
