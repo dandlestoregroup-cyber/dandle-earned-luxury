@@ -156,38 +156,59 @@ const Hero = () => {
           transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
         >
           <Sparkles className="w-4 h-4 text-dandle-orange" />
-          <span className="text-sm font-body text-warm-white">Crafted Since 2010</span>
+          <span className="text-sm font-body text-warm-white">Comfort Crafted for the Finest</span>
         </motion.div>
 
-        <h1 className="font-headline text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-          <span className="block bg-gradient-to-r from-warm-white via-warm-beige to-bronze bg-clip-text text-transparent">
-            DANDLE
+        <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+          <span className="block text-warm-white">
+            The seat you <span className="text-dandle-orange">keep</span> coming back to.
           </span>
-          <span className="block text-warm-white mt-2">Because You've Earned It</span>
         </h1>
-        
-        <p className="font-body text-lg md:text-xl text-warm-beige/90 mb-10 max-w-2xl mx-auto">
-          Egyptian-crafted luxury recliners designed for those who value lasting comfort and quiet excellence
+
+        <p className="font-body text-lg md:text-xl text-warm-beige/90 mb-8 max-w-2xl mx-auto">
+          Comfort crafted with intention — practical enough for every day, premium enough to finish the room.
         </p>
 
+        {/* Belief Bullets */}
+        <div className="flex flex-wrap justify-center gap-6 mb-10 text-warm-white/90">
+          <div className="flex items-center gap-2">
+            <span className="text-dandle-orange">✓</span>
+            <span className="font-body text-sm">You enjoy using it</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-dandle-orange">✓</span>
+            <span className="font-body text-sm">You rely on it every day</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-dandle-orange">✓</span>
+            <span className="font-body text-sm">The room feels right now</span>
+          </div>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button 
+          <Button
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="group bg-gradient-to-r from-dandle-orange to-dandle-orange/80 hover:from-dandle-orange/90 hover:to-dandle-orange/70 text-white px-8 py-6 text-lg font-body shadow-elegant hover:shadow-glow transition-all duration-300"
+            className="group bg-[hsl(27,80%,52%)] hover:bg-[hsl(27,80%,45%)] text-warm-cream px-8 py-6 text-lg font-body rounded-md shadow-elegant hover:shadow-glow transition-all duration-300"
           >
             Explore Collection
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
-          <Button 
-            onClick={() => navigate('/nour-chat')}
-            className="group bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 text-warm-white px-8 py-6 text-lg font-body transition-all duration-300"
+          <Button
+            onClick={() => {
+              document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="group bg-transparent backdrop-blur-md border-2 border-[hsl(15,28%,19%)] hover:bg-warm-white/10 text-warm-white px-8 py-6 text-lg font-body rounded-md transition-all duration-300"
           >
-            <Sparkles className="mr-2 w-5 h-5" />
-            View in Your Space
+            Find Your Model
           </Button>
         </div>
+
+        {/* Microline */}
+        <p className="mt-6 text-warm-beige/70 text-sm font-body italic">
+          Comfort crafted for the finest.
+        </p>
       </motion.div>
 
       {/* Mute/Unmute Toggle Button */}
