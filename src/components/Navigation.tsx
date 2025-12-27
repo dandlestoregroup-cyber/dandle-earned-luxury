@@ -26,9 +26,9 @@ const Navigation = () => {
     { label: "Collection", href: "#collection" },
     { label: "Our Story", href: "/our-story", isRoute: true },
     { label: "Complete Set", href: "/complete-set", isRoute: true },
-    { label: "AR View", href: "#ar-demo" },
+    { label: "Careers", href: "/careers", isRoute: true },
     { label: "Contact", href: "#contact" },
-    { label: "Nour AI", href: "/nour-chat", isRoute: true },
+    { label: "Nour ✨", href: "/nour-chat", isRoute: true, badge: "Soon" },
   ];
 
   return (
@@ -59,11 +59,16 @@ const Navigation = () => {
                   key={link.href}
                   onClick={() => navigate(link.href)}
                   className={cn(
-                    "text-sm font-medium transition-colors",
+                    "text-sm font-medium transition-colors flex items-center gap-1",
                     isScrolled ? "text-card-foreground hover:text-accent" : "text-warm-white hover:text-accent"
                   )}
                 >
                   {link.label}
+                  {link.badge && (
+                    <span className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full">
+                      {link.badge}
+                    </span>
+                  )}
                 </button>
               ) : (
                 <a
@@ -108,9 +113,14 @@ const Navigation = () => {
                     navigate(link.href);
                     setIsOpen(false);
                   }}
-                  className="block py-3 text-card-foreground hover:text-accent transition-colors text-left w-full"
+                  className="flex items-center gap-2 py-3 text-card-foreground hover:text-accent transition-colors text-left w-full"
                 >
                   {link.label}
+                  {link.badge && (
+                    <span className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full">
+                      {link.badge}
+                    </span>
+                  )}
                 </button>
               ) : (
                 <a
