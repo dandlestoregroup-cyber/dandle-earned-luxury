@@ -31,14 +31,14 @@ const IstikbalShowroom = () => {
             </div>
             
             <h2 className="font-headline text-4xl md:text-5xl text-warm-white leading-tight">
-              Experience DANDLE at{" "}
+              Visit the DANDLE Section at{" "}
               <span className="text-dandle-orange">Istikbal</span>
             </h2>
             
             <p className="text-lg text-warm-white/80 font-body leading-relaxed">
-              We proudly display our full collection at Istikbal — Egypt&apos;s most trusted 
-              furniture destination. Feel the premium craftsmanship, test the zero-gravity 
-              recline, and discover your perfect comfort companion in person.
+              Experience our full collection at the dedicated DANDLE section inside Istikbal — 
+              Egypt&apos;s most trusted furniture destination. Feel the premium craftsmanship, 
+              test the zero-gravity recline, and discover your perfect comfort companion in person.
             </p>
 
             <div className="space-y-4 pt-4">
@@ -47,9 +47,9 @@ const IstikbalShowroom = () => {
                   <MapPin className="w-5 h-5 text-dandle-orange" />
                 </div>
                 <div>
-                  <h4 className="font-headline text-lg text-warm-white">Premium Showroom</h4>
+                  <h4 className="font-headline text-lg text-warm-white">Dedicated DANDLE Section</h4>
                   <p className="text-warm-white/60 font-body">
-                    Full DANDLE collection on display at Istikbal Cairo
+                    Full collection on display inside Istikbal showrooms
                   </p>
                 </div>
               </div>

@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 
 const Contact = () => {
-  const showrooms = [
+const showrooms = [
     {
       name: "Istikbal City Stars Mall",
-      location: "Nasr City, Cairo",
+      location: "DANDLE Section, Nasr City, Cairo",
       status: "Open",
     },
     {
-      name: "Al Sawalhi",
-      location: "Extension Of Makram Ebaid St.",
+      name: "Istikbal Al Sawalhi",
+      location: "DANDLE Section, Extension Of Makram Ebaid St.",
       status: "Open",
     },
     {
