@@ -70,7 +70,7 @@ const WorkWithUs = () => {
                       We're Hiring
                     </p>
                     <p className="font-body text-sm text-foreground/60">
-                      Join 50+ craftspeople in Cairo
+                      Join 20+ craftspeople
                     </p>
                   </div>
                 </div>

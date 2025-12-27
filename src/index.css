@@ -361,41 +361,6 @@ All colors MUST be HSL.
     @apply border border-white/80 text-white px-6 py-3 rounded-sm hover:bg-white/10 transition-colors font-body;
   }
   
-  /* Corner Brackets - Dandle Brand Element */
-  .corner-brackets {
-    position: relative;
-  }
-  
-  .corner-brackets::before,
-  .corner-brackets::after {
-    content: '';
-    position: absolute;
-    width: 55px;
-    height: 55px;
-    border: 3px solid hsl(var(--dandle-orange));
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-  
-  .corner-brackets::before {
-    top: 16px;
-    left: 16px;
-    border-right: none;
-    border-bottom: none;
-  }
-  
-  .corner-brackets::after {
-    bottom: 16px;
-    right: 16px;
-    border-left: none;
-    border-top: none;
-  }
-  
-  .corner-brackets:hover::before,
-  .corner-brackets:hover::after {
-    width: 65px;
-    height: 65px;
-  }
   
   /* Hide scrollbar utility */
   .hide-scrollbar {

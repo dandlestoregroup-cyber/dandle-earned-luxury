@@ -22,13 +22,6 @@ const testimonials = [
     rating: 5,
     text: "As a gift for my parents' anniversary, the CozyCompanion was perfect. They use it every single day.",
     product: "CozyCompanion Duo"
-  },
-  {
-    name: "Laila Mahmoud",
-    location: "Giza",
-    rating: 5,
-    text: "The AR feature helped us visualize exactly how it would look. No surprises, just pure satisfaction.",
-    product: "SpaceSaver Compact"
   }
 ];
 
@@ -51,7 +44,7 @@ const Testimonials = () => {
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}

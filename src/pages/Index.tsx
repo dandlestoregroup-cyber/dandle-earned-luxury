@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
+import BeliefStatements from "@/components/BeliefStatements";
 import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
 import ARDemo from "@/components/ARDemo";
@@ -22,6 +23,7 @@ const Index = () => {
       <OfferRibbon />
       <main>
         <Hero />
+        <BeliefStatements />
         <Quote />
         <PromiseGrid />
         <ARDemo />
