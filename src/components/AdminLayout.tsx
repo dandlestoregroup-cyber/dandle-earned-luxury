@@ -1,56 +1,51 @@
 import { ReactNode, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import NotFound from "@/pages/NotFound";
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
 
-const ADMIN_KEY_STORAGE = "dandle_admin_key";
+const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY;
+const STORAGE_KEY = "dandle_admin_auth";
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const envKey = import.meta.env.VITE_ADMIN_KEY;
+    // Check query param first
+    const keyFromUrl = searchParams.get("key");
     
-    // If no admin key is configured, block access
-    if (!envKey) {
+    // Check localStorage for persisted auth
+    const storedKey = localStorage.getItem(STORAGE_KEY);
+
+    if (ADMIN_KEY && keyFromUrl === ADMIN_KEY) {
+      // Valid key in URL - store it and authorize
+      localStorage.setItem(STORAGE_KEY, keyFromUrl);
+      setIsAuthorized(true);
+    } else if (ADMIN_KEY && storedKey === ADMIN_KEY) {
+      // Valid key in storage - authorize
+      setIsAuthorized(true);
+    } else if (!ADMIN_KEY) {
+      // No admin key configured - allow access (dev mode)
+      setIsAuthorized(true);
+    } else {
+      // Invalid or missing key
       setIsAuthorized(false);
-      return;
     }
-
-    // Check URL param first
-    const urlKey = searchParams.get("key");
-    if (urlKey === envKey) {
-      localStorage.setItem(ADMIN_KEY_STORAGE, urlKey);
-      setIsAuthorized(true);
-      return;
-    }
-
-    // Check localStorage
-    const storedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
-    if (storedKey === envKey) {
-      setIsAuthorized(true);
-      return;
-    }
-
-    // Not authorized
-    setIsAuthorized(false);
   }, [searchParams]);
 
   // Loading state
   if (isAuthorized === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
       </div>
     );
   }
 
-  // Not authorized - show 404
+  // Unauthorized - show 404
   if (!isAuthorized) {
     return <NotFound />;
   }

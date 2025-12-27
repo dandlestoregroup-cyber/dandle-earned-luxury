@@ -24,9 +24,9 @@ const Navigation = () => {
   const navLinks = [
     { label: "Home", href: "/", isRoute: true },
     { label: "Collection", href: "#collection" },
+    { label: "Our Story", href: "/our-story", isRoute: true },
     { label: "Complete Set", href: "/complete-set", isRoute: true },
     { label: "AR View", href: "#ar-demo" },
-    { label: "About", href: "#story" },
     { label: "Contact", href: "#contact" },
     { label: "Nour AI", href: "/nour-chat", isRoute: true },
   ];
@@ -35,7 +35,7 @@ const Navigation = () => {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-card/95 backdrop-blur-md shadow-lg" : "bg-transparent"
+        isScrolled ? "bg-card/95 backdrop-blur-md shadow-lg" : "bg-charcoal/40 backdrop-blur-sm"
       )}
     >
       <div className="container mx-auto px-4">
@@ -45,7 +45,10 @@ const Navigation = () => {
             onClick={() => navigate('/')} 
             className="font-serif text-3xl font-bold tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
           >
-            <span className="text-gradient-luxury">DANDLE</span>
+            <span className={cn(
+              "transition-colors",
+              isScrolled ? "text-foreground" : "text-warm-white"
+            )}>DANDLE</span>
           </button>
 
           {/* Desktop Navigation */}
@@ -55,7 +58,10 @@ const Navigation = () => {
                 <button
                   key={link.href}
                   onClick={() => navigate(link.href)}
-                  className="text-sm font-medium text-card-foreground hover:text-accent transition-colors"
+                  className={cn(
+                    "text-sm font-medium transition-colors",
+                    isScrolled ? "text-card-foreground hover:text-accent" : "text-warm-white hover:text-accent"
+                  )}
                 >
                   {link.label}
                 </button>
@@ -63,7 +69,10 @@ const Navigation = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-card-foreground hover:text-accent transition-colors"
+                  className={cn(
+                    "text-sm font-medium transition-colors",
+                    isScrolled ? "text-card-foreground hover:text-accent" : "text-warm-white hover:text-accent"
+                  )}
                 >
                   {link.label}
                 </a>
@@ -77,7 +86,10 @@ const Navigation = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-card-foreground"
+            className={cn(
+              "md:hidden transition-colors",
+              isScrolled ? "text-card-foreground" : "text-warm-white"
+            )}
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >

@@ -25,7 +25,7 @@ All colors MUST be HSL.
     --popover: 60 33% 98%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 216 58% 36%; /* Nile Blue */
+    --primary: 24 90% 50%; /* Warm Orange */
     --primary-foreground: 60 33% 98%;
 
     --secondary: 36 52% 90%; /* Warm Beige */
@@ -275,6 +275,31 @@ All colors MUST be HSL.
 
   .animate-parallax {
     animation: parallax-float 4s ease-in-out infinite;
+  }
+
+  /* Quiet-luxury particle float (upward drift) */
+  @keyframes dandleFloat {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(14px, -125vh, 0); }
+  }
+
+  /* Soft festive snow drift (downward) */
+  @keyframes dandleSnow {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(10px, 110vh, 0); }
+  }
+
+  /* Glowing progress bar */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 8px hsl(var(--dandle-orange) / 0.6); }
+    50% { box-shadow: 0 0 16px hsl(var(--dandle-orange) / 0.9); }
+  }
+
+  /* Accessibility - respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .dandle-particles, .dandle-snow { 
+      display: none !important; 
+    }
   }
 }
 

@@ -16,10 +16,10 @@ export const products: Product[] = [
   {
     id: "relaxmax",
     name: "Dandle RelaxMax",
-    tagline: "The Wellness Sanctuary",
+    tagline: "The Flagship 90cm Standard Recliner",
     priceManual: 21900,
     pricePower: 28900,
-    colors: ["Nile Sapphire Blue", "Alexandria Linen", "Desert Grey", "Coastal Fog Grey", "Amber Sand"],
+    colors: ["Urban Charcoal", "Off White", "Elephant Grey"],
     features: [
       "170° Zero-Gravity Recline",
       "Smart Storage Compartments",
@@ -27,7 +27,7 @@ export const products: Product[] = [
       "Premium Leather Upholstery",
     ],
     targetAudience: "High-performing professionals",
-    imageUrl: "/images/relaxmax-hero-offwhite.jpg",
+    imageUrl: "/images/dandle-relaxmax-flagship.webp",
   },
   {
     id: "comfortplus",
@@ -35,7 +35,7 @@ export const products: Product[] = [
     tagline: "The Therapeutic Upgrade",
     priceManual: 29900,
     pricePower: 36900,
-    colors: ["Nile Mist Terracotta", "Amber Sand", "Mocha Taupe", "Clay Pottery"],
+    colors: ["Chic Red", "Tan Beige"],
     features: [
       "8-Point Rolling Massage System",
       "Heating Elements (Back & Legs)",
@@ -43,7 +43,7 @@ export const products: Product[] = [
       "Memory Foam Cushioning",
     ],
     targetAudience: "Wellness enthusiasts seeking therapy",
-    imageUrl: "/images/relaxmax-brown-lifestyle.jpg",
+    imageUrl: "/images/dandle-comfortplus.jpg",
   },
   {
     id: "diva",
@@ -51,7 +51,7 @@ export const products: Product[] = [
     tagline: "The Statement of Style",
     priceManual: 23900,
     pricePower: 30900,
-    colors: ["Nile Mist Terracotta", "Papyrus Stripe", "Giza Gold Weave", "Oasis Green", "Clay Pottery"],
+    colors: ["Chic Red", "Pink Rose", "Sunshine Yellow"],
     features: [
       "360° Swivel Base",
       "Zero-Gravity Recline",
@@ -59,15 +59,15 @@ export const products: Product[] = [
       "Bold Color Options",
     ],
     targetAudience: "Design-conscious taste makers",
-    imageUrl: "/images/diva-red-front.jpg",
+    imageUrl: "/images/dandle-diva.jpg",
   },
   {
     id: "cozycompanion",
     name: "Dandle CozyCompanion",
-    tagline: "The Anchor of Connection",
+    tagline: "Premium Two-Seater Couch Recliner",
     priceManual: 42000,
     pricePower: 54000,
-    colors: ["Nile Sapphire Blue", "Mocha Taupe", "Blue Nile Denim", "Coastal Fog Grey"],
+    colors: ["Ocean Blue", "Warm Grey"],
     features: [
       "Duo Seating Design",
       "Independent Reclining Controls",
@@ -75,14 +75,14 @@ export const products: Product[] = [
       "Center Console with Storage",
     ],
     targetAudience: "Couples and families",
-    imageUrl: "/images/cozycompanion-beige-front.jpg",
+    imageUrl: "/images/dandle-cozycompanion-hero.webp",
   },
   {
     id: "easyup",
     name: "Dandle EasyUp",
     tagline: "The Empowerment Tool",
     price: 42900,
-    colors: ["Alexandria Linen", "Desert Grey", "Sandstorm Ochre", "Amber Sand"],
+    colors: ["Creamy Beige", "Urban Charcoal"],
     features: [
       "Power Lift Mechanism",
       "Zero-Gravity Positioning",
@@ -90,14 +90,14 @@ export const products: Product[] = [
       "Easy-Clean Fabric",
     ],
     targetAudience: "Seniors and mobility assistance",
-    imageUrl: "/images/easyup-beige-front.jpg",
+    imageUrl: "/images/dandle-easyup-standard.jpg",
   },
   {
     id: "easyup-compact",
     name: "Dandle EasyUp Compact",
     tagline: "The Compact Empowerment Tool",
     price: 46900,
-    colors: ["Desert Grey", "Coastal Fog Grey", "Mocha Taupe"],
+    colors: ["Urban Charcoal"],
     features: [
       "Power Lift Mechanism",
       "Compact Design for Small Spaces",
@@ -105,7 +105,7 @@ export const products: Product[] = [
       "Enhanced Safety Features",
     ],
     targetAudience: "Seniors and mobility assistance in smaller spaces",
-    imageUrl: "/images/easyup-compact-charcoal-front.jpg",
+    imageUrl: "/images/dandle-easyup-compact.jpg",
   },
   {
     id: "worknest",
@@ -113,7 +113,7 @@ export const products: Product[] = [
     tagline: "The Productivity Haven",
     priceManual: 26900,
     pricePower: 33900,
-    colors: ["Coastal Fog Grey", "Mocha Taupe", "Desert Sage", "Blue Nile Denim"],
+    colors: ["Slate Grey", "Espresso Brown"],
     features: [
       "Integrated Work Table",
       "Wireless Charging Pad",
@@ -121,7 +121,8 @@ export const products: Product[] = [
       "Laptop Storage",
     ],
     targetAudience: "Remote workers and executives",
-    imageUrl: "https://picsum.photos/400/300?random=tech",
+    imageUrl: "/images/dandle-worknest.jpg",
+    comingSoon: true,
   },
   {
     id: "spacesaver",
@@ -129,7 +130,7 @@ export const products: Product[] = [
     tagline: "The Smart Solution",
     priceManual: 24900,
     pricePower: 29900,
-    colors: ["Desert Grey", "Blue Nile Denim", "Oasis Green", "Alexandria Linen"],
+    colors: ["Stone Grey", "Navy Blue"],
     features: [
       "Compact Design",
       "Wall-Hugger Technology",
@@ -137,7 +138,8 @@ export const products: Product[] = [
       "Modern Aesthetics",
     ],
     targetAudience: "Urban dwellers with small spaces",
-    imageUrl: "/images/spacesaver-offwhite-reclined.jpg",
+    imageUrl: "/images/dandle-spacesaver.jpg",
+    comingSoon: true,
   },
   {
     id: "complete-set",
@@ -153,6 +155,6 @@ export const products: Product[] = [
       "Full Home Comfort Solution",
     ],
     targetAudience: "Families seeking complete home solutions",
-    imageUrl: "https://picsum.photos/400/300?random=set",
+    imageUrl: "/images/dandle-heritage-set.jpg",
   },
 ];
