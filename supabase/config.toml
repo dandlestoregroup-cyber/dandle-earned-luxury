@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.get-order-status]
 verify_jwt = false
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
+[functions.generate-sitemap]
+verify_jwt = false
