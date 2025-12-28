@@ -73,7 +73,18 @@ serve(async (req) => {
     if (authResponse) {
       return authResponse;
     }
-    console.log(`Authenticated user: ${user.id} accessing generate-hero-images`);
+
+    // Check admin role from user_metadata
+    const isAdmin = user.user_metadata?.is_admin === true;
+    if (!isAdmin) {
+      console.error('Non-admin user attempted admin function:', user.id, user.email);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Admin user authorized: ${user.id} (${user.email}) accessing generate-hero-images`);
 
     const { slideIndex, sizeIndex, sourceImageBase64 } = await req.json();
     
