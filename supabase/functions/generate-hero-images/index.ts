@@ -6,6 +6,41 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Authentication helper
+async function authenticateRequest(req: Request): Promise<{ user: any; error: Response | null }> {
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader) {
+    console.error('No authorization header provided');
+    return {
+      user: null,
+      error: new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    };
+  }
+
+  const supabaseAuth = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_ANON_KEY')!,
+    { global: { headers: { Authorization: authHeader } } }
+  );
+
+  const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+  if (authError || !user) {
+    console.error('Authentication failed:', authError?.message);
+    return {
+      user: null,
+      error: new Response(
+        JSON.stringify({ error: 'Invalid authentication token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    };
+  }
+
+  return { user, error: null };
+}
+
 // 9 Hero slides with their target colors
 const heroSlides = [
   { source: 'relaxmax-hero-offwhite.jpg', color: 'Alexandria Linen', fabric: 'Belgian Linen', hex: '#C4B79F' },
@@ -33,6 +68,13 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authentication
+    const { user, error: authResponse } = await authenticateRequest(req);
+    if (authResponse) {
+      return authResponse;
+    }
+    console.log(`Authenticated user: ${user.id} accessing generate-hero-images`);
+
     const { slideIndex, sizeIndex, sourceImageBase64 } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');

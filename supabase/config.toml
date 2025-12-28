@@ -7,7 +7,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.generate-product-image]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-order]
 verify_jwt = false
@@ -16,10 +16,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.generate-hero-images]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-hero-music]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-sitemap]
 verify_jwt = false
