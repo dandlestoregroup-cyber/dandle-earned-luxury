@@ -39,7 +39,17 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Authenticated user: ${user.id} accessing generate-hero-music`);
+    // Check admin role from user_metadata
+    const isAdmin = user.user_metadata?.is_admin === true;
+    if (!isAdmin) {
+      console.error('Non-admin user attempted admin function:', user.id, user.email);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Admin user authorized: ${user.id} (${user.email}) accessing generate-hero-music`);
 
     const ELEVENLABS_API_KEY = Deno.env.get('ELEVENLABS_API_KEY');
     if (!ELEVENLABS_API_KEY) {

@@ -38,7 +38,17 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Authenticated user: ${user.id} accessing generate-product-image`);
+    // Check admin role from user_metadata
+    const isAdmin = user.user_metadata?.is_admin === true;
+    if (!isAdmin) {
+      console.error('Non-admin user attempted admin function:', user.id, user.email);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Admin user authorized: ${user.id} (${user.email}) accessing generate-product-image`);
 
     const { imageBase64, referenceImageUrl, prompt, productHandle, imageType } = await req.json();
     
