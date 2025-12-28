@@ -11,18 +11,6 @@ const lifestyleImages = [
     subtitle: "Where comfort meets family"
   },
   {
-    src: "/images/lifestyle-cairo-penthouse.jpg", 
-    alt: "Luxury Cairo penthouse with DANDLE recliner",
-    caption: "Cairo Penthouse",
-    subtitle: "Elevated Egyptian living"
-  },
-  {
-    src: "/images/lifestyle-reading-nook.jpg",
-    alt: "Cozy reading nook with DANDLE recliner and bookshelves",
-    caption: "Reading Nook",
-    subtitle: "Your personal escape"
-  },
-  {
     src: "/images/complete-set-sunset-fireplace.jpg",
     alt: "Luxury vacation rental with premium recliner",
     caption: "Vacation Rental",

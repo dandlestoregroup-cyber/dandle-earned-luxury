@@ -4,17 +4,6 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const products = [
-    { label: "RelaxMax", href: "/product/relaxmax" },
-    { label: "ComfortPlus", href: "/product/comfortplus" },
-    { label: "Diva", href: "/product/diva" },
-    { label: "CozyCompanion", href: "/product/cozycompanion" },
-    { label: "WorkNest", href: "/product/worknest" },
-    { label: "SpaceSaver", href: "/product/spacesaver" },
-    { label: "EasyUp", href: "/product/easyup" },
-    { label: "Complete Sets", href: "/complete-set" },
-  ];
-
   const partners = [
     { label: "Istikbal Showrooms", href: "/contact" },
     { label: "OMASH", href: "/#products" },
@@ -40,7 +29,7 @@ const Footer = () => {
   return (
     <footer className="bg-charcoal text-warm-white py-16 border-t border-bronze/20">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <h3 className="font-headline text-3xl font-bold mb-4">
@@ -69,25 +58,6 @@ const Footer = () => {
                 <Instagram size={20} />
               </a>
             </div>
-          </div>
-
-          {/* Products */}
-          <div>
-            <h4 className="font-body font-semibold mb-4 text-warm-white text-sm uppercase tracking-wide">
-              Products
-            </h4>
-            <ul className="space-y-2">
-              {products.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    to={link.href}
-                    className="text-warm-white/60 hover:text-dandle-orange transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Partners */}
