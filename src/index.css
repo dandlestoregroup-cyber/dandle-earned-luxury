@@ -380,4 +380,29 @@ All colors MUST be HSL.
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* 2A: Hero video instant play - avoid black flash */
+  .dandle-hero-video {
+    background: linear-gradient(180deg, hsl(var(--warm-beige)) 0%, hsl(var(--charcoal)) 120%);
+  }
+  .dandle-hero-video-el {
+    opacity: 0.001;
+    transition: opacity 420ms ease;
+  }
+  .dandle-hero-video-el.is-ready {
+    opacity: 1;
+  }
+
+  /* 2D: Istikbal section fix */
+  .istikbal-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45));
+    pointer-events: none;
+  }
+  .istikbal-section > * {
+    position: relative;
+    z-index: 1;
+  }
 }

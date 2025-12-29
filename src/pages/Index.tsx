@@ -15,6 +15,7 @@ import Testimonials from "@/components/Testimonials";
 import LifestyleGallery from "@/components/LifestyleGallery";
 import IstikbalShowroom from "@/components/IstikbalShowroom";
 import Partners from "@/components/Partners";
+import FabricsSection from "@/components/FabricsSection";
 
 const Index = () => {
   return (
@@ -30,6 +31,7 @@ const Index = () => {
         <div id="products">
           <ProductGallery />
         </div>
+        <FabricsSection />
         <LifestyleGallery />
         <Partners />
         <IstikbalShowroom />
