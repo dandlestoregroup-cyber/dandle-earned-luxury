@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import FestiveSnowfall from "@/components/FestiveSnowfall";
+import StickyMobileCart from "@/components/StickyMobileCart";
 
 const Index = () => {
   return (
@@ -44,6 +45,7 @@ const Index = () => {
 
       {/* Floating elements */}
       <WhatsAppFloat />
+      <StickyMobileCart />
 
       {/* Exit intent popup - only on desktop */}
       <ExitIntentPopup />

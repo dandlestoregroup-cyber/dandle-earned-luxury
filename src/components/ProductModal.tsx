@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -13,6 +14,7 @@ import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { ProductImageGallery } from "@/components/product/ProductImageGallery";
 import { ColorFabricSelector } from "@/components/ColorFabricSelector";
 import { colorNameToFabricId, getFabricColorById, allFabricColors } from "@/data/fabricColors";
+import { isRTL } from "@/i18n/config";
 
 interface ProductModalProps {
   product: Product | null;
@@ -21,6 +23,9 @@ interface ProductModalProps {
 }
 
 const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
+  const { t } = useTranslation();
+  const isArabic = isRTL();
+
   // Get available fabric IDs for this product
   const getAvailableFabricIds = (productColors: string[] = []): string[] => {
     // Map product color names to fabric IDs, or use all fabrics if no specific colors
@@ -130,8 +135,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 />
               </div>
               <div>
-                <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
-                <p className="text-muted-foreground">{product.tagline}</p>
+                <h2 className="text-3xl font-bold mb-2">{isArabic && product.nameAr ? product.nameAr : product.name}</h2>
+                <p className="text-muted-foreground">{isArabic && product.taglineAr ? product.taglineAr : product.tagline}</p>
               </div>
             </div>
           </div>
@@ -139,14 +144,14 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           <div className="p-6 space-y-8">
             {/* Price and Target */}
             <div className="text-center space-y-2 animate-in fade-in-0 slide-in-from-top-2 duration-700">
-              <p className="text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
-              <p className="text-muted-foreground">Target: High-performing professionals</p>
+              <p className="text-4xl font-bold text-accent">{isArabic ? 'ج.م' : 'EGP'} {formatPrice(product.priceManual || product.price || 0)}</p>
+              <p className="text-muted-foreground">{isArabic ? 'للمحترفين والتنفيذيين' : 'Target: High-performing professionals'}</p>
             </div>
 
             {/* Mechanism Type - First */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
-              <h3 className="text-xl font-bold">Mechanism Type</h3>
-              
+              <h3 className="text-xl font-bold">{isArabic ? 'نوع الآلية' : 'Mechanism Type'}</h3>
+
               <RadioGroup value={mechanism} onValueChange={(value: string) => {
                 playClickSound();
                 setMechanism(value as "manual" | "power");
@@ -160,8 +165,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 >
                   <RadioGroupItem value="manual" id="manual" className="sr-only" />
                   <div className="space-y-2">
-                    <p className="text-lg font-bold">Manual</p>
-                    <p className="text-xl font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} EGP</p>
+                    <p className="text-lg font-bold">{isArabic ? 'يدوي' : 'Manual'}</p>
+                    <p className="text-xl font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} {isArabic ? 'ج.م' : 'EGP'}</p>
                   </div>
                 </label>
 
@@ -174,8 +179,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 >
                   <RadioGroupItem value="power" id="power" className="sr-only" />
                   <div className="space-y-2">
-                    <p className="text-lg font-bold">Power</p>
-                    <p className="text-xl font-bold text-accent">{formatPrice(product.pricePower || product.price || 0)} EGP</p>
+                    <p className="text-lg font-bold">{isArabic ? 'كهربائي' : 'Power'}</p>
+                    <p className="text-xl font-bold text-accent">{formatPrice(product.pricePower || product.price || 0)} {isArabic ? 'ج.م' : 'EGP'}</p>
                   </div>
                 </label>
               </RadioGroup>
@@ -184,11 +189,11 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             {/* Premium Fabric & Color Selection - Second */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
               <div className="flex items-center gap-3 mb-2">
-                <h3 className="text-xl font-bold">Select Your Fabric & Color</h3>
-                <div className="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent" />
+                <h3 className="text-xl font-bold">{isArabic ? 'اختر القماش واللون' : 'Select Your Fabric & Color'}</h3>
+                <div className={`h-px flex-1 bg-gradient-to-${isArabic ? 'l' : 'r'} from-accent/30 to-transparent`} />
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Handcrafted from premium materials for lasting comfort and elegance
+                {isArabic ? 'مصنوع يدوياً من أجود الخامات للراحة والأناقة الدائمة' : 'Handcrafted from premium materials for lasting comfort and elegance'}
               </p>
 
               <ColorFabricSelector
@@ -203,8 +208,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
             {/* Base Type - Third */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-              <h3 className="text-xl font-bold">Base Type</h3>
-              
+              <h3 className="text-xl font-bold">{isArabic ? 'نوع القاعدة' : 'Base Type'}</h3>
+
               <RadioGroup value={baseType} onValueChange={(value: string) => {
                 playClickSound();
                 setBaseType(value as any);
@@ -219,8 +224,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="fixed" id="fixed" />
                     <div>
-                      <p className="font-bold text-lg">Fixed Base</p>
-                      <p className="text-sm text-muted-foreground">Free</p>
+                      <p className="font-bold text-lg">{isArabic ? 'قاعدة ثابتة' : 'Fixed Base'}</p>
+                      <p className="text-sm text-muted-foreground">{isArabic ? 'مجاناً' : 'Free'}</p>
                     </div>
                   </div>
                   {baseType === "fixed" && (
@@ -238,10 +243,10 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="swivel" id="swivel" />
                     <div>
-                      <p className="font-bold text-lg">Swivel Base</p>
+                      <p className="font-bold text-lg">{isArabic ? 'قاعدة دوارة' : 'Swivel Base'}</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+1,200 EGP</span>
+                  <span className="font-bold text-accent">+1,200 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
 
                 <label
@@ -254,22 +259,22 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="swivel360" id="swivel360" />
                     <div>
-                      <p className="font-bold text-lg">Swivel + 360° Rotation</p>
+                      <p className="font-bold text-lg">{isArabic ? 'دوارة + دوران 360°' : 'Swivel + 360° Rotation'}</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+2,500 EGP</span>
+                  <span className="font-bold text-accent">+2,500 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
               </RadioGroup>
             </div>
 
             {/* Last Touch Section */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
-              <h3 className="text-xl font-bold">The Last Touch</h3>
-              
+              <h3 className="text-xl font-bold">{isArabic ? 'اللمسة الأخيرة' : 'The Last Touch'}</h3>
+
               <div className="space-y-3">
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
                   <div className="flex items-center gap-3">
-                    <Checkbox 
+                    <Checkbox
                       checked={giftWrap}
                       onCheckedChange={(checked) => {
                         playClickSound();
@@ -279,17 +284,17 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <Gift className="w-5 h-5 text-accent" />
                       <div>
-                        <p className="font-semibold">Premium Gift Wrapping</p>
-                        <p className="text-sm text-muted-foreground">Ribbon with personal message</p>
+                        <p className="font-semibold">{isArabic ? 'تغليف هدايا فاخر' : 'Premium Gift Wrapping'}</p>
+                        <p className="text-sm text-muted-foreground">{isArabic ? 'شريط مع رسالة شخصية' : 'Ribbon with personal message'}</p>
                       </div>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+1,500 EGP</span>
+                  <span className="font-bold text-accent">+1,500 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
 
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
                   <div className="flex items-center gap-3">
-                    <Checkbox 
+                    <Checkbox
                       checked={engraving}
                       onCheckedChange={(checked) => {
                         playClickSound();
@@ -299,12 +304,12 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <Trophy className="w-5 h-5 text-accent" />
                       <div>
-                        <p className="font-semibold">Legacy Plaque</p>
-                        <p className="text-sm text-muted-foreground">Custom engraving for memory</p>
+                        <p className="font-semibold">{isArabic ? 'لوحة تذكارية' : 'Legacy Plaque'}</p>
+                        <p className="text-sm text-muted-foreground">{isArabic ? 'نقش مخصص للذكرى' : 'Custom engraving for memory'}</p>
                       </div>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+3,000 EGP</span>
+                  <span className="font-bold text-accent">+3,000 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
               </div>
             </div>
@@ -312,11 +317,11 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             {/* Massage Feature - Only for eligible products */}
             {(product.id === "relaxmax" || product.id === "worknest" || product.id === "spacesaver") && (
               <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
-                <h3 className="text-xl font-bold">Premium Therapy</h3>
-                
+                <h3 className="text-xl font-bold">{isArabic ? 'العلاج الفاخر' : 'Premium Therapy'}</h3>
+
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-accent/30 hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5 hover:bg-accent/10 active:scale-95">
                   <div className="flex items-center gap-3">
-                    <Checkbox 
+                    <Checkbox
                       checked={massageFeature}
                       onCheckedChange={(checked) => {
                         playClickSound();
@@ -324,69 +329,70 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                       }}
                     />
                     <div>
-                      <p className="font-semibold">Massage Feature</p>
-                      <p className="text-sm text-muted-foreground">Professional-grade relaxation therapy</p>
+                      <p className="font-semibold">{isArabic ? 'خاصية التدليك' : 'Massage Feature'}</p>
+                      <p className="text-sm text-muted-foreground">{isArabic ? 'علاج استرخاء احترافي' : 'Professional-grade relaxation therapy'}</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+9,000 EGP</span>
+                  <span className="font-bold text-accent">+9,000 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
               </div>
             )}
 
             {/* Special Additions */}
             <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
-              <h3 className="text-xl font-bold">Special Additions</h3>
-              
+              <h3 className="text-xl font-bold">{isArabic ? 'إضافات خاصة' : 'Special Additions'}</h3>
+
               <div className="space-y-3">
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
                   <div className="flex items-center gap-3">
-                    <Checkbox 
+                    <Checkbox
                       checked={cupHolder}
                       onCheckedChange={(checked) => {
                         playClickSound();
                         setCupHolder(checked as boolean);
                       }}
                     />
-                    <span className="font-semibold">Cup Holders</span>
+                    <span className="font-semibold">{isArabic ? 'حامل أكواب' : 'Cup Holders'}</span>
                   </div>
-                  <span className="font-bold text-accent">+450 EGP</span>
+                  <span className="font-bold text-accent">+450 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
 
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
                   <div className="flex items-center gap-3">
-                    <Checkbox 
+                    <Checkbox
                       checked={usbPort}
                       onCheckedChange={(checked) => {
                         playClickSound();
                         setUsbPort(checked as boolean);
                       }}
                     />
-                    <span className="font-semibold">USB Charging Ports</span>
+                    <span className="font-semibold">{isArabic ? 'منافذ شحن USB' : 'USB Charging Ports'}</span>
                   </div>
-                  <span className="font-bold text-accent">+750 EGP</span>
+                  <span className="font-bold text-accent">+750 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
 
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
                   <div className="flex items-center gap-3">
-                    <Checkbox 
+                    <Checkbox
                       checked={sidePocket}
                       onCheckedChange={(checked) => {
                         playClickSound();
                         setSidePocket(checked as boolean);
                       }}
                     />
-                    <span className="font-semibold">Side Pocket</span>
+                    <span className="font-semibold">{isArabic ? 'جيب جانبي' : 'Side Pocket'}</span>
                   </div>
-                  <span className="font-bold text-accent">+350 EGP</span>
+                  <span className="font-bold text-accent">+350 {isArabic ? 'ج.م' : 'EGP'}</span>
                 </label>
 
                 <div className="pt-4">
-                  <Label className="text-base font-semibold mb-2 block">Special Instructions</Label>
+                  <Label className="text-base font-semibold mb-2 block">{isArabic ? 'تعليمات خاصة' : 'Special Instructions'}</Label>
                   <Textarea
                     value={specialNotes}
                     onChange={(e) => setSpecialNotes(e.target.value)}
-                    placeholder="Any special requests or notes..."
+                    placeholder={isArabic ? 'أي طلبات أو ملاحظات خاصة...' : 'Any special requests or notes...'}
                     className="min-h-[80px] resize-none"
+                    dir={isArabic ? 'rtl' : 'ltr'}
                   />
                 </div>
               </div>
@@ -398,18 +404,18 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
           {/* Sticky Bottom Bar */}
           <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>
+            <div className={`flex items-center justify-between mb-3 ${isArabic ? 'flex-row-reverse' : ''}`}>
+              <div className={isArabic ? 'text-left' : 'text-right'}>
+                <p className="text-sm text-muted-foreground">{isArabic ? 'الإجمالي' : 'Total'}</p>
+                <p className="text-2xl font-bold">{formatPrice(calculateTotal())} {isArabic ? 'ج.م' : 'EGP'}</p>
               </div>
-              <div className="text-left">
-                <p className="text-sm text-muted-foreground">Service Charge (3.5%)</p>
-                <p className="text-2xl font-bold text-accent">{formatPrice(calculateCommission())} EGP</p>
+              <div className={isArabic ? 'text-right' : 'text-left'}>
+                <p className="text-sm text-muted-foreground">{isArabic ? 'رسوم الخدمة (3.5%)' : 'Service Charge (3.5%)'}</p>
+                <p className="text-2xl font-bold text-accent">{formatPrice(calculateCommission())} {isArabic ? 'ج.م' : 'EGP'}</p>
               </div>
             </div>
-            
-            <Button 
+
+            <Button
               onClick={() => {
                 playClickSound();
                 handleCompleteOrder();
@@ -417,7 +423,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               size="lg"
               className="w-full text-lg font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              Complete Order ✨
+              {isArabic ? 'إتمام الطلب ✨' : 'Complete Order ✨'}
             </Button>
           </div>
         </div>
