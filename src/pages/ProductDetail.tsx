@@ -10,6 +10,7 @@ import {
 import { ProductImageGallery } from "@/components/product/ProductImageGallery";
 import { ProductMetafields } from "@/components/product/ProductMetafields";
 import { ARViewer } from "@/components/product/ARViewer";
+import { RelaxMaxImageModule } from "@/components/product/RelaxMaxImageModule";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useShopifyCartStore } from "@/stores/shopifyCartStore";
@@ -239,6 +240,13 @@ const ProductDetail = () => {
               productTitle={product.title}
               productHandle={product.productHandle}
             />
+
+            {/* RelaxMax Image Module - Only for RelaxMax product */}
+            {product.productHandle === "relaxmax" && (
+              <RelaxMaxImageModule
+                currentImageSrc={product.heroImage.src}
+              />
+            )}
           </div>
         </div>
 
