@@ -2,7 +2,8 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
-import ARDemo from "@/components/ARDemo";
+import ReclinerColorStudio from "@/components/ReclinerColorStudio";
+import FreeRoomMakeover from "@/components/FreeRoomMakeover";
 import ProductGallery from "@/components/ProductGallery";
 import Partners from "@/components/Partners";
 import SocialProof from "@/components/SocialProof";
@@ -28,10 +29,19 @@ const Index = () => {
 
         <Quote />
         <PromiseGrid />
-        <ARDemo />
+
+        {/* Recliner Color Studio - Replace ARDemo */}
+        <div id="color-studio">
+          <ReclinerColorStudio />
+        </div>
 
         <div id="products" className="festive-ribbon">
           <ProductGallery />
+        </div>
+
+        {/* Free Room Makeover Section */}
+        <div id="room-makeover">
+          <FreeRoomMakeover />
         </div>
 
         <div id="partners" className="festive-ribbon">
