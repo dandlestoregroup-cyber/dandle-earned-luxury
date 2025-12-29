@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Sparkles } from "lucide-react";
+import { Send, Sparkles, Image as ImageIcon, X } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
@@ -11,13 +11,16 @@ type Message = {
   role: "user" | "assistant";
   content: string;
   type?: "text" | "image";
+  imageData?: string; // Base64 image data for user uploads
 };
 
 const NourChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -141,12 +144,64 @@ const NourChat = () => {
     }
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    const userMessage: Message = { role: "user", content: input };
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file (JPG, PNG, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      setUploadedImage(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setUploadedImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleSend = async () => {
+    if ((!input.trim() && !uploadedImage) || isLoading) return;
+
+    const userMessage: Message = {
+      role: "user",
+      content: uploadedImage
+        ? `${input.trim() || "What do you think of this room? Can you help me visualize a DANDLE recliner in it?"}`
+        : input,
+      type: uploadedImage ? "image" : "text",
+      imageData: uploadedImage || undefined
+    };
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    setUploadedImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setIsLoading(true);
 
     await streamChat(userMessage);
@@ -215,7 +270,16 @@ const NourChat = () => {
                         : "bg-accent text-accent-foreground"
                     }`}
                   >
-                    {msg.type === "image" ? (
+                    {msg.imageData && (
+                      <div className="mb-2">
+                        <img
+                          src={msg.imageData}
+                          alt="Uploaded room"
+                          className="rounded-lg max-w-full h-auto max-h-64 object-contain"
+                        />
+                      </div>
+                    )}
+                    {msg.type === "image" && !msg.imageData ? (
                       <img
                         src={msg.content}
                         alt="Generated"
@@ -242,18 +306,57 @@ const NourChat = () => {
           </ScrollArea>
 
           <div className="p-6 border-t border-border bg-warm-white">
+            {/* Image Preview */}
+            {uploadedImage && (
+              <div className="mb-4 relative inline-block">
+                <img
+                  src={uploadedImage}
+                  alt="Upload preview"
+                  className="rounded-lg max-h-32 object-contain border-2 border-dandle-orange"
+                />
+                <button
+                  onClick={removeImage}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                  aria-label="Remove image"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
             <div className="flex gap-2">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+
+              {/* Image upload button */}
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading}
+                size="icon"
+                variant="outline"
+                className="border-bronze/20 hover:border-dandle-orange hover:bg-dandle-orange/10"
+                title="Upload room photo"
+              >
+                <ImageIcon className="w-4 h-4" />
+              </Button>
+
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Type a message or ask for an image..."
+                placeholder={uploadedImage ? "Describe what you'd like to see..." : "Type a message or upload a room photo..."}
                 disabled={isLoading}
                 className="flex-1 bg-white border-bronze/20 focus:border-dandle-orange"
               />
               <Button
                 onClick={handleSend}
-                disabled={isLoading || !input.trim()}
+                disabled={isLoading || (!input.trim() && !uploadedImage)}
                 size="icon"
                 className="bg-gradient-to-r from-dandle-orange to-pink-500 hover:from-dandle-orange/90 hover:to-pink-500/90"
               >

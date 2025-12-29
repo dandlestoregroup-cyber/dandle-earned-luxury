@@ -1,64 +1,45 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
+import BeliefStatements from "@/components/BeliefStatements";
 import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
-import ReclinerColorStudio from "@/components/ReclinerColorStudio";
-import FreeRoomMakeover from "@/components/FreeRoomMakeover";
+import ARDemo from "@/components/ARDemo";
 import ProductGallery from "@/components/ProductGallery";
-import Partners from "@/components/Partners";
 import SocialProof from "@/components/SocialProof";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
-import ExitIntentPopup from "@/components/ExitIntentPopup";
-import FestiveSnowfall from "@/components/FestiveSnowfall";
-import StickyMobileCart from "@/components/StickyMobileCart";
+import WorkWithUs from "@/components/WorkWithUs";
+import OfferRibbon from "@/components/OfferRibbon";
+import Testimonials from "@/components/Testimonials";
+import LifestyleGallery from "@/components/LifestyleGallery";
+import IstikbalShowroom from "@/components/IstikbalShowroom";
+import Partners from "@/components/Partners";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
-      {/* Festive snowfall effect - shows for 5s on first visit */}
-      <FestiveSnowfall />
-
       <Navigation />
+      <OfferRibbon />
       <main>
         <Hero />
-
-        {/* Festive ribbon divider */}
-        <div className="festive-ribbon h-px" />
-
+        <BeliefStatements />
         <Quote />
         <PromiseGrid />
-
-        {/* Recliner Color Studio - Replace ARDemo */}
-        <div id="color-studio">
-          <ReclinerColorStudio />
-        </div>
-
-        <div id="products" className="festive-ribbon">
+        <ARDemo />
+        <div id="products">
           <ProductGallery />
         </div>
-
-        {/* Free Room Makeover Section */}
-        <div id="room-makeover">
-          <FreeRoomMakeover />
-        </div>
-
-        <div id="partners" className="festive-ribbon">
-          <Partners />
-        </div>
-
+        <LifestyleGallery />
+        <Partners />
+        <IstikbalShowroom />
+        <Testimonials />
         <SocialProof />
+        <WorkWithUs />
         <Contact />
       </main>
       <Footer />
-
-      {/* Floating elements */}
       <WhatsAppFloat />
-      <StickyMobileCart />
-
-      {/* Exit intent popup - only on desktop */}
-      <ExitIntentPopup />
     </div>
   );
 };

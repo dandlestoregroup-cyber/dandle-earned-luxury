@@ -2,45 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here.
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* DANDLE Brand Bible Colors */
-    --dandle-brown: 15 28% 19%; /* #3E2723 - Deep Brown */
-    --dandle-orange: 27 80% 52%; /* #E67E22 - Accent Orange */
-    --warm-cream: 36 47% 95%; /* #FAF7F2 - Background Cream */
+    /* DANDLE Quiet-Luxury v5 Colors */
+    --nile-blue: 216 58% 36%; /* #274B8F */
+    --dandle-orange: 14 100% 60%; /* #FF6B35 */
     --warm-beige: 36 52% 90%; /* #F5E6D3 */
     --bronze: 38 36% 56%; /* #B8956A */
-    --nile-blue: 216 58% 36%; /* #274B8F - Legacy */
-
-    /* Festive Season Colors */
-    --festive-gold: 43 76% 53%; /* #d4af37 - Gold accent */
-    --festive-pine: 103 53% 20%; /* #2d5016 - Pine green */
-    --festive-snow: 0 0% 97%; /* #f8f8f8 - Snow white */
-
-    --background: 36 47% 95%; /* Warm Cream #FAF7F2 */
-    --foreground: 15 28% 19%; /* Deep Brown #3E2723 */
+    --charcoal: 0 0% 10%; /* #1A1A1A */
+    --warm-white: 60 33% 98%; /* #FAF9F6 */
     
-    --card: 36 47% 95%;
-    --card-foreground: 15 28% 19%;
+    --background: 60 33% 98%; /* Warm White */
+    --foreground: 0 0% 10%; /* Charcoal */
+    
+    --card: 60 33% 98%;
+    --card-foreground: 0 0% 10%;
 
-    --popover: 36 47% 95%;
-    --popover-foreground: 15 28% 19%;
+    --popover: 60 33% 98%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 15 28% 19%; /* Deep Brown #3E2723 */
-    --primary-foreground: 36 47% 95%;
+    --primary: 24 90% 50%; /* Warm Orange */
+    --primary-foreground: 60 33% 98%;
 
     --secondary: 36 52% 90%; /* Warm Beige */
-    --secondary-foreground: 15 28% 19%;
+    --secondary-foreground: 0 0% 10%;
 
     --muted: 36 52% 90%;
-    --muted-foreground: 15 28% 40%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 27 80% 52%; /* Dandle Orange #E67E22 */
-    --accent-foreground: 36 47% 95%;
+    --accent: 14 100% 60%; /* Dandle Orange */
+    --accent-foreground: 60 33% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 60 33% 98%;
@@ -119,58 +114,25 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.4;
   }
-
-  /* RTL Support for Arabic */
-  html[dir="rtl"] body {
-    font-family: 'Tajawal', 'Montserrat', sans-serif;
-    letter-spacing: 0;
-  }
-
-  html[dir="rtl"] h1,
-  html[dir="rtl"] h2,
-  html[dir="rtl"] h3,
-  html[dir="rtl"] h4,
-  html[dir="rtl"] h5,
-  html[dir="rtl"] h6 {
-    font-family: 'Cairo', 'Montserrat', sans-serif;
-    letter-spacing: 0;
-  }
-
+  
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
     line-height: 1.1;
   }
-
+  
   /* Body text font */
   .font-body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
-
-  /* Arabic body font */
-  .font-arabic {
-    font-family: 'Tajawal', 'Montserrat', sans-serif;
-    letter-spacing: 0;
-  }
-
-  /* Arabic headline font */
-  .font-arabic-headline {
-    font-family: 'Cairo', 'Montserrat', sans-serif;
-    letter-spacing: 0;
-  }
-
+  
   /* Headline font */
   .font-headline {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-  }
-
-  html[dir="rtl"] .font-headline {
-    font-family: 'Cairo', 'Montserrat', sans-serif;
+    font-family: 'Playfair Display', serif;
   }
   
   /* Warm gradient appears before React hydrates (FIX: dead initial load) */
@@ -314,6 +276,31 @@ All colors MUST be HSL.
   .animate-parallax {
     animation: parallax-float 4s ease-in-out infinite;
   }
+
+  /* Quiet-luxury particle float (upward drift) */
+  @keyframes dandleFloat {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(14px, -125vh, 0); }
+  }
+
+  /* Soft festive snow drift (downward) */
+  @keyframes dandleSnow {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(10px, 110vh, 0); }
+  }
+
+  /* Glowing progress bar */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 8px hsl(var(--dandle-orange) / 0.6); }
+    50% { box-shadow: 0 0 16px hsl(var(--dandle-orange) / 0.9); }
+  }
+
+  /* Accessibility - respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .dandle-particles, .dandle-snow { 
+      display: none !important; 
+    }
+  }
 }
 
 @layer utilities {
@@ -374,6 +361,7 @@ All colors MUST be HSL.
     @apply border border-white/80 text-white px-6 py-3 rounded-sm hover:bg-white/10 transition-colors font-body;
   }
   
+  
   /* Hide scrollbar utility */
   .hide-scrollbar {
     -ms-overflow-style: none;
@@ -391,301 +379,5 @@ All colors MUST be HSL.
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
-
-  /* Corner Brackets - Brand Bible Design Element */
-  .corner-brackets {
-    position: relative;
-  }
-
-  .corner-brackets::before,
-  .corner-brackets::after {
-    content: '';
-    position: absolute;
-    width: 55px;
-    height: 55px;
-    border-color: hsl(27 80% 52%); /* #E67E22 */
-    border-style: solid;
-    border-width: 0;
-    pointer-events: none;
-  }
-
-  .corner-brackets::before {
-    top: 40px;
-    left: 40px;
-    border-top-width: 3px;
-    border-left-width: 3px;
-  }
-
-  .corner-brackets::after {
-    bottom: 40px;
-    right: 40px;
-    border-bottom-width: 3px;
-    border-right-width: 3px;
-  }
-
-  /* Corner brackets variant for smaller elements */
-  .corner-brackets-sm {
-    position: relative;
-  }
-
-  .corner-brackets-sm::before,
-  .corner-brackets-sm::after {
-    content: '';
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border-color: hsl(27 80% 52%);
-    border-style: solid;
-    border-width: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-
-  .corner-brackets-sm::before {
-    top: 20px;
-    left: 20px;
-    border-top-width: 2px;
-    border-left-width: 2px;
-  }
-
-  .corner-brackets-sm::after {
-    bottom: 20px;
-    right: 20px;
-    border-bottom-width: 2px;
-    border-right-width: 2px;
-  }
-
-  /* Hover effect for corner brackets */
-  .corner-brackets-hover:hover::before,
-  .corner-brackets-hover:hover::after {
-    border-color: hsl(15 28% 19%); /* #3E2723 */
-  }
-
-  /* Brand Bible text utilities */
-  .text-dandle-brown {
-    color: hsl(15 28% 19%); /* #3E2723 */
-  }
-
-  .bg-dandle-brown {
-    background-color: hsl(15 28% 19%); /* #3E2723 */
-  }
-
-  .bg-warm-cream {
-    background-color: hsl(36 47% 95%); /* #FAF7F2 */
-  }
-
-  .text-warm-cream {
-    color: hsl(36 47% 95%); /* #FAF7F2 */
-  }
-
-  /* Three-word truth styling (ALL CAPS with period) */
-  .three-word-truth {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: hsl(27 80% 52%);
-  }
-
-  .three-word-truth::after {
-    content: '.';
-  }
-
-  /* ============================================
-     FESTIVE SEASON THEME ANIMATIONS
-     ============================================ */
-
-  /* Twinkling stars animation for partnership section */
-  @keyframes twinkle {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.8; }
-  }
-
-  .animate-twinkle {
-    animation: twinkle 2s ease-in-out infinite;
-  }
-
-  .animate-twinkle-slow {
-    animation: twinkle 3s ease-in-out infinite;
-  }
-
-  .animate-twinkle-fast {
-    animation: twinkle 1.5s ease-in-out infinite;
-  }
-
-  /* Gold sparkle animation for CTA buttons */
-  @keyframes sparkle {
-    0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
-    50% { transform: scale(1) rotate(180deg); opacity: 1; }
-  }
-
-  .sparkle-hover::before {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: radial-gradient(circle, #d4af37 0%, transparent 70%);
-    border-radius: 50%;
-    top: -3px;
-    right: -3px;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .sparkle-hover:hover::before {
-    animation: sparkle 0.6s ease-in-out;
-  }
-
-  /* Snowfall animation - appears on page load for 5 seconds */
-  @keyframes snowfall {
-    0% {
-      transform: translateY(-10vh) translateX(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(110vh) translateX(20px);
-      opacity: 0;
-    }
-  }
-
-  .snowflake {
-    position: fixed;
-    top: -10px;
-    color: hsl(var(--festive-snow));
-    font-size: 1em;
-    pointer-events: none;
-    z-index: 9999;
-    animation: snowfall linear forwards;
-  }
-
-  /* Golden ribbon decorations for section dividers */
-  .festive-ribbon {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .festive-ribbon::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      hsl(var(--festive-gold) / 0.15) 20%,
-      hsl(var(--festive-gold) / 0.3) 50%,
-      hsl(var(--festive-gold) / 0.15) 80%,
-      transparent 100%
-    );
-  }
-
-  /* Pine branch corner decoration for cards */
-  .festive-corner {
-    position: relative;
-  }
-
-  .festive-corner::after {
-    content: '';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 24px;
-    height: 24px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232d5016' opacity='0.4'%3E%3Cpath d='M12 2L8 6h3v4H8l4 4 4-4h-3V6h3L12 2zm-7 8l-3 4h2v6h2v-6h2l-3-4zm14 0l-3 4h2v6h2v-6h2l-3-4z'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.3;
-    pointer-events: none;
-  }
-
-  /* RTL Adjustments for festive corner */
-  html[dir="rtl"] .festive-corner::after {
-    right: auto;
-    left: 8px;
-    transform: scaleX(-1);
-  }
-
-  /* Festive gold accent utilities */
-  .text-festive-gold {
-    color: #d4af37;
-  }
-
-  .bg-festive-gold {
-    background-color: #d4af37;
-  }
-
-  .border-festive-gold {
-    border-color: #d4af37;
-  }
-
-  /* ============================================
-     COLOR SWATCH STYLES
-     ============================================ */
-
-  .color-swatch {
-    @apply w-10 h-10 rounded-full cursor-pointer transition-all duration-200;
-    border: 2px solid #e0e0e0;
-  }
-
-  .color-swatch:hover {
-    transform: scale(1.05);
-  }
-
-  .color-swatch.selected {
-    border: 3px solid #d4af37;
-    transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
-  }
-
-  /* Mobile swatch size */
-  @media (max-width: 768px) {
-    .color-swatch {
-      @apply w-8 h-8;
-    }
-  }
-
-  /* RTL Layout Adjustments */
-  html[dir="rtl"] .flex-row {
-    flex-direction: row-reverse;
-  }
-
-  html[dir="rtl"] .text-left {
-    text-align: right;
-  }
-
-  html[dir="rtl"] .text-right {
-    text-align: left;
-  }
-
-  html[dir="rtl"] .ml-auto {
-    margin-left: 0;
-    margin-right: auto;
-  }
-
-  html[dir="rtl"] .mr-auto {
-    margin-right: 0;
-    margin-left: auto;
-  }
-
-  /* RTL-aware spacing for icons */
-  html[dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
-    --tw-space-x-reverse: 1;
-  }
-
-  html[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
-    --tw-space-x-reverse: 1;
-  }
-
-  /* RTL-aware padding */
-  html[dir="rtl"] .pl-4 {
-    padding-left: 0;
-    padding-right: 1rem;
-  }
-
-  html[dir="rtl"] .pr-4 {
-    padding-right: 0;
-    padding-left: 1rem;
   }
 }

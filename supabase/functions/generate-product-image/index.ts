@@ -12,6 +12,44 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authentication - require valid JWT
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader) {
+      console.error('No authorization header provided');
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create authenticated Supabase client to verify user
+    const supabaseAuth = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
+    if (authError || !user) {
+      console.error('Authentication failed:', authError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check admin role from user_metadata
+    const isAdmin = user.user_metadata?.is_admin === true;
+    if (!isAdmin) {
+      console.error('Non-admin user attempted admin function:', user.id, user.email);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Admin user authorized: ${user.id} (${user.email}) accessing generate-product-image`);
+
     const { imageBase64, referenceImageUrl, prompt, productHandle, imageType } = await req.json();
     
     console.log(`Generating image for ${productHandle}/${imageType}`);

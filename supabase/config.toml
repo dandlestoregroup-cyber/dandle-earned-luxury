@@ -1,16 +1,28 @@
 project_id = "rbvbrxjnhmgrtxvwusxr"
 
 [functions.nour-chat]
-verify_jwt = false
+verify_jwt = true
 
 [functions.analyzeRoom]
 verify_jwt = false
 
 [functions.generate-product-image]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-order]
 verify_jwt = false
 
 [functions.get-order-status]
+verify_jwt = false
+
+[functions.generate-hero-images]
+verify_jwt = true
+
+[functions.generate-hero-music]
+verify_jwt = true
+
+[functions.generate-sitemap]
+verify_jwt = false
+
+[functions.submit-career-application]
 verify_jwt = false

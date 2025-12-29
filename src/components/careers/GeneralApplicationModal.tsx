@@ -1,0 +1,256 @@
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { Check } from "lucide-react";
+
+interface GeneralApplicationModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const GeneralApplicationModal = ({ open, onOpenChange }: GeneralApplicationModalProps) => {
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    city: "",
+    roleInterest: "",
+    note: "",
+    consent: false,
+  });
+  const [cvFile, setCvFile] = useState<File | null>(null);
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setCvFile(e.target.files[0]);
+    }
+  };
+
+  const isFormValid = () => {
+    return (
+      formData.fullName &&
+      formData.phone &&
+      formData.email &&
+      formData.city &&
+      formData.roleInterest &&
+      formData.note &&
+      formData.consent &&
+      cvFile
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isFormValid()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Upload CV to Supabase Storage
+      let cvUrl = "";
+      if (cvFile) {
+        const fileName = `careers/general-applications/${Date.now()}-${cvFile.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("product-images")
+          .upload(fileName, cvFile);
+
+        if (uploadError) {
+          throw new Error("Failed to upload CV");
+        }
+
+        const { data: urlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(fileName);
+
+        cvUrl = urlData.publicUrl;
+      }
+
+      // Send application via edge function
+      const { error } = await supabase.functions.invoke("submit-career-application", {
+        body: {
+          type: "general",
+          ...formData,
+          cvUrl,
+        },
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast.success("Application submitted successfully!");
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Failed to submit application. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    onOpenChange(false);
+    // Reset form after close animation
+    setTimeout(() => {
+      setSubmitted(false);
+      setFormData({
+        fullName: "",
+        phone: "",
+        email: "",
+        city: "",
+        roleInterest: "",
+        note: "",
+        consent: false,
+      });
+      setCvFile(null);
+    }, 300);
+  };
+
+  if (submitted) {
+    return (
+      <Dialog open={open} onOpenChange={handleClose}>
+        <DialogContent className="max-w-md">
+          <div className="py-12 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Check className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="font-headline text-2xl font-bold text-charcoal mb-4">Received.</h3>
+            <p className="text-muted-foreground">
+              If shortlisted, we'll contact you.<br />
+              We move fast, quiet, and fair.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="font-headline text-2xl">
+            General Application
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-5 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="fullName">Full Name *</Label>
+              <Input
+                id="fullName"
+                value={formData.fullName}
+                onChange={(e) => handleInputChange("fullName", e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone *</Label>
+              <Input
+                id="phone"
+                placeholder="01XXXXXXXXX"
+                value={formData.phone}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="email">Email *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="city">City/Area *</Label>
+              <Input
+                id="city"
+                value={formData.city}
+                onChange={(e) => handleInputChange("city", e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="roleInterest">Role You're Applying For *</Label>
+            <Input
+              id="roleInterest"
+              placeholder="e.g., Craftsman, Digital Wizard, Brand Voice"
+              value={formData.roleInterest}
+              onChange={(e) => handleInputChange("roleInterest", e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="cv">CV Upload * (PDF, DOC, DOCX)</Label>
+            <Input
+              id="cv"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="note">
+              Tell us: (1) What are you known for? (2) What do you want to master next? (3) Why Dandle? *
+            </Label>
+            <Textarea
+              id="note"
+              rows={8}
+              value={formData.note}
+              onChange={(e) => handleInputChange("note", e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="flex items-start gap-3">
+            <Checkbox
+              id="consent"
+              checked={formData.consent}
+              onCheckedChange={(checked) =>
+                handleInputChange("consent", checked === true)
+              }
+            />
+            <Label htmlFor="consent" className="text-sm cursor-pointer">
+              I confirm my information is accurate. *
+            </Label>
+          </div>
+
+          <Button
+            type="submit"
+            disabled={!isFormValid() || loading}
+            className="w-full h-14 bg-charcoal text-warm-white hover:bg-charcoal/90 rounded-sm font-body text-lg"
+          >
+            {loading ? "Submitting..." : "Submit Application"}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default GeneralApplicationModal;
