@@ -47,6 +47,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
     >
       {/* Video Element - High Quality */}
       <video
+        id="heroVideo"
         ref={videoRef}
         src={src}
         className="w-full h-full object-cover"
