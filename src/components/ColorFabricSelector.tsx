@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Sparkles, Crown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { isRTL } from '@/i18n/config';
 import {
   FabricColor,
   fabricCollections,
   allFabricColors,
+  getColorDisplayName,
+  getFabricDisplayName,
 } from '@/data/fabricColors';
 
 interface ColorFabricSelectorProps {
@@ -97,11 +101,13 @@ const FabricSwatch = ({
   isSelected,
   onSelect,
   index,
+  isArabic,
 }: {
   fabric: FabricColor;
   isSelected: boolean;
   onSelect: () => void;
   index: number;
+  isArabic: boolean;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -182,10 +188,10 @@ const FabricSwatch = ({
           animate={{ color: isSelected ? '#FF6B35' : '#1A1A1A' }}
           className="font-semibold text-sm leading-tight mb-1 line-clamp-2"
         >
-          {fabric.name}
+          {getColorDisplayName(fabric, isArabic)}
         </motion.p>
         <p className="text-xs text-charcoal/60 leading-tight">
-          {fabric.fabric}
+          {getFabricDisplayName(fabric, isArabic)}
         </p>
       </div>
 
@@ -217,23 +223,29 @@ const FabricSwatch = ({
 // Collection header component
 const CollectionHeader = ({
   name,
+  nameAr,
   tagline,
+  taglineAr,
   isActive,
+  isArabic,
 }: {
   name: string;
+  nameAr: string;
   tagline: string;
+  taglineAr: string;
   isActive: boolean;
+  isArabic: boolean;
 }) => (
   <div className="mb-4">
     <div className="flex items-center gap-3">
       <h4 className="font-headline text-lg text-charcoal font-bold">
-        {name}
+        {isArabic ? nameAr : name}
       </h4>
       <div className="h-px flex-1 bg-gradient-to-r from-warm-beige to-transparent" />
     </div>
     <p className="text-sm text-charcoal/60 italic mt-1 flex items-center gap-2">
       <Sparkles className="w-3.5 h-3.5 text-dandle-orange" />
-      {tagline}
+      {isArabic ? taglineAr : tagline}
     </p>
   </div>
 );
@@ -244,6 +256,9 @@ export const ColorFabricSelector = ({
   onColorSelect,
   availableColorIds,
 }: ColorFabricSelectorProps) => {
+  const { t } = useTranslation();
+  const isArabic = isRTL();
+
   // Filter colors if availableColorIds is provided
   const getFilteredColors = (colors: FabricColor[]) => {
     if (!availableColorIds || availableColorIds.length === 0) {
@@ -278,16 +293,16 @@ export const ColorFabricSelector = ({
             {/* Selected color info */}
             <div className="flex-1 min-w-0">
               <p className="text-xs text-dandle-orange font-semibold uppercase tracking-wider mb-1">
-                Selected Fabric
+                {isArabic ? 'القماش المختار' : 'Selected Fabric'}
               </p>
               <p className="font-headline text-xl text-charcoal font-bold truncate">
-                {selectedFabric.name}
+                {getColorDisplayName(selectedFabric, isArabic)}
               </p>
               <p className="text-sm text-charcoal/70">
-                {selectedFabric.fabric}
+                {getFabricDisplayName(selectedFabric, isArabic)}
                 {selectedFabric.premium && (
-                  <span className="ml-2 inline-flex items-center gap-1 text-amber-600 font-semibold">
-                    <Crown className="w-3 h-3" /> Premium
+                  <span className={`${isArabic ? 'mr-2' : 'ml-2'} inline-flex items-center gap-1 text-amber-600 font-semibold`}>
+                    <Crown className="w-3 h-3" /> {isArabic ? 'فاخر' : 'Premium'}
                   </span>
                 )}
               </p>
@@ -309,8 +324,11 @@ export const ColorFabricSelector = ({
           <div key={collection.id}>
             <CollectionHeader
               name={collection.name}
+              nameAr={collection.nameAr}
               tagline={collection.tagline}
+              taglineAr={collection.taglineAr}
               isActive={hasSelectedInCollection}
+              isArabic={isArabic}
             />
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
               {filteredColors.map((color, index) => (
@@ -320,6 +338,7 @@ export const ColorFabricSelector = ({
                   isSelected={selectedColorId === color.id}
                   onSelect={() => onColorSelect(color.id)}
                   index={index}
+                  isArabic={isArabic}
                 />
               ))}
             </div>
