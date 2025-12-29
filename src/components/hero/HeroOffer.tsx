@@ -111,7 +111,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.6 }}
         >
-          Up to 30% Off Premium Recliners
+          Up to 10% Off Premium Recliners
         </motion.p>
 
         {/* Offer Details - Simplified */}

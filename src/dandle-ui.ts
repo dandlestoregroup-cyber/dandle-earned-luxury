@@ -75,15 +75,8 @@ export function initDandleUi() {
         color: #d4af37 !important;
       }
 
-      html[lang="ar"]{
-        direction: rtl;
-        font-family: Tajawal, system-ui, -apple-system, sans-serif;
-        letter-spacing: 0;
-      }
-      html[lang="en"]{
-        direction: ltr;
-        font-family: system-ui, -apple-system, sans-serif;
-      }
+      /* RTL only affects data-ar elements, not existing content */
+      [data-ar]{unicode-bidi: plaintext;}
 
       .dandle-mute-toggle{
         position: fixed;
@@ -116,7 +109,7 @@ export function initDandleUi() {
     const safe: "en" | "ar" = lang === "ar" ? "ar" : "en";
     localStorage.setItem(STORAGE_KEY, safe);
     document.documentElement.lang = safe;
-    document.documentElement.dir = safe === "ar" ? "rtl" : "ltr";
+    // Do NOT change direction - leave existing content alone
 
     document.querySelectorAll<HTMLAnchorElement>(".dandle-lang-link").forEach((a) => {
       a.classList.toggle("active", a.dataset.lang === safe);
