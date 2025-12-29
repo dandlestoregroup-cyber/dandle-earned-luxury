@@ -12,7 +12,7 @@ const IstikbalShowroom = () => {
   };
 
   return (
-    <section className="py-20 bg-charcoal overflow-hidden">
+    <section className="istikbal-section py-12 md:py-16 bg-charcoal overflow-hidden relative">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}

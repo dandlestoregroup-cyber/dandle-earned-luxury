@@ -1,0 +1,91 @@
+/* Prompt 2B + 2C: Product image data with gallery placeholders */
+
+import { generationManifest } from './imageGenerationManifest';
+
+// Build generated images by product
+const generatedByProduct: Record<string, string[]> = {};
+for (const entry of generationManifest) {
+  const url = `/images/generated/${entry.outputFileName}`;
+  (generatedByProduct[entry.productKey] ||= []).push(url);
+}
+
+export const productImageData: Record<string, { mainImage: string; galleryImages: string[] }> = {
+  'relaxmax': {
+    mainImage: '/images/dandle-relaxmax-flagship.webp',
+    galleryImages: [
+      '/images/relaxmax-hero-offwhite.jpg',
+      '/images/relaxmax-brown-lifestyle.jpg',
+      '/images/relaxmax-lifestyle-day.png',
+      '/images/relaxmax-lifestyle-night.png',
+      ...(generatedByProduct['relaxmax'] || []),
+    ],
+  },
+  'comfortplus': {
+    mainImage: '/images/comfortplus-tan-front.webp',
+    galleryImages: [
+      ...(generatedByProduct['comfortplus'] || []),
+    ],
+  },
+  'diva': {
+    mainImage: '/images/dandle-diva.jpg',
+    galleryImages: [
+      '/images/diva-red-front.jpg',
+      ...(generatedByProduct['diva'] || []),
+    ],
+  },
+  'cozycompanion': {
+    mainImage: '/images/dandle-cozycompanion-hero.webp',
+    galleryImages: [
+      '/images/cozycompanion-beige-front.jpg',
+      '/images/cozycompanion-yellow-front.jpg',
+      '/images/cozycompanion-couple-lifestyle.jpg',
+      ...(generatedByProduct['cozycompanion'] || []),
+    ],
+  },
+  'easyup': {
+    mainImage: '/images/dandle-easyup-standard.jpg',
+    galleryImages: [
+      '/images/easyup-beige-front.jpg',
+      '/images/easyup-beige-lifted.jpg',
+      '/images/easyup-standard-grey-front.webp',
+      ...(generatedByProduct['easyup'] || []),
+    ],
+  },
+  'easyup-compact': {
+    mainImage: '/images/dandle-easyup-compact.jpg',
+    galleryImages: [
+      '/images/easyup-compact-charcoal-front.jpg',
+      '/images/easyup-compact-charcoal-reclined.png',
+      '/images/easyup-compact-charcoal-side.png',
+      '/images/easyup-compact-grey-front.webp',
+      ...(generatedByProduct['easyup-compact'] || []),
+    ],
+  },
+  'worknest': {
+    mainImage: '/images/dandle-worknest.jpg',
+    galleryImages: [
+      '/images/worknest-blue-front.webp',
+      ...(generatedByProduct['worknest'] || []),
+    ],
+  },
+  'spacesaver': {
+    mainImage: '/images/dandle-spacesaver.jpg',
+    galleryImages: [
+      '/images/spacesaver-offwhite-reclined.jpg',
+      '/images/spacesaver-offwhite-side.jpg',
+      '/images/spacesaver-red-front.webp',
+      ...(generatedByProduct['spacesaver'] || []),
+    ],
+  },
+  'complete-set': {
+    mainImage: '/images/dandle-heritage-set.jpg',
+    galleryImages: [
+      '/images/complete-set-classic.jpg',
+      '/images/complete-set-coastal-modern.jpg',
+      '/images/complete-set-family-modern.jpg',
+      '/images/complete-set-modern-fireplace.jpg',
+      '/images/complete-set-sunset-fireplace.jpg',
+      ...(generatedByProduct['complete-set'] || []),
+    ],
+  },
+};
