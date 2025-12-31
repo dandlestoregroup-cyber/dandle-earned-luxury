@@ -53,8 +53,9 @@ All colors MUST be HSL.
     
     --shadow-subtle: 0 4px 14px rgba(0, 0, 0, 0.06);
     --shadow-luxury: 0 10px 30px -10px hsl(38 36% 56% / 0.3);
-    --shadow-elegant: 0 10px 30px -10px rgba(255, 107, 53, 0.3);
-    --shadow-glow: 0 0 40px rgba(255, 107, 53, 0.4);
+    /* Disabled per Whisper Edition spec - no orange glow shadows */
+    --shadow-elegant: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
+    --shadow-glow: none;
     
     --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-cinematic: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -114,25 +115,47 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Satoshi', 'Inter', sans-serif;
     font-weight: 400;
     line-height: 1.4;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-weight: 600;
     line-height: 1.1;
   }
   
-  /* Body text font */
+  /* Body text font - English */
   .font-body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Satoshi', 'Inter', sans-serif;
   }
   
-  /* Headline font */
+  /* Headline font - English */
   .font-headline {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  
+  /* Arabic fonts */
+  [lang="ar"] body,
+  [dir="rtl"] body {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+  
+  [lang="ar"] h1, [lang="ar"] h2, [lang="ar"] h3, [lang="ar"] h4, [lang="ar"] h5, [lang="ar"] h6,
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+    font-family: 'Cairo', serif;
+    font-weight: 700;
+  }
+  
+  [lang="ar"] .font-body,
+  [dir="rtl"] .font-body {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+  
+  [lang="ar"] .font-headline,
+  [dir="rtl"] .font-headline {
+    font-family: 'Cairo', serif;
   }
   
   /* Warm gradient appears before React hydrates (FIX: dead initial load) */
