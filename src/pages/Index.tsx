@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import TopBanner from "@/components/TopBanner";
 import Hero from "@/components/Hero";
 import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
@@ -13,6 +14,7 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <TopBanner />
       <Navigation />
       <main>
         <Hero />

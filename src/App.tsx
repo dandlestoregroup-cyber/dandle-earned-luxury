@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
@@ -24,6 +25,46 @@ import Contact from "./pages/trust/Contact";
 
 const queryClient = new QueryClient();
 
+// Redirect component for /product/:handle → /products/:handle
+const ProductRedirect = () => {
+  const { handle } = useParams();
+  return <Navigate to={`/products/${handle}`} replace />;
+};
+
+// Language direction effect hook
+const LanguageDirectionHandler = () => {
+  useEffect(() => {
+    const updateDirection = () => {
+      const lang = document.documentElement.lang || 'en';
+      if (lang === 'ar') {
+        document.documentElement.setAttribute('dir', 'rtl');
+        document.documentElement.setAttribute('lang', 'ar');
+      } else {
+        document.documentElement.setAttribute('dir', 'ltr');
+        document.documentElement.setAttribute('lang', 'en');
+      }
+    };
+
+    // Initial check
+    updateDirection();
+
+    // Listen for language changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'lang') {
+          updateDirection();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CartProvider>
@@ -31,8 +72,11 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <LanguageDirectionHandler />
           <Routes>
             <Route path="/" element={<Index />} />
+            {/* Redirect /product/:handle to /products/:handle */}
+            <Route path="/product/:handle" element={<ProductRedirect />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/nour-chat" element={<NourChat />} />
             <Route path="/complete-set" element={<CompleteSet />} />

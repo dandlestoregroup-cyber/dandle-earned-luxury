@@ -130,64 +130,64 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 />
               </div>
               <div>
-                <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
-                <p className="text-muted-foreground">{product.tagline}</p>
+                <h2 className="text-xl md:text-2xl font-bold mb-1">{product.name}</h2>
+                <p className="text-sm text-muted-foreground">{product.tagline}</p>
               </div>
             </div>
           </div>
 
           <div className="p-6 space-y-8">
             {/* Price and Target */}
-            <div className="text-center space-y-2 animate-in fade-in-0 slide-in-from-top-2 duration-700">
-              <p className="text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
-              <p className="text-muted-foreground">Target: High-performing professionals</p>
+            <div className="text-center space-y-1 animate-in fade-in-0 slide-in-from-top-2 duration-700">
+              <p className="text-2xl md:text-3xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
+              <p className="text-sm text-muted-foreground">Target: High-performing professionals</p>
             </div>
 
             {/* Mechanism Type - First */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
-              <h3 className="text-xl font-bold">Mechanism Type</h3>
-              
+            <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
+              <h3 className="text-base md:text-lg font-bold">Mechanism Type</h3>
+
               <RadioGroup value={mechanism} onValueChange={(value: string) => {
                 playClickSound();
                 setMechanism(value as "manual" | "power");
-              }} className="grid grid-cols-2 gap-4">
+              }} className="grid grid-cols-2 gap-3">
                 <label
-                  className={`p-6 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center active:scale-95 ${
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center active:scale-95 ${
                     mechanism === "manual"
                       ? 'border-accent bg-accent/10 scale-105 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
                   <RadioGroupItem value="manual" id="manual" className="sr-only" />
-                  <div className="space-y-2">
-                    <p className="text-lg font-bold">Manual</p>
-                    <p className="text-xl font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} EGP</p>
+                  <div className="space-y-1">
+                    <p className="text-sm md:text-base font-bold">Manual</p>
+                    <p className="text-base md:text-lg font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} EGP</p>
                   </div>
                 </label>
 
                 <label
-                  className={`p-6 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center active:scale-95 ${
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 text-center active:scale-95 ${
                     mechanism === "power"
                       ? 'border-accent bg-accent/10 scale-105 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
                   <RadioGroupItem value="power" id="power" className="sr-only" />
-                  <div className="space-y-2">
-                    <p className="text-lg font-bold">Power</p>
-                    <p className="text-xl font-bold text-accent">{formatPrice(product.pricePower || product.price || 0)} EGP</p>
+                  <div className="space-y-1">
+                    <p className="text-sm md:text-base font-bold">Power</p>
+                    <p className="text-base md:text-lg font-bold text-accent">{formatPrice(product.pricePower || product.price || 0)} EGP</p>
                   </div>
                 </label>
               </RadioGroup>
             </div>
 
             {/* Premium Fabric & Color Selection - Second */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
-              <div className="flex items-center gap-3 mb-2">
-                <h3 className="text-xl font-bold">Select Your Fabric & Color</h3>
+            <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-base md:text-lg font-bold">Select Your Fabric & Color</h3>
                 <div className="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent" />
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-3">
                 Handcrafted from premium materials for lasting comfort and elegance
               </p>
 
@@ -202,74 +202,74 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             </div>
 
             {/* Base Type - Third */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-              <h3 className="text-xl font-bold">Base Type</h3>
-              
+            <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
+              <h3 className="text-base md:text-lg font-bold">Base Type</h3>
+
               <RadioGroup value={baseType} onValueChange={(value: string) => {
                 playClickSound();
                 setBaseType(value as any);
-              }} className="space-y-3">
+              }} className="space-y-2">
                 <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                  className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
                     baseType === "fixed"
                       ? 'border-accent bg-accent/10 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="fixed" id="fixed" />
                     <div>
-                      <p className="font-bold text-lg">Fixed Base</p>
-                      <p className="text-sm text-muted-foreground">Free</p>
+                      <p className="font-bold text-sm md:text-base">Fixed Base</p>
+                      <p className="text-xs text-muted-foreground">Free</p>
                     </div>
                   </div>
                   {baseType === "fixed" && (
-                    <Zap className="w-5 h-5 text-accent animate-in zoom-in-50 duration-300" />
+                    <Zap className="w-4 h-4 text-accent animate-in zoom-in-50 duration-300" />
                   )}
                 </label>
 
                 <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                  className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
                     baseType === "swivel"
                       ? 'border-accent bg-accent/10 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="swivel" id="swivel" />
                     <div>
-                      <p className="font-bold text-lg">Swivel Base</p>
+                      <p className="font-bold text-sm md:text-base">Swivel Base</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+1,200 EGP</span>
+                  <span className="font-bold text-sm text-accent">+1,200 EGP</span>
                 </label>
 
                 <label
-                  className={`flex items-center justify-between p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
+                  className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${
                     baseType === "swivel360"
                       ? 'border-accent bg-accent/10 shadow-lg'
                       : 'border-border hover:border-accent/50 hover:bg-accent/5'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <RadioGroupItem value="swivel360" id="swivel360" />
                     <div>
-                      <p className="font-bold text-lg">Swivel + 360° Rotation</p>
+                      <p className="font-bold text-sm md:text-base">Swivel + 360° Rotation</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+2,500 EGP</span>
+                  <span className="font-bold text-sm text-accent">+2,500 EGP</span>
                 </label>
               </RadioGroup>
             </div>
 
             {/* Last Touch Section */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
-              <h3 className="text-xl font-bold">The Last Touch</h3>
-              
-              <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
+            <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
+              <h3 className="text-base md:text-lg font-bold">The Last Touch</h3>
+
+              <div className="space-y-2">
+                <label className="flex items-center justify-between p-3 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
                       checked={giftWrap}
                       onCheckedChange={(checked) => {
                         playClickSound();
@@ -277,19 +277,19 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                       }}
                     />
                     <div className="flex items-center gap-2">
-                      <Gift className="w-5 h-5 text-accent" />
+                      <Gift className="w-4 h-4 text-accent" />
                       <div>
-                        <p className="font-semibold">Premium Gift Wrapping</p>
-                        <p className="text-sm text-muted-foreground">Ribbon with personal message</p>
+                        <p className="font-semibold text-sm">Premium Gift Wrapping</p>
+                        <p className="text-xs text-muted-foreground">Ribbon with personal message</p>
                       </div>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+1,500 EGP</span>
+                  <span className="font-bold text-sm text-accent">+1,500 EGP</span>
                 </label>
 
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
+                <label className="flex items-center justify-between p-3 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
                       checked={engraving}
                       onCheckedChange={(checked) => {
                         playClickSound();
@@ -297,26 +297,26 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                       }}
                     />
                     <div className="flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-accent" />
+                      <Trophy className="w-4 h-4 text-accent" />
                       <div>
-                        <p className="font-semibold">Legacy Plaque</p>
-                        <p className="text-sm text-muted-foreground">Custom engraving for memory</p>
+                        <p className="font-semibold text-sm">Legacy Plaque</p>
+                        <p className="text-xs text-muted-foreground">Custom engraving for memory</p>
                       </div>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+3,000 EGP</span>
+                  <span className="font-bold text-sm text-accent">+3,000 EGP</span>
                 </label>
               </div>
             </div>
 
             {/* Massage Feature - Only for eligible products */}
             {(product.id === "relaxmax" || product.id === "worknest" || product.id === "spacesaver") && (
-              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
-                <h3 className="text-xl font-bold">Premium Therapy</h3>
-                
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-accent/30 hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5 hover:bg-accent/10 active:scale-95">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
+              <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
+                <h3 className="text-base md:text-lg font-bold">Premium Therapy</h3>
+
+                <label className="flex items-center justify-between p-3 rounded-lg border-2 border-accent/30 hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5 hover:bg-accent/10 active:scale-95">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
                       checked={massageFeature}
                       onCheckedChange={(checked) => {
                         playClickSound();
@@ -324,69 +324,69 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                       }}
                     />
                     <div>
-                      <p className="font-semibold">Massage Feature</p>
-                      <p className="text-sm text-muted-foreground">Professional-grade relaxation therapy</p>
+                      <p className="font-semibold text-sm">Massage Feature</p>
+                      <p className="text-xs text-muted-foreground">Professional-grade relaxation therapy</p>
                     </div>
                   </div>
-                  <span className="font-bold text-accent">+9,000 EGP</span>
+                  <span className="font-bold text-sm text-accent">+9,000 EGP</span>
                 </label>
               </div>
             )}
 
             {/* Special Additions */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
-              <h3 className="text-xl font-bold">Special Additions</h3>
-              
-              <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
+            <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
+              <h3 className="text-base md:text-lg font-bold">Special Additions</h3>
+
+              <div className="space-y-2">
+                <label className="flex items-center justify-between p-3 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
                       checked={cupHolder}
                       onCheckedChange={(checked) => {
                         playClickSound();
                         setCupHolder(checked as boolean);
                       }}
                     />
-                    <span className="font-semibold">Cup Holders</span>
+                    <span className="font-semibold text-sm">Cup Holders</span>
                   </div>
-                  <span className="font-bold text-accent">+450 EGP</span>
+                  <span className="font-bold text-sm text-accent">+450 EGP</span>
                 </label>
 
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
+                <label className="flex items-center justify-between p-3 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
                       checked={usbPort}
                       onCheckedChange={(checked) => {
                         playClickSound();
                         setUsbPort(checked as boolean);
                       }}
                     />
-                    <span className="font-semibold">USB Charging Ports</span>
+                    <span className="font-semibold text-sm">USB Charging Ports</span>
                   </div>
-                  <span className="font-bold text-accent">+750 EGP</span>
+                  <span className="font-bold text-sm text-accent">+750 EGP</span>
                 </label>
 
-                <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
-                  <div className="flex items-center gap-3">
-                    <Checkbox 
+                <label className="flex items-center justify-between p-3 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
                       checked={sidePocket}
                       onCheckedChange={(checked) => {
                         playClickSound();
                         setSidePocket(checked as boolean);
                       }}
                     />
-                    <span className="font-semibold">Side Pocket</span>
+                    <span className="font-semibold text-sm">Side Pocket</span>
                   </div>
-                  <span className="font-bold text-accent">+350 EGP</span>
+                  <span className="font-bold text-sm text-accent">+350 EGP</span>
                 </label>
 
-                <div className="pt-4">
-                  <Label className="text-base font-semibold mb-2 block">Special Instructions</Label>
+                <div className="pt-3">
+                  <Label className="text-sm font-semibold mb-1 block">Special Instructions</Label>
                   <Textarea
                     value={specialNotes}
                     onChange={(e) => setSpecialNotes(e.target.value)}
                     placeholder="Any special requests or notes..."
-                    className="min-h-[80px] resize-none"
+                    className="min-h-[60px] resize-none text-sm"
                   />
                 </div>
               </div>
@@ -397,27 +397,27 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           </div>
 
           {/* Sticky Bottom Bar */}
-          <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between mb-3">
+          <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-3 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center justify-between mb-2">
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>
+                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-lg md:text-xl font-bold">{formatPrice(calculateTotal())} EGP</p>
               </div>
               <div className="text-left">
-                <p className="text-sm text-muted-foreground">Service Charge (3.5%)</p>
-                <p className="text-2xl font-bold text-accent">{formatPrice(calculateCommission())} EGP</p>
+                <p className="text-xs text-muted-foreground">Service Charge (3.5%)</p>
+                <p className="text-lg md:text-xl font-bold text-accent">{formatPrice(calculateCommission())} EGP</p>
               </div>
             </div>
-            
-            <Button 
+
+            <Button
               onClick={() => {
                 playClickSound();
                 handleCompleteOrder();
               }}
               size="lg"
-              className="w-full text-lg font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105 active:scale-95"
+              className="w-full text-base font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              Complete Order ✨
+              Complete Order
             </Button>
           </div>
         </div>

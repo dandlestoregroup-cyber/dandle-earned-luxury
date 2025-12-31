@@ -20,7 +20,7 @@ export const products: Product[] = [
   {
     id: "relaxmax",
     name: "Dandle RelaxMax",
-    tagline: "The Wellness Sanctuary",
+    tagline: "Your Daily Sanctuary",
     threeWordTruth: "EASY EVERYDAY COMFORT",
     tier: 'gateway',
     priceManual: 21900,
@@ -39,7 +39,7 @@ export const products: Product[] = [
   {
     id: "spacesaver",
     name: "Dandle SpaceSaver",
-    tagline: "The Smart Solution",
+    tagline: "Big Comfort, Small Footprint",
     threeWordTruth: "SMART SPACE COMFORT",
     tier: 'gateway',
     priceManual: 24000,
@@ -58,7 +58,7 @@ export const products: Product[] = [
   {
     id: "easyup-compact",
     name: "Dandle EasyUp Compact",
-    tagline: "The Compact Empowerment Tool",
+    tagline: "Gentle Lift, Compact Design",
     threeWordTruth: "DIGNITY IN SMALL SPACES",
     tier: 'gateway',
     price: 28000,
@@ -77,7 +77,7 @@ export const products: Product[] = [
   {
     id: "worknest",
     name: "Dandle WorkNest",
-    tagline: "The Productivity Haven",
+    tagline: "Work Better, Feel Better",
     threeWordTruth: "PRACTICAL DAILY COMFORT",
     tier: 'core',
     priceManual: 32000,
@@ -96,7 +96,7 @@ export const products: Product[] = [
   {
     id: "easyup",
     name: "Dandle EasyUp Power",
-    tagline: "The Empowerment Tool",
+    tagline: "Sit Easy, Stand Easier",
     threeWordTruth: "DIGNIFIED EFFORTLESS RISE",
     tier: 'core',
     price: 35000,
@@ -114,7 +114,7 @@ export const products: Product[] = [
   {
     id: "comfortplus",
     name: "Dandle ComfortPlus Power",
-    tagline: "The Therapeutic Upgrade",
+    tagline: "Feel Better Every Day",
     threeWordTruth: "INDULGENT DEEP RELAXATION",
     tier: 'core',
     priceManual: 32000,
@@ -134,7 +134,7 @@ export const products: Product[] = [
   {
     id: "cozycompanion",
     name: "Dandle CozyCompanion",
-    tagline: "The Anchor of Connection",
+    tagline: "Comfort for Two",
     threeWordTruth: "GRAVITATIONAL HOME ANCHOR",
     tier: 'prestige',
     priceManual: 42000,
@@ -153,7 +153,7 @@ export const products: Product[] = [
   {
     id: "diva",
     name: "Dandle Diva",
-    tagline: "The Statement of Style",
+    tagline: "Where Style Meets Comfort",
     threeWordTruth: "EXPRESSIVE HIGH-TOUCH COMFORT",
     tier: 'prestige',
     priceManual: 48000,
@@ -172,7 +172,7 @@ export const products: Product[] = [
   {
     id: "complete-set",
     name: "Dandle Complete Sets",
-    tagline: "The Ultimate Collection",
+    tagline: "Comfort for the Whole Family",
     threeWordTruth: "WHOLE-ROOM COMFORT SYSTEM",
     tier: 'prestige',
     priceManual: 65000,

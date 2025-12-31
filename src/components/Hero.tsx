@@ -1,110 +1,85 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Volume2, VolumeX } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 
-const Hero = () => {
-  const navigate = useNavigate();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true); // Default muted for button display
-  const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
-  const [userHasInteracted, setUserHasInteracted] = useState(false);
+// Animated text overlay scenes
+const overlayScenes = [
+  { en: "The Art of Rest", ar: "فن الراحة" },
+  { en: "Crafted in Egypt. Made for real homes.", ar: "صناعة مصرية… لبيوت حقيقية." },
+  { en: "White-glove service • 5-year warranty", ar: "خدمة راقية • ضمان 5 سنوات" },
+];
 
+const Hero = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true); // Default muted
+  const [currentScene, setCurrentScene] = useState(0);
+  const [isArabic, setIsArabic] = useState(false);
+
+  // Check for Arabic language
+  useEffect(() => {
+    const checkLanguage = () => {
+      setIsArabic(document.documentElement.lang === 'ar');
+    };
+    checkLanguage();
+
+    const observer = new MutationObserver(checkLanguage);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    return () => observer.disconnect();
+  }, []);
+
+  // Video sound preference from localStorage (persisted)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Check if user has a saved preference
-    const savedMutePreference = sessionStorage.getItem('heroVideoMuted');
-    const userPrefersMuted = savedMutePreference === 'true';
+    // Check if user has a saved preference in localStorage
+    const savedMutePreference = localStorage.getItem('dandleHeroMuted');
 
-    // Mobile autoplay requires muted, desktop can start unmuted
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      // Mobile: Start muted for autoplay compatibility
-      video.muted = true;
-      setIsMuted(true);
-      
-      // If user previously unmuted, respect that after first interaction
-      if (savedMutePreference === 'false') {
-        const attemptUnmute = () => {
-          video.muted = false;
+    // Always start muted for autoplay compatibility and user preference
+    video.muted = true;
+    setIsMuted(true);
+
+    // Only unmute if user explicitly saved preference as unmuted
+    if (savedMutePreference === 'false') {
+      // Attempt to unmute after user interaction
+      const attemptUnmute = () => {
+        if (videoRef.current) {
+          videoRef.current.muted = false;
           setIsMuted(false);
-          document.removeEventListener('touchstart', attemptUnmute);
-        };
-        document.addEventListener('touchstart', attemptUnmute, { once: true });
-      }
-    } else {
-      // Desktop: Start unmuted for first play (unless user previously muted)
-      if (savedMutePreference === null) {
-        video.muted = false;
-        setIsMuted(false);
-      } else {
-        video.muted = userPrefersMuted;
-        setIsMuted(userPrefersMuted);
-      }
+        }
+        document.removeEventListener('click', attemptUnmute);
+        document.removeEventListener('touchstart', attemptUnmute);
+      };
+      document.addEventListener('click', attemptUnmute, { once: true });
+      document.addEventListener('touchstart', attemptUnmute, { once: true });
     }
+  }, []);
 
-    // Handle first play completion
-    const handleTimeUpdate = () => {
-      if (!hasPlayedOnce && video.currentTime > 0 && video.duration > 0) {
-        // Check if we're near the end (within 0.5 seconds)
-        if (video.duration - video.currentTime < 0.5) {
-          setHasPlayedOnce(true);
-          
-          // Only auto-mute if user hasn't manually changed the setting
-          if (!userHasInteracted) {
-            video.muted = true;
-            setIsMuted(true);
-            sessionStorage.setItem('heroVideoMuted', 'true');
-          }
-        }
-      }
-    };
-
-    const handleEnded = () => {
-      if (!hasPlayedOnce) {
-        setHasPlayedOnce(true);
-        video.loop = true;
-        
-        // Only auto-mute if user hasn't manually changed the setting
-        if (!userHasInteracted) {
-          video.muted = true;
-          setIsMuted(true);
-          sessionStorage.setItem('heroVideoMuted', 'true');
-        }
-      }
-    };
-
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('ended', handleEnded);
-
-    return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('ended', handleEnded);
-    };
-  }, [hasPlayedOnce, userHasInteracted]);
+  // Animated text overlay scene rotation (4 seconds each)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentScene((prev) => (prev + 1) % overlayScenes.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleMute = () => {
     if (videoRef.current) {
       const newMutedState = !videoRef.current.muted;
-      console.log('Toggle mute clicked. Current:', videoRef.current.muted, 'New:', newMutedState);
       videoRef.current.muted = newMutedState;
       setIsMuted(newMutedState);
-      setUserHasInteracted(true);
-      
-      // Save user preference to session
-      sessionStorage.setItem('heroVideoMuted', String(newMutedState));
-      console.log('Video muted state after toggle:', videoRef.current.muted);
-    } else {
-      console.log('Video ref not available');
+
+      // Save user preference to localStorage (persists across sessions)
+      localStorage.setItem('dandleHeroMuted', String(newMutedState));
     }
   };
 
+  const scene = overlayScenes[currentScene];
+
   return (
     <motion.section
+      id="gift-of-comfort"
       className="relative h-[70vh] w-full flex items-center justify-center text-center overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -117,7 +92,8 @@ const Hero = () => {
           src="/dandle-hero.mp4"
           className="w-full h-full object-contain"
           autoPlay
-          loop={false}
+          loop
+          muted
           playsInline
           preload="auto"
           style={{
@@ -126,21 +102,33 @@ const Hero = () => {
             objectFit: 'contain'
           }}
         />
-        {/* Gradient Overlay - More Colorful */}
-        <div className="absolute inset-0 bg-gradient-to-br from-nile-blue/50 via-black/40 to-dandle-orange/30" />
-        {/* Animated Gradient Accent */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-tr from-transparent via-bronze/20 to-transparent"
-          animate={{ 
-            opacity: [0.3, 0.6, 0.3],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ 
-            repeat: Infinity, 
-            duration: 8,
-            ease: "easeInOut"
-          }}
-        />
+
+        {/* Scrim overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
+
+        {/* Animated Text Overlay - 3 scene loop */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentScene}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-center px-4"
+            >
+              <p
+                className="font-headline text-2xl md:text-4xl lg:text-5xl text-white font-semibold max-w-4xl mx-auto"
+                style={{
+                  textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+                  fontFamily: isArabic ? 'Cairo, sans-serif' : '"Cormorant Garamond", serif'
+                }}
+              >
+                {isArabic ? scene.ar : scene.en}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       <motion.div
@@ -156,32 +144,47 @@ const Hero = () => {
           transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
         >
           <Sparkles className="w-4 h-4 text-dandle-orange" />
-          <span className="text-sm font-body text-warm-white">Comfort Crafted for the Finest</span>
+          <span className="text-sm font-body text-warm-white">
+            {isArabic ? "صُنعت بحب للأرقى" : "Comfort Crafted for the Finest"}
+          </span>
         </motion.div>
 
-        <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+        <h1
+          className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+          style={{ wordBreak: 'normal', overflowWrap: 'normal', hyphens: 'none' }}
+        >
           <span className="block text-warm-white">
-            The seat you <span className="text-dandle-orange">keep</span> coming back to.
+            {isArabic ? (
+              <>هدية <span className="text-dandle-orange">الراحة</span></>
+            ) : (
+              <>The <span className="text-dandle-orange">Gift</span> of Comfort</>
+            )}
+          </span>
+          <span className="block text-warm-white text-2xl md:text-3xl lg:text-4xl mt-2 font-normal">
+            {isArabic ? "للذوق الرفيع" : "For refined taste"}
           </span>
         </h1>
 
         <p className="font-body text-lg md:text-xl text-warm-beige/90 mb-8 max-w-2xl mx-auto">
-          Comfort crafted with intention — practical enough for every day, premium enough to finish the room.
+          {isArabic
+            ? "راحة صُنعت بعناية — عملية لكل يوم، فاخرة تُكمل الغرفة."
+            : "Comfort crafted with intention — practical enough for every day, premium enough to finish the room."
+          }
         </p>
 
         {/* Belief Bullets */}
         <div className="flex flex-wrap justify-center gap-6 mb-10 text-warm-white/90">
           <div className="flex items-center gap-2">
             <span className="text-dandle-orange">✓</span>
-            <span className="font-body text-sm">You enjoy using it</span>
+            <span className="font-body text-sm">{isArabic ? "تستمتع باستخدامه" : "You enjoy using it"}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-dandle-orange">✓</span>
-            <span className="font-body text-sm">You rely on it every day</span>
+            <span className="font-body text-sm">{isArabic ? "تعتمد عليه كل يوم" : "You rely on it every day"}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-dandle-orange">✓</span>
-            <span className="font-body text-sm">The room feels right now</span>
+            <span className="font-body text-sm">{isArabic ? "الغرفة أصبحت مكتملة" : "The room feels right now"}</span>
           </div>
         </div>
 
@@ -190,10 +193,10 @@ const Hero = () => {
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="group bg-[hsl(27,80%,52%)] hover:bg-[hsl(27,80%,45%)] text-warm-cream px-8 py-6 text-lg font-body rounded-md shadow-elegant hover:shadow-glow transition-all duration-300"
+            className="group bg-[hsl(27,80%,52%)] hover:bg-[hsl(27,80%,45%)] text-warm-cream px-8 py-6 text-lg font-body rounded-md shadow-subtle hover:shadow-luxury transition-all duration-300"
           >
-            Explore Collection
-            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            {isArabic ? "استكشف المجموعة" : "Explore Collection"}
+            <ArrowRight className={`w-5 h-5 group-hover:translate-x-1 transition-transform ${isArabic ? 'mr-2 rotate-180' : 'ml-2'}`} />
           </Button>
           <Button
             onClick={() => {
@@ -201,29 +204,39 @@ const Hero = () => {
             }}
             className="group bg-transparent backdrop-blur-md border-2 border-[hsl(15,28%,19%)] hover:bg-warm-white/10 text-warm-white px-8 py-6 text-lg font-body rounded-md transition-all duration-300"
           >
-            Find Your Model
+            {isArabic ? "اختر موديلك" : "Find Your Model"}
           </Button>
         </div>
 
-        {/* Microline */}
+        {/* Promo block - static (valid through Jan 15) */}
         <p className="mt-6 text-warm-beige/70 text-sm font-body italic">
-          Comfort crafted for the finest.
+          {isArabic ? "عرض خاص حتى 15 يناير" : "Special offer valid through January 15"}
         </p>
       </motion.div>
 
-      {/* Mute/Unmute Toggle Button */}
+      {/* Sound Toggle Button with label - bottom right */}
       <motion.button
         onClick={toggleMute}
-        className="absolute bottom-24 right-8 p-3 rounded-full bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 transition-all duration-300 group"
+        className="absolute bottom-24 right-8 flex items-center gap-2 px-4 py-2 rounded-full bg-warm-white/10 backdrop-blur-md border border-warm-white/30 hover:bg-warm-white/20 transition-all duration-300"
         style={{ zIndex: 1001 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label={isMuted ? "Unmute video" : "Mute video"}
       >
         {isMuted ? (
-          <VolumeX className="w-5 h-5 text-warm-white" />
+          <>
+            <VolumeX className="w-5 h-5 text-warm-white" />
+            <span className="text-sm text-warm-white font-body">
+              {isArabic ? "تشغيل الصوت" : "Sound Off"}
+            </span>
+          </>
         ) : (
-          <Volume2 className="w-5 h-5 text-warm-white" />
+          <>
+            <Volume2 className="w-5 h-5 text-warm-white" />
+            <span className="text-sm text-warm-white font-body">
+              {isArabic ? "إيقاف الصوت" : "Sound On"}
+            </span>
+          </>
         )}
       </motion.button>
 
@@ -234,7 +247,7 @@ const Hero = () => {
         transition={{ repeat: Infinity, duration: 2 }}
       >
         <div className="w-6 h-10 rounded-full border-2 border-bronze/60 flex items-start justify-center p-2">
-          <motion.div 
+          <motion.div
             className="w-1.5 h-1.5 bg-bronze rounded-full"
             animate={{ y: [0, 12, 0] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
