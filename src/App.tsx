@@ -42,6 +42,7 @@ const App = () => (
             <Route path="/nour-chat" element={<NourComingSoon />} />
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
+            <Route path="/product/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
             <Route path="/admin/generate-images" element={<AdminLayout><GenerateImages /></AdminLayout>} />
             <Route path="/admin/generate-hero" element={<AdminLayout><GenerateHeroAssets /></AdminLayout>} />

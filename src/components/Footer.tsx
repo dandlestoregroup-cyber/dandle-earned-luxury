@@ -35,8 +35,12 @@ const Footer = () => {
             <h3 className="font-headline text-3xl font-bold mb-4">
               <span className="text-dandle-orange">DANDLE</span>
             </h3>
-            <p className="text-warm-white/70 mb-4 text-sm leading-relaxed">
-              Comfort crafted for the finest.
+            <p 
+              className="text-warm-white/70 mb-4 text-sm leading-relaxed"
+              data-en="Comfort you'll love for years."
+              data-ar="راحة ستحبها لسنوات."
+            >
+              Comfort you'll love for years.
             </p>
             <div className="flex gap-4">
               <a

@@ -98,9 +98,11 @@ export default {
         '3/2': '3 / 2',
       },
       fontFamily: {
-        headline: ['Playfair Display', 'serif'],
+        headline: ['Cormorant Garamond', 'Playfair Display', 'serif'],
+        'headline-ar': ['Cairo', 'serif'],
         body: ['Inter', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
+        'body-ar': ['Noto Sans Arabic', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'Playfair Display', 'serif'],
         sans: ['Inter', 'sans-serif'],
       },
       letterSpacing: {

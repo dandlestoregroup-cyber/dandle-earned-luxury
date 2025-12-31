@@ -22,7 +22,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "diva",
     title: "Diva Recliner",
-    subtitle: "Statement Luxury Seating",
+    subtitle: "A Statement You'll Live In",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-diva.jpg",
@@ -42,7 +42,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "relaxmax",
     title: "RelaxMax Recliner",
-    subtitle: "The Flagship 90cm Standard Recliner",
+    subtitle: "Your Daily Sanctuary",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-relaxmax-flagship.webp",
@@ -74,7 +74,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "cozycompanion",
     title: "CozyCompanion Loveseat",
-    subtitle: "Premium Two-Seater Couch Recliner",
+    subtitle: "Comfort for Two, Made for Home",
     aspectRatio: 1.79,
     heroImage: {
       src: "/images/dandle-cozycompanion-hero.webp",
@@ -100,7 +100,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "worknest",
     title: "WorkNest Recliner",
-    subtitle: "Executive Productivity Chair",
+    subtitle: "Focused Comfort, All Day",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-worknest.jpg",
@@ -139,7 +139,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "comfortplus",
     title: "ComfortPlus Recliner",
-    subtitle: "Enhanced Ergonomic Design",
+    subtitle: "Feel Better Every Day",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-comfortplus.jpg",
@@ -159,7 +159,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "easyup",
     title: "EasyUp Lift Recliner",
-    subtitle: "Power Lift Assistance",
+    subtitle: "Independence with Comfort",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-easyup-standard.jpg",
