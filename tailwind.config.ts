@@ -94,10 +94,14 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        headline: ['Playfair Display', 'serif'],
-        body: ['Inter', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        // English fonts
+        headline: ['"Cormorant Garamond"', 'serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        // Arabic fonts
+        'headline-ar': ['Cairo', 'sans-serif'],
+        'body-ar': ['"Noto Sans Arabic"', 'sans-serif'],
       },
       letterSpacing: {
         'headline': '0.5pt',

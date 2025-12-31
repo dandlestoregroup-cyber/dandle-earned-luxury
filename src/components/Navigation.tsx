@@ -23,7 +23,8 @@ const Navigation = () => {
 
   const navLinks = [
     { label: "Home", href: "/", isRoute: true },
-    { label: "Collection", href: "#collection" },
+    { label: "Gift of Comfort", href: "#gift-of-comfort" },
+    { label: "Collection", href: "#products" },
     { label: "Complete Set", href: "/complete-set", isRoute: true },
     { label: "AR View", href: "#ar-demo" },
     { label: "About", href: "#story" },

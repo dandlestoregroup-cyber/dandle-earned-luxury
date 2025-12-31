@@ -22,6 +22,7 @@ const Footer = () => {
   ];
 
   const support = [
+    { label: "Gift of Comfort", href: "/#gift-of-comfort" },
     { label: "About Us", href: "/about" },
     { label: "Warranty", href: "/warranty" },
     { label: "Delivery", href: "/delivery" },

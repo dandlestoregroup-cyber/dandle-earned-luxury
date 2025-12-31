@@ -45,13 +45,13 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         />
       </div>
       <div className="p-6 space-y-4">
-        <h3 className="font-headline text-2xl md:text-3xl text-charcoal">
+        <h3 className="font-headline text-2xl md:text-4xl text-charcoal leading-tight">
           {product.name}
         </h3>
-        <p className="font-body text-lg text-dandle-orange">
+        <p className="font-body text-lg md:text-xl text-dandle-orange">
           {product.tagline}
         </p>
-        <p className="font-headline text-2xl text-dandle-orange">
+        <p className="font-headline text-2xl md:text-3xl text-dandle-orange">
           {getPriceDisplay()}
         </p>
         {product.colors && (
@@ -90,7 +90,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
             )}
           </div>
         )}
-        <button className="w-full py-3 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg hover:from-bronze/40 hover:to-warm-beige transition-all">
+        <button className="w-full py-4 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg md:text-xl font-medium hover:from-bronze/40 hover:to-warm-beige transition-all">
           Customize Now
         </button>
       </div>

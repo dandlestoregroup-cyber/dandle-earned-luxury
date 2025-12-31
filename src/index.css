@@ -53,8 +53,8 @@ All colors MUST be HSL.
     
     --shadow-subtle: 0 4px 14px rgba(0, 0, 0, 0.06);
     --shadow-luxury: 0 10px 30px -10px hsl(38 36% 56% / 0.3);
-    --shadow-elegant: 0 10px 30px -10px rgba(255, 107, 53, 0.3);
-    --shadow-glow: 0 0 40px rgba(255, 107, 53, 0.4);
+    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-glow: none;
     
     --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-cinematic: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -114,26 +114,50 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 400;
     line-height: 1.5;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
     line-height: 1.1;
   }
 
   /* Body text font */
   .font-body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
   /* Headline font */
   .font-headline {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+  }
+
+  /* Arabic typography - applied when html[lang=ar] */
+  html[lang="ar"] body {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+
+  html[lang="ar"] h1,
+  html[lang="ar"] h2,
+  html[lang="ar"] h3,
+  html[lang="ar"] h4,
+  html[lang="ar"] h5,
+  html[lang="ar"] h6 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+  }
+
+  html[lang="ar"] .font-body {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+
+  html[lang="ar"] .font-headline {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
   }
   
   /* Warm gradient appears before React hydrates (FIX: dead initial load) */
@@ -175,15 +199,15 @@ All colors MUST be HSL.
     background: radial-gradient(var(--tw-gradient-stops));
   }
 
-  /* Breathing pulse glow for CTA */
+  /* Breathing pulse glow for CTA - disabled (no orange glow) */
   @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0 4px 20px rgba(243, 122, 29, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       transform: scale(1);
     }
     50% {
-      box-shadow: 0 4px 30px rgba(243, 122, 29, 0.7);
-      transform: scale(1.02);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      transform: scale(1.01);
     }
   }
 
@@ -444,11 +468,15 @@ All colors MUST be HSL.
 
   /* Three-word truth styling (ALL CAPS with period) */
   .three-word-truth {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: hsl(27 80% 52%);
+  }
+
+  html[lang="ar"] .three-word-truth {
+    font-family: 'Cairo', sans-serif;
   }
 
   .three-word-truth::after {
