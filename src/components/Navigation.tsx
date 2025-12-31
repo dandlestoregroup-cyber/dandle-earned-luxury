@@ -24,8 +24,8 @@ const Navigation = () => {
   const navLinks = [
     { label: "Home", href: "/", isRoute: true },
     { label: "Collection", href: "#collection" },
+    { label: "Gift of Comfort", href: "#gift-of-comfort" },
     { label: "Our Story", href: "/our-story", isRoute: true },
-    { label: "Complete Set", href: "/complete-set", isRoute: true },
     { label: "Careers", href: "/careers", isRoute: true },
     { label: "Contact", href: "#contact" },
     { label: "Nour ✨", href: "/nour-chat", isRoute: true, badge: "Soon" },

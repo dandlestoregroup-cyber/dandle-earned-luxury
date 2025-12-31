@@ -22,7 +22,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "diva",
     title: "Diva Recliner",
-    subtitle: "A Statement You'll Live In",
+    subtitle: "Where Style Meets Comfort",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-diva.jpg",
@@ -74,7 +74,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "cozycompanion",
     title: "CozyCompanion Loveseat",
-    subtitle: "Comfort for Two, Made for Home",
+    subtitle: "Comfort for Two",
     aspectRatio: 1.79,
     heroImage: {
       src: "/images/dandle-cozycompanion-hero.webp",
@@ -100,7 +100,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "worknest",
     title: "WorkNest Recliner",
-    subtitle: "Focused Comfort, All Day",
+    subtitle: "Work Better, Feel Better",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-worknest.jpg",
@@ -113,7 +113,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "spacesaver",
     title: "SpaceSaver Recliner",
-    subtitle: "Wall-Hugger Technology",
+    subtitle: "Big Comfort, Small Footprint",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-spacesaver.jpg",
@@ -159,7 +159,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "easyup",
     title: "EasyUp Lift Recliner",
-    subtitle: "Independence with Comfort",
+    subtitle: "Sit Easy, Stand Easier",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-easyup-standard.jpg",
@@ -185,7 +185,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "easyup-compact",
     title: "EasyUp Compact Lift Recliner",
-    subtitle: "Compact Power Lift",
+    subtitle: "Gentle Lift, Compact Design",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-easyup-compact.jpg",
@@ -217,7 +217,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "complete-set",
     title: "Complete Living Room Set",
-    subtitle: "Curated Room Configurations",
+    subtitle: "Comfort for the Whole Family",
     aspectRatio: 1.5,
     heroImage: {
       src: "/images/dandle-heritage-set.jpg",

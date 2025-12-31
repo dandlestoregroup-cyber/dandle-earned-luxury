@@ -144,10 +144,13 @@ const NourComingSoon = () => {
             >
               <Button
                 onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_PREFILL}`, "_blank")}
-                className="w-full sm:w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white font-body gap-2 px-8 py-6 text-lg"
+                className="w-full sm:w-auto bg-[#25D366] hover:bg-[#25D366]/90 text-white font-body gap-2 px-8 py-6 text-lg flex flex-col items-center"
               >
-                <MessageCircle className="w-5 h-5" />
-                Send Room Photo on WhatsApp
+                <span className="flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5" />
+                  Send Room Photo
+                </span>
+                <span className="text-xs opacity-80">via WhatsApp</span>
               </Button>
               
               <p className="text-warm-white/60 text-sm">

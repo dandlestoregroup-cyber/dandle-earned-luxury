@@ -119,6 +119,11 @@ All colors MUST be HSL.
     font-weight: 400;
     line-height: 1.4;
   }
+
+  /* De-neon orange: soften the intensity without changing hex */
+  .bg-dandle-orange {
+    filter: saturate(0.85) brightness(0.92);
+  }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Cormorant Garamond', serif;

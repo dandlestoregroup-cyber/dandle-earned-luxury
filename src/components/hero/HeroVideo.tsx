@@ -1,7 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Gift } from "lucide-react";
+import { ChevronRight, Gift, Volume2, VolumeX } from "lucide-react";
 import HeroParticles from "./HeroParticles";
+
+const SOUND_PREF_KEY = 'dandle_hero_sound_pref';
 
 // Animated text overlay scenes (3-scene loop)
 const OVERLAY_SCENES = [
@@ -21,6 +23,10 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
   const [progress, setProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentScene, setCurrentScene] = useState(0);
+  const [isMuted, setIsMuted] = useState(() => {
+    const saved = localStorage.getItem(SOUND_PREF_KEY);
+    return saved !== 'unmuted'; // Default to muted
+  });
 
   // Scene rotation (4s per scene)
   useEffect(() => {
@@ -53,6 +59,25 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
     };
   }, []);
 
+  // Handle sound toggle
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (video) {
+      const newMuted = !isMuted;
+      video.muted = newMuted;
+      setIsMuted(newMuted);
+      localStorage.setItem(SOUND_PREF_KEY, newMuted ? 'muted' : 'unmuted');
+    }
+  };
+
+  // Sync muted state with video on load
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video && isLoaded) {
+      video.muted = isMuted;
+    }
+  }, [isLoaded, isMuted]);
+
   return (
     <motion.div
       className="absolute inset-0 w-full h-full dandle-hero-video"
@@ -69,7 +94,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         poster="/dandle-og-image.jpg"
         className={`w-full h-full object-cover transition-opacity duration-200 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         autoPlay
-        muted
+        muted={isMuted}
         playsInline
         onEnded={onEnded}
         preload="auto"
@@ -146,6 +171,30 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
         <ChevronRight className="w-4 h-4 text-white" />
       </motion.button>
 
+      {/* Sound Toggle Pill - Bottom Right */}
+      <motion.button
+        onClick={toggleSound}
+        className="absolute bottom-8 right-6 z-30 flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 backdrop-blur-md border border-white/20 hover:bg-black/70 transition-all duration-300"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {isMuted ? (
+          <VolumeX className="w-4 h-4 text-white" />
+        ) : (
+          <Volume2 className="w-4 h-4 text-white" />
+        )}
+        <span 
+          className="text-sm text-white font-body"
+          data-en={isMuted ? "Sound On" : "Sound Off"}
+          data-ar={isMuted ? "تشغيل الصوت" : "إيقاف الصوت"}
+        >
+          {isMuted ? "Sound On" : "Sound Off"}
+        </span>
+      </motion.button>
+
       {/* Glowing Progress Bar */}
       <div className="absolute bottom-0 left-0 right-0 z-20">
         <div className="w-full h-1 bg-white/10">
@@ -153,7 +202,6 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
             className="h-full bg-gradient-to-r from-dandle-orange via-amber-400 to-dandle-orange"
             style={{ 
               width: `${progress}%`,
-              animation: "glowPulse 2s ease-in-out infinite",
             }}
             transition={{ duration: 0.1, ease: "linear" }}
           />
