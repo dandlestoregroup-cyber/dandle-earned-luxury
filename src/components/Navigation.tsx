@@ -84,8 +84,14 @@ const Navigation = () => {
               )
             ))}
             <CartDrawer />
-            <Button variant="hero" size="lg" onClick={() => navigate('/#collection')}>
-              Shop Now
+            <Button 
+              variant="hero" 
+              size="lg" 
+              onClick={() => navigate('/#collection')}
+              data-en="Place Your Order"
+              data-ar="قدّم طلبك"
+            >
+              Place Your Order
             </Button>
           </div>
 

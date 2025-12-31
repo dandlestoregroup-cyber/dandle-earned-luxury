@@ -110,23 +110,27 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           <HeroCountdown targetISO="2026-01-15T23:59:59+02:00" label="Festive ends in" />
         </div>
 
-        {/* Animated Headline */}
-        <AnimatedHeadline 
-          className="text-4xl md:text-6xl lg:text-7xl font-headline font-bold text-white text-center mb-4"
-          delay={0.6}
-        >
-          Festive Season Sale
-        </AnimatedHeadline>
+        {/* Animated Headline - Bilingual */}
+        <div data-en="The Art of Rest" data-ar="فن الراحة">
+          <AnimatedHeadline 
+            className="text-4xl md:text-6xl lg:text-7xl font-headline font-bold text-white text-center mb-4"
+            delay={0.6}
+          >
+            The Art of Rest
+          </AnimatedHeadline>
+        </div>
 
-        {/* Subtitle */}
+        {/* Subtitle - Bilingual */}
         <motion.p
-          className="text-xl md:text-2xl text-white/90 font-body text-center mb-2"
+          className="text-xl md:text-2xl text-white/90 font-body text-center mb-2 max-w-2xl"
           style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)' }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.6 }}
+          data-en="Premium Egyptian recliners crafted for real homes — calm comfort that lasts."
+          data-ar="كراسي استرخاء مصرية فاخرة لبيوت حقيقية — راحة هادئة تعيش معك."
         >
-          Up to 10% Off Premium Recliners
+          Premium Egyptian recliners crafted for real homes — calm comfort that lasts.
         </motion.p>
 
         {/* Promo Code Display */}
@@ -153,18 +157,34 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           <p className="text-white/50 text-center font-body text-xs mt-2">Valid until 15 Jan 2026</p>
         </motion.div>
 
-        {/* Offer Details */}
+        {/* Offer Details - Bilingual */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.6, duration: 0.5 }}
         >
-          <p className="text-white/90 text-center font-body text-lg">
+          <p 
+            className="text-white/90 text-center font-body text-lg"
+            data-en="Free Delivery on all orders • 5-Year Warranty"
+            data-ar="توصيل مجاني على كل الطلبات • ضمان 5 سنوات"
+          >
             <span className="text-dandle-orange font-semibold">Free Delivery</span> on all orders • 
             <span className="text-dandle-orange font-semibold"> 5-Year Warranty</span>
           </p>
         </motion.div>
+
+        {/* Promo Block - De-emphasized */}
+        <motion.p
+          className="text-white/60 text-center font-body text-sm mb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.7, duration: 0.5 }}
+          data-en="Festive offer: Up to 10% off — Code: FESTIVE10"
+          data-ar="عرض موسمي: خصم حتى 10% — الكود: FESTIVE10"
+        >
+          Festive offer: Up to 10% off — Code: FESTIVE10
+        </motion.p>
 
         {/* CTA Buttons */}
         <motion.div
@@ -178,21 +198,24 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
             className="w-full sm:w-auto group bg-dandle-orange hover:bg-dandle-orange/90 text-white px-8 py-5 text-lg font-body shadow-lg transition-all duration-300"
+            data-en="Place Your Order"
+            data-ar="قدّم طلبك"
           >
-            Shop Now
+            Place Your Order
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
           
-          {onReplayVideo && (
-            <Button
-              onClick={onReplayVideo}
-              variant="outline"
-              className="w-full sm:w-auto group bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-5 text-lg font-body transition-all duration-300"
-            >
-              <RotateCcw className="mr-2 w-5 h-5" />
-              Replay Video
-            </Button>
-          )}
+          <Button
+            onClick={() => {
+              document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            variant="outline"
+            className="w-full sm:w-auto group bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-5 text-lg font-body transition-all duration-300"
+            data-en="Explore Collection"
+            data-ar="استكشف المجموعة"
+          >
+            Explore Collection
+          </Button>
         </motion.div>
       </div>
 

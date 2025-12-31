@@ -100,15 +100,16 @@ const NourComingSoon = () => {
               Your AI Design Companion
             </motion.p>
 
-            {/* Description */}
+            {/* Description - Bilingual */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
               className="text-warm-white/60 mb-10 max-w-lg mx-auto leading-relaxed"
+              data-en="Upload a photo of your room to help visualize the right DANDLE recliner in your space — with style and color suggestions to choose confidently."
+              data-ar="ارفع صورة غرفتك لمساعدتك في تصور كرسي DANDLE الأنسب داخل مساحتك — مع اقتراحات للستايل والألوان لتختار بثقة."
             >
-              Upload a photo of your room and watch Nour visualize the perfect DANDLE recliner 
-              in your space. Powered by advanced AI to help you make confident design decisions.
+              Upload a photo of your room to help visualize the right DANDLE recliner in your space — with style and color suggestions to choose confidently.
             </motion.p>
 
             {/* 3-Step Instructions */}

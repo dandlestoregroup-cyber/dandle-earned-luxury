@@ -406,3 +406,27 @@ All colors MUST be HSL.
     z-index: 1;
   }
 }
+
+/* RTL-safe CSS overrides for Arabic layout */
+[dir="rtl"] {
+  /* Ensure navigation stays correct in RTL */
+  .dandle-lang-toggle {
+    right: auto;
+    left: 20px;
+  }
+  
+  .dandle-mute-toggle {
+    right: auto;
+    left: 20px;
+  }
+  
+  /* Text alignment for Arabic */
+  [data-ar] {
+    text-align: right;
+  }
+  
+  /* Center-aligned elements stay centered */
+  .text-center [data-ar] {
+    text-align: center;
+  }
+}

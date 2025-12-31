@@ -6,8 +6,11 @@ export const STRINGS = {
   en: {
     hero: {
       title: 'The Art of Rest',
-      subtitle: 'Premium Egyptian Recliners',
+      subtitle: 'Premium Egyptian recliners crafted for real homes — calm comfort that lasts.',
       cta: 'Explore Collection',
+      placeOrder: 'Place Your Order',
+      offerDetails: 'Free Delivery on all orders • 5-Year Warranty',
+      promoLine: 'Festive offer: Up to 10% off — Code: FESTIVE10',
     },
     nav: {
       products: 'Products',
@@ -53,8 +56,11 @@ export const STRINGS = {
   ar: {
     hero: {
       title: 'فن الراحة',
-      subtitle: 'كراسي استرخاء مصرية فاخرة',
+      subtitle: 'كراسي استرخاء مصرية فاخرة لبيوت حقيقية — راحة هادئة تعيش معك.',
       cta: 'استكشف المجموعة',
+      placeOrder: 'قدّم طلبك',
+      offerDetails: 'توصيل مجاني على كل الطلبات • ضمان 5 سنوات',
+      promoLine: 'عرض موسمي: خصم حتى 10% — الكود: FESTIVE10',
     },
     nav: {
       products: 'المنتجات',

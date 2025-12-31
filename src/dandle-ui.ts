@@ -14,15 +14,15 @@ export function initDandleUi() {
     en: {
       toggleEn: "EN",
       toggleAr: "العربية",
-      muted: "🔇",
-      unmuted: "🔊",
+      muted: "Sound Off",
+      unmuted: "Sound On",
       whatsappCta: "Send Room → Ready in 72hrs",
     },
     ar: {
       toggleEn: "EN",
       toggleAr: "العربية",
-      muted: "🔇",
-      unmuted: "🔊",
+      muted: "إيقاف الصوت",
+      unmuted: "تشغيل الصوت",
       whatsappCta: "ارسل غرفتي → جاهز خلال 72 ساعة",
     },
   } as const;
@@ -86,12 +86,16 @@ export function initDandleUi() {
         background: rgba(0,0,0,.65);
         color: #fff;
         border: 0;
-        padding: 10px 12px;
-        border-radius: 12px;
+        padding: 8px 16px;
+        border-radius: 20px;
         font-family: Cairo, system-ui, -apple-system, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
         cursor: pointer;
         backdrop-filter: blur(6px);
+        transition: background 0.2s ease;
       }
+      .dandle-mute-toggle:hover{background: rgba(0,0,0,.8);}
       .dandle-mute-toggle:active{transform: scale(.98);}
     `;
     const style = document.createElement("style");
