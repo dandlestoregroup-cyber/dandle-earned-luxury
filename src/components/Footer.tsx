@@ -21,6 +21,7 @@ const Footer = () => {
   const company = [
     { label: "Our Story", href: "/our-story" },
     { label: "About Us", href: "/about" },
+    { label: "Gift of Comfort", href: "/#gift-of-comfort" },
     { label: "Careers", href: "/careers" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },

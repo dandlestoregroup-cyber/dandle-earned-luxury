@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import TopBanner from "@/components/TopBanner";
 import Hero from "@/components/Hero";
 import BeliefStatements from "@/components/BeliefStatements";
 import Quote from "@/components/Quote";
@@ -17,10 +18,12 @@ import Partners from "@/components/Partners";
 import FabricsSection from "@/components/FabricsSection";
 import CollectionIntro from "@/components/CollectionIntro";
 import TrustBlock from "@/components/TrustBlock";
+import GiftOfComfort from "@/components/GiftOfComfort";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <TopBanner />
       <Navigation />
       <OfferRibbon />
       <main>
@@ -33,6 +36,7 @@ const Index = () => {
         <div id="products">
           <ProductGallery />
         </div>
+        <GiftOfComfort />
         <TrustBlock />
         <FabricsSection />
         <LifestyleGallery />
