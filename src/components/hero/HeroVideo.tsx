@@ -39,18 +39,19 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
 
   return (
     <motion.div
-      className="absolute inset-0 w-full h-full bg-black"
+      className="absolute inset-0 w-full h-full dandle-hero-video"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Video Element - High Quality */}
+      {/* Video Element - High Quality with instant play */}
       <video
         id="heroVideo"
         ref={videoRef}
         src={src}
-        className="w-full h-full object-cover"
+        poster="/dandle-og-image.jpg"
+        className={`w-full h-full object-cover transition-opacity duration-200 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         autoPlay
         muted
         playsInline

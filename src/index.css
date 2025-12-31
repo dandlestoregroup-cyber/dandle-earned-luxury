@@ -383,11 +383,11 @@ All colors MUST be HSL.
 
   /* 2A: Hero video instant play - avoid black flash */
   .dandle-hero-video {
-    background: linear-gradient(180deg, hsl(var(--warm-beige)) 0%, hsl(var(--charcoal)) 120%);
+    background: linear-gradient(180deg, hsl(var(--warm-beige)) 0%, hsl(var(--charcoal)) 80%);
   }
   .dandle-hero-video-el {
     opacity: 0.001;
-    transition: opacity 420ms ease;
+    transition: opacity 200ms ease;
   }
   .dandle-hero-video-el.is-ready {
     opacity: 1;
