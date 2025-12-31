@@ -87,16 +87,16 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       </div>
 
       {/* Content - compact mobile */}
-      <div className="p-2 md:p-4 text-center space-y-1 md:space-y-2">
-        <h3 className="font-headline text-base md:text-lg text-charcoal font-semibold leading-tight">
+      <div className="p-3 md:p-4 text-center space-y-1.5 md:space-y-2">
+        <h3 className="font-headline text-lg md:text-xl text-charcoal font-semibold leading-tight">
           Dandle {product.name}
         </h3>
         
-        <p className="font-body text-xs md:text-sm text-charcoal/70 line-clamp-2">
+        <p className="font-body text-sm md:text-base text-charcoal/70 line-clamp-2">
           {product.tagline}
         </p>
         
-        <div className="font-headline text-base md:text-xl leading-tight">
+        <div className="font-headline text-lg md:text-2xl leading-tight">
           {getPriceDisplay()}
         </div>
 
