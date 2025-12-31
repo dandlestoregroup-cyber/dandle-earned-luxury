@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
@@ -12,13 +13,24 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const lovableProduct = getLovableProduct(product.id);
-  const heroImage = lovableProduct?.heroImage.src || product.imageUrl;
+  const defaultHeroImage = lovableProduct?.heroImage.src || product.imageUrl;
+  
+  // State for swatch-based image preview
+  const [selectedSwatchKey, setSelectedSwatchKey] = useState<string | null>(null);
   
   // Get product-specific swatches (first 5 for card display)
   const swatchKeys = (productSwatches[product.id] || []).slice(0, 5);
-  const swatches = swatchKeys
-    .map(key => PALETTE_MAP.get(key))
-    .filter(Boolean);
+  const swatches = useMemo(() => 
+    swatchKeys.map(key => PALETTE_MAP.get(key)).filter(Boolean),
+    [product.id]
+  );
+
+  // Determine current display image based on selected swatch
+  const displayImage = useMemo(() => {
+    if (!selectedSwatchKey) return defaultHeroImage;
+    // For now, return default - in future this could map to swatch-specific images
+    return defaultHeroImage;
+  }, [selectedSwatchKey, defaultHeroImage]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-EG", {
@@ -44,6 +56,11 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
   const isHeritageSet = product.id === "complete-set";
 
+  const handleSwatchClick = (e: React.MouseEvent, swatchKey: string) => {
+    e.stopPropagation(); // Prevent card click
+    setSelectedSwatchKey(swatchKey === selectedSwatchKey ? null : swatchKey);
+  };
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -57,7 +74,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         isHeritageSet ? "aspect-[4/3]" : "aspect-[4/5]"
       )}>
         <img
-          src={heroImage}
+          src={displayImage}
           alt={`Dandle ${product.name}`}
           className="w-full h-full object-contain object-center p-1 md:p-2"
           loading="lazy"
@@ -78,7 +95,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
           {getPriceDisplay()}
         </div>
 
-        {/* Color swatches - smaller on mobile */}
+        {/* Clickable color swatches */}
         {swatches.length > 0 && (
           <div className="pt-1 md:pt-2 space-y-0.5 md:space-y-1">
             <p className="text-[8px] md:text-xs text-charcoal/50 uppercase tracking-wider font-body hidden md:block">
@@ -86,11 +103,19 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
             </p>
             <div className="flex justify-center gap-1 md:gap-2">
               {swatches.map((swatch) => (
-                <div
+                <button
                   key={swatch!.key}
-                  className="w-5 h-5 md:w-10 md:h-10 rounded md:rounded-lg border border-charcoal/10 shadow-sm"
+                  type="button"
+                  onClick={(e) => handleSwatchClick(e, swatch!.key)}
+                  className={cn(
+                    "w-5 h-5 md:w-10 md:h-10 rounded md:rounded-lg border shadow-sm transition-all duration-200",
+                    selectedSwatchKey === swatch!.key 
+                      ? "ring-2 ring-dandle-orange ring-offset-1 border-dandle-orange scale-110" 
+                      : "border-charcoal/10 hover:scale-105"
+                  )}
                   style={{ backgroundColor: swatch!.hex }}
                   title={swatch!.nameEn}
+                  aria-label={`Preview ${swatch!.nameEn} color`}
                 />
               ))}
             </div>

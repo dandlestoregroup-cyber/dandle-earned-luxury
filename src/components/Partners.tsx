@@ -38,45 +38,60 @@ const Partners = () => {
           </div>
         </motion.div>
 
-        {/* Three Partners */}
+        {/* Three Partners - Side by Side */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid md:grid-cols-3 gap-8 mt-12 max-w-4xl mx-auto"
+          className="flex flex-col md:flex-row gap-6 md:gap-4 mt-12 max-w-5xl mx-auto"
         >
           {/* OMASH */}
-          <div className="text-center space-y-3">
-            <h3 className="font-headline text-2xl text-charcoal">OMASH</h3>
-            <p className="font-body text-sm tracking-[0.15em] uppercase text-dandle-orange">
-              Signature Mesh Engineering
-            </p>
-            <p className="font-body text-muted-foreground leading-relaxed">
-              Premium fabric technology delivering breathable comfort and lasting durability.
-            </p>
+          <div className="flex-1 flex items-start gap-4 p-4 bg-warm-white rounded-xl shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-dandle-orange/10 flex items-center justify-center flex-shrink-0">
+              <span className="font-headline text-lg text-dandle-orange">O</span>
+            </div>
+            <div className="text-left">
+              <h3 className="font-headline text-lg text-charcoal">OMASH</h3>
+              <p className="font-body text-xs tracking-[0.1em] uppercase text-dandle-orange mb-1">
+                Signature Mesh Engineering
+              </p>
+              <p className="font-body text-sm text-muted-foreground leading-relaxed">
+                Premium fabric technology delivering breathable comfort and lasting durability.
+              </p>
+            </div>
           </div>
 
           {/* Istikbal */}
-          <div className="text-center space-y-3">
-            <h3 className="font-headline text-2xl text-charcoal">Istikbal</h3>
-            <p className="font-body text-sm tracking-[0.15em] uppercase text-dandle-orange">
-              Showroom Excellence
-            </p>
-            <p className="font-body text-muted-foreground leading-relaxed">
-              Experience Dandle in person at Istikbal showrooms across Egypt. Touch, sit, decide.
-            </p>
+          <div className="flex-1 flex items-start gap-4 p-4 bg-warm-white rounded-xl shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-dandle-orange/10 flex items-center justify-center flex-shrink-0">
+              <span className="font-headline text-lg text-dandle-orange">I</span>
+            </div>
+            <div className="text-left">
+              <h3 className="font-headline text-lg text-charcoal">Istikbal</h3>
+              <p className="font-body text-xs tracking-[0.1em] uppercase text-dandle-orange mb-1">
+                Showroom Excellence
+              </p>
+              <p className="font-body text-sm text-muted-foreground leading-relaxed">
+                Experience Dandle in person at Istikbal showrooms across Egypt. Touch, sit, decide.
+              </p>
+            </div>
           </div>
 
           {/* Vivian */}
-          <div className="text-center space-y-3">
-            <h3 className="font-headline text-2xl text-charcoal">Vivian</h3>
-            <p className="font-body text-sm tracking-[0.15em] uppercase text-dandle-orange">
-              Interior Styling
-            </p>
-            <p className="font-body text-muted-foreground leading-relaxed">
-              The stylist who brings the pieces together — home, office, or hotel — into spaces you&apos;ll comfortably love.
-            </p>
+          <div className="flex-1 flex items-start gap-4 p-4 bg-warm-white rounded-xl shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-dandle-orange/10 flex items-center justify-center flex-shrink-0">
+              <span className="font-headline text-lg text-dandle-orange">V</span>
+            </div>
+            <div className="text-left">
+              <h3 className="font-headline text-lg text-charcoal">Vivian</h3>
+              <p className="font-body text-xs tracking-[0.1em] uppercase text-dandle-orange mb-1">
+                Interior Styling
+              </p>
+              <p className="font-body text-sm text-muted-foreground leading-relaxed">
+                The stylist who brings pieces together — home, office, or hotel.
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>
