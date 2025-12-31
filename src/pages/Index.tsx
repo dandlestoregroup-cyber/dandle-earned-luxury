@@ -11,11 +11,12 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import WorkWithUs from "@/components/WorkWithUs";
 import OfferRibbon from "@/components/OfferRibbon";
-// Testimonials removed per user request
 import LifestyleGallery from "@/components/LifestyleGallery";
 import IstikbalShowroom from "@/components/IstikbalShowroom";
 import Partners from "@/components/Partners";
 import FabricsSection from "@/components/FabricsSection";
+import CollectionIntro from "@/components/CollectionIntro";
+import TrustBlock from "@/components/TrustBlock";
 
 const Index = () => {
   return (
@@ -28,14 +29,15 @@ const Index = () => {
         <Quote />
         <PromiseGrid />
         <ARDemo />
+        <CollectionIntro />
         <div id="products">
           <ProductGallery />
         </div>
+        <TrustBlock />
         <FabricsSection />
         <LifestyleGallery />
         <Partners />
         <IstikbalShowroom />
-        {/* Testimonials removed */}
         <SocialProof />
         <WorkWithUs />
         <Contact />

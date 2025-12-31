@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Gift, RotateCcw, Copy, Check } from "lucide-react";
+import { ArrowRight, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import HeroParticles from "./HeroParticles";
 import HeroSnow from "./HeroSnow";
-import HeroCountdown from "./HeroCountdown";
 import AnimatedHeadline from "./AnimatedHeadline";
 
 interface HeroOfferProps {
@@ -69,7 +68,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
         ) : (
           <motion.img
             src={displayImage}
-            alt="Festive Season Offer"
+            alt="Dandle Recliners"
             className="w-full h-full object-cover"
             initial={{ scale: 1.1 }}
             animate={{ scale: 1.02 }}
@@ -92,122 +91,63 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
 
       {/* Content - higher z-index */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4">
-        {/* Festive Badge */}
-        <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/90 backdrop-blur-sm mb-4 shadow-lg"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <Gift className="w-4 h-4 text-white" />
-          <span className="text-sm font-body text-white font-semibold">
-            Dec 2025 – Jan 2026
-          </span>
-        </motion.div>
-
-        {/* Countdown Timer */}
-        <div className="mb-6">
-          <HeroCountdown targetISO="2026-01-15T23:59:59+02:00" label="Festive ends in" />
-        </div>
-
         {/* Animated Headline - Bilingual */}
-        <div data-en="The Art of Rest" data-ar="فن الراحة">
+        <div data-en="Come home to something exceptional." data-ar="عد إلى بيتك لشيء استثنائي.">
           <AnimatedHeadline 
             className="text-4xl md:text-6xl lg:text-7xl font-headline font-bold text-white text-center mb-4"
-            delay={0.6}
+            delay={0.4}
           >
-            The Art of Rest
+            Come home to something exceptional.
           </AnimatedHeadline>
         </div>
 
         {/* Subtitle - Bilingual */}
         <motion.p
-          className="text-xl md:text-2xl text-white/90 font-body text-center mb-2 max-w-2xl"
+          className="text-lg md:text-xl lg:text-2xl text-white/90 font-body text-center mb-3 max-w-3xl"
           style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)' }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          data-en="Premium Egyptian recliners crafted for real homes — calm comfort that lasts."
-          data-ar="كراسي استرخاء مصرية فاخرة لبيوت حقيقية — راحة هادئة تعيش معك."
+          transition={{ delay: 1.0, duration: 0.6 }}
+          data-en="Every Dandle recliner is handcrafted in Cairo — where premium comfort meets Egyptian homes."
+          data-ar="كل كرسي Dandle مصنوع يدويًا في القاهرة — حيث تلتقي الراحة الفاخرة بالبيوت المصرية."
         >
-          Premium Egyptian recliners crafted for real homes — calm comfort that lasts.
+          Every Dandle recliner is handcrafted in Cairo — where premium comfort meets Egyptian homes.
         </motion.p>
 
-        {/* Promo Code Display */}
-        <motion.div
-          className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-4 mb-4 border border-white/20"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.5 }}
-        >
-          <p className="text-white/80 text-center font-body text-sm mb-2">Use code at checkout</p>
-          <button
-            onClick={handleCopyCode}
-            className="flex items-center justify-center gap-3 w-full group"
-          >
-            <span className="text-2xl md:text-3xl font-headline font-bold text-dandle-orange tracking-wider">
-              {PROMO_CODE}
-            </span>
-            {copied ? (
-              <Check className="w-5 h-5 text-green-400" />
-            ) : (
-              <Copy className="w-5 h-5 text-white/60 group-hover:text-white transition-colors" />
-            )}
-          </button>
-          <p className="text-white/50 text-center font-body text-xs mt-2">Valid until 15 Jan 2026</p>
-        </motion.div>
-
-        {/* Offer Details - Bilingual */}
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.6, duration: 0.5 }}
-        >
-          <p 
-            className="text-white/90 text-center font-body text-lg"
-            data-en="Free Delivery on all orders • 5-Year Warranty"
-            data-ar="توصيل مجاني على كل الطلبات • ضمان 5 سنوات"
-          >
-            <span className="text-dandle-orange font-semibold">Free Delivery</span> on all orders • 
-            <span className="text-dandle-orange font-semibold"> 5-Year Warranty</span>
-          </p>
-        </motion.div>
-
-        {/* Promo Block - De-emphasized */}
+        {/* Proof Line - Bilingual */}
         <motion.p
-          className="text-white/60 text-center font-body text-sm mb-6"
+          className="text-white/80 text-center font-body text-base md:text-lg mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.7, duration: 0.5 }}
-          data-en="Festive offer: Up to 10% off — Code: FESTIVE10"
-          data-ar="عرض موسمي: خصم حتى 10% — الكود: FESTIVE10"
+          transition={{ delay: 1.3, duration: 0.5 }}
+          data-en="Free delivery • 5-year warranty • White-glove service"
+          data-ar="توصيل مجاني • ضمان 5 سنوات • خدمة راقية"
         >
-          Festive offer: Up to 10% off — Code: FESTIVE10
+          Free delivery • 5-year warranty • White-glove service
         </motion.p>
 
         {/* CTA Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md mb-8"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.8, duration: 0.6 }}
+          transition={{ delay: 1.5, duration: 0.6 }}
         >
           <Button
             onClick={() => {
               document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
             }}
             className="w-full sm:w-auto group bg-dandle-orange hover:bg-dandle-orange/90 text-white px-8 py-5 text-lg font-body shadow-lg transition-all duration-300"
-            data-en="Place Your Order"
-            data-ar="قدّم طلبك"
+            data-en="Find Your Perfect Recliner"
+            data-ar="اعثر على كرسيك المثالي"
           >
-            Place Your Order
+            Find Your Perfect Recliner
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
           
           <Button
             onClick={() => {
-              document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+              document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });
             }}
             variant="outline"
             className="w-full sm:w-auto group bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-5 text-lg font-body transition-all duration-300"
@@ -216,6 +156,44 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           >
             Explore Collection
           </Button>
+        </motion.div>
+
+        {/* Static Promo Block - De-emphasized, no countdown */}
+        <motion.div
+          className="bg-white/5 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/10 max-w-md"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 1.8, duration: 0.5 }}
+        >
+          <p 
+            className="text-white/90 text-center font-headline text-lg mb-1"
+            data-en="Start 2026 in Comfort"
+            data-ar="ابدأ 2026 براحة"
+          >
+            Start 2026 in Comfort
+          </p>
+          <p 
+            className="text-white/70 text-center font-body text-sm mb-3"
+            data-en="Up to 10% off + Free delivery + 5-year warranty"
+            data-ar="خصم حتى 10% + توصيل مجاني + ضمان 5 سنوات"
+          >
+            Up to 10% off + Free delivery + 5-year warranty
+          </p>
+          <button
+            onClick={handleCopyCode}
+            className="flex items-center justify-center gap-2 w-full group"
+          >
+            <span className="text-sm font-body text-white/60">Code:</span>
+            <span className="text-lg font-headline font-semibold text-dandle-orange tracking-wider">
+              {PROMO_CODE}
+            </span>
+            {copied ? (
+              <Check className="w-4 h-4 text-green-400" />
+            ) : (
+              <Copy className="w-4 h-4 text-white/50 group-hover:text-white transition-colors" />
+            )}
+          </button>
+          <p className="text-white/40 text-center font-body text-xs mt-2">Valid through January 15</p>
         </motion.div>
       </div>
 
