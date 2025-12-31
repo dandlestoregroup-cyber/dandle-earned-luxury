@@ -5,6 +5,7 @@ import Quote from "@/components/Quote";
 import PromiseGrid from "@/components/PromiseGrid";
 import ARDemo from "@/components/ARDemo";
 import ProductGallery from "@/components/ProductGallery";
+import GiftOfComfort from "@/components/GiftOfComfort";
 import Partners from "@/components/Partners";
 import SocialProof from "@/components/SocialProof";
 import Contact from "@/components/Contact";
@@ -24,6 +25,7 @@ const Index = () => {
         <div id="products">
           <ProductGallery />
         </div>
+        <GiftOfComfort />
         <div id="partners">
           <Partners />
         </div>

@@ -79,7 +79,7 @@ const Hero = () => {
 
   return (
     <motion.section
-      id="gift-of-comfort"
+      id="hero"
       className="relative h-[70vh] w-full flex items-center justify-center text-center overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
