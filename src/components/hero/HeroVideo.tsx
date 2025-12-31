@@ -1,7 +1,14 @@
 import { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Gift } from "lucide-react";
 import HeroParticles from "./HeroParticles";
+
+// Animated text overlay scenes (3-scene loop)
+const OVERLAY_SCENES = [
+  { en: "The Art of Rest", ar: "فن الراحة" },
+  { en: "Crafted in Egypt. Made for real homes.", ar: "صناعة مصرية… لبيوت حقيقية." },
+  { en: "White-glove service • 5-year warranty", ar: "خدمة راقية • ضمان 5 سنوات" },
+];
 
 interface HeroVideoProps {
   src: string;
@@ -13,6 +20,15 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [currentScene, setCurrentScene] = useState(0);
+
+  // Scene rotation (4s per scene)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentScene((prev) => (prev + 1) % OVERLAY_SCENES.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -87,6 +103,34 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
           </span>
         </div>
       </motion.div>
+
+      {/* Animated Text Overlay - 3 Scene Loop */}
+      <div className="absolute bottom-20 left-0 right-0 z-20 pointer-events-none">
+        {/* Subtle gradient scrim for readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+        
+        <div className="relative px-6 md:px-12 py-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentScene}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-center"
+            >
+              <p 
+                className="text-2xl md:text-4xl lg:text-5xl font-headline text-white font-semibold"
+                style={{ textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}
+                data-en={OVERLAY_SCENES[currentScene].en}
+                data-ar={OVERLAY_SCENES[currentScene].ar}
+              >
+                {OVERLAY_SCENES[currentScene].en}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
 
       {/* Skip Button */}
       <motion.button
