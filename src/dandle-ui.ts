@@ -109,7 +109,8 @@ export function initDandleUi() {
     const safe: "en" | "ar" = lang === "ar" ? "ar" : "en";
     localStorage.setItem(STORAGE_KEY, safe);
     document.documentElement.lang = safe;
-    // Do NOT change direction - leave existing content alone
+    // Set RTL direction for Arabic
+    document.documentElement.dir = safe === "ar" ? "rtl" : "ltr";
 
     document.querySelectorAll<HTMLAnchorElement>(".dandle-lang-link").forEach((a) => {
       a.classList.toggle("active", a.dataset.lang === safe);

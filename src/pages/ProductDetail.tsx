@@ -102,7 +102,7 @@ const ProductDetail = () => {
       "name": "DANDLE"
     },
     "image": `https://dandle-earned-luxury.lovable.app${product.heroImage.src}`,
-    "url": `https://dandle-earned-luxury.lovable.app/product/${product.productHandle}`,
+    "url": `https://dandle-earned-luxury.lovable.app/products/${product.productHandle}`,
     "offers": {
       "@type": "Offer",
       "priceCurrency": product.commerce?.currencyCode || "EGP",
@@ -110,15 +110,11 @@ const ProductDetail = () => {
       "availability": isAvailable 
         ? "https://schema.org/InStock" 
         : "https://schema.org/OutOfStock",
+      "url": `https://dandle-earned-luxury.lovable.app/products/${product.productHandle}`,
       "seller": {
         "@type": "Organization",
         "name": "DANDLE Egypt"
       }
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "127"
     }
   };
 
@@ -127,13 +123,13 @@ const ProductDetail = () => {
       <Helmet>
         <title>{product.title} | DANDLE Recliners - Earned Luxury</title>
         <meta name="description" content={`${product.title} - ${product.subtitle}. Premium Egyptian recliner with 5-year warranty. Free delivery & installation.`} />
-        <link rel="canonical" href={`https://dandle-earned-luxury.lovable.app/product/${product.productHandle}`} />
+        <link rel="canonical" href={`https://dandle-earned-luxury.lovable.app/products/${product.productHandle}`} />
         
         {/* Open Graph */}
         <meta property="og:title" content={`${product.title} | DANDLE`} />
         <meta property="og:description" content={product.subtitle} />
         <meta property="og:image" content={`https://dandle-earned-luxury.lovable.app${product.heroImage.src}`} />
-        <meta property="og:url" content={`https://dandle-earned-luxury.lovable.app/product/${product.productHandle}`} />
+        <meta property="og:url" content={`https://dandle-earned-luxury.lovable.app/products/${product.productHandle}`} />
         <meta property="og:type" content="product" />
         
         {/* Twitter */}
