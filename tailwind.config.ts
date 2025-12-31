@@ -98,12 +98,12 @@ export default {
         '3/2': '3 / 2',
       },
       fontFamily: {
-        headline: ['Cormorant Garamond', 'Playfair Display', 'serif'],
+        headline: ['Cormorant Garamond', 'serif'],
         'headline-ar': ['Cairo', 'serif'],
-        body: ['Inter', 'sans-serif'],
+        body: ['Satoshi', 'Inter', 'sans-serif'],
         'body-ar': ['Noto Sans Arabic', 'sans-serif'],
-        serif: ['Cormorant Garamond', 'Playfair Display', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'serif'],
+        sans: ['Satoshi', 'Inter', 'sans-serif'],
       },
       letterSpacing: {
         'headline': '0.5pt',
