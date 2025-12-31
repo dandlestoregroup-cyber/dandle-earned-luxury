@@ -10,7 +10,7 @@ All colors MUST be HSL.
   :root {
     /* DANDLE Brand Bible Colors */
     --dandle-brown: 15 28% 19%; /* #3E2723 - Deep Brown */
-    --dandle-orange: 27 80% 52%; /* #E67E22 - Accent Orange */
+    --dandle-orange: 27 65% 48%; /* De-neoned orange - softer, less saturated */
     --warm-cream: 36 47% 95%; /* #FAF7F2 - Background Cream */
     --warm-beige: 36 52% 90%; /* #F5E6D3 */
     --bronze: 38 36% 56%; /* #B8956A */
@@ -34,7 +34,7 @@ All colors MUST be HSL.
     --muted: 36 52% 90%;
     --muted-foreground: 15 28% 40%;
 
-    --accent: 27 80% 52%; /* Dandle Orange #E67E22 */
+    --accent: 27 65% 48%; /* De-neoned Dandle Orange */
     --accent-foreground: 36 47% 95%;
 
     --destructive: 0 84.2% 60.2%;
@@ -335,6 +335,13 @@ All colors MUST be HSL.
   
   .bg-dandle-orange {
     background-color: hsl(var(--dandle-orange));
+    filter: saturate(0.85) brightness(0.92);
+  }
+  
+  /* De-neon orange for buttons specifically */
+  .bg-accent,
+  [class*="bg-[hsl(27"] {
+    filter: saturate(0.85) brightness(0.92);
   }
   
   .shadow-subtle {
