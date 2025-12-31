@@ -130,27 +130,29 @@ const ProductGallery = () => {
   };
 
   return (
-    <section id="collection" className="bg-warm-beige py-24 px-6 text-center">
-      <h2 className="font-headline text-3xl md:text-5xl mb-12 text-charcoal">
+    <section id="collection" className="bg-warm-beige py-16 md:py-24 px-4 md:px-6 text-center">
+      <h2 className="font-headline text-2xl md:text-5xl mb-8 md:mb-12 text-charcoal">
         Our Collection
       </h2>
-      <div className="grid md:grid-cols-3 gap-8 max-w-screen-xl mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8 max-w-screen-xl mx-auto">
         {products.map((product) => {
           const imageData = productImageData[product.id];
           return (
-            <div key={product.id} className="space-y-3">
+            <div key={product.id} className="space-y-2 md:space-y-3">
               <ProductCard
                 product={product}
                 onClick={() => handleProductClick(product)}
               />
-              {/* Gallery below each card */}
+              {/* Gallery below each card - hidden on mobile for compact view */}
               {imageData && imageData.galleryImages.length > 0 && (
-                <ProductImageGalleryInline
-                  productKey={product.id}
-                  mainImage={imageData.mainImage}
-                  galleryImages={imageData.galleryImages}
-                  altBase={product.name}
-                />
+                <div className="hidden md:block">
+                  <ProductImageGalleryInline
+                    productKey={product.id}
+                    mainImage={imageData.mainImage}
+                    galleryImages={imageData.galleryImages}
+                    altBase={product.name}
+                  />
+                </div>
               )}
             </div>
           );

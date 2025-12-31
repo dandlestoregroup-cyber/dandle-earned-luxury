@@ -48,47 +48,47 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2 }}
-      className="group cursor-pointer bg-warm-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+      className="group cursor-pointer bg-warm-white rounded-xl md:rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
       onClick={onClick}
     >
-      {/* Image - compact square aspect with soft background */}
+      {/* Image - 4:5 mobile, 4:3 heritage set */}
       <div className={cn(
         "relative bg-gradient-to-b from-warm-beige/30 to-warm-white",
-        isHeritageSet ? "aspect-[4/3]" : "aspect-square"
+        isHeritageSet ? "aspect-[4/3]" : "aspect-[4/5]"
       )}>
         <img
           src={heroImage}
           alt={`Dandle ${product.name}`}
-          className="w-full h-full object-contain object-center p-2"
+          className="w-full h-full object-contain object-center p-1 md:p-2"
           loading="lazy"
         />
       </div>
 
-      {/* Content - centered, compact */}
-      <div className="p-3 md:p-4 text-center space-y-2">
-        <h3 className="font-headline text-base md:text-lg text-charcoal font-semibold">
+      {/* Content - compact mobile */}
+      <div className="p-2 md:p-4 text-center space-y-1 md:space-y-2">
+        <h3 className="font-headline text-sm md:text-lg text-charcoal font-semibold leading-tight">
           Dandle {product.name}
         </h3>
         
-        <p className="font-body text-xs md:text-sm text-charcoal/70">
+        <p className="font-body text-[10px] md:text-sm text-charcoal/70 line-clamp-2">
           {product.tagline}
         </p>
         
-        <div className="font-headline text-lg md:text-xl leading-tight">
+        <div className="font-headline text-sm md:text-xl leading-tight">
           {getPriceDisplay()}
         </div>
 
-        {/* Color swatches - rounded squares like reference */}
+        {/* Color swatches - smaller on mobile */}
         {swatches.length > 0 && (
-          <div className="pt-2 space-y-1">
-            <p className="text-[10px] md:text-xs text-charcoal/50 uppercase tracking-wider font-body">
+          <div className="pt-1 md:pt-2 space-y-0.5 md:space-y-1">
+            <p className="text-[8px] md:text-xs text-charcoal/50 uppercase tracking-wider font-body hidden md:block">
               Available Colors
             </p>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center gap-1 md:gap-2">
               {swatches.map((swatch) => (
                 <div
                   key={swatch!.key}
-                  className="w-8 h-8 md:w-10 md:h-10 rounded-lg border border-charcoal/10 shadow-sm"
+                  className="w-5 h-5 md:w-10 md:h-10 rounded md:rounded-lg border border-charcoal/10 shadow-sm"
                   style={{ backgroundColor: swatch!.hex }}
                   title={swatch!.nameEn}
                 />

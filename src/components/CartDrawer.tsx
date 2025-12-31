@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -9,11 +10,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2, MessageCircle } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2, MessageCircle, Tag, Check, X } from "lucide-react";
 import { useShopifyCartStore } from "@/stores/shopifyCartStore";
+import { toast } from "sonner";
+
+const VALID_PROMO_CODE = "FESTIVE10";
+const PROMO_DISCOUNT = 0.10; // 10%
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoError, setPromoError] = useState("");
   const { 
     items, 
     isLoading, 
@@ -26,13 +34,40 @@ export const CartDrawer = () => {
   } = useShopifyCartStore();
   
   const totalItems = getTotalItems();
-  const totalPrice = getTotalPrice();
+  const subtotal = getTotalPrice();
+  const discount = promoApplied ? subtotal * PROMO_DISCOUNT : 0;
+  const totalPrice = subtotal - discount;
+
+  const handleApplyPromo = () => {
+    const code = promoCode.trim().toUpperCase();
+    if (code === VALID_PROMO_CODE) {
+      setPromoApplied(true);
+      setPromoError("");
+      toast.success("Promo code applied!", { description: "10% discount added to your order" });
+    } else {
+      setPromoApplied(false);
+      setPromoError("Invalid promo code");
+      toast.error("Invalid promo code");
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setPromoApplied(false);
+    setPromoCode("");
+    setPromoError("");
+  };
 
   const handleCheckout = async () => {
     const checkoutUrl = await createCheckout();
     if (checkoutUrl) {
-      window.open(checkoutUrl, '_blank');
+      // Add discount code to checkout URL if promo applied
+      const finalUrl = promoApplied 
+        ? `${checkoutUrl}&discount=${VALID_PROMO_CODE}`
+        : checkoutUrl;
+      window.open(finalUrl, '_blank');
       clearCart();
+      setPromoApplied(false);
+      setPromoCode("");
       setIsOpen(false);
     }
   };
@@ -42,7 +77,8 @@ export const CartDrawer = () => {
       `• ${item.quantity}x ${item.product.title} (${item.variantTitle}) - ${item.price.currencyCode} ${parseFloat(item.price.amount).toLocaleString()}`
     ).join('%0A');
     
-    const message = `Hi Dandle! I'd like to order:%0A%0A${itemsText}%0A%0ATotal: EGP ${totalPrice.toLocaleString()}`;
+    const promoText = promoApplied ? `%0A%0APromo Code: ${VALID_PROMO_CODE} (10% off)` : '';
+    const message = `Hi Dandle! I'd like to order:%0A%0A${itemsText}${promoText}%0A%0ATotal: EGP ${totalPrice.toLocaleString()}`;
     window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
     setIsOpen(false);
   };
@@ -144,8 +180,69 @@ export const CartDrawer = () => {
               </div>
               
               {/* Fixed checkout section */}
-              <div className="flex-shrink-0 space-y-4 pt-4 border-t border-border bg-background">
-                <div className="flex justify-between items-center">
+              <div className="flex-shrink-0 space-y-3 pt-4 border-t border-border bg-background">
+                {/* Promo Code Input */}
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Promo code"
+                        value={promoCode}
+                        onChange={(e) => {
+                          setPromoCode(e.target.value);
+                          setPromoError("");
+                        }}
+                        disabled={promoApplied}
+                        className={`pl-9 ${promoApplied ? 'bg-green-50 border-green-500' : promoError ? 'border-destructive' : ''}`}
+                      />
+                    </div>
+                    {promoApplied ? (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleRemovePromo}
+                        className="shrink-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        onClick={handleApplyPromo}
+                        disabled={!promoCode.trim()}
+                        className="shrink-0"
+                      >
+                        Apply
+                      </Button>
+                    )}
+                  </div>
+                  {promoApplied && (
+                    <div className="flex items-center gap-1.5 text-sm text-green-600">
+                      <Check className="h-4 w-4" />
+                      <span>FESTIVE10 applied - 10% off!</span>
+                    </div>
+                  )}
+                  {promoError && (
+                    <p className="text-sm text-destructive">{promoError}</p>
+                  )}
+                </div>
+
+                {/* Price breakdown */}
+                <div className="space-y-1.5 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>EGP {subtotal.toLocaleString()}</span>
+                  </div>
+                  {promoApplied && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Discount (10%)</span>
+                      <span>-EGP {discount.toLocaleString()}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center pt-2 border-t border-border">
                   <span className="text-lg font-headline">Total</span>
                   <span className="text-xl font-bold text-accent">
                     EGP {totalPrice.toLocaleString()}
