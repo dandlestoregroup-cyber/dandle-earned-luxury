@@ -30,8 +30,8 @@ const IstikbalShowroom = () => {
             </div>
             
             <h2 className="font-headline text-3xl md:text-4xl text-warm-white leading-tight">
-              Visit the DANDLE Section at{" "}
-              <span className="text-dandle-orange">Istikbal</span>
+              Visit us at{" "}
+              <span className="text-dandle-orange">Istikbal Showrooms</span>
             </h2>
             
             <p className="text-base text-warm-white/90 font-body leading-relaxed">
