@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Gift, RotateCcw } from "lucide-react";
+import { ArrowRight, Gift, RotateCcw, Copy, Check } from "lucide-react";
+import { toast } from "sonner";
 import HeroParticles from "./HeroParticles";
 import HeroSnow from "./HeroSnow";
 import HeroCountdown from "./HeroCountdown";
@@ -11,9 +12,23 @@ interface HeroOfferProps {
   onReplayVideo?: () => void;
 }
 
+const PROMO_CODE = "FESTIVE10";
+
 const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
   const [offerImage, setOfferImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(PROMO_CODE);
+      setCopied(true);
+      toast.success("Promo code copied!", { description: "Apply at checkout for 10% off" });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy");
+    }
+  };
 
   // Check for AI-generated offer image
   useEffect(() => {
@@ -114,12 +129,35 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           Up to 10% Off Premium Recliners
         </motion.p>
 
-        {/* Offer Details - Simplified */}
+        {/* Promo Code Display */}
         <motion.div
-          className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-4 mb-8 border border-white/10"
+          className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-4 mb-4 border border-white/20"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 1.4, duration: 0.5 }}
+        >
+          <p className="text-white/80 text-center font-body text-sm mb-2">Use code at checkout</p>
+          <button
+            onClick={handleCopyCode}
+            className="flex items-center justify-center gap-3 w-full group"
+          >
+            <span className="text-2xl md:text-3xl font-headline font-bold text-dandle-orange tracking-wider">
+              {PROMO_CODE}
+            </span>
+            {copied ? (
+              <Check className="w-5 h-5 text-green-400" />
+            ) : (
+              <Copy className="w-5 h-5 text-white/60 group-hover:text-white transition-colors" />
+            )}
+          </button>
+        </motion.div>
+
+        {/* Offer Details */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 0.5 }}
         >
           <p className="text-white/90 text-center font-body text-lg">
             <span className="text-dandle-orange font-semibold">Free Delivery</span> on all orders • 
@@ -132,7 +170,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.6, duration: 0.6 }}
+          transition={{ delay: 1.8, duration: 0.6 }}
         >
           <Button
             onClick={() => {
