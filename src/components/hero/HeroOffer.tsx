@@ -150,6 +150,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
               <Copy className="w-5 h-5 text-white/60 group-hover:text-white transition-colors" />
             )}
           </button>
+          <p className="text-white/50 text-center font-body text-xs mt-2">Valid until 15 Jan 2026</p>
         </motion.div>
 
         {/* Offer Details */}

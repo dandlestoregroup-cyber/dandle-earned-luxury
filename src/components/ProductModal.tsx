@@ -117,13 +117,13 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           <div className="p-6 space-y-8">
             {/* Price and Target */}
             <div className="text-center space-y-2 animate-in fade-in-0 slide-in-from-top-2 duration-700">
-              <p className="text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
-              <p className="text-muted-foreground">Target: High-performing professionals</p>
+              <p className="text-2xl md:text-4xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
+              <p className="text-sm md:text-base text-muted-foreground">Target: High-performing professionals</p>
             </div>
 
             {/* Mechanism Type - First */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
-              <h3 className="text-xl font-bold">Mechanism Type</h3>
+            <div className="space-y-3 md:space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
+              <h3 className="text-lg md:text-xl font-bold">Mechanism Type</h3>
               
               <RadioGroup value={mechanism} onValueChange={(value: string) => {
                 playClickSound();
@@ -160,8 +160,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             </div>
 
             {/* Color Selection - Second */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
-              <h3 className="text-xl font-bold">Choose Your Color</h3>
+            <div className="space-y-3 md:space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
+              <h3 className="text-lg md:text-xl font-bold">Choose Your Color</h3>
               
               <RadioGroup value={selectedColor} onValueChange={(value) => {
                 playClickSound();
@@ -190,8 +190,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
             {/* Base Type - Third (Standard Products) */}
             {!isCozyCompanion && (
-              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-                <h3 className="text-xl font-bold">Base Type</h3>
+              <div className="space-y-3 md:space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
+                <h3 className="text-lg md:text-xl font-bold">Base Type</h3>
                 
                 <RadioGroup value={baseType} onValueChange={(value: string) => {
                   playClickSound();
@@ -238,9 +238,9 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
             {/* CozyCompanion Base Type - Rocking or Stable */}
             {isCozyCompanion && (
-              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-                <h3 className="text-xl font-bold">Configure Your CozyCompanion</h3>
-                <p className="text-muted-foreground text-sm">Choose your preferred base experience</p>
+              <div className="space-y-3 md:space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
+                <h3 className="text-lg md:text-xl font-bold">Configure Your CozyCompanion</h3>
+                <p className="text-muted-foreground text-xs md:text-sm">Choose your preferred base experience</p>
                 
                 <RadioGroup value={cozyBaseType} onValueChange={(value: string) => {
                   playClickSound();
@@ -284,8 +284,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             )}
 
             {/* Last Touch Section */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
-              <h3 className="text-xl font-bold">The Last Touch</h3>
+            <div className="space-y-3 md:space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
+              <h3 className="text-lg md:text-xl font-bold">The Last Touch</h3>
               
               <div className="space-y-3">
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
@@ -332,8 +332,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
             {/* Massage Feature - For eligible products including CozyCompanion */}
             {(product.id === "relaxmax" || product.id === "worknest" || product.id === "spacesaver" || product.id === "cozycompanion") && (
-              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
-                <h3 className="text-xl font-bold">{isCozyCompanion ? "Optional Add-On" : "Premium Therapy"}</h3>
+              <div className="space-y-3 md:space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
+                <h3 className="text-lg md:text-xl font-bold">{isCozyCompanion ? "Optional Add-On" : "Premium Therapy"}</h3>
                 
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-accent/30 hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5 hover:bg-accent/10 active:scale-95">
                   <div className="flex items-center gap-3">
@@ -355,8 +355,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             )}
 
             {/* Special Additions */}
-            <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
-              <h3 className="text-xl font-bold">Special Additions</h3>
+            <div className="space-y-3 md:space-y-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
+              <h3 className="text-lg md:text-xl font-bold">Special Additions</h3>
               
               <div className="space-y-3">
                 <label className="flex items-center justify-between p-4 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">

@@ -92,7 +92,7 @@ const Cart = () => {
         
         const massageText = item.massageFeature ? ' + Massage' : '';
         const handle = item.product.id.toLowerCase().replace(/\s+/g, '-');
-        return `• ${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText})%0A  ${formatPrice(price * item.quantity)}%0A  🔗 dandle.eg/product/${handle}`;
+        return `• ${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText})%0A  ${formatPrice(price * item.quantity)}%0A  🔗 dandle.eg/products/${handle}`;
       }).join('%0A%0A');
 
       const total = formatPrice(getTotalPrice());
