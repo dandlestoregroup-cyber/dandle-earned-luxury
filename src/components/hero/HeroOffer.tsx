@@ -92,26 +92,27 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
       {/* Content - higher z-index */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4">
         {/* Animated Headline - Bilingual */}
-        <div data-en="Come home to something exceptional." data-ar="عد إلى بيتك لشيء استثنائي.">
+        <div data-en="The Gift of Comfort" data-ar="هدية الراحة">
           <AnimatedHeadline 
             className="text-4xl md:text-6xl lg:text-7xl font-headline font-bold text-white text-center mb-4"
+            style={{ wordBreak: 'normal', overflowWrap: 'normal', hyphens: 'none', textWrap: 'balance' }}
             delay={0.4}
           >
-            Come home to something exceptional.
+            The Gift of Comfort
           </AnimatedHeadline>
         </div>
 
         {/* Subtitle - Bilingual */}
         <motion.p
           className="text-lg md:text-xl lg:text-2xl text-white/90 font-body text-center mb-3 max-w-3xl"
-          style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)' }}
+          style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)', wordBreak: 'normal', overflowWrap: 'normal', hyphens: 'none' }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 1.0, duration: 0.6 }}
-          data-en="Every Dandle recliner is handcrafted in Cairo — where premium comfort meets Egyptian homes."
-          data-ar="كل كرسي Dandle مصنوع يدويًا في القاهرة — حيث تلتقي الراحة الفاخرة بالبيوت المصرية."
+          data-en="For refined taste"
+          data-ar="لأصحاب الذوق الرفيع"
         >
-          Every Dandle recliner is handcrafted in Cairo — where premium comfort meets Egyptian homes.
+          For refined taste
         </motion.p>
 
         {/* Proof Line - Bilingual */}

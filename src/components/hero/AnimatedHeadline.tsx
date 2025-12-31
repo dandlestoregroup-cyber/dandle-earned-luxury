@@ -4,9 +4,10 @@ interface AnimatedHeadlineProps {
   children: string;
   className?: string;
   delay?: number;
+  style?: React.CSSProperties;
 }
 
-const AnimatedHeadline = ({ children, className = "", delay = 0.5 }: AnimatedHeadlineProps) => {
+const AnimatedHeadline = ({ children, className = "", delay = 0.5, style }: AnimatedHeadlineProps) => {
   const container = {
     hidden: {},
     show: { 
@@ -33,7 +34,7 @@ const AnimatedHeadline = ({ children, className = "", delay = 0.5 }: AnimatedHea
       initial="hidden"
       animate="show"
       className={className}
-      style={{ textShadow: '0 4px 30px rgba(0,0,0,0.9)' }}
+      style={{ textShadow: '0 4px 30px rgba(0,0,0,0.9)', ...style }}
     >
       {children.split("").map((c, i) => (
         <motion.span key={i} variants={char} style={{ display: "inline-block" }}>
