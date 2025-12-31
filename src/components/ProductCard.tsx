@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { cn } from "@/lib/utils";
-import { productSwatches } from "@/data/productSwatches";
+import { productColorImages, getProductColorImage } from "@/data/productColorImages";
 import { PALETTE_MAP } from "@/data/palette";
 
 interface ProductCardProps {
@@ -18,19 +18,24 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   // State for swatch-based image preview
   const [selectedSwatchKey, setSelectedSwatchKey] = useState<string | null>(null);
   
-  // Get product-specific swatches (first 5 for card display)
-  const swatchKeys = (productSwatches[product.id] || []).slice(0, 5);
+  // Get product-specific swatches from the color image mapping
+  const colorVariants = productColorImages[product.id] || [];
   const swatches = useMemo(() => 
-    swatchKeys.map(key => PALETTE_MAP.get(key)).filter(Boolean),
+    colorVariants.map(v => ({
+      ...PALETTE_MAP.get(v.swatchKey),
+      imageSrc: v.imageSrc
+    })).filter(s => s.key),
     [product.id]
   );
 
   // Determine current display image based on selected swatch
   const displayImage = useMemo(() => {
-    if (!selectedSwatchKey) return defaultHeroImage;
-    // For now, return default - in future this could map to swatch-specific images
+    if (selectedSwatchKey) {
+      const colorImage = getProductColorImage(product.id, selectedSwatchKey);
+      if (colorImage) return colorImage;
+    }
     return defaultHeroImage;
-  }, [selectedSwatchKey, defaultHeroImage]);
+  }, [selectedSwatchKey, defaultHeroImage, product.id]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-EG", {
