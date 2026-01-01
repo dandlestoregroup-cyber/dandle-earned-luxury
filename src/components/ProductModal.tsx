@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -11,6 +11,57 @@ import { useNavigate } from "react-router-dom";
 import { Gift, Trophy, Zap } from "lucide-react";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { ProductImageGallery } from "@/components/product/ProductImageGallery";
+import { getLangFromStorage, type LangKey } from "@/i18n/strings";
+
+// Arabic translations for modal
+const modalTranslations = {
+  mechanismType: { en: "Mechanism Type", ar: "نوع الآلية" },
+  manual: { en: "Manual", ar: "يدوي" },
+  power: { en: "Power", ar: "كهربائي" },
+  chooseColor: { en: "Choose Your Color", ar: "اختر لونك" },
+  baseType: { en: "Base Type", ar: "نوع القاعدة" },
+  fixedBase: { en: "Fixed Base", ar: "قاعدة ثابتة" },
+  swivelBase: { en: "Swivel Base", ar: "قاعدة دوّارة" },
+  free: { en: "Free", ar: "مجاناً" },
+  rockingBase: { en: "Rocking Base", ar: "قاعدة هزازة" },
+  stableBase: { en: "Stable Base", ar: "قاعدة ثابتة" },
+  soothingMovement: { en: "Soothing movement", ar: "حركة مريحة" },
+  groundedLuxury: { en: "Grounded luxury", ar: "فخامة مستقرة" },
+  lastTouch: { en: "The Last Touch", ar: "اللمسة الأخيرة" },
+  giftWrap: { en: "Premium Gift Wrapping", ar: "تغليف هدايا فاخر" },
+  giftWrapDesc: { en: "Ribbon with personal message", ar: "شريط مع رسالة شخصية" },
+  legacyPlaque: { en: "Legacy Plaque", ar: "لوحة تذكارية" },
+  legacyPlaqueDesc: { en: "Custom engraving for memory", ar: "نقش مخصص للذكرى" },
+  premiumTherapy: { en: "Premium Therapy", ar: "علاج فاخر" },
+  optionalAddOn: { en: "Optional Add-On", ar: "إضافة اختيارية" },
+  massageSystem: { en: "Integrated Massage System", ar: "نظام مساج متكامل" },
+  massageDesc: { en: "Professional-grade relaxation therapy", ar: "علاج استرخاء احترافي" },
+  specialAdditions: { en: "Special Additions", ar: "إضافات خاصة" },
+  cupHolders: { en: "Cup Holders", ar: "حاملات الأكواب" },
+  usbPorts: { en: "USB Charging Ports", ar: "منافذ شحن USB" },
+  sidePocket: { en: "Side Pocket", ar: "جيب جانبي" },
+  specialInstructions: { en: "Special Instructions", ar: "تعليمات خاصة" },
+  specialNotesPlaceholder: { en: "Any special requests or notes...", ar: "أي طلبات أو ملاحظات خاصة..." },
+  total: { en: "Total", ar: "الإجمالي" },
+  sellingCharge: { en: "Selling Charge", ar: "عمولة البيع" },
+  completeOrder: { en: "Complete Order", ar: "إتمام الطلب" },
+  configureCozy: { en: "Configure Your CozyCompanion", ar: "تخصيص كوزي كومبانيون" },
+  chooseBaseExperience: { en: "Choose your preferred base experience", ar: "اختر تجربة القاعدة المفضلة لديك" },
+  target: { en: "Target: High-performing professionals", ar: "الفئة المستهدفة: المحترفون المتميزون" },
+};
+
+// Arabic product names for modal
+const productNamesAr: Record<string, string> = {
+  relaxmax: "ريلاكس ماكس",
+  comfortplus: "كومفورت بلس",
+  diva: "ديفا",
+  cozycompanion: "كوزي كومبانيون",
+  easyup: "إيزي أب",
+  "easyup-compact": "إيزي أب كومباكت",
+  worknest: "وورك نست",
+  spacesaver: "سبيس سيفر",
+  "complete-set": "طقم العائلة",
+};
 
 interface ProductModalProps {
   product: Product | null;
@@ -23,6 +74,23 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const [mechanism, setMechanism] = useState<"manual" | "power">("manual");
   const [baseType, setBaseType] = useState<"fixed" | "swivel">("fixed");
   const [cozyBaseType, setCozyBaseType] = useState<"rocking" | "stable">("stable");
+  
+  // Language state
+  const [lang, setLang] = useState<LangKey>('en');
+  
+  useEffect(() => {
+    const storedLang = getLangFromStorage();
+    setLang(storedLang);
+    const interval = setInterval(() => {
+      const currentLang = getLangFromStorage();
+      setLang(prev => prev !== currentLang ? currentLang : prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+  
+  const isArabic = lang === 'ar';
+  const t = (key: keyof typeof modalTranslations) => 
+    isArabic ? modalTranslations[key].ar : modalTranslations[key].en;
   
   // Add-ons state
   const [giftWrap, setGiftWrap] = useState(false);
@@ -95,11 +163,11 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 animate-in fade-in-0 slide-in-from-bottom-4 duration-500" dir={isArabic ? 'rtl' : 'ltr'}>
         <div className="flex flex-col">
           {/* Product Header with Image */}
           <div className="bg-gradient-to-b from-accent/5 to-background p-6 border-b animate-in fade-in-0 slide-in-from-top-2 duration-700">
-            <div className="flex items-center gap-6">
+            <div className={`flex items-center gap-6 ${isArabic ? 'flex-row-reverse' : ''}`}>
               <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-accent/20 flex-shrink-0 transition-transform duration-300 hover:scale-105">
                 <img 
                   src={product.imageUrl} 
@@ -107,8 +175,10 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div>
-                <h2 className="text-xl md:text-2xl font-bold mb-1">{product.name}</h2>
+              <div className={isArabic ? 'text-right' : ''}>
+                <h2 className="text-xl md:text-2xl font-bold mb-1">
+                  {isArabic && productNamesAr[product.id] ? productNamesAr[product.id] : product.name}
+                </h2>
                 <p className="text-sm text-muted-foreground">{product.tagline}</p>
               </div>
             </div>
@@ -117,13 +187,13 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
           <div className="p-6 space-y-8">
             {/* Price and Target */}
             <div className="text-center space-y-1 animate-in fade-in-0 slide-in-from-top-2 duration-700">
-              <p className="text-xl md:text-2xl font-bold text-accent">EGP {formatPrice(product.priceManual || product.price || 0)}</p>
-              <p className="text-xs md:text-sm text-muted-foreground">Target: High-performing professionals</p>
+              <p className="text-xl md:text-2xl font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} EGP</p>
+              <p className="text-xs md:text-sm text-muted-foreground">{t('target')}</p>
             </div>
 
             {/* Mechanism Type - First */}
             <div className="space-y-2 md:space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
-              <h3 className="text-base md:text-lg font-bold">Mechanism Type</h3>
+              <h3 className="text-base md:text-lg font-bold">{t('mechanismType')}</h3>
               
               <RadioGroup value={mechanism} onValueChange={(value: string) => {
                 playClickSound();
@@ -138,7 +208,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 >
                   <RadioGroupItem value="manual" id="manual" className="sr-only" />
                   <div className="space-y-1">
-                    <p className="text-sm md:text-base font-bold">Manual</p>
+                    <p className="text-sm md:text-base font-bold">{t('manual')}</p>
                     <p className="text-base md:text-lg font-bold text-accent">{formatPrice(product.priceManual || product.price || 0)} EGP</p>
                   </div>
                 </label>
@@ -152,7 +222,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 >
                   <RadioGroupItem value="power" id="power" className="sr-only" />
                   <div className="space-y-1">
-                    <p className="text-sm md:text-base font-bold">Power</p>
+                    <p className="text-sm md:text-base font-bold">{t('power')}</p>
                     <p className="text-base md:text-lg font-bold text-accent">{formatPrice(product.pricePower || product.price || 0)} EGP</p>
                   </div>
                 </label>
@@ -161,7 +231,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
             {/* Color Selection - Second */}
             <div className="space-y-2 md:space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-200">
-              <h3 className="text-base md:text-lg font-bold">Choose Your Color</h3>
+              <h3 className="text-base md:text-lg font-bold">{t('chooseColor')}</h3>
               
               <RadioGroup value={selectedColor} onValueChange={(value) => {
                 playClickSound();
@@ -191,7 +261,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             {/* Base Type - Third (Standard Products) */}
             {!isCozyCompanion && (
               <div className="space-y-2 md:space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-                <h3 className="text-base md:text-lg font-bold">Base Type</h3>
+                <h3 className="text-base md:text-lg font-bold">{t('baseType')}</h3>
                 
                 <RadioGroup value={baseType} onValueChange={(value: string) => {
                   playClickSound();
@@ -207,8 +277,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="fixed" id="fixed" />
                       <div>
-                        <p className="font-bold text-sm md:text-base">Fixed Base</p>
-                        <p className="text-xs text-muted-foreground">Free</p>
+                        <p className="font-bold text-sm md:text-base">{t('fixedBase')}</p>
+                        <p className="text-xs text-muted-foreground">{t('free')}</p>
                       </div>
                     </div>
                     {baseType === "fixed" && (
@@ -226,7 +296,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="swivel" id="swivel" />
                       <div>
-                        <p className="font-bold text-sm md:text-base">Swivel Base</p>
+                        <p className="font-bold text-sm md:text-base">{t('swivelBase')}</p>
                       </div>
                     </div>
                     <span className="font-bold text-sm text-accent">+1,200 EGP</span>
@@ -239,8 +309,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             {/* CozyCompanion Base Type - Rocking or Stable */}
             {isCozyCompanion && (
               <div className="space-y-2 md:space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-300">
-                <h3 className="text-base md:text-lg font-bold">Configure Your CozyCompanion</h3>
-                <p className="text-muted-foreground text-xs">Choose your preferred base experience</p>
+                <h3 className="text-base md:text-lg font-bold">{t('configureCozy')}</h3>
+                <p className="text-muted-foreground text-xs">{t('chooseBaseExperience')}</p>
                 
                 <RadioGroup value={cozyBaseType} onValueChange={(value: string) => {
                   playClickSound();
@@ -256,11 +326,11 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="rocking" id="rocking" />
                       <div>
-                        <p className="font-bold text-sm md:text-base">Rocking Base</p>
-                        <p className="text-xs text-muted-foreground">Soothing movement</p>
+                        <p className="font-bold text-sm md:text-base">{t('rockingBase')}</p>
+                        <p className="text-xs text-muted-foreground">{t('soothingMovement')}</p>
                       </div>
                     </div>
-                    <span className="font-bold text-sm text-accent">Free</span>
+                    <span className="font-bold text-sm text-accent">{t('free')}</span>
                   </label>
 
                   <label
@@ -273,11 +343,11 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="stable" id="stable" />
                       <div>
-                        <p className="font-bold text-sm md:text-base">Stable Base</p>
-                        <p className="text-xs text-muted-foreground">Grounded luxury</p>
+                        <p className="font-bold text-sm md:text-base">{t('stableBase')}</p>
+                        <p className="text-xs text-muted-foreground">{t('groundedLuxury')}</p>
                       </div>
                     </div>
-                    <span className="font-bold text-sm text-accent">Free</span>
+                    <span className="font-bold text-sm text-accent">{t('free')}</span>
                   </label>
                 </RadioGroup>
               </div>
@@ -285,7 +355,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
             {/* Last Touch Section */}
             <div className="space-y-2 md:space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-400">
-              <h3 className="text-base md:text-lg font-bold">The Last Touch</h3>
+              <h3 className="text-base md:text-lg font-bold">{t('lastTouch')}</h3>
               
               <div className="space-y-2">
                 <label className="flex items-center justify-between p-3 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
@@ -300,8 +370,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <Gift className="w-4 h-4 text-accent" />
                       <div>
-                        <p className="text-sm font-semibold">Premium Gift Wrapping</p>
-                        <p className="text-xs text-muted-foreground">Ribbon with personal message</p>
+                        <p className="text-sm font-semibold">{t('giftWrap')}</p>
+                        <p className="text-xs text-muted-foreground">{t('giftWrapDesc')}</p>
                       </div>
                     </div>
                   </div>
@@ -320,8 +390,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                     <div className="flex items-center gap-2">
                       <Trophy className="w-4 h-4 text-accent" />
                       <div>
-                        <p className="text-sm font-semibold">Legacy Plaque</p>
-                        <p className="text-xs text-muted-foreground">Custom engraving for memory</p>
+                        <p className="text-sm font-semibold">{t('legacyPlaque')}</p>
+                        <p className="text-xs text-muted-foreground">{t('legacyPlaqueDesc')}</p>
                       </div>
                     </div>
                   </div>
@@ -333,7 +403,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             {/* Massage Feature - For eligible products including CozyCompanion */}
             {(product.id === "relaxmax" || product.id === "worknest" || product.id === "spacesaver" || product.id === "cozycompanion") && (
               <div className="space-y-2 md:space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-475">
-                <h3 className="text-base md:text-lg font-bold">{isCozyCompanion ? "Optional Add-On" : "Premium Therapy"}</h3>
+                <h3 className="text-base md:text-lg font-bold">{isCozyCompanion ? t('optionalAddOn') : t('premiumTherapy')}</h3>
                 
                 <label className="flex items-center justify-between p-3 rounded-lg border-2 border-accent/30 hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5 hover:bg-accent/10 active:scale-95">
                   <div className="flex items-center gap-2">
@@ -345,8 +415,8 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                       }}
                     />
                     <div>
-                      <p className="text-sm font-semibold">Integrated Massage System</p>
-                      <p className="text-xs text-muted-foreground">{isCozyCompanion ? "Premium therapeutic upgrade" : "Professional-grade relaxation therapy"}</p>
+                      <p className="text-sm font-semibold">{t('massageSystem')}</p>
+                      <p className="text-xs text-muted-foreground">{t('massageDesc')}</p>
                     </div>
                   </div>
                   <span className="font-bold text-sm text-accent">+9,000 EGP</span>
@@ -356,7 +426,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
             {/* Special Additions */}
             <div className="space-y-2 md:space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-500">
-              <h3 className="text-base md:text-lg font-bold">Special Additions</h3>
+              <h3 className="text-base md:text-lg font-bold">{t('specialAdditions')}</h3>
               
               <div className="space-y-2">
                 <label className="flex items-center justify-between p-3 rounded-lg border-2 border-border hover:border-accent transition-all duration-300 cursor-pointer bg-card hover:bg-accent/5 active:scale-95">
@@ -368,7 +438,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                         setCupHolder(checked as boolean);
                       }}
                     />
-                    <span className="text-sm font-semibold">Cup Holders</span>
+                    <span className="text-sm font-semibold">{t('cupHolders')}</span>
                   </div>
                   <span className="font-bold text-sm text-accent">+450 EGP</span>
                 </label>
@@ -382,7 +452,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                         setUsbPort(checked as boolean);
                       }}
                     />
-                    <span className="text-sm font-semibold">USB Charging Ports</span>
+                    <span className="text-sm font-semibold">{t('usbPorts')}</span>
                   </div>
                   <span className="font-bold text-sm text-accent">+750 EGP</span>
                 </label>
@@ -396,17 +466,17 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                         setSidePocket(checked as boolean);
                       }}
                     />
-                    <span className="text-sm font-semibold">Side Pocket</span>
+                    <span className="text-sm font-semibold">{t('sidePocket')}</span>
                   </div>
                   <span className="font-bold text-sm text-accent">+350 EGP</span>
                 </label>
 
                 <div className="pt-3">
-                  <Label className="text-sm font-semibold mb-1 block">Special Instructions</Label>
+                  <Label className="text-sm font-semibold mb-1 block">{t('specialInstructions')}</Label>
                   <Textarea
                     value={specialNotes}
                     onChange={(e) => setSpecialNotes(e.target.value)}
-                    placeholder="Any special requests or notes..."
+                    placeholder={t('specialNotesPlaceholder')}
                     className="min-h-[70px] resize-none text-sm"
                   />
                 </div>
@@ -419,13 +489,13 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
           {/* Sticky Bottom Bar */}
           <div className="sticky bottom-0 left-0 right-0 bg-background border-t-2 border-accent/20 p-4 shadow-lg animate-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Total</p>
+            <div className={`flex items-center justify-between mb-3 ${isArabic ? 'flex-row-reverse' : ''}`}>
+              <div className={isArabic ? 'text-left' : 'text-right'}>
+                <p className="text-sm text-muted-foreground">{t('total')}</p>
                 <p className="text-2xl font-bold">{formatPrice(calculateTotal())} EGP</p>
               </div>
-              <div className="text-left">
-                <p className="text-xs text-muted-foreground">Selling Charge</p>
+              <div className={isArabic ? 'text-right' : 'text-left'}>
+                <p className="text-xs text-muted-foreground">{t('sellingCharge')}</p>
                 <p className="text-sm font-medium text-accent">{formatPrice(calculateCommission())} EGP</p>
               </div>
             </div>
@@ -438,7 +508,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               size="lg"
               className="w-full text-lg font-bold bg-accent hover:bg-accent/90 transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              Complete Order ✨
+              {t('completeOrder')} ✨
             </Button>
           </div>
         </div>

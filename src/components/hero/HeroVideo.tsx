@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Gift, Volume2, VolumeX } from "lucide-react";
+import { ChevronRight, Volume2, VolumeX } from "lucide-react";
 import HeroParticles from "./HeroParticles";
 
 const SOUND_PREF_KEY = 'dandle_hero_sound_pref';
@@ -86,24 +86,18 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Poster image - shows immediately */}
-      <img
-        src="/dandle-og-image.jpg"
-        alt="Dandle"
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-0' : 'opacity-100'}`}
-      />
-      
-      {/* Video Element - High Quality with instant play */}
+      {/* Video Element - Starts immediately, no poster delay */}
       <video
         id="heroVideo"
         ref={videoRef}
         src={src}
-        className={`w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className="w-full h-full object-cover"
         autoPlay
         muted={isMuted}
         playsInline
         onEnded={onEnded}
         preload="auto"
+        onLoadedData={() => setIsLoaded(true)}
         style={{ 
           imageRendering: 'auto',
           WebkitBackfaceVisibility: 'hidden',
@@ -119,21 +113,6 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
 
       {/* Brass particles floating upward */}
       <HeroParticles density={20} tone="brass" />
-
-      {/* Festive Season Badge - Below navigation */}
-      <motion.div
-        className="absolute top-24 left-6 z-20"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : -20 }}
-        transition={{ delay: 0.8, duration: 0.6 }}
-      >
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-dandle-orange/90 backdrop-blur-sm shadow-lg">
-          <Gift className="w-4 h-4 text-white" />
-          <span className="text-sm font-body text-white font-semibold tracking-wide">
-            Festive Season 2025
-          </span>
-        </div>
-      </motion.div>
 
       {/* Animated Text Overlay - 3 Scene Loop */}
       <div className="absolute bottom-20 left-0 right-0 z-20 pointer-events-none">

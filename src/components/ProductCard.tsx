@@ -1,10 +1,24 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { cn } from "@/lib/utils";
 import { productColorImages, getProductColorImage } from "@/data/productColorImages";
 import { PALETTE_MAP } from "@/data/palette";
+import { getLangFromStorage, type LangKey } from "@/i18n/strings";
+
+// Arabic product translations
+const productTranslations: Record<string, { name: string; tagline: string }> = {
+  relaxmax: { name: "ريلاكس ماكس", tagline: "ملاذك اليومي" },
+  comfortplus: { name: "كومفورت بلس", tagline: "استرخاء عميق ومريح" },
+  diva: { name: "ديفا", tagline: "حيث يلتقي الأناقة بالراحة" },
+  cozycompanion: { name: "كوزي كومبانيون", tagline: "راحة لاثنين" },
+  easyup: { name: "إيزي أب", tagline: "اجلس براحة، قوم بسهولة" },
+  "easyup-compact": { name: "إيزي أب كومباكت", tagline: "اجلس براحة، قوم بسهولة" },
+  worknest: { name: "وورك نست", tagline: "أداء بلا توقف" },
+  spacesaver: { name: "سبيس سيفر", tagline: "راحة كبيرة، مساحة صغيرة" },
+  "complete-set": { name: "طقم العائلة", tagline: "راحة لكل العائلة" },
+};
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +28,22 @@ interface ProductCardProps {
 const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const lovableProduct = getLovableProduct(product.id);
   const defaultHeroImage = lovableProduct?.heroImage.src || product.imageUrl;
+  
+  // Language state
+  const [lang, setLang] = useState<LangKey>('en');
+  
+  useEffect(() => {
+    const storedLang = getLangFromStorage();
+    setLang(storedLang);
+    const interval = setInterval(() => {
+      const currentLang = getLangFromStorage();
+      setLang(prev => prev !== currentLang ? currentLang : prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+  
+  const isArabic = lang === 'ar';
+  const translation = productTranslations[product.id];
   
   // State for swatch-based image preview
   const [selectedSwatchKey, setSelectedSwatchKey] = useState<string | null>(null);
@@ -86,45 +116,41 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         />
       </div>
 
-      {/* Content - compact mobile */}
-      <div className="p-3 md:p-4 text-center space-y-1.5 md:space-y-2">
-        <h3 className="font-headline text-base md:text-lg text-charcoal font-semibold leading-tight">
-          {product.name}
+      {/* Content - larger fonts, bilingual */}
+      <div className="p-4 md:p-5 text-center space-y-2 md:space-y-3" dir={isArabic ? 'rtl' : 'ltr'}>
+        <h3 className="font-headline text-lg md:text-xl text-charcoal font-semibold leading-tight">
+          {isArabic && translation ? translation.name : product.name}
         </h3>
         
-        <p className="font-body text-xs md:text-sm text-charcoal/70 line-clamp-2">
-          {product.tagline}
+        <p className="font-body text-sm md:text-base text-charcoal/70 line-clamp-2">
+          {isArabic && translation ? translation.tagline : product.tagline}
         </p>
         
-        <div className="font-headline text-base md:text-xl leading-tight">
+        <div className="font-headline text-lg md:text-2xl leading-tight">
           {getPriceDisplay()}
         </div>
 
         {/* Clickable color swatches */}
         {swatches.length > 0 && (
-          <div className="pt-1 md:pt-2 space-y-0.5 md:space-y-1">
-            <p 
-              className="text-[8px] md:text-xs text-charcoal/50 uppercase tracking-wider font-body hidden md:block"
-              data-en="Available Colors"
-              data-ar="الألوان المتاحة"
-            >
-              Available Colors
+          <div className="pt-2 md:pt-3 space-y-1 md:space-y-2">
+            <p className="text-xs md:text-sm text-charcoal/50 uppercase tracking-wider font-body hidden md:block">
+              {isArabic ? 'الألوان المتاحة' : 'Available Colors'}
             </p>
-            <div className="flex justify-center gap-1 md:gap-2">
+            <div className="flex justify-center gap-1.5 md:gap-2">
               {swatches.map((swatch) => (
                 <button
                   key={swatch!.key}
                   type="button"
                   onClick={(e) => handleSwatchClick(e, swatch!.key)}
                   className={cn(
-                    "w-5 h-5 md:w-10 md:h-10 rounded md:rounded-lg border shadow-sm transition-all duration-200",
+                    "w-6 h-6 md:w-10 md:h-10 rounded md:rounded-lg border shadow-sm transition-all duration-200",
                     selectedSwatchKey === swatch!.key 
                       ? "ring-2 ring-dandle-orange ring-offset-1 border-dandle-orange scale-110" 
                       : "border-charcoal/10 hover:scale-105"
                   )}
                   style={{ backgroundColor: swatch!.hex }}
-                  title={swatch!.nameEn}
-                  aria-label={`Preview ${swatch!.nameEn} color`}
+                  title={isArabic ? swatch!.nameAr : swatch!.nameEn}
+                  aria-label={isArabic ? swatch!.nameAr : `Preview ${swatch!.nameEn} color`}
                 />
               ))}
             </div>
