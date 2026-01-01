@@ -41,8 +41,11 @@ const OfferRibbon = () => {
             <div className="flex items-center gap-3">
               <Gift className="w-4 h-4 text-warm-white animate-pulse" />
               <span className="text-sm font-body text-warm-white font-medium tracking-wide">
-                <span className="hidden sm:inline">🎁 Festive Season Special: </span>
-                <span className="font-semibold">Free Installation</span> on all orders
+                <span className="hidden sm:inline">
+                  <span data-en="🎁 Festive Season Special: " data-ar="🎁 عرض موسم الأعياد: ">🎁 Festive Season Special: </span>
+                </span>
+                <span className="font-semibold" data-en="Free Installation" data-ar="تركيب مجاني">Free Installation</span>
+                <span data-en=" on all orders" data-ar=" على جميع الطلبات"> on all orders</span>
               </span>
               <Sparkles className="w-4 h-4 text-warm-white hidden sm:block" />
             </div>
@@ -51,6 +54,8 @@ const OfferRibbon = () => {
               <a 
                 href="#collection" 
                 className="text-sm font-body text-warm-white underline underline-offset-2 hover:no-underline transition-all"
+                data-en="Shop Now"
+                data-ar="تسوق الآن"
               >
                 Shop Now
               </a>

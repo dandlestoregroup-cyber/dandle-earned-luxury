@@ -20,14 +20,22 @@ const WorkWithUs = () => {
             >
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-dandle-orange/10 text-dandle-orange text-sm font-body mb-4">
                 <Users className="w-4 h-4" />
-                Join Our Team
+                <span data-en="Join Our Team" data-ar="انضم لفريقنا">Join Our Team</span>
               </span>
               
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              <h2 
+                className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground"
+                data-en="Work With Us"
+                data-ar="اعمل معنا"
+              >
                 Work With Us
               </h2>
               
-              <p className="font-body text-lg text-foreground/70 mb-6 leading-relaxed">
+              <p 
+                className="font-body text-lg text-foreground/70 mb-6 leading-relaxed"
+                data-en="At DANDLE, we're more than a company — we're a family of craftspeople, dreamers, and perfectionists. If you believe in earned excellence and quiet sophistication, you might be one of us."
+                data-ar="في DANDLE، نحن أكثر من شركة — نحن عائلة من الحرفيين والحالمين والساعين للكمال. إذا كنت تؤمن بالتميز المكتسب والأناقة الهادئة، فقد تكون واحداً منا."
+              >
                 At DANDLE, we're more than a company — we're a family of craftspeople, dreamers, and perfectionists. 
                 If you believe in earned excellence and quiet sophistication, you might be one of us.
               </p>
@@ -35,11 +43,11 @@ const WorkWithUs = () => {
               <div className="flex flex-wrap gap-4 mb-8">
                 <div className="flex items-center gap-2 text-sm font-body text-foreground/60">
                   <Heart className="w-4 h-4 text-dandle-orange" />
-                  <span>Family Culture</span>
+                  <span data-en="Family Culture" data-ar="ثقافة عائلية">Family Culture</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm font-body text-foreground/60">
                   <Sparkles className="w-4 h-4 text-dandle-orange" />
-                  <span>Growth & Learning</span>
+                  <span data-en="Growth & Learning" data-ar="نمو وتعلم">Growth & Learning</span>
                 </div>
               </div>
 
@@ -47,7 +55,7 @@ const WorkWithUs = () => {
                 onClick={() => navigate("/careers")}
                 className="bg-dandle-orange hover:bg-dandle-orange/90 text-white font-body group"
               >
-                View Open Positions
+                <span data-en="View Open Positions" data-ar="عرض الوظائف المتاحة">View Open Positions</span>
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </motion.div>
@@ -66,10 +74,18 @@ const WorkWithUs = () => {
                     <div className="w-20 h-20 rounded-full bg-dandle-orange/20 flex items-center justify-center mx-auto mb-4">
                       <Users className="w-10 h-10 text-dandle-orange" />
                     </div>
-                    <p className="font-headline text-2xl font-semibold text-foreground mb-2">
+                    <p 
+                      className="font-headline text-2xl font-semibold text-foreground mb-2"
+                      data-en="We're Hiring"
+                      data-ar="نحن نوظف"
+                    >
                       We're Hiring
                     </p>
-                    <p className="font-body text-sm text-foreground/60">
+                    <p 
+                      className="font-body text-sm text-foreground/60"
+                      data-en="Join 20+ craftspeople"
+                      data-ar="انضم لأكثر من 20 حرفي"
+                    >
                       Join 20+ craftspeople
                     </p>
                   </div>
