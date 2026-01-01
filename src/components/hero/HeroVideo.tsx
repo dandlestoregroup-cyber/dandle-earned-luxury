@@ -86,7 +86,7 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Video Element - Starts immediately, no poster delay */}
+      {/* Video Element - GPU Accelerated, Zero-Lag */}
       <video
         id="heroVideo"
         ref={videoRef}
@@ -102,6 +102,9 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
           imageRendering: 'auto',
           WebkitBackfaceVisibility: 'hidden',
           backfaceVisibility: 'hidden',
+          willChange: 'transform',
+          transform: 'translateZ(0)',
+          contain: 'paint layout',
         }}
       />
 

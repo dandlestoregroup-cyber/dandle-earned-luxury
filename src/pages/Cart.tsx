@@ -1,15 +1,72 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
+import TopBanner from '@/components/TopBanner';
 import Footer from '@/components/Footer';
 import CheckoutForm, { CustomerData } from '@/components/CheckoutForm';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { getLangFromStorage, type LangKey } from '@/i18n/strings';
+
+// Cart translations
+const cartTranslations = {
+  en: {
+    emptyCart: "Your Cart is Empty",
+    emptyCartDesc: "Start adding luxury recliners to your collection",
+    explore: "Explore Collection",
+    yourCart: "Your Cart",
+    backToCart: "Back to Cart",
+    color: "Color",
+    mechanism: "Mechanism",
+    massage: "Massage Feature Included",
+    orderSummary: "Order Summary",
+    items: "Items",
+    total: "Total",
+    deposit: "40% deposit, 60% on delivery",
+    warranty: "2-5 year warranty included",
+    freeDelivery: "Free delivery scheduling",
+    whatsapp: "WhatsApp support 7 days/week",
+    checkout: "Proceed to Checkout",
+    clearCart: "Clear Cart",
+  },
+  ar: {
+    emptyCart: "سلة التسوق فارغة",
+    emptyCartDesc: "ابدأ بإضافة كراسي الاسترخاء الفاخرة لمجموعتك",
+    explore: "استكشف المجموعة",
+    yourCart: "سلة التسوق",
+    backToCart: "العودة للسلة",
+    color: "اللون",
+    mechanism: "الآلية",
+    massage: "ميزة التدليك متضمنة",
+    orderSummary: "ملخص الطلب",
+    items: "المنتجات",
+    total: "الإجمالي",
+    deposit: "40% مقدم، 60% عند الاستلام",
+    warranty: "ضمان 2-5 سنوات",
+    freeDelivery: "جدولة توصيل مجانية",
+    whatsapp: "دعم واتساب 7 أيام/أسبوع",
+    checkout: "متابعة الدفع",
+    clearCart: "إفراغ السلة",
+  }
+};
 
 const Cart = () => {
+  const [lang, setLang] = useState<LangKey>('en');
+  
+  useEffect(() => {
+    setLang(getLangFromStorage());
+    const interval = setInterval(() => {
+      const currentLang = getLangFromStorage();
+      setLang(prev => prev !== currentLang ? currentLang : prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+  
+  const t = cartTranslations[lang];
+  const isArabic = lang === 'ar';
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
   const navigate = useNavigate();
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
@@ -157,17 +214,16 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col" dir={isArabic ? 'rtl' : 'ltr'}>
+        <TopBanner />
         <Navigation />
         <main className="flex-1 container mx-auto px-4 py-32">
           <div className="text-center max-w-md mx-auto">
             <ShoppingBag className="w-24 h-24 mx-auto mb-6 text-muted-foreground" />
-            <h1 className="text-4xl font-bold mb-4">Your Cart is Empty</h1>
-            <p className="text-muted-foreground mb-8">
-              Start adding luxury recliners to your collection
-            </p>
+            <h1 className="text-4xl font-bold mb-4">{t.emptyCart}</h1>
+            <p className="text-muted-foreground mb-8">{t.emptyCartDesc}</p>
             <Button onClick={() => navigate('/')} variant="luxury" size="lg">
-              Explore Collection
+              {t.explore}
             </Button>
           </div>
         </main>
@@ -177,7 +233,8 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" dir={isArabic ? 'rtl' : 'ltr'}>
+      <TopBanner />
       <Navigation />
       <main className="flex-1 container mx-auto px-4 py-32">
         {showCheckoutForm ? (
@@ -188,8 +245,8 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
               className="mb-6"
               disabled={isProcessing}
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Cart
+              <ArrowLeft className={`w-4 h-4 ${isArabic ? 'ml-2 rotate-180' : 'mr-2'}`} />
+              {t.backToCart}
             </Button>
             <CheckoutForm
               onSubmit={handleFormSubmit}
@@ -199,7 +256,7 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
           </div>
         ) : (
           <>
-            <h1 className="text-5xl font-bold mb-12">Your Cart</h1>
+            <h1 className="text-5xl font-bold mb-12">{t.yourCart}</h1>
             
             <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
@@ -219,14 +276,14 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
                   <div className="flex-1">
                     <h3 className="text-xl font-bold mb-2">{item.product.name}</h3>
                     <p className="text-sm text-muted-foreground mb-2">
-                      Color: {item.selectedColor}
+                      {t.color}: {item.selectedColor}
                     </p>
                     <p className="text-sm text-muted-foreground mb-2">
-                      Mechanism: {item.mechanism}
+                      {t.mechanism}: {item.mechanism}
                     </p>
                     {item.massageFeature && (
                       <p className="text-sm text-accent font-semibold mb-2">
-                        ✨ Massage Feature Included
+                        ✨ {t.massage}
                       </p>
                     )}
                     <p className="text-lg font-semibold text-accent">
@@ -266,15 +323,15 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
 
           <div className="lg:col-span-1">
             <div className="bg-card p-6 rounded-lg sticky top-24">
-              <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+              <h2 className="text-2xl font-bold mb-6">{t.orderSummary}</h2>
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Items ({items.reduce((sum, item) => sum + item.quantity, 0)})</span>
+                  <span>{t.items} ({items.reduce((sum, item) => sum + item.quantity, 0)})</span>
                   <span>{formatPrice(getTotalPrice())}</span>
                 </div>
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between text-xl font-bold">
-                    <span>Total</span>
+                    <span>{t.total}</span>
                     <span className="text-accent">{formatPrice(getTotalPrice())}</span>
                   </div>
                 </div>
@@ -284,19 +341,19 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
               <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 mb-6 space-y-2">
                 <div className="flex items-center gap-2 text-sm">
                   <span className="text-green-500">✓</span>
-                  <span>40% deposit, 60% on delivery</span>
+                  <span>{t.deposit}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="text-green-500">✓</span>
-                  <span>2-5 year warranty included</span>
+                  <span>{t.warranty}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="text-green-500">✓</span>
-                  <span>Free delivery scheduling</span>
+                  <span>{t.freeDelivery}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <span className="text-green-500">✓</span>
-                  <span>WhatsApp support 7 days/week</span>
+                  <span>{t.whatsapp}</span>
                 </div>
               </div>
 
@@ -306,7 +363,7 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
                 size="lg" 
                 className="w-full mb-3"
               >
-                Proceed to Checkout
+                {t.checkout}
               </Button>
               <Button 
                 onClick={clearCart} 
@@ -314,7 +371,7 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
                 size="lg" 
                 className="w-full"
               >
-                Clear Cart
+                {t.clearCart}
               </Button>
             </div>
           </div>
