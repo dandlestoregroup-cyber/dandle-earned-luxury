@@ -86,13 +86,19 @@ const HeroVideo = ({ src, onEnded, onSkip }: HeroVideoProps) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Poster image - shows immediately */}
+      <img
+        src="/dandle-og-image.jpg"
+        alt="Dandle"
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-0' : 'opacity-100'}`}
+      />
+      
       {/* Video Element - High Quality with instant play */}
       <video
         id="heroVideo"
         ref={videoRef}
         src={src}
-        poster="/dandle-og-image.jpg"
-        className={`w-full h-full object-cover transition-opacity duration-200 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         autoPlay
         muted={isMuted}
         playsInline
