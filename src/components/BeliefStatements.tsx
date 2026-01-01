@@ -3,15 +3,15 @@ import { Heart, Award, Home } from "lucide-react";
 
 const beliefs = [
   {
-    statement: "You enjoy using it.",
+    statement: "Comfort you feel every day.",
     icon: Heart,
   },
   {
-    statement: "You're proud to use it.",
+    statement: "Quality that speaks for itself.",
     icon: Award,
   },
   {
-    statement: "The room feels right now.",
+    statement: "A room that feels complete.",
     icon: Home,
   },
 ];
