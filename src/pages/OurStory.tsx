@@ -43,7 +43,7 @@ const products = [
 const differentiators = [
   {
     icon: Armchair,
-    title: "The Swiss Knife of Comfort",
+    title: "Built for Daily Comfort",
     description: "Our pieces are designed to be the most useful object in your room. Practical enough to be your daily companion for work and naps, yet premium enough to be the crown of your home."
   },
   {
@@ -178,9 +178,9 @@ const OurStory = () => {
             <h2 className="font-headline text-4xl md:text-5xl text-foreground mt-3">
               What Makes Dandle Different
             </h2>
-            <p className="font-body text-lg text-muted-foreground mt-4 italic">
-              "Dandle is the Swiss Knife of Comfort — practical, premium, proudly used."
-            </p>
+          <p className="font-body text-lg text-muted-foreground mt-4 italic">
+            "Built for daily comfort — practical, premium, made to live with."
+          </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">

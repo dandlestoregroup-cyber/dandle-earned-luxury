@@ -175,10 +175,10 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           </p>
           <p 
             className="text-white/70 text-center font-body text-sm mb-3"
-            data-en="Up to 10% off + Free delivery + 5-year warranty"
-            data-ar="خصم حتى 10% + توصيل مجاني + ضمان 5 سنوات"
+            data-en="Seasonal appreciation • Free delivery • 5-year warranty"
+            data-ar="تقدير موسمي • توصيل مجاني • ضمان 5 سنوات"
           >
-            Up to 10% off + Free delivery + 5-year warranty
+            Seasonal appreciation • Free delivery • 5-year warranty
           </p>
           <button
             onClick={handleCopyCode}

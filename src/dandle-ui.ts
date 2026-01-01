@@ -28,10 +28,10 @@ export function initDandleUi() {
   } as const;
 
   const FONT_LINKS = [
-    "https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&display=swap",
-    "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap",
     "https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500&display=swap",
-    "https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
   ];
 
   function injectFonts() {

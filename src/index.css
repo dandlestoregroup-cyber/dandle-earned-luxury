@@ -115,9 +115,16 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 400;
-    line-height: 1.4;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  @media (min-width: 768px) {
+    body {
+      font-size: 18px;
+    }
   }
 
   /* De-neon orange: soften the intensity without changing hex */
@@ -126,25 +133,30 @@ All colors MUST be HSL.
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-weight: 600;
-    line-height: 1.1;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
+  
+  h1 { line-height: 1.15; }
+  h2 { line-height: 1.2; }
+  h3, h4, h5, h6 { line-height: 1.25; }
   
   /* Body text font - English */
   .font-body {
-    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
   
   /* Headline font - English */
   .font-headline {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
   }
   
   /* Arabic fonts */
   [lang="ar"] body,
   [dir="rtl"] body {
-    font-family: 'Noto Sans Arabic', sans-serif;
+    font-family: 'Cairo', sans-serif;
   }
   
   [lang="ar"] h1, [lang="ar"] h2, [lang="ar"] h3, [lang="ar"] h4, [lang="ar"] h5, [lang="ar"] h6,
@@ -155,7 +167,7 @@ All colors MUST be HSL.
   
   [lang="ar"] .font-body,
   [dir="rtl"] .font-body {
-    font-family: 'Noto Sans Arabic', sans-serif;
+    font-family: 'Cairo', sans-serif;
   }
   
   [lang="ar"] .font-headline,

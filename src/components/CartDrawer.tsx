@@ -43,7 +43,7 @@ export const CartDrawer = () => {
     if (code === VALID_PROMO_CODE) {
       setPromoApplied(true);
       setPromoError("");
-      toast.success("Promo code applied!", { description: "10% discount added to your order" });
+      toast.success("Promo code applied!", { description: "Seasonal appreciation added" });
     } else {
       setPromoApplied(false);
       setPromoError("Invalid promo code");
@@ -220,7 +220,7 @@ export const CartDrawer = () => {
                   {promoApplied && (
                     <div className="flex items-center gap-1.5 text-sm text-green-600">
                       <Check className="h-4 w-4" />
-                      <span>FESTIVE10 applied - 10% off!</span>
+                      <span>FESTIVE10 applied — seasonal appreciation</span>
                     </div>
                   )}
                   {promoError && (
