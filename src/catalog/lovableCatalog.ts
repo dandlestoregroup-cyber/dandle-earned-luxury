@@ -100,7 +100,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "worknest",
     title: "WorkNest Recliner",
-    subtitle: "Work Better, Feel Better",
+    subtitle: "Flow-first performance",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-worknest.jpg",
@@ -139,7 +139,7 @@ export const lovableCatalog: LovableProduct[] = [
   {
     productHandle: "comfortplus",
     title: "ComfortPlus Recliner",
-    subtitle: "Feel Better Every Day",
+    subtitle: "Indulgent deep relaxation",
     aspectRatio: 1,
     heroImage: {
       src: "/images/dandle-comfortplus.jpg",
