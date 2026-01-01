@@ -51,8 +51,7 @@ export const FabricsSection: React.FC = () => {
 
           {!isArabic && (
             <p className="text-base font-body leading-relaxed text-charcoal/90 mt-4">
-              At Dandle, we focus deeply on fabric quality — color, feel, and durability. 
-              Our partnership with Raytex ensures every piece meets the highest standards.
+              Every fabric is selected for durability, comfort, and timeless appeal — crafted to last.
             </p>
           )}
         </div>

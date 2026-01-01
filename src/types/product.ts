@@ -16,7 +16,7 @@ export const products: Product[] = [
   {
     id: "relaxmax",
     name: "Dandle RelaxMax",
-    tagline: "The Flagship 90cm Standard Recliner",
+    tagline: "Your daily sanctuary",
     priceManual: 21900,
     pricePower: 28900,
     colors: ["Urban Charcoal", "Off White", "Elephant Grey"],
@@ -32,7 +32,7 @@ export const products: Product[] = [
   {
     id: "comfortplus",
     name: "Dandle ComfortPlus",
-    tagline: "The Therapeutic Upgrade",
+    tagline: "Indulgent deep relaxation",
     priceManual: 29900,
     pricePower: 36900,
     colors: ["Chic Red", "Tan Beige"],
@@ -48,7 +48,7 @@ export const products: Product[] = [
   {
     id: "diva",
     name: "Dandle Diva",
-    tagline: "The Statement of Style",
+    tagline: "Where style meets comfort",
     priceManual: 23900,
     pricePower: 30900,
     colors: ["Chic Red", "Pink Rose", "Sunshine Yellow"],
@@ -64,7 +64,7 @@ export const products: Product[] = [
   {
     id: "cozycompanion",
     name: "Dandle CozyCompanion",
-    tagline: "Premium Two-Seater Couch Recliner",
+    tagline: "Comfort for two",
     priceManual: 42000,
     pricePower: 54000,
     colors: ["Ocean Blue", "Warm Grey"],
@@ -80,7 +80,7 @@ export const products: Product[] = [
   {
     id: "easyup",
     name: "Dandle EasyUp",
-    tagline: "The Empowerment Tool",
+    tagline: "Sit easy, stand easier",
     price: 42900,
     colors: ["Creamy Beige", "Urban Charcoal"],
     features: [
@@ -95,7 +95,7 @@ export const products: Product[] = [
   {
     id: "easyup-compact",
     name: "Dandle EasyUp Compact",
-    tagline: "The Compact Empowerment Tool",
+    tagline: "Sit easy, stand easier",
     price: 46900,
     colors: ["Urban Charcoal"],
     features: [
@@ -110,7 +110,7 @@ export const products: Product[] = [
   {
     id: "worknest",
     name: "Dandle WorkNest",
-    tagline: "The Productivity Haven",
+    tagline: "Flow-first performance",
     priceManual: 26900,
     pricePower: 33900,
     colors: ["Slate Grey", "Espresso Brown"],
@@ -127,7 +127,7 @@ export const products: Product[] = [
   {
     id: "spacesaver",
     name: "Dandle SpaceSaver",
-    tagline: "The Smart Solution",
+    tagline: "Big comfort, small footprint",
     priceManual: 24900,
     pricePower: 29900,
     colors: ["Stone Grey", "Navy Blue"],
@@ -144,7 +144,7 @@ export const products: Product[] = [
   {
     id: "complete-set",
     name: "Dandle Complete Set",
-    tagline: "The Ultimate Collection",
+    tagline: "Comfort for the whole family",
     priceManual: 62900,
     pricePower: 90900,
     colors: ["Coordinated Styles"],

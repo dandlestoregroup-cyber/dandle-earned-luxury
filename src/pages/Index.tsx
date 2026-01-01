@@ -11,7 +11,6 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import WorkWithUs from "@/components/WorkWithUs";
-import OfferRibbon from "@/components/OfferRibbon";
 import LifestyleGallery from "@/components/LifestyleGallery";
 import IstikbalShowroom from "@/components/IstikbalShowroom";
 import Partners from "@/components/Partners";
@@ -25,7 +24,6 @@ const Index = () => {
     <div className="min-h-screen">
       <TopBanner />
       <Navigation />
-      <OfferRibbon />
       <main>
         <Hero />
         <BeliefStatements />

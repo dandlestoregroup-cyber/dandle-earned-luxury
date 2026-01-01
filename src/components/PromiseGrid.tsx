@@ -9,8 +9,8 @@ const PromiseGrid = () => {
     },
     {
       icon: "📱",
-      titleEn: "AR Visualization",
-      titleAr: "معاينة بالواقع المعزز",
+      titleEn: "Room Preview",
+      titleAr: "معاينة الغرفة",
       textEn: "See it in your space before you buy",
       textAr: "شاهده في مكانك قبل الشراء",
     },
