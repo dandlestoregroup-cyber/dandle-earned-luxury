@@ -7,20 +7,26 @@ const lifestyleImages = [
   {
     src: "/images/complete-set-classic.jpg",
     alt: "DANDLE recliner in elegant home living room",
-    caption: "At Home",
-    subtitle: "Where comfort meets family"
+    captionEn: "At Home",
+    captionAr: "في المنزل",
+    subtitleEn: "Where comfort meets family",
+    subtitleAr: "حيث تلتقي الراحة بالعائلة"
   },
   {
     src: "/images/complete-set-sunset-fireplace.jpg",
     alt: "Luxury vacation rental with premium recliner",
-    caption: "Vacation Rental",
-    subtitle: "Elevate guest experiences"
+    captionEn: "Vacation Rental",
+    captionAr: "إيجار العطلات",
+    subtitleEn: "Elevate guest experiences",
+    subtitleAr: "ارتقِ بتجارب الضيوف"
   },
   {
     src: "/images/complete-set-family-modern.jpg",
     alt: "Boutique hotel suite with DANDLE comfort",
-    caption: "Boutique Hotel",
-    subtitle: "Premium hospitality comfort"
+    captionEn: "Boutique Hotel",
+    captionAr: "فندق بوتيك",
+    subtitleEn: "Premium hospitality comfort",
+    subtitleAr: "راحة ضيافة فاخرة"
   }
 ];
 
@@ -64,10 +70,18 @@ const LifestyleGallery = () => {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
+          <span 
+            className="text-bronze font-body text-sm tracking-[0.2em] uppercase"
+            data-en="In Your Home"
+            data-ar="في منزلك"
+          >
             In Your Home
           </span>
-          <h2 className="font-headline text-4xl md:text-5xl text-warm-white mt-3">
+          <h2 
+            className="font-headline text-4xl md:text-5xl text-warm-white mt-3"
+            data-en="Lifestyle Gallery"
+            data-ar="معرض أنماط الحياة"
+          >
             Lifestyle Gallery
           </h2>
         </motion.div>
@@ -79,7 +93,7 @@ const LifestyleGallery = () => {
           <div className="flex touch-pan-y">
             {lifestyleImages.map((image, index) => (
               <div 
-                key={image.caption}
+                key={image.captionEn}
                 className="flex-[0_0_100%] min-w-0 relative"
               >
                 <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden">
@@ -111,11 +125,19 @@ const LifestyleGallery = () => {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="absolute bottom-20 md:bottom-24 left-0 right-0 text-center px-4"
                       >
-                        <h3 className="font-headline text-3xl md:text-5xl text-dandle-orange mb-2 drop-shadow-lg">
-                          {image.caption}
+                        <h3 
+                          className="font-headline text-3xl md:text-5xl text-dandle-orange mb-2 drop-shadow-lg"
+                          data-en={image.captionEn}
+                          data-ar={image.captionAr}
+                        >
+                          {image.captionEn}
                         </h3>
-                        <p className="font-body text-lg md:text-xl text-warm-white drop-shadow-md">
-                          {image.subtitle}
+                        <p 
+                          className="font-body text-lg md:text-xl text-warm-white drop-shadow-md"
+                          data-en={image.subtitleEn}
+                          data-ar={image.subtitleAr}
+                        >
+                          {image.subtitleEn}
                         </p>
                       </motion.div>
                     )}
@@ -150,7 +172,7 @@ const LifestyleGallery = () => {
           transition={{ delay: 2, duration: 3, times: [0, 0.1, 0.8, 1] }}
         >
           <div className="text-dandle-orange text-sm font-body flex items-center gap-2 bg-charcoal/70 px-3 py-1.5 rounded-full backdrop-blur-sm">
-            <span>Swipe to explore</span>
+            <span data-en="Swipe to explore" data-ar="اسحب للاستكشاف">Swipe to explore</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

@@ -24,7 +24,11 @@ const IstikbalShowroom = () => {
           >
             <div className="flex items-center gap-2">
               <Star className="w-5 h-5 text-dandle-orange fill-dandle-orange" />
-              <span className="text-warm-white font-body text-sm tracking-[0.15em] uppercase">
+              <span 
+                className="text-warm-white font-body text-sm tracking-[0.15em] uppercase"
+                data-en="Official Partner"
+                data-ar="شريك رسمي"
+              >
                 Official Partner
               </span>
             </div>
@@ -51,8 +55,18 @@ const IstikbalShowroom = () => {
                   <MapPin className="w-4 h-4 text-warm-white" />
                 </div>
                 <div>
-                  <h4 className="font-headline text-base text-warm-white">Dedicated DANDLE Section</h4>
-                  <p className="text-warm-white/70 font-body text-sm">
+                  <h4 
+                    className="font-headline text-base text-warm-white"
+                    data-en="Dedicated DANDLE Section"
+                    data-ar="قسم DANDLE مخصص"
+                  >
+                    Dedicated DANDLE Section
+                  </h4>
+                  <p 
+                    className="text-warm-white/70 font-body text-sm"
+                    data-en="Full collection on display inside Istikbal showrooms"
+                    data-ar="المجموعة الكاملة معروضة داخل صالات عرض إستيكبال"
+                  >
                     Full collection on display inside Istikbal showrooms
                   </p>
                 </div>
@@ -63,8 +77,18 @@ const IstikbalShowroom = () => {
                   <Calendar className="w-4 h-4 text-warm-white" />
                 </div>
                 <div>
-                  <h4 className="font-headline text-base text-warm-white">Personal Consultation</h4>
-                  <p className="text-warm-white/70 font-body text-sm">
+                  <h4 
+                    className="font-headline text-base text-warm-white"
+                    data-en="Personal Consultation"
+                    data-ar="استشارة شخصية"
+                  >
+                    Personal Consultation
+                  </h4>
+                  <p 
+                    className="text-warm-white/70 font-body text-sm"
+                    data-en="Book a private appointment with our comfort specialists"
+                    data-ar="احجز موعداً خاصاً مع متخصصي الراحة لدينا"
+                  >
                     Book a private appointment with our comfort specialists
                   </p>
                 </div>
@@ -78,7 +102,7 @@ const IstikbalShowroom = () => {
                 className="bg-dandle-orange hover:bg-dandle-orange/90 text-white font-headline text-base px-6 py-5 rounded-full"
               >
                 <Calendar className="w-4 h-4 mr-2" />
-                Book an Appointment
+                <span data-en="Book an Appointment" data-ar="احجز موعد">Book an Appointment</span>
               </Button>
               
               <Button
@@ -88,7 +112,7 @@ const IstikbalShowroom = () => {
                 onClick={() => window.open("tel:+201222804255")}
               >
                 <Phone className="w-4 h-4 mr-2" />
-                Call Showroom
+                <span data-en="Call Showroom" data-ar="اتصل بالمعرض">Call Showroom</span>
               </Button>
             </div>
           </motion.div>
@@ -113,11 +137,19 @@ const IstikbalShowroom = () => {
                   </span>
                 </div>
                 
-                <p className="font-body text-lg text-warm-white/95">
+                <p 
+                  className="font-body text-lg text-warm-white/95"
+                  data-en="Where Quality Meets Comfort"
+                  data-ar="حيث تلتقي الجودة بالراحة"
+                >
                   Where Quality Meets Comfort
                 </p>
                 
-                <p className="text-warm-white/80 text-base font-body leading-relaxed max-w-sm mx-auto">
+                <p 
+                  className="text-warm-white/80 text-base font-body leading-relaxed max-w-sm mx-auto"
+                  data-en="Walk in curious. Sit down. Feel the difference. Leave knowing exactly what comfort means to you."
+                  data-ar="ادخل بفضول. اجلس. اشعر بالفرق. غادر وأنت تعرف تماماً ما تعنيه الراحة لك."
+                >
                   Walk in curious. Sit down. Feel the difference. 
                   Leave knowing exactly what comfort means to you.
                 </p>
