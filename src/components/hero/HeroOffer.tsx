@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Copy, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import HeroParticles from "./HeroParticles";
 import HeroSnow from "./HeroSnow";
@@ -11,23 +11,9 @@ interface HeroOfferProps {
   onReplayVideo?: () => void;
 }
 
-const PROMO_CODE = "FESTIVE10";
-
 const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
   const [offerImage, setOfferImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyCode = async () => {
-    try {
-      await navigator.clipboard.writeText(PROMO_CODE);
-      setCopied(true);
-      toast.success("Promo code copied!", { description: "Apply at checkout for 10% off" });
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      toast.error("Failed to copy");
-    }
-  };
 
   // Check for AI-generated offer image
   useEffect(() => {
@@ -159,43 +145,6 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           </Button>
         </motion.div>
 
-        {/* Static Promo Block - De-emphasized, no countdown */}
-        <motion.div
-          className="bg-white/5 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/10 max-w-md"
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 1.8, duration: 0.5 }}
-        >
-          <p 
-            className="text-white/90 text-center font-headline text-lg mb-1"
-            data-en="Start 2026 in Comfort"
-            data-ar="ابدأ 2026 براحة"
-          >
-            Start 2026 in Comfort
-          </p>
-          <p 
-            className="text-white/70 text-center font-body text-sm mb-3"
-            data-en="Seasonal appreciation • Free delivery • 5-year warranty"
-            data-ar="تقدير موسمي • توصيل مجاني • ضمان 5 سنوات"
-          >
-            Seasonal appreciation • Free delivery • 5-year warranty
-          </p>
-          <button
-            onClick={handleCopyCode}
-            className="flex items-center justify-center gap-2 w-full group"
-          >
-            <span className="text-sm font-body text-white/60" data-en="Code:" data-ar="الكود:">Code:</span>
-            <span className="text-lg font-headline font-semibold text-dandle-orange tracking-wider" dir="ltr">
-              {PROMO_CODE}
-            </span>
-            {copied ? (
-              <Check className="w-4 h-4 text-green-400" />
-            ) : (
-              <Copy className="w-4 h-4 text-white/50 group-hover:text-white transition-colors" />
-            )}
-          </button>
-          <p className="text-white/40 text-center font-body text-xs mt-2" data-en="Valid through January 15" data-ar="صالح حتى 15 يناير">Valid through January 15</p>
-        </motion.div>
       </div>
 
       {/* Scroll Indicator */}
