@@ -184,8 +184,8 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
             onClick={handleCopyCode}
             className="flex items-center justify-center gap-2 w-full group"
           >
-            <span className="text-sm font-body text-white/60">Code:</span>
-            <span className="text-lg font-headline font-semibold text-dandle-orange tracking-wider">
+            <span className="text-sm font-body text-white/60" data-en="Code:" data-ar="الكود:">Code:</span>
+            <span className="text-lg font-headline font-semibold text-dandle-orange tracking-wider" dir="ltr">
               {PROMO_CODE}
             </span>
             {copied ? (
@@ -194,7 +194,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
               <Copy className="w-4 h-4 text-white/50 group-hover:text-white transition-colors" />
             )}
           </button>
-          <p className="text-white/40 text-center font-body text-xs mt-2">Valid through January 15</p>
+          <p className="text-white/40 text-center font-body text-xs mt-2" data-en="Valid through January 15" data-ar="صالح حتى 15 يناير">Valid through January 15</p>
         </motion.div>
       </div>
 
@@ -212,7 +212,12 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
             transition={{ repeat: Infinity, duration: 1.5 }}
           />
         </div>
-        <span className="text-xs text-white/70 font-body" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
+        <span 
+          className="text-xs text-white/70 font-body" 
+          style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}
+          data-en="Scroll to Explore"
+          data-ar="اسحب للاستكشاف"
+        >
           Scroll to Explore
         </span>
       </motion.div>

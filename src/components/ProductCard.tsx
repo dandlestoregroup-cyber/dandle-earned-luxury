@@ -103,7 +103,11 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         {/* Clickable color swatches */}
         {swatches.length > 0 && (
           <div className="pt-1 md:pt-2 space-y-0.5 md:space-y-1">
-            <p className="text-[8px] md:text-xs text-charcoal/50 uppercase tracking-wider font-body hidden md:block">
+            <p 
+              className="text-[8px] md:text-xs text-charcoal/50 uppercase tracking-wider font-body hidden md:block"
+              data-en="Available Colors"
+              data-ar="الألوان المتاحة"
+            >
               Available Colors
             </p>
             <div className="flex justify-center gap-1 md:gap-2">

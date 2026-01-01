@@ -3,7 +3,6 @@ import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
-import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { useNavigate } from "react-router-dom";
 import CartDrawer from "@/components/CartDrawer";
 
@@ -22,13 +21,13 @@ const Navigation = () => {
   }, []);
 
   const navLinks = [
-    { label: "Home", href: "/", isRoute: true },
-    { label: "Collection", href: "#collection" },
-    { label: "Gift of Comfort", href: "#gift-of-comfort" },
-    { label: "Our Story", href: "/our-story", isRoute: true },
-    { label: "Careers", href: "/careers", isRoute: true },
-    { label: "Contact", href: "#contact" },
-    { label: "Nour ✨", href: "/nour-chat", isRoute: true, badge: "Soon" },
+    { labelEn: "Home", labelAr: "الرئيسية", href: "/", isRoute: true },
+    { labelEn: "Collection", labelAr: "المجموعة", href: "#collection" },
+    { labelEn: "Gift of Comfort", labelAr: "هدية الراحة", href: "#gift-of-comfort" },
+    { labelEn: "Our Story", labelAr: "قصتنا", href: "/our-story", isRoute: true },
+    { labelEn: "Careers", labelAr: "الوظائف", href: "/careers", isRoute: true },
+    { labelEn: "Contact", labelAr: "تواصل", href: "#contact" },
+    { labelEn: "Nour ✨", labelAr: "نور ✨", href: "/nour-chat", isRoute: true, badge: "Soon", badgeAr: "قريباً" },
   ];
 
   return (
@@ -63,9 +62,13 @@ const Navigation = () => {
                     isScrolled ? "text-card-foreground hover:text-accent" : "text-warm-white hover:text-accent"
                   )}
                 >
-                  {link.label}
+                  <span data-en={link.labelEn} data-ar={link.labelAr}>{link.labelEn}</span>
                   {link.badge && (
-                    <span className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full">
+                    <span 
+                      className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full"
+                      data-en={link.badge}
+                      data-ar={link.badgeAr}
+                    >
                       {link.badge}
                     </span>
                   )}
@@ -78,8 +81,10 @@ const Navigation = () => {
                     "text-sm font-medium transition-colors",
                     isScrolled ? "text-card-foreground hover:text-accent" : "text-warm-white hover:text-accent"
                   )}
+                  data-en={link.labelEn}
+                  data-ar={link.labelAr}
                 >
-                  {link.label}
+                  {link.labelEn}
                 </a>
               )
             ))}
@@ -121,9 +126,13 @@ const Navigation = () => {
                   }}
                   className="flex items-center gap-2 py-3 text-card-foreground hover:text-accent transition-colors text-left w-full"
                 >
-                  {link.label}
+                  <span data-en={link.labelEn} data-ar={link.labelAr}>{link.labelEn}</span>
                   {link.badge && (
-                    <span className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full">
+                    <span 
+                      className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full"
+                      data-en={link.badge}
+                      data-ar={link.badgeAr}
+                    >
                       {link.badge}
                     </span>
                   )}
@@ -134,8 +143,10 @@ const Navigation = () => {
                   href={link.href}
                   className="block py-3 text-card-foreground hover:text-accent transition-colors"
                   onClick={() => setIsOpen(false)}
+                  data-en={link.labelEn}
+                  data-ar={link.labelAr}
                 >
-                  {link.label}
+                  {link.labelEn}
                 </a>
               )
             ))}
@@ -149,7 +160,9 @@ const Navigation = () => {
               }}
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
-              Cart ({getTotalItems()})
+              <span data-en={`Cart (${getTotalItems()})`} data-ar={`السلة (${getTotalItems()})`}>
+                Cart ({getTotalItems()})
+              </span>
             </Button>
           </div>
         )}

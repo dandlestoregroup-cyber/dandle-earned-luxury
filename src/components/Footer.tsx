@@ -5,26 +5,26 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const partners = [
-    { label: "Istikbal Showrooms", href: "/contact" },
-    { label: "OMASH", href: "/#products" },
-    { label: "Vivian", href: "/#products" },
+    { labelEn: "Istikbal Showrooms", labelAr: "صالات عرض إستيكبال", href: "/contact" },
+    { labelEn: "OMASH", labelAr: "أوماش", href: "/#products" },
+    { labelEn: "Vivian", labelAr: "فيفيان", href: "/#products" },
   ];
 
   const support = [
-    { label: "Warranty", href: "/warranty" },
-    { label: "Delivery", href: "/delivery" },
-    { label: "Installation", href: "/installation" },
-    { label: "Returns", href: "/returns" },
-    { label: "FAQ", href: "/faq" },
+    { labelEn: "Warranty", labelAr: "الضمان", href: "/warranty" },
+    { labelEn: "Delivery", labelAr: "التوصيل", href: "/delivery" },
+    { labelEn: "Installation", labelAr: "التركيب", href: "/installation" },
+    { labelEn: "Returns", labelAr: "الاسترجاع", href: "/returns" },
+    { labelEn: "FAQ", labelAr: "الأسئلة الشائعة", href: "/faq" },
   ];
 
   const company = [
-    { label: "Our Story", href: "/our-story" },
-    { label: "About Us", href: "/about" },
-    { label: "Gift of Comfort", href: "/#gift-of-comfort" },
-    { label: "Careers", href: "/careers" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
+    { labelEn: "Our Story", labelAr: "قصتنا", href: "/our-story" },
+    { labelEn: "About Us", labelAr: "عنّا", href: "/about" },
+    { labelEn: "Gift of Comfort", labelAr: "هدية الراحة", href: "/#gift-of-comfort" },
+    { labelEn: "Careers", labelAr: "الوظائف", href: "/careers" },
+    { labelEn: "Privacy Policy", labelAr: "سياسة الخصوصية", href: "/privacy" },
+    { labelEn: "Terms of Service", labelAr: "شروط الخدمة", href: "/terms" },
   ];
 
   return (
@@ -67,17 +67,23 @@ const Footer = () => {
 
           {/* Partners */}
           <div>
-            <h4 className="font-body font-semibold mb-4 text-warm-white text-sm uppercase tracking-wide">
+            <h4 
+              className="font-body font-semibold mb-4 text-warm-white text-sm uppercase tracking-wide"
+              data-en="Partners"
+              data-ar="الشركاء"
+            >
               Partners
             </h4>
             <ul className="space-y-2">
               {partners.map((link) => (
-                <li key={link.label}>
+                <li key={link.href + link.labelEn}>
                   <Link
                     to={link.href}
                     className="text-warm-white/60 hover:text-dandle-orange transition-colors text-sm"
+                    data-en={link.labelEn}
+                    data-ar={link.labelAr}
                   >
-                    {link.label}
+                    {link.labelEn}
                   </Link>
                 </li>
               ))}
@@ -86,17 +92,23 @@ const Footer = () => {
 
           {/* Support */}
           <div>
-            <h4 className="font-body font-semibold mb-4 text-warm-white text-sm uppercase tracking-wide">
+            <h4 
+              className="font-body font-semibold mb-4 text-warm-white text-sm uppercase tracking-wide"
+              data-en="Support"
+              data-ar="الدعم"
+            >
               Support
             </h4>
             <ul className="space-y-2">
               {support.map((link) => (
-                <li key={link.label}>
+                <li key={link.href}>
                   <Link
                     to={link.href}
                     className="text-warm-white/60 hover:text-dandle-orange transition-colors text-sm"
+                    data-en={link.labelEn}
+                    data-ar={link.labelAr}
                   >
-                    {link.label}
+                    {link.labelEn}
                   </Link>
                 </li>
               ))}
@@ -105,34 +117,46 @@ const Footer = () => {
 
           {/* Company & Contact */}
           <div>
-            <h4 className="font-body font-semibold mb-4 text-warm-white text-sm uppercase tracking-wide">
+            <h4 
+              className="font-body font-semibold mb-4 text-warm-white text-sm uppercase tracking-wide"
+              data-en="Company"
+              data-ar="الشركة"
+            >
               Company
             </h4>
             <ul className="space-y-2 mb-6">
               {company.map((link) => (
-                <li key={link.label}>
+                <li key={link.href}>
                   <Link
                     to={link.href}
                     className="text-warm-white/60 hover:text-dandle-orange transition-colors text-sm"
+                    data-en={link.labelEn}
+                    data-ar={link.labelAr}
                   >
-                    {link.label}
+                    {link.labelEn}
                   </Link>
                 </li>
               ))}
             </ul>
             <div className="pt-4 border-t border-bronze/20">
               <p className="text-warm-white/80 text-sm">01222804255</p>
-              <p className="text-warm-white/60 text-xs mt-1">Daily: 10AM-3PM & 7PM-9PM</p>
+              <p 
+                className="text-warm-white/60 text-xs mt-1"
+                data-en="Daily: 10AM-3PM & 7PM-9PM"
+                data-ar="يومياً: 10ص-3م & 7م-9م"
+              >
+                Daily: 10AM-3PM & 7PM-9PM
+              </p>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-bronze/20 text-center text-warm-white/50 text-xs space-y-2">
-          <p>
+          <p data-en={`© ${currentYear} Dandle Store Group. All rights reserved.`} data-ar={`© ${currentYear} مجموعة داندل ستور. جميع الحقوق محفوظة.`}>
             © {currentYear} Dandle Store Group. All rights reserved.
           </p>
-          <p>
+          <p data-en="Dandle™, RelaxMax™, and CozyCompanion™ are trademarks of Dandle Store Group." data-ar="Dandle™ و RelaxMax™ و CozyCompanion™ علامات تجارية لمجموعة داندل ستور.">
             Dandle™, RelaxMax™, and CozyCompanion™ are trademarks of Dandle Store Group.
           </p>
         </div>

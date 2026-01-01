@@ -8,7 +8,7 @@ export function initDandleUi() {
   };
 
   const STORAGE_KEY = "dandle_lang";
-  const DEFAULT_LANG: "en" | "ar" = "en";
+  const DEFAULT_LANG: "en" | "ar" = "ar";
 
   const I18N = {
     en: {

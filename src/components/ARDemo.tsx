@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Eye, Palette, MessageCircle, Clock } from "lucide-react";
+import { Eye, Palette } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -34,10 +34,18 @@ const ARDemo = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-headline text-4xl md:text-5xl text-charcoal mb-4">
+          <h2 
+            className="font-headline text-4xl md:text-5xl text-charcoal mb-4"
+            data-en="Experience Before You Buy"
+            data-ar="جرّب قبل ما تشتري"
+          >
             Experience Before You Buy
           </h2>
-          <p className="text-lg text-charcoal/70 max-w-2xl mx-auto">
+          <p 
+            className="text-lg text-charcoal/70 max-w-2xl mx-auto"
+            data-en="See your recliner in your space, in your color"
+            data-ar="شوف كرسيك في مكانك، بلونك"
+          >
             See your recliner in your space, in your color
           </p>
         </motion.div>
@@ -57,12 +65,28 @@ const ARDemo = () => {
                 <Eye className="w-7 h-7 text-dandle-orange" />
               </div>
               <div>
-                <h3 className="font-headline text-2xl text-charcoal">Room Preview</h3>
-                <p className="text-xs text-charcoal/60 mt-1">48-hour response</p>
+                <h3 
+                  className="font-headline text-2xl text-charcoal"
+                  data-en="Room Preview"
+                  data-ar="معاينة الغرفة"
+                >
+                  Room Preview
+                </h3>
+                <p 
+                  className="text-xs text-charcoal/60 mt-1"
+                  data-en="48-hour response"
+                  data-ar="رد خلال 48 ساعة"
+                >
+                  48-hour response
+                </p>
               </div>
             </div>
             
-            <p className="text-charcoal/70 mb-6">
+            <p 
+              className="text-charcoal/70 mb-6"
+              data-en="Send 1–3 wide corner photos of your room in daylight. Our team will place the recliner, recommend fabrics, and suggest room enhancements."
+              data-ar="ابعت 1-3 صور واسعة لزوايا غرفتك بضوء النهار. فريقنا هيحط الكرسي، ويقترح الخامات، ونصائح لتحسين الغرفة."
+            >
               Send 1–3 wide corner photos of your room in daylight. Our team will place 
               the recliner, recommend fabrics, and suggest room enhancements.
             </p>
@@ -72,7 +96,13 @@ const ARDemo = () => {
               className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white font-medium"
             >
               <WhatsAppIcon size={18} />
-              <span className="ml-2">Send Room Photos</span>
+              <span 
+                className="ml-2"
+                data-en="Send Room Photos"
+                data-ar="ابعت صور الغرفة"
+              >
+                Send Room Photos
+              </span>
             </Button>
           </motion.div>
 
@@ -89,14 +119,24 @@ const ARDemo = () => {
                 <Palette className="w-7 h-7 text-dandle-orange" />
               </div>
               <div>
-                <h3 className="font-headline text-2xl text-charcoal">Chair Recoloring</h3>
+                <h3 
+                  className="font-headline text-2xl text-charcoal"
+                  data-en="Chair Recoloring"
+                  data-ar="تلوين الكرسي"
+                >
+                  Chair Recoloring
+                </h3>
                 <Badge className="bg-dandle-orange/20 text-dandle-orange border-dandle-orange/30 text-xs mt-1">
-                  Coming Soon
+                  <span data-en="Coming Soon" data-ar="قريباً">Coming Soon</span>
                 </Badge>
               </div>
             </div>
             
-            <p className="text-charcoal/70 mb-6">
+            <p 
+              className="text-charcoal/70 mb-6"
+              data-en="Preview any recliner in our curated fabric palette. Tap a swatch on the product page to see your exact model recolored — no uploads needed."
+              data-ar="شوف أي كرسي بألوان الأقمشة المتاحة. اضغط على اللون في صفحة المنتج وشوف الموديل بتاعك — من غير رفع صور."
+            >
               Preview any recliner in our curated fabric palette. Tap a swatch on the 
               product page to see your exact model recolored — no uploads needed.
             </p>
