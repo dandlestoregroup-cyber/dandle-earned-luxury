@@ -1,9 +1,12 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet";
 import Navigation from "@/components/Navigation";
+import TopBanner from "@/components/TopBanner";
 import Footer from "@/components/Footer";
 import { Sparkles, Heart, Shield, Sofa, Armchair } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getLangFromStorage, type LangKey } from "@/i18n/strings";
 
 const products = [
   {
@@ -63,14 +66,83 @@ const differentiators = [
   }
 ];
 
+// Translations
+const storyTranslations = {
+  en: {
+    pageTitle: "Our Story",
+    tagline: "DANDLE RECLINERS • Cairo, Egypt",
+    heroSubtitle: "At Dandle, comfort isn't decoration—it's a standard.",
+    storyIntro1: "Over the years, our dedication to bringing comfort and elegance into every space we touch has only deepened. Every recliner we craft is built with the same mindset: details matter, because the feeling you get when you sit down is the whole point.",
+    storyIntro2: "We do the work properly—through meticulous discussions, relentless attention to detail, and partnerships with the best. Strong like lions. Clear like eagles. Proud, but never arrogant.",
+    storyIntro3: "Dandle isn't for everyone—and that's intentional. It's for people who value themselves and refuse to settle for less.",
+    quote: "Dandle Recliners: Where Excellence Meets Elegance, for Those Who Refuse to Settle.",
+    taglineBottom: "Your Comfort, Our Commitment.",
+    founderTitle: "From the Founder",
+    founderQuote: "We don't build 'just furniture.' We build the seat you trust—every day. The one that supports you when life is busy, and restores you when it finally goes quiet.",
+    founderName: "— Mourad Farah, Founder & Director",
+    differentiatorTitle: "What Makes Dandle Different",
+    differentiatorSubtitle: "What Sets Us Apart",
+    differentiatorTagline: "Built for daily comfort — practical, premium, made to live with.",
+    catalogTitle: "Product Catalog",
+    catalogSubtitle: "Our Collections",
+    catalogDesc: "A Dandle collection isn't defined by style. It's defined by purpose—what you need the piece to do for your day.",
+    notSure: "Not sure what fits you?",
+    chooseBy: "Choose by lifestyle:",
+    exploreTitle: "Explore Dandle",
+    exploreDesc: "Discover the collections built for comfort, posture, and presence.",
+    exploreCTA: "Explore the Collection",
+    exploreDiva: "Explore Diva",
+  },
+  ar: {
+    pageTitle: "قصتنا",
+    tagline: "داندل ريكلاينرز • القاهرة، مصر",
+    heroSubtitle: "في داندل، الراحة ليست ديكور — إنها معيار.",
+    storyIntro1: "على مر السنين، تعمق التزامنا بجلب الراحة والأناقة لكل مكان نلمسه. كل كرسي استرخاء نصنعه مبني بنفس العقلية: التفاصيل مهمة، لأن الشعور الذي تحصل عليه عند الجلوس هو الهدف.",
+    storyIntro2: "نحن نقوم بالعمل بشكل صحيح — من خلال المناقشات الدقيقة والاهتمام بالتفاصيل والشراكات مع الأفضل. أقوياء كالأسود. واضحون كالنسور. فخورون، لكن بدون غرور.",
+    storyIntro3: "داندل ليست للجميع — وهذا مقصود. إنها لمن يقدرون أنفسهم ويرفضون القبول بالأقل.",
+    quote: "داندل ريكلاينرز: حيث يلتقي التميز بالأناقة، لمن يرفضون القبول بالأقل.",
+    taglineBottom: "راحتك، التزامنا.",
+    founderTitle: "من المؤسس",
+    founderQuote: "نحن لا نبني 'مجرد أثاث'. نحن نبني المقعد الذي تثق به — كل يوم. الذي يدعمك عندما تكون الحياة مشغولة، ويستعيدك عندما تهدأ أخيراً.",
+    founderName: "— مراد فرح، المؤسس والمدير",
+    differentiatorTitle: "ما يجعل داندل مختلفة",
+    differentiatorSubtitle: "ما يميزنا",
+    differentiatorTagline: "مصممة للراحة اليومية — عملية، فاخرة، مصنوعة لتعيش معك.",
+    catalogTitle: "كتالوج المنتجات",
+    catalogSubtitle: "مجموعاتنا",
+    catalogDesc: "مجموعة داندل ليست معرفة بالأسلوب. إنها معرفة بالهدف — ما تحتاجه القطعة لتفعله ليومك.",
+    notSure: "غير متأكد مما يناسبك؟",
+    chooseBy: "اختر حسب نمط الحياة:",
+    exploreTitle: "استكشف داندل",
+    exploreDesc: "اكتشف المجموعات المصممة للراحة والوضعية والحضور.",
+    exploreCTA: "استكشف المجموعة",
+    exploreDiva: "استكشف ديفا",
+  }
+};
+
 const OurStory = () => {
+  const [lang, setLang] = useState<LangKey>('en');
+  
+  useEffect(() => {
+    setLang(getLangFromStorage());
+    const interval = setInterval(() => {
+      const currentLang = getLangFromStorage();
+      setLang(prev => prev !== currentLang ? currentLang : prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+  
+  const t = storyTranslations[lang];
+  const isArabic = lang === 'ar';
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={isArabic ? 'rtl' : 'ltr'}>
       <Helmet>
-        <title>Our Story | Dandle - Where Excellence Meets Elegance</title>
+        <title>{t.pageTitle} | Dandle - Where Excellence Meets Elegance</title>
         <meta name="description" content="At Dandle, comfort isn't decoration—it's a standard. Discover our story of crafting premium recliners in Cairo, Egypt for those who refuse to settle." />
       </Helmet>
 
+      <TopBanner />
       <Navigation />
 
       {/* Hero Section */}
@@ -88,13 +160,13 @@ const OurStory = () => {
           className="relative z-10 text-center px-4 max-w-4xl mx-auto"
         >
           <span className="text-bronze font-body text-sm tracking-[0.3em] uppercase">
-            DANDLE RECLINERS • Cairo, Egypt
+            {t.tagline}
           </span>
           <h1 className="font-headline text-5xl md:text-7xl text-warm-white mt-4 mb-6">
-            Our Story
+            {t.pageTitle}
           </h1>
           <p className="font-body text-xl text-warm-white/80 leading-relaxed max-w-2xl mx-auto">
-            At Dandle, comfort isn't decoration—it's a standard.
+            {t.heroSubtitle}
           </p>
         </motion.div>
       </section>
@@ -111,21 +183,20 @@ const OurStory = () => {
               className="space-y-6"
             >
               <p className="font-body text-lg text-muted-foreground leading-relaxed">
-                Over the years, our dedication to bringing comfort and elegance into every space we touch has only deepened. Every recliner we craft is built with the same mindset: details matter, because the feeling you get when you sit down is the whole point.
+                {t.storyIntro1}
               </p>
               <p className="font-body text-lg text-muted-foreground leading-relaxed">
-                We do the work properly—through meticulous discussions, relentless attention to detail, and partnerships with the best. Strong like lions. Clear like eagles. Proud, but never arrogant.
+                {t.storyIntro2}
               </p>
               <p className="font-body text-lg text-foreground leading-relaxed font-medium">
-                Dandle isn't for everyone—and that's intentional.<br />
-                It's for people who value themselves and refuse to settle for less.
+                {t.storyIntro3}
               </p>
               <div className="pt-6 border-t border-border">
                 <p className="font-headline text-xl text-bronze italic">
-                  "Dandle Recliners: Where Excellence Meets Elegance, for Those Who Refuse to Settle."
+                  "{t.quote}"
                 </p>
                 <p className="font-body text-muted-foreground mt-2">
-                  Your Comfort, Our Commitment.
+                  {t.taglineBottom}
                 </p>
               </div>
             </motion.div>
@@ -145,16 +216,15 @@ const OurStory = () => {
               className="text-center"
             >
               <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
-                From the Founder
+                {t.founderTitle}
               </span>
               <blockquote className="font-headline text-2xl md:text-3xl text-foreground mt-6 leading-relaxed italic">
-                "We don't build 'just furniture.' We build the seat you trust—every day.
-                The one that supports you when life is busy, and restores you when it finally goes quiet."
+                "{t.founderQuote}"
               </blockquote>
               <div className="mt-8">
                 <div className="w-16 h-0.5 bg-bronze mx-auto mb-4" />
                 <p className="font-body text-muted-foreground">
-                  — Mourad Farah, Founder & Director
+                  {t.founderName}
                 </p>
               </div>
             </motion.div>
@@ -173,13 +243,13 @@ const OurStory = () => {
             className="text-center mb-6"
           >
             <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
-              What Sets Us Apart
+              {t.differentiatorSubtitle}
             </span>
             <h2 className="font-headline text-4xl md:text-5xl text-foreground mt-3">
-              What Makes Dandle Different
+              {t.differentiatorTitle}
             </h2>
           <p className="font-body text-lg text-muted-foreground mt-4 italic">
-            "Built for daily comfort — practical, premium, made to live with."
+            "{t.differentiatorTagline}"
           </p>
           </motion.div>
 
@@ -219,13 +289,13 @@ const OurStory = () => {
             className="text-center mb-12"
           >
             <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
-              Our Collections
+              {t.catalogSubtitle}
             </span>
             <h2 className="font-headline text-4xl md:text-5xl text-foreground mt-3">
-              Product Catalog
+              {t.catalogTitle}
             </h2>
             <p className="font-body text-muted-foreground mt-4 max-w-2xl mx-auto">
-              A Dandle collection isn't defined by style. It's defined by purpose—what you need the piece to do for your day.
+              {t.catalogDesc}
             </p>
           </motion.div>
 
@@ -265,8 +335,8 @@ const OurStory = () => {
             className="text-center mt-12 p-6 bg-secondary/50 rounded-lg max-w-2xl mx-auto"
           >
             <p className="font-body text-muted-foreground">
-              <span className="font-medium text-foreground">Not sure what fits you?</span><br />
-              Choose by lifestyle: <span className="text-bronze">Design (Diva)</span> • <span className="text-bronze">Daily (RelaxMax)</span> • <span className="text-bronze">Support (EasyUp)</span> • <span className="text-bronze">Work-to-Rest (WorkNest)</span> • <span className="text-bronze">Shared Comfort (CozyCompanion)</span>
+              <span className="font-medium text-foreground">{t.notSure}</span><br />
+              {t.chooseBy} <span className="text-bronze">Design (Diva)</span> • <span className="text-bronze">Daily (RelaxMax)</span> • <span className="text-bronze">Support (EasyUp)</span> • <span className="text-bronze">Work-to-Rest (WorkNest)</span> • <span className="text-bronze">Shared Comfort (CozyCompanion)</span>
             </p>
           </motion.div>
         </div>
