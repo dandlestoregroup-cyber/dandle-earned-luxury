@@ -11,7 +11,6 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import WorkWithUs from "@/components/WorkWithUs";
-import LifestyleGallery from "@/components/LifestyleGallery";
 import IstikbalShowroom from "@/components/IstikbalShowroom";
 import Partners from "@/components/Partners";
 import FabricsSection from "@/components/FabricsSection";
@@ -37,7 +36,6 @@ const Index = () => {
         <GiftOfComfort />
         <TrustBlock />
         <FabricsSection />
-        <LifestyleGallery />
         <Partners />
         <IstikbalShowroom />
         <SocialProof />

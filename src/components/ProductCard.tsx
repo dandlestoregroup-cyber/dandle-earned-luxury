@@ -20,6 +20,53 @@ const productTranslations: Record<string, { name: string; tagline: string }> = {
   "complete-set": { name: "طقم العائلة", tagline: "راحة لكل العائلة" },
 };
 
+// Map product color names to palette keys for image lookup
+const colorToPaletteKey: Record<string, string> = {
+  "Urban Charcoal": "desert-grey",
+  "Off White": "alexandria-linen",
+  "Elephant Grey": "coastal-fog",
+  "Chic Red": "nile-mist",
+  "Tan Beige": "amber-sand",
+  "Pink Rose": "desert-sage",
+  "Sunshine Yellow": "giza-gold",
+  "Ocean Blue": "nile-sapphire",
+  "Warm Grey": "mocha-taupe",
+  "Creamy Beige": "alexandria-linen",
+  "Slate Grey": "desert-grey",
+  "Espresso Brown": "mocha-taupe",
+  "Stone Grey": "coastal-fog",
+  "Navy Blue": "blue-nile-denim",
+  "Coordinated Styles": "alexandria-linen",
+};
+
+// Get hex color for display name
+const getColorHex = (colorName: string): string => {
+  const paletteKey = colorToPaletteKey[colorName];
+  if (paletteKey) {
+    const paletteEntry = PALETTE_MAP.get(paletteKey);
+    if (paletteEntry) return paletteEntry.hex;
+  }
+  // Fallback colors
+  const fallbackColors: Record<string, string> = {
+    "Urban Charcoal": "#3D3D3D",
+    "Off White": "#F5F5DC",
+    "Elephant Grey": "#8B8B8B",
+    "Chic Red": "#C41E3A",
+    "Tan Beige": "#D2B48C",
+    "Pink Rose": "#E8B4B8",
+    "Sunshine Yellow": "#FFD700",
+    "Ocean Blue": "#1E4D7B",
+    "Warm Grey": "#9B8B7A",
+    "Creamy Beige": "#F5E6D3",
+    "Slate Grey": "#708090",
+    "Espresso Brown": "#4A3728",
+    "Stone Grey": "#928E85",
+    "Navy Blue": "#1B365D",
+    "Coordinated Styles": "#E8DFD1",
+  };
+  return fallbackColors[colorName] || "#CCC";
+};
+
 interface ProductCardProps {
   product: Product;
   onClick: () => void;
@@ -45,27 +92,23 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const isArabic = lang === 'ar';
   const translation = productTranslations[product.id];
   
-  // State for swatch-based image preview
-  const [selectedSwatchKey, setSelectedSwatchKey] = useState<string | null>(null);
+  // State for swatch-based image preview - use product color name
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   
-  // Get product-specific swatches from the color image mapping
-  const colorVariants = productColorImages[product.id] || [];
-  const swatches = useMemo(() => 
-    colorVariants.map(v => ({
-      ...PALETTE_MAP.get(v.swatchKey),
-      imageSrc: v.imageSrc
-    })).filter(s => s.key),
-    [product.id]
-  );
+  // Use product.colors from product.ts (same as modal)
+  const colors = product.colors || [];
 
-  // Determine current display image based on selected swatch
+  // Determine current display image based on selected color
   const displayImage = useMemo(() => {
-    if (selectedSwatchKey) {
-      const colorImage = getProductColorImage(product.id, selectedSwatchKey);
-      if (colorImage) return colorImage;
+    if (selectedColor) {
+      const paletteKey = colorToPaletteKey[selectedColor];
+      if (paletteKey) {
+        const colorImage = getProductColorImage(product.id, paletteKey);
+        if (colorImage) return colorImage;
+      }
     }
     return defaultHeroImage;
-  }, [selectedSwatchKey, defaultHeroImage, product.id]);
+  }, [selectedColor, defaultHeroImage, product.id]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-EG", {
@@ -91,9 +134,9 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
   const isHeritageSet = product.id === "complete-set";
 
-  const handleSwatchClick = (e: React.MouseEvent, swatchKey: string) => {
+  const handleSwatchClick = (e: React.MouseEvent, colorName: string) => {
     e.stopPropagation(); // Prevent card click
-    setSelectedSwatchKey(swatchKey === selectedSwatchKey ? null : swatchKey);
+    setSelectedColor(colorName === selectedColor ? null : colorName);
   };
 
   return (
@@ -111,7 +154,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         <img
           src={displayImage}
           alt={`Dandle ${product.name}`}
-          className="w-full h-full object-contain object-center p-1 md:p-2"
+          className="w-full h-full object-contain object-center p-1 md:p-2 transition-all duration-300"
           loading="lazy"
         />
       </div>
@@ -130,27 +173,27 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
           {getPriceDisplay()}
         </div>
 
-        {/* Clickable color swatches */}
-        {swatches.length > 0 && (
+        {/* Clickable color swatches - same colors as modal */}
+        {colors.length > 0 && (
           <div className="pt-2 md:pt-3 space-y-1 md:space-y-2">
             <p className="text-xs md:text-sm text-charcoal/50 uppercase tracking-wider font-body hidden md:block">
               {isArabic ? 'الألوان المتاحة' : 'Available Colors'}
             </p>
-            <div className="flex justify-center gap-1.5 md:gap-2">
-              {swatches.map((swatch) => (
+            <div className="flex justify-center gap-1.5 md:gap-2 flex-wrap">
+              {colors.map((colorName) => (
                 <button
-                  key={swatch!.key}
+                  key={colorName}
                   type="button"
-                  onClick={(e) => handleSwatchClick(e, swatch!.key)}
+                  onClick={(e) => handleSwatchClick(e, colorName)}
                   className={cn(
                     "w-6 h-6 md:w-10 md:h-10 rounded md:rounded-lg border shadow-sm transition-all duration-200",
-                    selectedSwatchKey === swatch!.key 
+                    selectedColor === colorName 
                       ? "ring-2 ring-dandle-orange ring-offset-1 border-dandle-orange scale-110" 
                       : "border-charcoal/10 hover:scale-105"
                   )}
-                  style={{ backgroundColor: swatch!.hex }}
-                  title={isArabic ? swatch!.nameAr : swatch!.nameEn}
-                  aria-label={isArabic ? swatch!.nameAr : `Preview ${swatch!.nameEn} color`}
+                  style={{ backgroundColor: getColorHex(colorName) }}
+                  title={colorName}
+                  aria-label={`Preview ${colorName} color`}
                 />
               ))}
             </div>
