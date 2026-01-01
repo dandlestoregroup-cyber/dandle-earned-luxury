@@ -43,11 +43,6 @@ export const FabricsSection: React.FC = () => {
             {t('fabrics.intro', lang)}
           </p>
 
-          {isArabic && (
-            <p className="text-base font-body leading-loose text-charcoal/90 whitespace-pre-line text-right mt-4">
-              {t('fabrics.paragraph_ar_verbatim', lang)}
-            </p>
-          )}
 
           {!isArabic && (
             <p className="text-base font-body leading-relaxed text-charcoal/90 mt-4">
