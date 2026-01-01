@@ -3,15 +3,18 @@ import { Heart, Award, Home } from "lucide-react";
 
 const beliefs = [
   {
-    statement: "Comfort you feel every day.",
+    statementEn: "Comfort you feel every day.",
+    statementAr: "راحة تحسها كل يوم.",
     icon: Heart,
   },
   {
-    statement: "Quality that speaks for itself.",
+    statementEn: "Quality that speaks for itself.",
+    statementAr: "جودة تتكلم عن نفسها.",
     icon: Award,
   },
   {
-    statement: "A room that feels complete.",
+    statementEn: "A room that feels complete.",
+    statementAr: "غرفة تحس إنها كاملة.",
     icon: Home,
   },
 ];
@@ -23,7 +26,7 @@ const BeliefStatements = () => {
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
           {beliefs.map((belief, index) => (
             <motion.div
-              key={belief.statement}
+              key={belief.statementEn}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -31,8 +34,12 @@ const BeliefStatements = () => {
               className="flex items-center gap-3 text-center md:text-left"
             >
               <belief.icon className="w-6 h-6 text-dandle-orange flex-shrink-0" />
-              <span className="font-headline text-xl md:text-2xl text-warm-white">
-                {belief.statement}
+              <span 
+                className="font-headline text-xl md:text-2xl text-warm-white"
+                data-en={belief.statementEn}
+                data-ar={belief.statementAr}
+              >
+                {belief.statementEn}
               </span>
             </motion.div>
           ))}
