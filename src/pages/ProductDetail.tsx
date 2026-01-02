@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import {
   fetchShopifyCommerceData,
@@ -18,6 +19,7 @@ import Footer from "@/components/Footer";
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { addItem } = useShopifyCartStore();
 
   const [product, setProduct] = useState<MergedProduct | null>(null);
@@ -85,7 +87,7 @@ const ProductDetail = () => {
   const isAvailable = product.commerce?.availableForSale ?? true;
   const displayPrice = product.commerce
     ? formatPrice(product.commerce.price, product.commerce.currencyCode)
-    : "Price on request";
+    : t('priceOnRequest');
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,8 +95,8 @@ const ProductDetail = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-8 mt-20">
         <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
+          <ArrowLeft className="w-4 h-4 ltr:mr-2 rtl:ml-2 rtl:rotate-180" />
+          {t('back')}
         </Button>
 
         <div className="grid md:grid-cols-2 gap-12">
@@ -120,7 +122,7 @@ const ProductDetail = () => {
               {isLoadingCommerce ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span className="text-muted-foreground">Loading price...</span>
+                  <span className="text-muted-foreground">{t('loadingPrice')}</span>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -134,7 +136,7 @@ const ProductDetail = () => {
                   )}
                   {!isAvailable && (
                     <div className="text-sm text-destructive font-medium">
-                      Currently unavailable
+                      {t('currentlyUnavailable')}
                     </div>
                   )}
                 </div>
@@ -142,7 +144,7 @@ const ProductDetail = () => {
             </div>
 
             <div className="space-y-3">
-              <label className="font-body text-sm text-foreground">Quantity</label>
+              <label className="font-body text-sm text-foreground">{t('quantity')}</label>
               <div className="flex items-center gap-3">
                 <Button variant="outline" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))} disabled={quantity <= 1}>-</Button>
                 <span className="w-12 text-center font-semibold">{quantity}</span>
@@ -156,14 +158,14 @@ const ProductDetail = () => {
               onClick={handleAddToCart}
               disabled={!isAvailable || isLoadingCommerce || !product.commerce}
             >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              {isAvailable ? "Add to Cart" : "Contact Us"}
+              <ShoppingCart className="w-5 h-5 ltr:mr-2 rtl:ml-2" />
+              {isAvailable ? t('addToCart') : t('contactUs')}
             </Button>
 
             <div className="pt-6 border-t border-border">
-              <h3 className="font-headline text-xl mb-3">About This Product</h3>
+              <h3 className="font-headline text-xl mb-3">{t('aboutThisProduct')}</h3>
               <p className="font-body text-muted-foreground leading-relaxed">
-                Handcrafted in Cairo, Egypt with premium materials and meticulous attention to detail.
+                {t('productDescription')}
               </p>
             </div>
 

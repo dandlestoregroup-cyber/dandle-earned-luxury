@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 import { products, Product } from "@/types/product";
 
 const ProductGallery = () => {
+  const { t } = useTranslation();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -20,7 +22,7 @@ const ProductGallery = () => {
   return (
     <section id="collection" className="bg-warm-beige py-24 px-6 text-center">
       <h2 className="font-headline text-3xl md:text-5xl mb-12 text-charcoal">
-        Our Collection
+        {t('ourCollection')}
       </h2>
       <div className="grid md:grid-cols-3 gap-8 max-w-screen-xl mx-auto">
         {products.map((product, i) => (

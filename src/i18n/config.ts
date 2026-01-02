@@ -22,6 +22,20 @@ i18n
           originalRoom: "Original Room",
           withRecliner: "With {{model}} in {{color}}",
           beforeAfter: "Swipe to compare",
+          // Product-related translations
+          ourCollection: "Our Collection",
+          customizeNow: "Customize Now",
+          notifyMe: "Notify Me",
+          contactForPrice: "Contact for Price",
+          back: "Back",
+          loadingPrice: "Loading price...",
+          currentlyUnavailable: "Currently unavailable",
+          quantity: "Quantity",
+          addToCart: "Add to Cart",
+          contactUs: "Contact Us",
+          aboutThisProduct: "About This Product",
+          productDescription: "Handcrafted in Cairo, Egypt with premium materials and meticulous attention to detail.",
+          priceOnRequest: "Price on request",
         }
       },
       ar: {
@@ -41,6 +55,20 @@ i18n
           originalRoom: "الغرفة الأصلية",
           withRecliner: "مع {{model}} {{color}}",
           beforeAfter: "اسحب للمقارنة",
+          // Product-related translations
+          ourCollection: "مجموعتنا",
+          customizeNow: "خصّص الآن",
+          notifyMe: "أعلمني",
+          contactForPrice: "تواصل للسعر",
+          back: "رجوع",
+          loadingPrice: "جارٍ تحميل السعر...",
+          currentlyUnavailable: "غير متوفر حالياً",
+          quantity: "الكمية",
+          addToCart: "أضف للسلة",
+          contactUs: "تواصل معنا",
+          aboutThisProduct: "عن هذا المنتج",
+          productDescription: "صُنع بعناية في القاهرة، مصر باستخدام خامات فاخرة واهتمام دقيق بالتفاصيل.",
+          priceOnRequest: "السعر عند الطلب",
         }
       }
     },

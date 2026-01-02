@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { colorNameToFabricId, getFabricColorById, allFabricColors } from "@/data/fabricColors";
@@ -9,6 +10,8 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onClick }: ProductCardProps) => {
+  const { t } = useTranslation();
+
   // Try to load hero image from Lovable catalog (master)
   const lovableProduct = getLovableProduct(product.id);
   const heroImage = lovableProduct?.heroImage.src || product.imageUrl;
@@ -22,11 +25,11 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   const getPriceDisplay = () => {
-    if (product.comingSoon) return "Notify Me";
+    if (product.comingSoon) return t('notifyMe');
     if (product.priceManual && product.pricePower) {
       return `${formatPrice(product.priceManual)} - ${formatPrice(product.pricePower)}`;
     }
-    return product.price ? formatPrice(product.price) : "Contact for Price";
+    return product.price ? formatPrice(product.price) : t('contactForPrice');
   };
 
   return (
@@ -91,7 +94,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
           </div>
         )}
         <button className="w-full py-4 rounded-md bg-gradient-to-r from-warm-beige to-bronze/30 text-charcoal font-body text-lg md:text-xl font-medium hover:from-bronze/40 hover:to-warm-beige transition-all">
-          Customize Now
+          {t('customizeNow')}
         </button>
       </div>
     </motion.div>
