@@ -61,10 +61,10 @@ const GiftOfComfort = () => {
           
           <p 
             className="text-muted-foreground max-w-2xl mx-auto text-lg font-body"
-            data-en="A DANDLE recliner isn't just furniture — it's an invitation to slow down. Perfect for birthdays, anniversaries, or simply saying 'you deserve this.'"
-            data-ar="كرسي DANDLE ليس مجرد أثاث — إنه دعوة للاسترخاء. مثالي لأعياد الميلاد، الذكرى السنوية، أو ببساطة للقول 'أنت تستحق هذا.'"
+            data-en="A piece chosen with confidence. Built with care. For someone who earned it."
+            data-ar="قطعة اخترتها بثقة. صُنعت بعناية. لشخص يستحقها."
           >
-            A DANDLE recliner isn't just furniture — it's an invitation to slow down. Perfect for birthdays, anniversaries, or simply saying "you deserve this."
+            A piece chosen with confidence. Built with care. For someone who earned it.
           </p>
         </motion.div>
 

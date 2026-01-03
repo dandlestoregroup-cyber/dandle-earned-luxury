@@ -77,6 +77,22 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
 
       {/* Content - higher z-index */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4">
+        {/* Pre-headline Badge */}
+        <motion.div
+          className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/20"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <span 
+            className="text-sm md:text-base text-white/90 font-body tracking-wide"
+            data-en="The Art of Rest"
+            data-ar="فن الراحة"
+          >
+            The Art of Rest
+          </span>
+        </motion.div>
+
         {/* Animated Headline - Bilingual */}
         <div data-en="The Gift of Comfort" data-ar="هدية الراحة">
           <AnimatedHeadline 
@@ -90,7 +106,7 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
 
         {/* Subtitle - Bilingual */}
         <motion.p
-          className="text-lg md:text-xl lg:text-2xl text-white/90 font-body text-center mb-3 max-w-3xl"
+          className="text-lg md:text-xl lg:text-2xl text-white/90 font-body text-center mb-2 max-w-3xl"
           style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)', wordBreak: 'normal', overflowWrap: 'normal', hyphens: 'none' }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -101,16 +117,29 @@ const HeroOffer = ({ onReplayVideo }: HeroOfferProps) => {
           For refined taste
         </motion.p>
 
+        {/* Origin Line - Bilingual */}
+        <motion.p
+          className="text-base md:text-lg text-white/80 font-body text-center mb-3 max-w-3xl"
+          style={{ textShadow: '0 2px 15px rgba(0,0,0,0.8)' }}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 1.15, duration: 0.6 }}
+          data-en="Crafted in Egypt. Made for Real Homes."
+          data-ar="صناعة مصرية. لبيوت حقيقية."
+        >
+          Crafted in Egypt. Made for Real Homes.
+        </motion.p>
+
         {/* Proof Line - Bilingual */}
         <motion.p
           className="text-white/80 text-center font-body text-base md:text-lg mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.3, duration: 0.5 }}
-          data-en="Free delivery • 5-year warranty • White-glove service"
-          data-ar="توصيل مجاني • ضمان 5 سنوات • خدمة راقية"
+          data-en="14-Day Delivery • 2-Year Warranty"
+          data-ar="تسليم خلال 14 يوم • ضمان سنتين"
         >
-          Free delivery • 5-year warranty • White-glove service
+          14-Day Delivery • 2-Year Warranty
         </motion.p>
 
         {/* CTA Buttons */}

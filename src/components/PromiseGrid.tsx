@@ -1,25 +1,25 @@
 const PromiseGrid = () => {
   const promises = [
     {
-      icon: "✨",
-      titleEn: "Fully Customizable",
-      titleAr: "قابل للتخصيص بالكامل",
-      textEn: "Premium materials, your exact specifications",
-      textAr: "خامات فاخرة، حسب مواصفاتك",
-    },
-    {
-      icon: "📱",
-      titleEn: "Room Preview",
-      titleAr: "معاينة الغرفة",
-      textEn: "See it in your space before you buy",
-      textAr: "شاهده في مكانك قبل الشراء",
-    },
-    {
       icon: "🚚",
-      titleEn: "White Glove Service",
-      titleAr: "خدمة راقية",
-      textEn: "Delivery, assembly & placement included",
-      textAr: "التوصيل والتركيب والتنسيق مشمول",
+      titleEn: "Delivery in 14 Days",
+      titleAr: "تسليم خلال 14 يوم",
+      textEn: "Fast nationwide delivery to your door",
+      textAr: "توصيل سريع لجميع المحافظات",
+    },
+    {
+      icon: "🔧",
+      titleEn: "Free Installation",
+      titleAr: "تركيب مجاني",
+      textEn: "Professional setup in your home",
+      textAr: "تركيب احترافي في منزلك",
+    },
+    {
+      icon: "🛡️",
+      titleEn: "2-Year Warranty",
+      titleAr: "ضمان سنتين",
+      textEn: "Full coverage on all parts & fabric",
+      textAr: "تغطية شاملة للقطع والخامات",
     },
   ];
 
