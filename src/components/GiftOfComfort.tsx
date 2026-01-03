@@ -1,123 +1,114 @@
 import { motion } from "framer-motion";
-import { Gift, Heart, Star, Sparkles } from "lucide-react";
+import { Gift, Heart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 
 const GiftOfComfort = () => {
-  const navigate = useNavigate();
-
   const features = [
     {
       icon: Gift,
-      title: "Premium Gift Wrapping",
-      titleAr: "تغليف هدايا فاخر",
-      desc: "Elegant presentation for your loved ones",
-      descAr: "تقديم أنيق لأحبائك"
+      title: "Premium Presentation",
+      titleAr: "تقديم فاخر",
     },
     {
       icon: Heart,
-      title: "Personalized Message",
+      title: "Personalized Note",
       titleAr: "رسالة شخصية",
-      desc: "Include a heartfelt note with your gift",
-      descAr: "أضف رسالة صادقة مع هديتك"
     },
     {
-      icon: Star,
-      title: "White-Glove Delivery",
-      titleAr: "توصيل راقي",
-      desc: "Professional setup in their home",
-      descAr: "تركيب احترافي في منزلهم"
+      icon: Truck,
+      title: "White-Glove Setup",
+      titleAr: "تركيب راقي",
     }
   ];
 
+  const scrollToProducts = () => {
+    document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <section id="gift-of-comfort" className="py-20 md:py-28 bg-warm-beige/30">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center gap-2 bg-dandle-orange/10 px-4 py-2 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-dandle-orange" />
+    <section id="gift-of-comfort" className="relative py-24 md:py-32 overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/images/lifestyle-reading-nook.jpg"
+          alt="Lifestyle"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-obsidian/70" />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
             <span 
-              className="text-sm font-body text-dandle-orange font-medium"
+              className="text-xs text-champagne tracking-[0.2em] uppercase font-body font-light"
               data-en="Gift of Comfort"
               data-ar="هدية الراحة"
             >
               Gift of Comfort
             </span>
-          </div>
-          
-          <h2 
-            className="font-headline text-3xl md:text-5xl text-charcoal mb-4"
-            data-en="Give the Gift of Rest"
-            data-ar="أهدِ راحةً لمن تحب"
-          >
-            Give the Gift of Rest
-          </h2>
-          
-          <p 
-            className="text-muted-foreground max-w-2xl mx-auto text-lg font-body"
-            data-en="A piece chosen with confidence. Built with care. For someone who earned it."
-            data-ar="قطعة اخترتها بثقة. صُنعت بعناية. لشخص يستحقها."
-          >
-            A piece chosen with confidence. Built with care. For someone who earned it.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-card rounded-xl p-6 text-center border border-border/50 shadow-subtle"
+            
+            <h2 
+              className="font-headline text-4xl md:text-5xl text-warm-white mt-4 mb-6 font-light leading-tight"
+              data-en="For Refined Taste"
+              data-ar="لأصحاب الذوق الرفيع"
             >
-              <div className="w-12 h-12 rounded-full bg-dandle-orange/10 flex items-center justify-center mx-auto mb-4">
-                <feature.icon className="w-6 h-6 text-dandle-orange" />
-              </div>
-              <h3 
-                className="font-headline text-xl text-charcoal mb-2"
-                data-en={feature.title}
-                data-ar={feature.titleAr}
-              >
-                {feature.title}
-              </h3>
-              <p 
-                className="text-muted-foreground text-sm font-body"
-                data-en={feature.desc}
-                data-ar={feature.descAr}
-              >
-                {feature.desc}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+              For Refined Taste
+            </h2>
+            
+            <p 
+              className="text-warm-white/70 text-lg font-body font-light leading-relaxed mb-10"
+              data-en="Give someone exceptional comfort. A gift that becomes part of their daily life — quietly, beautifully, for years."
+              data-ar="أهدِ شخصًا راحة استثنائية. هدية تصبح جزءًا من حياته اليومية — بهدوء، بجمال، لسنوات."
+            >
+              Give someone exceptional comfort. A gift that becomes part of their daily life — quietly, beautifully, for years.
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-center"
-        >
-          <Button
-            variant="hero"
-            size="lg"
-            onClick={() => navigate('/#collection')}
-            className="gap-2"
+          {/* Features */}
+          <motion.div 
+            className="flex flex-wrap gap-8 mb-10"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Gift className="w-5 h-5" />
-            <span data-en="Explore Gift Options" data-ar="استكشف خيارات الهدايا">
-              Explore Gift Options
-            </span>
-          </Button>
-        </motion.div>
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <feature.icon className="w-5 h-5 text-champagne stroke-[1.5]" />
+                <span 
+                  className="text-warm-white/80 text-sm font-body font-light"
+                  data-en={feature.title}
+                  data-ar={feature.titleAr}
+                >
+                  {feature.title}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <Button
+              onClick={scrollToProducts}
+              className="btn-luxury rounded-none"
+            >
+              <span data-en="Explore Collection" data-ar="استكشف المجموعة">
+                Explore Collection
+              </span>
+            </Button>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
