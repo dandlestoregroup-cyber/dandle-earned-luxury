@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Eye, Palette } from "lucide-react";
+import { Eye, Palette, HelpCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -23,6 +23,13 @@ const ARDemo = () => {
     window.open(`https://wa.me/201222804255?text=${message}`, "_blank");
   };
 
+  const handleComfortQuizClick = () => {
+    const message = encodeURIComponent(
+      "Comfort Quiz Request\n\nI'd like help finding my perfect recliner!"
+    );
+    window.open(`https://wa.me/201222804255?text=${message}`, "_blank");
+  };
+
   return (
     <section className="bg-warm-beige py-24 px-6">
       <div className="max-w-6xl mx-auto">
@@ -36,10 +43,10 @@ const ARDemo = () => {
         >
           <h2 
             className="font-headline text-4xl md:text-5xl text-charcoal mb-4"
-            data-en="Experience Before You Buy"
-            data-ar="جرّب قبل ما تشتري"
+            data-en="Premium Tools"
+            data-ar="أدوات مميزة"
           >
-            Experience Before You Buy
+            Premium Tools
           </h2>
           <p 
             className="text-lg text-charcoal/70 max-w-2xl mx-auto"
@@ -50,106 +57,130 @@ const ARDemo = () => {
           </p>
         </motion.div>
 
-        {/* Two Feature Cards */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Room Preview - Manual via WhatsApp */}
+        {/* Three Feature Cards */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Room Visualizer */}
           <motion.div
-            className="bg-white rounded-2xl p-8 shadow-lg border-2 border-warm-beige hover:border-dandle-orange/30 transition-colors"
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            className="bg-white rounded-2xl p-6 shadow-lg border-2 border-warm-beige hover:border-dandle-orange/30 transition-colors"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-14 h-14 rounded-full bg-dandle-orange/20 flex items-center justify-center">
-                <Eye className="w-7 h-7 text-dandle-orange" />
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-dandle-orange/20 flex items-center justify-center">
+                <Eye className="w-6 h-6 text-dandle-orange" />
               </div>
               <div>
                 <h3 
-                  className="font-headline text-2xl text-charcoal"
-                  data-en="Room Preview"
+                  className="font-headline text-xl text-charcoal"
+                  data-en="Room Visualizer"
                   data-ar="معاينة الغرفة"
                 >
-                  Room Preview
+                  Room Visualizer
                 </h3>
-                <p 
-                  className="text-xs text-charcoal/60 mt-1"
-                  data-en="48-hour response"
-                  data-ar="رد خلال 48 ساعة"
-                >
-                  48-hour response
-                </p>
               </div>
             </div>
             
             <p 
-              className="text-charcoal/70 mb-6"
-              data-en="Send 1–3 wide corner photos of your room in daylight. Our team will place the recliner, recommend fabrics, and suggest room enhancements."
-              data-ar="ابعت 1-3 صور واسعة لزوايا غرفتك بضوء النهار. فريقنا هيحط الكرسي، ويقترح الخامات، ونصائح لتحسين الغرفة."
+              className="text-charcoal/70 mb-6 text-sm"
+              data-en="See your recliner in your space with AR visualization."
+              data-ar="شوف كرسيك في مكانك بتقنية الواقع المعزز."
             >
-              Send 1–3 wide corner photos of your room in daylight. Our team will place 
-              the recliner, recommend fabrics, and suggest room enhancements.
+              See your recliner in your space with AR visualization.
             </p>
 
             <Button
               onClick={handleRoomPreviewClick}
-              className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white font-medium"
+              className="w-full bg-dandle-orange hover:bg-dandle-orange/90 text-white font-medium"
             >
-              <WhatsAppIcon size={18} />
-              <span 
-                className="ml-2"
-                data-en="Send Room Photos"
-                data-ar="ابعت صور الغرفة"
-              >
-                Send Room Photos
-              </span>
+              <span data-en="Try Now" data-ar="جرّب الآن">Try Now</span>
             </Button>
           </motion.div>
 
-          {/* Chair Recoloring - Swatch-based */}
+          {/* Fabric Matcher */}
           <motion.div
-            className="bg-white rounded-2xl p-8 shadow-lg border-2 border-warm-beige hover:border-dandle-orange/30 transition-colors"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            className="bg-white rounded-2xl p-6 shadow-lg border-2 border-warm-beige hover:border-dandle-orange/30 transition-colors"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-14 h-14 rounded-full bg-dandle-orange/20 flex items-center justify-center">
-                <Palette className="w-7 h-7 text-dandle-orange" />
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-dandle-orange/20 flex items-center justify-center">
+                <Palette className="w-6 h-6 text-dandle-orange" />
               </div>
               <div>
                 <h3 
-                  className="font-headline text-2xl text-charcoal"
-                  data-en="Chair Recoloring"
-                  data-ar="تلوين الكرسي"
+                  className="font-headline text-xl text-charcoal"
+                  data-en="Fabric Matcher"
+                  data-ar="مطابقة الأقمشة"
                 >
-                  Chair Recoloring
+                  Fabric Matcher
                 </h3>
-                <Badge className="bg-dandle-orange/20 text-dandle-orange border-dandle-orange/30 text-xs mt-1">
-                  <span data-en="Coming Soon" data-ar="قريباً">Coming Soon</span>
+              </div>
+            </div>
+            
+            <p 
+              className="text-charcoal/70 mb-6 text-sm"
+              data-en="Match fabrics to your existing décor instantly."
+              data-ar="طابق الأقمشة مع ديكورك الحالي فوراً."
+            >
+              Match fabrics to your existing décor instantly.
+            </p>
+
+            <Button
+              onClick={() => {
+                document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              variant="outline"
+              className="w-full border-dandle-orange text-dandle-orange hover:bg-dandle-orange/10"
+            >
+              <span data-en="Explore" data-ar="استكشف">Explore</span>
+            </Button>
+          </motion.div>
+
+          {/* Comfort Quiz */}
+          <motion.div
+            className="bg-white rounded-2xl p-6 shadow-lg border-2 border-warm-beige hover:border-dandle-orange/30 transition-colors"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-dandle-orange/20 flex items-center justify-center">
+                <HelpCircle className="w-6 h-6 text-dandle-orange" />
+              </div>
+              <div className="flex items-center gap-2">
+                <h3 
+                  className="font-headline text-xl text-charcoal"
+                  data-en="Comfort Quiz"
+                  data-ar="اختبار الراحة"
+                >
+                  Comfort Quiz
+                </h3>
+                <Badge className="bg-dandle-orange/20 text-dandle-orange border-dandle-orange/30 text-xs">
+                  <span data-en="New" data-ar="جديد">New</span>
                 </Badge>
               </div>
             </div>
             
             <p 
-              className="text-charcoal/70 mb-6"
-              data-en="Preview any recliner in our curated fabric palette. Tap a swatch on the product page to see your exact model recolored — no uploads needed."
-              data-ar="شوف أي كرسي بألوان الأقمشة المتاحة. اضغط على اللون في صفحة المنتج وشوف الموديل بتاعك — من غير رفع صور."
+              className="text-charcoal/70 mb-6 text-sm"
+              data-en="Find your perfect recliner in 30 seconds."
+              data-ar="اعثر على كرسيك المثالي في 30 ثانية."
             >
-              Preview any recliner in our curated fabric palette. Tap a swatch on the 
-              product page to see your exact model recolored — no uploads needed.
+              Find your perfect recliner in 30 seconds.
             </p>
 
-            <div className="flex gap-2 flex-wrap">
-              {["#2B547E", "#C4A35A", "#8B7355", "#6B8E23", "#CD5C5C", "#708090", "#D4C4A8"].map((color) => (
-                <div 
-                  key={color}
-                  className="w-8 h-8 rounded-lg border-2 border-white shadow-md cursor-pointer hover:scale-110 transition-transform"
-                  style={{ backgroundColor: color }}
-                />
-              ))}
-            </div>
+            <Button
+              onClick={handleComfortQuizClick}
+              className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white font-medium"
+            >
+              <WhatsAppIcon size={18} />
+              <span className="ml-2" data-en="Start Quiz" data-ar="ابدأ الاختبار">Start Quiz</span>
+            </Button>
           </motion.div>
         </div>
       </div>
