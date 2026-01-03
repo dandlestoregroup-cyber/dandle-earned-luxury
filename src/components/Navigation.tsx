@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 import CartDrawer from "@/components/CartDrawer";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,91 +22,90 @@ const Navigation = () => {
   }, []);
 
   const navLinks = [
-    { labelEn: "Home", labelAr: "الرئيسية", href: "/", isRoute: true },
-    { labelEn: "Collection", labelAr: "المجموعة", href: "#collection" },
-    { labelEn: "Gift of Comfort", labelAr: "هدية الراحة", href: "#gift-of-comfort" },
+    { labelEn: "Collection", labelAr: "المجموعة", href: "#products" },
     { labelEn: "Our Story", labelAr: "قصتنا", href: "/our-story", isRoute: true },
     { labelEn: "Careers", labelAr: "الوظائف", href: "/careers", isRoute: true },
     { labelEn: "Contact", labelAr: "تواصل", href: "#contact" },
-    { labelEn: "Nour ✨", labelAr: "نور ✨", href: "/nour-chat", isRoute: true, badge: "Soon", badgeAr: "قريباً" },
   ];
 
   return (
-    <nav
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-card/95 backdrop-blur-md shadow-lg" : "bg-charcoal/40 backdrop-blur-sm"
+        "fixed z-50 transition-all duration-500",
+        isScrolled 
+          ? "top-0 left-0 right-0 bg-obsidian/90 backdrop-blur-xl shadow-elegant border-b border-champagne/10" 
+          : "top-4 left-4 right-4 md:top-6 md:left-8 md:right-8 rounded-2xl bg-obsidian/60 backdrop-blur-lg border border-white/10"
       )}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+      <div className={cn(
+        "mx-auto px-4 md:px-8",
+        isScrolled ? "container" : ""
+      )}>
+        <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <button 
+          <motion.button 
             onClick={() => navigate('/')} 
-            className="font-serif text-3xl font-bold tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+            className="relative group"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
           >
-            <span className={cn(
-              "transition-colors",
-              isScrolled ? "text-foreground" : "text-warm-white"
-            )}>DANDLE</span>
-          </button>
+            <span className="font-serif text-2xl md:text-3xl font-light tracking-tight text-warm-white">
+              DANDLE
+            </span>
+            <motion.span 
+              className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-champagne to-transparent group-hover:w-full transition-all duration-500"
+            />
+          </motion.button>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+          <div className="hidden md:flex items-center gap-10">
+            {navLinks.map((link, index) => (
               link.isRoute ? (
-                <button
+                <motion.button
                   key={link.href}
                   onClick={() => navigate(link.href)}
-                  className={cn(
-                    "text-sm font-medium transition-colors flex items-center gap-1",
-                    isScrolled ? "text-card-foreground hover:text-accent" : "text-warm-white hover:text-accent"
-                  )}
+                  className="relative text-sm font-body font-light text-warm-white/80 hover:text-warm-white transition-colors tracking-wide link-underline"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
                 >
                   <span data-en={link.labelEn} data-ar={link.labelAr}>{link.labelEn}</span>
-                  {link.badge && (
-                    <span 
-                      className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full"
-                      data-en={link.badge}
-                      data-ar={link.badgeAr}
-                    >
-                      {link.badge}
-                    </span>
-                  )}
-                </button>
+                </motion.button>
               ) : (
-                <a
+                <motion.a
                   key={link.href}
                   href={link.href}
-                  className={cn(
-                    "text-sm font-medium transition-colors",
-                    isScrolled ? "text-card-foreground hover:text-accent" : "text-warm-white hover:text-accent"
-                  )}
+                  className="relative text-sm font-body font-light text-warm-white/80 hover:text-warm-white transition-colors tracking-wide link-underline"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
                   data-en={link.labelEn}
                   data-ar={link.labelAr}
                 >
                   {link.labelEn}
-                </a>
+                </motion.a>
               )
             ))}
-            <CartDrawer />
-            <Button 
-              variant="hero" 
-              size="lg" 
-              onClick={() => navigate('/#collection')}
-              data-en="Place Your Order"
-              data-ar="قدّم طلبك"
-            >
-              Place Your Order
-            </Button>
+            
+            <div className="flex items-center gap-4 pl-6 border-l border-white/10">
+              <CartDrawer />
+              <Button 
+                className="btn-luxury text-xs px-6 py-3 rounded-none"
+                onClick={() => navigate('/#products')}
+                data-en="Explore"
+                data-ar="استكشف"
+              >
+                Explore
+              </Button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className={cn(
-              "md:hidden transition-colors",
-              isScrolled ? "text-card-foreground" : "text-warm-white"
-            )}
+            className="md:hidden text-warm-white/80 hover:text-warm-white transition-colors p-2"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -114,60 +114,69 @@ const Navigation = () => {
         </div>
 
         {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="md:hidden pb-6 animate-fade-in-up">
-            {navLinks.map((link) => (
-              link.isRoute ? (
-                <button
-                  key={link.href}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div 
+              className="md:hidden py-6 border-t border-white/10"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {navLinks.map((link, index) => (
+                link.isRoute ? (
+                  <motion.button
+                    key={link.href}
+                    onClick={() => {
+                      navigate(link.href);
+                      setIsOpen(false);
+                    }}
+                    className="block w-full text-left py-3 text-warm-white/80 hover:text-warm-white transition-colors font-body font-light tracking-wide"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <span data-en={link.labelEn} data-ar={link.labelAr}>{link.labelEn}</span>
+                  </motion.button>
+                ) : (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    className="block py-3 text-warm-white/80 hover:text-warm-white transition-colors font-body font-light tracking-wide"
+                    onClick={() => setIsOpen(false)}
+                    data-en={link.labelEn}
+                    data-ar={link.labelAr}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    {link.labelEn}
+                  </motion.a>
+                )
+              ))}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <Button 
+                  className="w-full mt-4 btn-luxury rounded-none"
                   onClick={() => {
-                    navigate(link.href);
+                    navigate('/cart');
                     setIsOpen(false);
                   }}
-                  className="flex items-center gap-2 py-3 text-card-foreground hover:text-accent transition-colors text-left w-full"
                 >
-                  <span data-en={link.labelEn} data-ar={link.labelAr}>{link.labelEn}</span>
-                  {link.badge && (
-                    <span 
-                      className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full"
-                      data-en={link.badge}
-                      data-ar={link.badgeAr}
-                    >
-                      {link.badge}
-                    </span>
-                  )}
-                </button>
-              ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="block py-3 text-card-foreground hover:text-accent transition-colors"
-                  onClick={() => setIsOpen(false)}
-                  data-en={link.labelEn}
-                  data-ar={link.labelAr}
-                >
-                  {link.labelEn}
-                </a>
-              )
-            ))}
-            <Button 
-              variant="hero" 
-              size="lg" 
-              className="w-full mt-4"
-              onClick={() => {
-                navigate('/cart');
-                setIsOpen(false);
-              }}
-            >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              <span data-en={`Cart (${getTotalItems()})`} data-ar={`السلة (${getTotalItems()})`}>
-                Cart ({getTotalItems()})
-              </span>
-            </Button>
-          </div>
-        )}
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  <span data-en={`Cart (${getTotalItems()})`} data-ar={`السلة (${getTotalItems()})`}>
+                    Cart ({getTotalItems()})
+                  </span>
+                </Button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

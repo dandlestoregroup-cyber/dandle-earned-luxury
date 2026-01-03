@@ -2,109 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* ============================================
+   DANDLE LUXURY DESIGN SYSTEM v10.0
+   All colors MUST be HSL.
+   ============================================ */
 
 @layer base {
   :root {
-    /* DANDLE Quiet-Luxury v5 Colors */
-    --nile-blue: 216 58% 36%; /* #274B8F */
-    --dandle-orange: 14 100% 60%; /* #FF6B35 */
-    --warm-beige: 36 52% 90%; /* #F5E6D3 */
-    --bronze: 38 36% 56%; /* #B8956A */
-    --charcoal: 0 0% 10%; /* #1A1A1A */
-    --warm-white: 60 33% 98%; /* #FAF9F6 */
+    /* LUXURY COLOR PALETTE */
+    --nile-blue: 216 58% 36%;
+    --dandle-orange: 14 85% 55%; /* Softened terracotta */
+    --warm-beige: 36 52% 90%;
+    --bronze: 38 36% 56%;
+    --charcoal: 0 0% 10%;
+    --warm-white: 40 33% 98%;
     
-    --background: 60 33% 98%; /* Warm White */
-    --foreground: 0 0% 10%; /* Charcoal */
+    /* NEW LUXURY TOKENS */
+    --obsidian: 0 0% 5%; /* Rich black */
+    --champagne: 45 50% 70%; /* Subtle gold accent */
+    --cream: 40 40% 96%; /* Porcelain cream */
+    --smoke: 0 0% 16%; /* Rich dark gradient */
     
-    --card: 60 33% 98%;
-    --card-foreground: 0 0% 10%;
+    /* SEMANTIC TOKENS */
+    --background: 40 33% 98%;
+    --foreground: 0 0% 8%;
+    
+    --card: 40 40% 97%;
+    --card-foreground: 0 0% 8%;
 
-    --popover: 60 33% 98%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 40 40% 98%;
+    --popover-foreground: 0 0% 8%;
 
-    --primary: 24 90% 50%; /* Warm Orange */
-    --primary-foreground: 60 33% 98%;
+    --primary: 14 85% 55%;
+    --primary-foreground: 40 33% 98%;
 
-    --secondary: 36 52% 90%; /* Warm Beige */
+    --secondary: 36 52% 90%;
     --secondary-foreground: 0 0% 10%;
 
-    --muted: 36 52% 90%;
+    --muted: 36 30% 92%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 14 100% 60%; /* Dandle Orange */
-    --accent-foreground: 60 33% 98%;
+    --accent: 38 36% 56%;
+    --accent-foreground: 40 33% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 33% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 40 33% 98%;
 
-    --border: 36 52% 85%;
-    --input: 36 52% 85%;
+    --border: 36 30% 88%;
+    --input: 36 30% 88%;
     --ring: 38 36% 56%;
 
-    --radius: 0.25rem;
+    --radius: 0.5rem;
     
-    /* Quiet-Luxury Custom Tokens */
-    --gradient-luxury: linear-gradient(135deg, hsl(38 36% 56%), hsl(38 36% 66%));
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 10% / 0.4), transparent);
-    --gradient-subtle: linear-gradient(180deg, hsl(60 33% 98%), hsl(36 52% 90%));
+    /* LUXURY GRADIENTS */
+    --gradient-luxury: linear-gradient(135deg, hsl(38 36% 56%), hsl(45 50% 70%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 5% / 0.6), transparent, hsl(0 0% 5% / 0.8));
+    --gradient-subtle: linear-gradient(180deg, hsl(40 40% 98%), hsl(36 52% 92%));
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 5%), hsl(0 0% 12%));
     
-    --shadow-subtle: 0 4px 14px rgba(0, 0, 0, 0.06);
-    --shadow-luxury: 0 10px 30px -10px hsl(38 36% 56% / 0.3);
-    /* Disabled per Whisper Edition spec - no orange glow shadows */
-    --shadow-elegant: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
-    --shadow-glow: none;
+    /* LUXURY SHADOWS */
+    --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.04);
+    --shadow-luxury: 0 20px 50px -20px rgba(0, 0, 0, 0.15);
+    --shadow-elegant: 0 30px 60px -30px rgba(0, 0, 0, 0.2);
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08);
     
-    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-cinematic: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    /* TRANSITIONS */
+    --transition-smooth: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-luxury: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 0 0% 10%;
-    --foreground: 60 33% 98%;
+    --background: 0 0% 5%;
+    --foreground: 40 33% 95%;
     
-    --card: 0 0% 15%;
-    --card-foreground: 60 33% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 40 33% 95%;
 
-    --popover: 0 0% 15%;
-    --popover-foreground: 60 33% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 40 33% 95%;
 
-    --primary: 14 100% 60%;
-    --primary-foreground: 60 33% 98%;
+    --primary: 14 85% 55%;
+    --primary-foreground: 40 33% 98%;
 
-    --secondary: 36 52% 25%;
-    --secondary-foreground: 60 33% 98%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 40 33% 95%;
 
-    --muted: 0 0% 30%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 14 100% 60%;
-    --accent-foreground: 60 33% 98%;
+    --accent: 45 50% 70%;
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 33% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 40 33% 95%;
 
-    --border: 0 0% 30%;
-    --input: 0 0% 30%;
-    --ring: 38 36% 56%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 45 50% 70%;
   }
 }
 
@@ -113,12 +116,20 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+    background: hsl(40 33% 98%);
+    min-height: 100vh;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 400;
+    font-weight: 300;
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   @media (min-width: 768px) {
@@ -127,30 +138,25 @@ All colors MUST be HSL.
     }
   }
 
-  /* De-neon orange: soften the intensity without changing hex */
-  .bg-dandle-orange {
-    filter: saturate(0.85) brightness(0.92);
-  }
-  
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
   }
   
-  h1 { line-height: 1.15; }
-  h2 { line-height: 1.2; }
-  h3, h4, h5, h6 { line-height: 1.25; }
+  h1 { font-weight: 300; line-height: 1.05; }
+  h2 { font-weight: 400; line-height: 1.1; }
+  h3, h4, h5, h6 { font-weight: 500; line-height: 1.2; }
   
-  /* Body text font - English */
   .font-body {
     font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
   }
   
-  /* Headline font - English */
   .font-headline {
     font-family: 'Playfair Display', serif;
+    font-weight: 400;
   }
   
   /* Arabic fonts */
@@ -162,7 +168,7 @@ All colors MUST be HSL.
   [lang="ar"] h1, [lang="ar"] h2, [lang="ar"] h3, [lang="ar"] h4, [lang="ar"] h5, [lang="ar"] h6,
   [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
     font-family: 'Cairo', serif;
-    font-weight: 700;
+    font-weight: 600;
   }
   
   [lang="ar"] .font-body,
@@ -174,15 +180,13 @@ All colors MUST be HSL.
   [dir="rtl"] .font-headline {
     font-family: 'Cairo', serif;
   }
-  
-  /* Warm gradient appears before React hydrates (FIX: dead initial load) */
-  html {
-    scroll-behavior: smooth;
-    background: linear-gradient(135deg, hsl(36 52% 90%) 0%, hsl(30 100% 98%) 100%);
-    min-height: 100vh;
-  }
-  
-  /* Pulse animation for titles while JS loads */
+}
+
+/* ============================================
+   LUXURY ANIMATIONS
+   ============================================ */
+
+@layer base {
   @keyframes soft-pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.85; }
@@ -192,230 +196,176 @@ All colors MUST be HSL.
     animation: soft-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  /* Ken Burns slow zoom effect for glass cinema */
   @keyframes ken-burns {
-    0% {
-      transform: scale(1) translate(0, 0);
-    }
-    50% {
-      transform: scale(1.1) translate(-2%, -2%);
-    }
-    100% {
-      transform: scale(1) translate(0, 0);
-    }
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.08) translate(-1%, -1%); }
   }
 
   .animate-ken-burns {
-    animation: ken-burns 4s ease-in-out infinite;
+    animation: ken-burns 20s ease-out forwards;
   }
 
-  /* Gradient radial utility */
   .bg-gradient-radial {
     background: radial-gradient(var(--tw-gradient-stops));
   }
 
-  /* Breathing pulse glow for CTA */
-  @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 4px 20px rgba(243, 122, 29, 0.4);
-      transform: scale(1);
-    }
-    50% {
-      box-shadow: 0 4px 30px rgba(243, 122, 29, 0.7);
-      transform: scale(1.02);
-    }
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-  }
-
-  /* Floating particles animation */
   @keyframes float {
-    0%, 100% {
-      transform: translateY(0px) translateX(0px);
-      opacity: 0.3;
-    }
-    50% {
-      transform: translateY(-20px) translateX(10px);
-      opacity: 0.6;
-    }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
   }
 
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
   }
 
-  /* Animated gradient background */
-  @keyframes gradient {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 8s ease infinite;
-  }
-
-  /* Shimmer watermark animation */
-  @keyframes shimmer-breath {
-    0%, 100% {
-      opacity: 0.3;
-      transform: translateX(-100%);
-    }
-    50% {
-      opacity: 0.6;
-      transform: translateX(100%);
-    }
-  }
-
-  .animate-shimmer-breath {
-    animation: shimmer-breath 6s ease-in-out infinite;
-  }
-
-  /* Shimmer effect for spinner */
   @keyframes shimmer {
-    0% {
-      background-position: -200% center;
-    }
-    100% {
-      background-position: 200% center;
-    }
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
   }
 
-  /* Text pulse for hero */
-  @keyframes text-pulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.9;
-      transform: scale(1.02);
-    }
-  }
-
-  .animate-text-pulse {
-    animation: text-pulse 3s ease-in-out infinite;
-  }
-
-  /* Depth parallax effect */
   @keyframes parallax-float {
-    0%, 100% {
-      transform: translateY(0) translateZ(0);
-    }
-    50% {
-      transform: translateY(-10px) translateZ(10px);
-    }
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-8px) translateZ(8px); }
   }
 
   .animate-parallax {
-    animation: parallax-float 4s ease-in-out infinite;
+    animation: parallax-float 5s ease-in-out infinite;
   }
 
-  /* Quiet-luxury particle float (upward drift) */
   @keyframes dandleFloat {
-    0%   { transform: translate3d(0, 0, 0); }
+    0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(14px, -125vh, 0); }
   }
 
-  /* Soft festive snow drift (downward) */
   @keyframes dandleSnow {
-    0%   { transform: translate3d(0, 0, 0); }
+    0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(10px, 110vh, 0); }
   }
 
-  /* Glowing progress bar */
   @keyframes glowPulse {
-    0%, 100% { box-shadow: 0 0 8px hsl(var(--dandle-orange) / 0.6); }
-    50% { box-shadow: 0 0 16px hsl(var(--dandle-orange) / 0.9); }
+    0%, 100% { box-shadow: 0 0 8px hsl(var(--champagne) / 0.4); }
+    50% { box-shadow: 0 0 20px hsl(var(--champagne) / 0.6); }
   }
 
-  /* Accessibility - respect reduced motion */
+  /* Staggered reveal animation */
+  @keyframes stagger-reveal {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-stagger-reveal {
+    animation: stagger-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .dandle-particles, .dandle-snow { 
       display: none !important; 
     }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-@layer utilities {
-  /* Quiet-Luxury Utilities */
-  .bg-charcoal {
-    background-color: hsl(var(--charcoal));
-  }
-  
-  .bg-warm-beige {
-    background-color: hsl(var(--warm-beige));
-  }
-  
-  .bg-warm-white {
-    background-color: hsl(var(--warm-white));
-  }
-  
-  .text-charcoal {
-    color: hsl(var(--charcoal));
-  }
-  
-  .text-bronze {
-    color: hsl(var(--bronze));
-  }
-  
-  .text-warm-white {
-    color: hsl(var(--warm-white));
-  }
-  
-  .text-dandle-orange {
-    color: hsl(var(--dandle-orange));
-  }
-  
-  .bg-dandle-orange {
-    background-color: hsl(var(--dandle-orange));
-  }
-  
-  .shadow-subtle {
-    box-shadow: var(--shadow-subtle);
-  }
-  
-  .shadow-luxury {
-    box-shadow: var(--shadow-luxury);
-  }
-  
-  .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
-  }
-  
-  .shadow-glow {
-    box-shadow: var(--shadow-glow);
-  }
-  
-  .btn-primary {
-    @apply bg-[hsl(var(--bronze))] text-[hsl(var(--warm-white))] px-6 py-3 rounded-sm hover:bg-[hsl(38_36%_46%)] transition-colors font-body;
-  }
-  
-  .btn-ghost {
-    @apply border border-white/80 text-white px-6 py-3 rounded-sm hover:bg-white/10 transition-colors font-body;
-  }
+/* ============================================
+   LUXURY UTILITIES
+   ============================================ */
 
-  /* Award-winning hero text gradient */
+@layer utilities {
+  /* Color utilities */
+  .bg-charcoal { background-color: hsl(var(--charcoal)); }
+  .bg-obsidian { background-color: hsl(var(--obsidian)); }
+  .bg-warm-beige { background-color: hsl(var(--warm-beige)); }
+  .bg-warm-white { background-color: hsl(var(--warm-white)); }
+  .bg-cream { background-color: hsl(var(--cream)); }
+  .bg-smoke { background-color: hsl(var(--smoke)); }
+  
+  .text-charcoal { color: hsl(var(--charcoal)); }
+  .text-obsidian { color: hsl(var(--obsidian)); }
+  .text-bronze { color: hsl(var(--bronze)); }
+  .text-champagne { color: hsl(var(--champagne)); }
+  .text-warm-white { color: hsl(var(--warm-white)); }
+  .text-dandle-orange { color: hsl(var(--dandle-orange)); }
+  
+  .bg-dandle-orange { 
+    background-color: hsl(var(--dandle-orange)); 
+  }
+  
+  /* Shadow utilities */
+  .shadow-subtle { box-shadow: var(--shadow-subtle); }
+  .shadow-luxury { box-shadow: var(--shadow-luxury); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-glass { box-shadow: var(--shadow-glass); }
+  
+  /* Gradient utilities */
+  .gradient-luxury {
+    background: var(--gradient-luxury);
+  }
+  
+  .gradient-dark {
+    background: var(--gradient-dark);
+  }
+  
+  /* Text gradient */
+  .text-gradient-luxury {
+    background: linear-gradient(135deg, hsl(var(--dandle-orange)), hsl(var(--champagne)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
   .text-gradient-hero {
     background: linear-gradient(135deg, hsl(var(--dandle-orange)), hsl(var(--bronze)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+  
+  /* Glass morphism */
+  .glass {
+    background: hsl(var(--warm-white) / 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .glass-dark {
+    background: hsl(var(--obsidian) / 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+  
+  /* Button styles */
+  .btn-luxury {
+    @apply relative overflow-hidden bg-transparent border border-[hsl(var(--champagne)_/_0.5)] 
+           text-[hsl(var(--warm-white))] px-10 py-4 font-body font-light 
+           tracking-[0.15em] uppercase text-sm transition-all duration-500;
+  }
+  
+  .btn-luxury:hover {
+    @apply bg-[hsl(var(--champagne))] text-[hsl(var(--obsidian))];
+  }
+  
+  .btn-primary {
+    @apply bg-[hsl(var(--dandle-orange))] text-[hsl(var(--warm-white))] 
+           px-8 py-4 font-body font-normal tracking-wide transition-all duration-300;
+  }
+  
+  .btn-primary:hover {
+    @apply bg-[hsl(14_85%_50%)];
+  }
+  
+  .btn-ghost {
+    @apply border border-white/30 text-white px-8 py-4 font-body 
+           font-light tracking-wide transition-all duration-300;
+  }
+  
+  .btn-ghost:hover {
+    @apply bg-white/10 border-white/50;
+  }
 
-  /* Cinematic parallax depth */
-  .hero-depth-1 { transform: translateZ(-100px) scale(2); }
-  .hero-depth-2 { transform: translateZ(-50px) scale(1.5); }
-  .hero-depth-3 { transform: translateZ(0px) scale(1); }
-  
-  
-  /* Hide scrollbar utility */
+  /* Scrollbar utilities */
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -425,7 +375,6 @@ All colors MUST be HSL.
     display: none;
   }
 
-  /* Product gallery scrollbar hide */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -434,7 +383,7 @@ All colors MUST be HSL.
     scrollbar-width: none;
   }
 
-  /* 2A: Hero video instant play - avoid black flash */
+  /* Hero video */
   .dandle-hero-video {
     background: linear-gradient(180deg, hsl(var(--warm-beige)) 0%, hsl(var(--charcoal)) 80%);
   }
@@ -446,7 +395,7 @@ All colors MUST be HSL.
     opacity: 1;
   }
 
-  /* 2D: Istikbal section fix */
+  /* Istikbal section */
   .istikbal-section::before {
     content: '';
     position: absolute;
@@ -458,11 +407,30 @@ All colors MUST be HSL.
     position: relative;
     z-index: 1;
   }
+  
+  /* Link underline animation */
+  .link-underline {
+    @apply relative;
+  }
+  
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px bg-current 
+           origin-left scale-x-0 transition-transform duration-300;
+  }
+  
+  .link-underline:hover::after {
+    @apply scale-x-100;
+  }
+  
+  /* Center underline */
+  .link-underline-center::after {
+    @apply origin-center;
+  }
 }
 
-/* RTL-safe CSS overrides for Arabic layout */
+/* RTL overrides */
 [dir="rtl"] {
-  /* Ensure navigation stays correct in RTL */
   .dandle-lang-toggle {
     right: auto;
     left: 20px;
@@ -473,12 +441,10 @@ All colors MUST be HSL.
     left: 20px;
   }
   
-  /* Text alignment for Arabic */
   [data-ar] {
     text-align: right;
   }
   
-  /* Center-aligned elements stay centered */
   .text-center [data-ar] {
     text-align: center;
   }

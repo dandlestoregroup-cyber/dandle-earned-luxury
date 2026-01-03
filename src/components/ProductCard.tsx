@@ -20,7 +20,7 @@ const productTranslations: Record<string, { name: string; tagline: string }> = {
   "complete-set": { name: "طقم العائلة", tagline: "راحة لكل العائلة" },
 };
 
-// Map product color names to palette keys for image lookup
+// Map product color names to palette keys
 const colorToPaletteKey: Record<string, string> = {
   "Urban Charcoal": "desert-grey",
   "Off White": "alexandria-linen",
@@ -39,14 +39,12 @@ const colorToPaletteKey: Record<string, string> = {
   "Coordinated Styles": "alexandria-linen",
 };
 
-// Get hex color for display name
 const getColorHex = (colorName: string): string => {
   const paletteKey = colorToPaletteKey[colorName];
   if (paletteKey) {
     const paletteEntry = PALETTE_MAP.get(paletteKey);
     if (paletteEntry) return paletteEntry.hex;
   }
-  // Fallback colors
   const fallbackColors: Record<string, string> = {
     "Urban Charcoal": "#3D3D3D",
     "Off White": "#F5F5DC",
@@ -76,8 +74,8 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const lovableProduct = getLovableProduct(product.id);
   const defaultHeroImage = lovableProduct?.heroImage.src || product.imageUrl;
   
-  // Language state
   const [lang, setLang] = useState<LangKey>('en');
+  const [isHovered, setIsHovered] = useState(false);
   
   useEffect(() => {
     const storedLang = getLangFromStorage();
@@ -92,13 +90,9 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const isArabic = lang === 'ar';
   const translation = productTranslations[product.id];
   
-  // State for swatch-based image preview - use product color name
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  
-  // Use product.colors from product.ts (same as modal)
   const colors = product.colors || [];
 
-  // Determine current display image based on selected color
   const displayImage = useMemo(() => {
     if (selectedColor) {
       const paletteKey = colorToPaletteKey[selectedColor];
@@ -121,85 +115,104 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const getPriceDisplay = () => {
     if (product.comingSoon) return "Notify Me";
     if (product.priceManual && product.pricePower) {
-      return (
-        <>
-          <span className="text-dandle-orange">{formatPrice(product.priceManual)} -</span>
-          <br />
-          <span className="text-dandle-orange">{formatPrice(product.pricePower)}</span>
-        </>
-      );
+      return `${formatPrice(product.priceManual)} — ${formatPrice(product.pricePower)}`;
     }
     return product.price ? formatPrice(product.price) : "Contact for Price";
   };
 
-  const isHeritageSet = product.id === "complete-set";
-
   const handleSwatchClick = (e: React.MouseEvent, colorName: string) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation();
     setSelectedColor(colorName === selectedColor ? null : colorName);
   };
 
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
-      className="group cursor-pointer bg-warm-white rounded-xl md:rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+      className="group relative cursor-pointer bg-cream overflow-hidden"
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Image - 4:5 mobile, 4:3 heritage set */}
-      <div className={cn(
-        "relative bg-gradient-to-b from-warm-beige/30 to-warm-white",
-        isHeritageSet ? "aspect-[4/3]" : "aspect-[4/5]"
-      )}>
-        <img
+      {/* Image Container */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-b from-cream to-warm-beige/30">
+        <motion.img
           src={displayImage}
-          alt={`Dandle ${product.name}`}
-          className="w-full h-full object-contain object-center p-1 md:p-2 transition-all duration-300"
+          alt={product.name}
+          className="w-full h-full object-contain object-center"
+          animate={{ scale: isHovered ? 1.05 : 1 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           loading="lazy"
         />
-      </div>
-
-      {/* Content - larger fonts, bilingual */}
-      <div className="p-4 md:p-5 text-center space-y-2 md:space-y-3" dir={isArabic ? 'rtl' : 'ltr'}>
-        <h3 className="font-headline text-lg md:text-xl text-charcoal font-semibold leading-tight">
-          {isArabic && translation ? translation.name : product.name}
-        </h3>
         
-        <p className="font-body text-sm md:text-base text-charcoal/70 line-clamp-2">
-          {isArabic && translation ? translation.tagline : product.tagline}
-        </p>
+        {/* Hover Overlay */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/40 to-transparent"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.4 }}
+        />
         
-        <div className="font-headline text-lg md:text-2xl leading-tight">
-          {getPriceDisplay()}
-        </div>
-
-        {/* Clickable color swatches - same colors as modal */}
+        {/* Hover Content */}
+        <motion.div 
+          className="absolute inset-0 flex flex-col justify-end p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <h3 className="font-headline text-2xl text-warm-white font-light mb-1">
+            {isArabic && translation ? translation.name : product.name}
+          </h3>
+          <p className="font-body text-champagne text-xs tracking-[0.15em] uppercase mb-3">
+            {isArabic && translation ? translation.tagline : product.tagline}
+          </p>
+          <p className="font-body text-warm-white/80 text-lg">
+            {getPriceDisplay()}
+          </p>
+        </motion.div>
+        
+        {/* Swatches - Top Right */}
         {colors.length > 0 && (
-          <div className="pt-2 md:pt-3 space-y-1 md:space-y-2">
-            <p className="text-xs md:text-sm text-charcoal/50 uppercase tracking-wider font-body hidden md:block">
-              {isArabic ? 'الألوان المتاحة' : 'Available Colors'}
-            </p>
-            <div className="flex justify-center gap-1.5 md:gap-2 flex-wrap">
-              {colors.map((colorName) => (
-                <button
-                  key={colorName}
-                  type="button"
-                  onClick={(e) => handleSwatchClick(e, colorName)}
-                  className={cn(
-                    "w-6 h-6 md:w-10 md:h-10 rounded md:rounded-lg border shadow-sm transition-all duration-200",
-                    selectedColor === colorName 
-                      ? "ring-2 ring-dandle-orange ring-offset-1 border-dandle-orange scale-110" 
-                      : "border-charcoal/10 hover:scale-105"
-                  )}
-                  style={{ backgroundColor: getColorHex(colorName) }}
-                  title={colorName}
-                  aria-label={`Preview ${colorName} color`}
-                />
-              ))}
-            </div>
+          <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+            {colors.slice(0, 4).map((colorName) => (
+              <button
+                key={colorName}
+                type="button"
+                onClick={(e) => handleSwatchClick(e, colorName)}
+                className={cn(
+                  "w-6 h-6 rounded-full border-2 shadow-lg transition-all duration-200",
+                  selectedColor === colorName 
+                    ? "border-champagne scale-110 ring-2 ring-champagne/50" 
+                    : "border-white/50 hover:border-white hover:scale-105"
+                )}
+                style={{ backgroundColor: getColorHex(colorName) }}
+                title={colorName}
+                aria-label={`Preview ${colorName}`}
+              />
+            ))}
           </div>
         )}
       </div>
+
+      {/* Static Info (visible when not hovering) */}
+      <motion.div 
+        className="p-5 text-center"
+        dir={isArabic ? 'rtl' : 'ltr'}
+        animate={{ opacity: isHovered ? 0 : 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <h3 className="font-headline text-lg text-charcoal font-medium mb-1">
+          {isArabic && translation ? translation.name : product.name}
+        </h3>
+        <p className="font-body text-sm text-charcoal/60 mb-2">
+          {isArabic && translation ? translation.tagline : product.tagline}
+        </p>
+        <p className="font-headline text-lg text-charcoal">
+          {getPriceDisplay()}
+        </p>
+      </motion.div>
     </motion.div>
   );
 };
