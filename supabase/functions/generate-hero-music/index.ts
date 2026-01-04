@@ -87,7 +87,7 @@ serve(async (req) => {
     // Generate music using ElevenLabs Music API
     const musicPrompt = `Create 60-second elegant festive shopping music. 
 Warm piano melody with gentle strings and subtle bell chimes. 
-Luxury furniture showroom in Cairo during holiday season. 
+Refined furniture showroom in Cairo during holiday season. 
 Universal celebration warmth, not overtly Christmas. 
 Sophisticated ambiance like Four Seasons hotel lobby. 
 Gradual build with satisfying resolution for seamless loop.

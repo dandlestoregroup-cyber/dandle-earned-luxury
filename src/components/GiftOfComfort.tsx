@@ -100,7 +100,7 @@ const GiftOfComfort = () => {
           >
             <Button
               onClick={() => navigate('/gift')}
-              className="btn-luxury rounded-none"
+              className="btn-refined rounded-none"
             >
               <span data-en="Find the Perfect Gift" data-ar="اختر الهدية المثالية">
                 Find the Perfect Gift

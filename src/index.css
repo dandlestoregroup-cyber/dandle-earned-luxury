@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================
-   DANDLE LUXURY DESIGN SYSTEM v10.0
+   DANDLE REFINED DESIGN SYSTEM v10.0
    All colors MUST be HSL.
    ============================================ */
 
@@ -54,21 +54,21 @@
 
     --radius: 0.5rem;
     
-    /* LUXURY GRADIENTS */
-    --gradient-luxury: linear-gradient(135deg, hsl(38 36% 56%), hsl(45 50% 70%));
+    /* REFINED GRADIENTS */
+    --gradient-refined: linear-gradient(135deg, hsl(38 36% 56%), hsl(45 50% 70%));
     --gradient-hero: linear-gradient(180deg, hsl(0 0% 5% / 0.6), transparent, hsl(0 0% 5% / 0.8));
     --gradient-subtle: linear-gradient(180deg, hsl(40 40% 98%), hsl(36 52% 92%));
     --gradient-dark: linear-gradient(180deg, hsl(0 0% 5%), hsl(0 0% 12%));
     
-    /* LUXURY SHADOWS */
+    /* REFINED SHADOWS */
     --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.04);
-    --shadow-luxury: 0 20px 50px -20px rgba(0, 0, 0, 0.15);
+    --shadow-refined: 0 20px 50px -20px rgba(0, 0, 0, 0.15);
     --shadow-elegant: 0 30px 60px -30px rgba(0, 0, 0, 0.2);
     --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08);
     
     /* TRANSITIONS */
     --transition-smooth: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    --transition-luxury: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-refined: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -183,7 +183,7 @@
 }
 
 /* ============================================
-   LUXURY ANIMATIONS
+   REFINED ANIMATIONS
    ============================================ */
 
 @layer base {
@@ -270,7 +270,7 @@
 }
 
 /* ============================================
-   LUXURY UTILITIES
+   REFINED UTILITIES
    ============================================ */
 
 @layer utilities {
@@ -295,13 +295,13 @@
   
   /* Shadow utilities */
   .shadow-subtle { box-shadow: var(--shadow-subtle); }
-  .shadow-luxury { box-shadow: var(--shadow-luxury); }
+  .shadow-refined { box-shadow: var(--shadow-refined); }
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
   .shadow-glass { box-shadow: var(--shadow-glass); }
   
   /* Gradient utilities */
-  .gradient-luxury {
-    background: var(--gradient-luxury);
+  .gradient-refined {
+    background: var(--gradient-refined);
   }
   
   .gradient-dark {
@@ -309,7 +309,7 @@
   }
   
   /* Text gradient */
-  .text-gradient-luxury {
+  .text-gradient-refined {
     background: linear-gradient(135deg, hsl(var(--dandle-orange)), hsl(var(--champagne)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -337,13 +337,13 @@
   }
   
   /* Button styles */
-  .btn-luxury {
+  .btn-refined {
     @apply relative overflow-hidden bg-transparent border border-[hsl(var(--champagne)_/_0.5)] 
            text-[hsl(var(--warm-white))] px-10 py-4 font-body font-light 
            tracking-[0.15em] uppercase text-sm transition-all duration-500;
   }
   
-  .btn-luxury:hover {
+  .btn-refined:hover {
     @apply bg-[hsl(var(--champagne))] text-[hsl(var(--obsidian))];
   }
   

@@ -48,7 +48,7 @@ export const lovableCatalog: LovableProduct[] = [
       src: "/images/dandle-relaxmax-flagship.webp",
       width: 1024,
       height: 1024,
-      alt: "Dandle RelaxMax: The flagship 90cm standard recliner. Iconic cinematic luxury and perfectly balanced proportions."
+      alt: "Dandle RelaxMax: The flagship 90cm standard recliner. Iconic cinematic comfort and perfectly balanced proportions."
     },
     gallery: [
       {

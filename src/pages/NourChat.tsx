@@ -220,7 +220,7 @@ const NourChat = () => {
       <Navigation />
       
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
-        <div className="bg-warm-white rounded-lg shadow-luxury h-[calc(100vh-12rem)] flex flex-col">
+        <div className="bg-warm-white rounded-lg shadow-refined h-[calc(100vh-12rem)] flex flex-col">
           <div className="p-6 border-b border-bronze/20">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-dandle-orange to-pink-500 flex items-center justify-center">

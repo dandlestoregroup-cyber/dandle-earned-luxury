@@ -14,7 +14,7 @@ const lifestyleImages = [
   },
   {
     src: "/images/complete-set-sunset-fireplace.jpg",
-    alt: "Luxury vacation rental with premium recliner",
+    alt: "Refined vacation rental with premium recliner",
     captionEn: "Vacation Rental",
     captionAr: "إيجار العطلات",
     subtitleEn: "Elevate guest experiences",

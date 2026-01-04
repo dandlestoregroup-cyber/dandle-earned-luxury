@@ -81,7 +81,7 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Luxury palette
+        // Refined palette
         nileBlue: "hsl(var(--nile-blue))",
         dandleOrange: "hsl(var(--dandle-orange))",
         warmBeige: "hsl(var(--warm-beige))",
@@ -114,7 +114,7 @@ export default {
       letterSpacing: {
         'headline': '-0.03em',
         'body': '0.01em',
-        'luxury': '0.15em',
+        'refined': '0.15em',
       },
       fontSize: {
         'hero-desktop': '80px',
@@ -159,11 +159,11 @@ export default {
           "0%": { transform: "scale(1.08)" },
           "100%": { transform: "scale(1)" }
         },
-        "luxury-float": {
+        "refined-float": {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" }
         },
-        "luxury-glow": {
+        "refined-glow": {
           "0%, 100%": { opacity: "0.4" },
           "50%": { opacity: "0.7" }
         },
@@ -189,13 +189,13 @@ export default {
         "shimmer": "shimmer 2s infinite linear",
         "ken-burns-in": "ken-burns-in 12s ease-out forwards",
         "ken-burns-out": "ken-burns-out 12s ease-out forwards",
-        "luxury-float": "luxury-float 6s ease-in-out infinite",
-        "luxury-glow": "luxury-glow 4s ease-in-out infinite",
+        "refined-float": "refined-float 6s ease-in-out infinite",
+        "refined-glow": "refined-glow 4s ease-in-out infinite",
         "line-grow": "line-grow 1s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "slide-up": "slide-up 0.6s cubic-bezier(0.22, 1, 0.36, 1)"
       },
       transitionTimingFunction: {
-        'luxury': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        'refined': 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
     },
   },

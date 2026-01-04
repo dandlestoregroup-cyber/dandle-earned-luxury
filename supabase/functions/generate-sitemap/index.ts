@@ -70,7 +70,7 @@ serve(async (req) => {
     <priority>0.9</priority>
     <image:image>
       <image:loc>${BASE_URL}${product.image}</image:loc>
-      <image:title>${product.title} - DANDLE Luxury Recliners Egypt</image:title>
+      <image:title>${product.title} - DANDLE Refined Recliners Egypt</image:title>
     </image:image>
   </url>
 `;
