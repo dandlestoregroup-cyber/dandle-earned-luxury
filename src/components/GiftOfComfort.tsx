@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { Gift, Heart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const GiftOfComfort = () => {
+  const navigate = useNavigate();
+  
   const features = [
     {
       icon: Gift,
@@ -20,10 +23,6 @@ const GiftOfComfort = () => {
       titleAr: "تركيب راقي",
     }
   ];
-
-  const scrollToProducts = () => {
-    document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section id="gift-of-comfort" className="relative py-24 md:py-32 overflow-hidden">
@@ -100,11 +99,11 @@ const GiftOfComfort = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <Button
-              onClick={scrollToProducts}
+              onClick={() => navigate('/gift')}
               className="btn-luxury rounded-none"
             >
-              <span data-en="Explore Collection" data-ar="استكشف المجموعة">
-                Explore Collection
+              <span data-en="Find the Perfect Gift" data-ar="اختر الهدية المثالية">
+                Find the Perfect Gift
               </span>
             </Button>
           </motion.div>
