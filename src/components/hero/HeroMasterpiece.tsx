@@ -3,14 +3,14 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { ArrowRight, Play, Volume2, VolumeX, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Premium easing (as tuple for framer-motion)
-const LUXURY_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+// Refined easing (as tuple for framer-motion)
+const REFINED_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 // Animated words with proper sizing buffer
 const HERO_WORDS = [
   { en: "Comfort", ar: "الراحة" },
   { en: "Elegance", ar: "الأناقة" },
-  { en: "Luxury", ar: "الفخامة" },
+  { en: "Refined", ar: "الرقي" },
 ];
 
 // Video overlay scenes
@@ -179,32 +179,32 @@ const HeroMasterpiece = () => {
       >
         <motion.img
           src="/images/relaxmax-hero-offwhite.jpg"
-          alt="DANDLE Luxury Recliner"
+          alt="DANDLE Refined Recliner"
           className="w-full h-full object-cover"
           initial={{ scale: 1.1, filter: "blur(6px)" }}
           animate={{ 
             scale: isLoaded ? 1 : 1.1, 
             filter: isLoaded ? "blur(0px)" : "blur(6px)" 
           }}
-          transition={{ duration: 2, ease: LUXURY_EASE }}
+          transition={{ duration: 2, ease: REFINED_EASE }}
         />
       </motion.div>
 
-      {/* Gradient Overlays for Text Readability */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-r from-obsidian via-obsidian/80 to-obsidian/40" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-obsidian via-obsidian/20 to-obsidian/50" />
+      {/* Gradient Overlays for Text Readability - z-5, pointer-events-none */}
+      <div className="absolute inset-0 z-[5] bg-gradient-to-r from-obsidian via-obsidian/80 to-obsidian/40 pointer-events-none" />
+      <div className="absolute inset-0 z-[5] bg-gradient-to-t from-obsidian via-obsidian/20 to-obsidian/50 pointer-events-none" />
       
-      {/* Noise Texture */}
+      {/* Noise Texture - z-[6], pointer-events-none */}
       <div 
-        className="absolute inset-0 z-10 opacity-[0.015] pointer-events-none"
+        className="absolute inset-0 z-[6] opacity-[0.015] pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
         }}
       />
       
-      {/* Ambient Champagne Orb */}
+      {/* Ambient Champagne Orb - z-[4], pointer-events-none */}
       <motion.div
-        className="absolute w-[600px] h-[600px] md:w-[800px] md:h-[800px] rounded-full pointer-events-none z-5"
+        className="absolute w-[600px] h-[600px] md:w-[800px] md:h-[800px] rounded-full pointer-events-none z-[4]"
         style={{
           background: "radial-gradient(circle, hsl(var(--champagne) / 0.06) 0%, transparent 60%)",
           top: "10%",
@@ -218,140 +218,155 @@ const HeroMasterpiece = () => {
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* ===== STATIC HERO CONTENT ===== */}
+      {/* ===== STATIC HERO CONTENT - z-20 ===== */}
       <AnimatePresence>
         {!showVideo && (
           <motion.div 
-            className="relative z-20 flex flex-col justify-center min-h-screen px-6 md:px-12 lg:px-24 max-w-7xl mx-auto"
+            className="relative z-20 min-h-screen"
             style={{ opacity }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="pt-28 pb-16 md:pt-36 md:pb-20">
-              {/* Pre-headline */}
-              <motion.div
-                className="flex items-center gap-4 mb-6"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
-              >
-                <motion.div 
-                  className="h-px w-12 md:w-16 bg-gradient-to-r from-champagne/70 to-transparent"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.6, duration: 0.6 }}
-                />
-                <span className="text-xs md:text-sm text-champagne font-body font-light tracking-[0.25em] uppercase">
-                  The Art of Rest
-                </span>
-              </motion.div>
-
-              {/* Main Headline - "The Gift of" */}
-              <motion.p
-                className="text-cream/70 font-body font-light text-lg md:text-xl mb-3 tracking-wide"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.7 }}
-              >
-                The Gift of
-              </motion.p>
-              
-              {/* Animated Word - Fixed overflow with proper container */}
-              <motion.div
-                className="mb-6 md:mb-8"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.8, ease: LUXURY_EASE }}
-              >
-                <div className="relative h-[72px] md:h-[100px] lg:h-[130px] overflow-visible">
-                  <AnimatePresence mode="wait">
-                    <motion.h1
-                      key={activeWord}
-                      className="absolute left-0 font-headline text-6xl md:text-8xl lg:text-[9rem] text-cream leading-none tracking-tight font-light text-gradient-luxury whitespace-nowrap"
-                      initial={{ y: 60, opacity: 0, scale: 0.98 }}
-                      animate={{ y: 0, opacity: 1, scale: 1 }}
-                      exit={{ y: -50, opacity: 0, scale: 1.01 }}
-                      transition={{ duration: 0.65, ease: LUXURY_EASE }}
-                    >
-                      {HERO_WORDS[activeWord].en}
-                    </motion.h1>
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-
-              {/* Subtitle */}
-              <motion.p
-                className="text-cream/60 font-body font-light text-base md:text-lg lg:text-xl max-w-md lg:max-w-lg mb-8 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.7 }}
-              >
-                Premium Egyptian recliners crafted for real homes — calm comfort that lasts.
-              </motion.p>
-
-              {/* Trust Line */}
-              <motion.div
-                className="flex flex-wrap items-center gap-4 md:gap-6 mb-10 text-xs md:text-sm text-cream/50 font-body font-light tracking-wide"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.7 }}
-              >
-                <span>14-Day Delivery</span>
-                <span className="w-px h-3 bg-champagne/40" />
-                <span>5-Year Warranty</span>
-                <span className="w-px h-3 bg-champagne/40" />
-                <span>Free Installation</span>
-              </motion.div>
-
-              {/* CTA Buttons */}
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.4, duration: 0.7 }}
-              >
-                <Button
-                  onClick={scrollToProducts}
-                  className="group relative overflow-hidden bg-transparent border border-champagne/50 hover:border-champagne text-cream px-8 md:px-10 py-5 md:py-6 text-sm font-body font-light tracking-[0.1em] uppercase rounded-none transition-all duration-500"
-                >
-                  <span className="relative z-10 flex items-center gap-3">
-                    Explore Collection
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                  </span>
+            {/* Desktop: 2-column grid, Mobile: 1-column */}
+            <div className="container mx-auto px-6 md:px-12 lg:px-16 xl:px-24 h-full min-h-screen">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-screen py-28 md:py-32 lg:py-24">
+                
+                {/* Left Column - Copy (always first on mobile) */}
+                <div className="flex flex-col justify-center space-y-6 md:space-y-8 order-1 min-h-[50vh] lg:min-h-0">
+                  
+                  {/* Pre-headline */}
                   <motion.div
-                    className="absolute inset-0 bg-champagne"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: 0 }}
-                    transition={{ duration: 0.4, ease: LUXURY_EASE }}
-                  />
-                  <span className="absolute inset-0 z-10 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 text-obsidian transition-opacity duration-300">
-                    Explore Collection
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                </Button>
+                    className="flex items-center gap-4"
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4, duration: 0.8 }}
+                  >
+                    <motion.div 
+                      className="h-px w-12 md:w-16 bg-gradient-to-r from-champagne/70 to-transparent"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.6, duration: 0.6 }}
+                    />
+                    <span className="text-xs md:text-sm text-champagne font-body font-light tracking-[0.25em] uppercase">
+                      The Art of Rest
+                    </span>
+                  </motion.div>
 
-                <Button
-                  onClick={handlePlayVideo}
-                  variant="ghost"
-                  className="group bg-cream/5 hover:bg-cream/10 border-0 text-cream/70 hover:text-cream px-6 md:px-8 py-5 md:py-6 text-sm font-body font-light tracking-wide rounded-none transition-all duration-300"
-                >
-                  <div className="w-9 h-9 rounded-full border border-cream/40 flex items-center justify-center mr-3 group-hover:border-cream/60 group-hover:scale-105 transition-all duration-300">
-                    <Play className="w-3.5 h-3.5 ml-0.5 fill-current" />
+                  {/* Headline Block */}
+                  <div className="space-y-2">
+                    {/* "The Gift of" */}
+                    <motion.p
+                      className="text-cream/70 font-body font-light text-lg md:text-xl tracking-wide"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6, duration: 0.7 }}
+                    >
+                      The Gift of
+                    </motion.p>
+                    
+                    {/* Animated Word */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8, duration: 0.8, ease: REFINED_EASE }}
+                    >
+                      <div className="relative h-[60px] sm:h-[72px] md:h-[100px] lg:h-[120px] overflow-hidden">
+                        <AnimatePresence mode="wait">
+                          <motion.h1
+                            key={activeWord}
+                            className="absolute left-0 font-headline text-5xl sm:text-6xl md:text-8xl lg:text-[8rem] text-cream leading-none tracking-tight font-light text-gradient-refined whitespace-nowrap"
+                            initial={{ y: 60, opacity: 0, scale: 0.98 }}
+                            animate={{ y: 0, opacity: 1, scale: 1 }}
+                            exit={{ y: -50, opacity: 0, scale: 1.01 }}
+                            transition={{ duration: 0.65, ease: REFINED_EASE }}
+                          >
+                            {HERO_WORDS[activeWord].en}
+                          </motion.h1>
+                        </AnimatePresence>
+                      </div>
+                    </motion.div>
                   </div>
-                  Watch Film
-                </Button>
-              </motion.div>
+
+                  {/* Subtitle */}
+                  <motion.p
+                    className="text-cream/60 font-body font-light text-base md:text-lg lg:text-xl max-w-md lg:max-w-lg leading-relaxed"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1, duration: 0.7 }}
+                  >
+                    Premium Egyptian recliners crafted for real homes — calm comfort that lasts.
+                  </motion.p>
+
+                  {/* Trust Line */}
+                  <motion.div
+                    className="flex flex-wrap items-center gap-4 md:gap-6 text-xs md:text-sm text-cream/50 font-body font-light tracking-wide"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2, duration: 0.7 }}
+                  >
+                    <span>14-Day Delivery</span>
+                    <span className="w-1 h-1 rounded-full bg-champagne/50" />
+                    <span>5-Year Warranty</span>
+                    <span className="w-1 h-1 rounded-full bg-champagne/50" />
+                    <span>Free Installation</span>
+                  </motion.div>
+
+                  {/* CTA Buttons - in their own dedicated row */}
+                  <motion.div
+                    className="flex flex-col sm:flex-row gap-4 pt-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.4, duration: 0.7 }}
+                  >
+                    {/* Primary CTA - WhatsApp */}
+                    <Button
+                      onClick={() => window.open('https://wa.link/dandle-recliners', '_blank', 'noopener,noreferrer')}
+                      className="group relative overflow-hidden bg-champagne hover:bg-champagne/90 text-obsidian px-8 md:px-10 py-5 md:py-6 text-sm font-body font-medium tracking-[0.1em] uppercase rounded-none transition-all duration-500"
+                    >
+                      <span className="relative z-10 flex items-center gap-3">
+                        Place Your Order
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                      </span>
+                    </Button>
+
+                    {/* Secondary CTA - Watch Film */}
+                    <Button
+                      onClick={handlePlayVideo}
+                      variant="ghost"
+                      className="group bg-cream/5 hover:bg-cream/10 border border-cream/20 hover:border-cream/40 text-cream/70 hover:text-cream px-6 md:px-8 py-5 md:py-6 text-sm font-body font-light tracking-wide rounded-none transition-all duration-300"
+                    >
+                      <div className="w-9 h-9 rounded-full border border-cream/40 flex items-center justify-center mr-3 group-hover:border-cream/60 group-hover:scale-105 transition-all duration-300">
+                        <Play className="w-3.5 h-3.5 ml-0.5 fill-current" />
+                      </div>
+                      Watch Film
+                    </Button>
+                  </motion.div>
+                </div>
+                
+                {/* Right Column - Visual balance (desktop only) */}
+                <div className="hidden lg:flex items-center justify-center order-2 pointer-events-none">
+                  {/* Decorative ambient glow */}
+                  <motion.div
+                    className="relative w-[350px] h-[350px] xl:w-[400px] xl:h-[400px]"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1, duration: 1.2, ease: REFINED_EASE }}
+                  >
+                    <div className="absolute inset-0 rounded-full bg-gradient-radial from-champagne/8 via-champagne/3 to-transparent blur-2xl" />
+                  </motion.div>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Indicator - z-30, pointer-events-none */}
       {!showVideo && (
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 0.7 }}
@@ -367,10 +382,10 @@ const HeroMasterpiece = () => {
         </motion.div>
       )}
 
-      {/* Side Accent - Desktop */}
+      {/* Side Accent - Desktop, z-10, pointer-events-none */}
       {!showVideo && (
         <motion.div
-          className="hidden lg:flex absolute right-12 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-5"
+          className="hidden lg:flex absolute right-12 top-1/2 -translate-y-1/2 z-10 flex-col items-center gap-5 pointer-events-none"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.8, duration: 0.8 }}
@@ -391,7 +406,7 @@ const HeroMasterpiece = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: videoFadingOut ? 0 : 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: LUXURY_EASE }}
+            transition={{ duration: 0.8, ease: REFINED_EASE }}
           >
             {/* Video - Full Screen, Portrait-Aware */}
             <video

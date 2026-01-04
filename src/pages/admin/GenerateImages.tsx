@@ -57,13 +57,13 @@ const GENERATION_PRESETS = [
     id: "lifestyle-day",
     label: "Lifestyle Day",
     prompt: `${COMPOSITION_RULES}
-SCENE: Transform this recliner into a lifestyle scene - Modern Egyptian penthouse apartment, warm natural sunlight streaming through floor-to-ceiling windows overlooking Cairo, Mediterranean indoor plants, neutral cream and beige palette with bronze accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet luxury aesthetic, aspirational but understated.`,
+SCENE: Transform this recliner into a lifestyle scene - Modern Egyptian penthouse apartment, warm natural sunlight streaming through floor-to-ceiling windows overlooking Cairo, Mediterranean indoor plants, neutral cream and beige palette with bronze accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet refined aesthetic, aspirational but understated.`,
   },
   {
     id: "lifestyle-night",
     label: "Lifestyle Night", 
     prompt: `${COMPOSITION_RULES}
-SCENE: Transform this recliner into an evening scene - Luxurious Egyptian living room at golden hour, warm ambient lighting from designer lamps, soft shadows, cozy atmosphere with a cup of tea on side table. Rich warm tones, bronze and champagne accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet luxury aesthetic.`,
+SCENE: Transform this recliner into an evening scene - Elegant Egyptian living room at golden hour, warm ambient lighting from designer lamps, soft shadows, cozy atmosphere with a cup of tea on side table. Rich warm tones, bronze and champagne accents. Subtle champagne-gold DANDLE watermark in bottom right corner. Quiet refined aesthetic.`,
   },
   {
     id: "reclined-view",

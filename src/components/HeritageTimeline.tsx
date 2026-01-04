@@ -84,7 +84,7 @@ const HeritageTimeline = () => {
                 </div>
 
                 {/* Center dot */}
-                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-bronze rounded-full border-4 border-card shadow-luxury" />
+                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-bronze rounded-full border-4 border-card shadow-refined" />
 
                 {/* Empty space for opposite side */}
                 <div className="hidden md:block md:w-1/2" />

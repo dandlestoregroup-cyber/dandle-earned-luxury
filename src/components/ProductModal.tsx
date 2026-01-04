@@ -26,7 +26,7 @@ const modalTranslations = {
   rockingBase: { en: "Rocking Base", ar: "قاعدة هزازة" },
   stableBase: { en: "Stable Base", ar: "قاعدة ثابتة" },
   soothingMovement: { en: "Soothing movement", ar: "حركة مريحة" },
-  groundedLuxury: { en: "Grounded luxury", ar: "فخامة مستقرة" },
+  groundedLuxury: { en: "Grounded stability", ar: "ثبات متين" },
   lastTouch: { en: "The Last Touch", ar: "اللمسة الأخيرة" },
   giftWrap: { en: "Premium Gift Wrapping", ar: "تغليف هدايا فاخر" },
   giftWrapDesc: { en: "Ribbon with personal message", ar: "شريط مع رسالة شخصية" },

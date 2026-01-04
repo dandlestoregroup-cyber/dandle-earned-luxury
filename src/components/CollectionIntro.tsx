@@ -40,10 +40,10 @@ const CollectionIntro = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          data-en="From compact solutions to family-sized luxury — each Dandle recliner is built to feel right, day after day."
-          data-ar="من الحلول المدمجة إلى الفخامة العائلية — كل كرسي Dandle مصمم ليشعرك بالراحة، يومًا بعد يوم."
+          data-en="From compact solutions to family-sized comfort — each Dandle recliner is built to feel right, day after day."
+          data-ar="من الحلول المدمجة إلى الراحة العائلية — كل كرسي Dandle مصمم ليشعرك بالراحة، يومًا بعد يوم."
         >
-          From compact solutions to family-sized luxury — each Dandle recliner is built to feel right, day after day.
+          From compact solutions to family-sized comfort — each Dandle recliner is built to feel right, day after day.
         </motion.p>
       </div>
     </section>

@@ -262,8 +262,8 @@ const Delivery = () => {
                 </h2>
                 <p className="font-body text-lg text-foreground/80 leading-relaxed mb-8">
                   {isArabic 
-                    ? "نفخر بخدمة العملاء في جميع أنحاء مصر بخدمة التوصيل الفاخرة. من القاهرة إلى الإسكندرية وفي جميع أنحاء البلاد، نحضر الفخامة إلى باب منزلك."
-                    : "We proudly serve customers across Egypt with our white-glove delivery service. From Cairo to Alexandria, and throughout the country, we bring earned luxury to your doorstep."}
+                    ? "نفخر بخدمة العملاء في جميع أنحاء مصر بخدمة التوصيل الفاخرة. من القاهرة إلى الإسكندرية وفي جميع أنحاء البلاد، نحضر الراحة الراقية إلى باب منزلك."
+                    : "We proudly serve customers across Egypt with our white-glove delivery service. From Cairo to Alexandria, and throughout the country, we bring refined comfort to your doorstep."}
                 </p>
                 <div className="bg-background rounded-lg p-6 inline-block border border-bronze/20 shadow-elegant">
                   <p className="font-body font-semibold text-foreground mb-2">

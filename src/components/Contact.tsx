@@ -90,7 +90,7 @@ const Contact = () => {
           >
             <Button
               onClick={handleWhatsAppContact}
-              className="btn-luxury rounded-none"
+              className="btn-refined rounded-none"
             >
               <span data-en="Connect via WhatsApp" data-ar="تواصل عبر واتساب">
                 Connect via WhatsApp

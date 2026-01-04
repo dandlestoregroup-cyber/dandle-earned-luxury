@@ -282,7 +282,7 @@ const ProductDetail = () => {
                 {product.productHandle === "relaxmax" ? (
                   <>
                     <p className="font-body text-muted-foreground leading-relaxed">
-                      The definitive expression of solitary luxury. Engineered with a precision 90cm width, 
+                      The definitive expression of refined comfort. Engineered with a precision 90cm width, 
                       the RelaxMax offers a perfectly balanced silhouette for the ultimate home-cinematic retreat.
                     </p>
                     <p className="font-body text-muted-foreground leading-relaxed mt-4">
