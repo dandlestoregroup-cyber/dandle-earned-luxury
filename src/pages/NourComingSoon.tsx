@@ -7,11 +7,15 @@ import { Input } from "@/components/ui/input";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
 
 const WHATSAPP_NUMBER = "201222804255";
 const WHATSAPP_PREFILL = encodeURIComponent(
   "Room Preview by Nour\nCity: [my city]\nModel: [preferred model]\n(uploading room photo)"
 );
+
+const emailSchema = z.string().trim().email("Please enter a valid email").max(255);
 
 const NourComingSoon = () => {
   const [email, setEmail] = useState("");
@@ -21,20 +25,52 @@ const NourComingSoon = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    
+    const validation = emailSchema.safeParse(email);
+    if (!validation.success) {
+      toast({
+        title: "Invalid email",
+        description: validation.error.errors[0]?.message || "Please enter a valid email",
+        variant: "destructive",
+      });
+      return;
+    }
     
     setIsSubmitting(true);
     
-    // Simulate subscription (replace with actual API call later)
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubscribed(true);
-    toast({
-      title: "You're on the list!",
-      description: "We'll notify you when Nour AI launches.",
-    });
-    
-    setIsSubmitting(false);
+    try {
+      const { error } = await supabase
+        .from("email_subscriptions")
+        .insert({ email: validation.data, source: "nour_coming_soon" });
+      
+      if (error) {
+        if (error.code === "23505") {
+          // Unique constraint violation - email already exists
+          toast({
+            title: "Already subscribed",
+            description: "This email is already on our list!",
+          });
+          setIsSubscribed(true);
+        } else {
+          throw error;
+        }
+      } else {
+        setIsSubscribed(true);
+        toast({
+          title: "You're on the list!",
+          description: "We'll notify you when Nour AI launches.",
+        });
+      }
+    } catch (error) {
+      console.error("Subscription error:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
