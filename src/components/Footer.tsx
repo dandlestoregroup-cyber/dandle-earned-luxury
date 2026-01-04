@@ -14,6 +14,12 @@ const Footer = () => {
     { labelEn: "Delivery", labelAr: "التوصيل", href: "/delivery" },
   ];
 
+  const toolLinks = [
+    { labelEn: "Gift Finder", labelAr: "دليل الهدايا", href: "/gift" },
+    { labelEn: "Room Fit", labelAr: "مقاس الركن", href: "/room-fit" },
+    { labelEn: "Priority Slot", labelAr: "أولوية الاستلام", href: "/priority-slot" },
+  ];
+
   return (
     <footer className="bg-obsidian py-20 border-t border-champagne/10">
       <div className="container mx-auto px-4">
@@ -39,7 +45,7 @@ const Footer = () => {
         
         {/* Navigation Links */}
         <motion.div 
-          className="flex flex-wrap justify-center gap-8 md:gap-12 text-sm mb-14"
+          className="flex flex-wrap justify-center gap-8 md:gap-12 text-sm mb-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -50,6 +56,28 @@ const Footer = () => {
               key={link.href}
               to={link.href}
               className="text-warm-white/50 hover:text-champagne transition-colors duration-300 font-body font-light tracking-wide link-underline"
+              data-en={link.labelEn}
+              data-ar={link.labelAr}
+            >
+              {link.labelEn}
+            </Link>
+          ))}
+        </motion.div>
+
+        {/* Quick Tools Links */}
+        <motion.div 
+          className="flex flex-wrap justify-center gap-6 text-xs mb-14"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.25, duration: 0.6 }}
+        >
+          <span className="text-warm-white/30 uppercase tracking-widest" data-en="Quick Tools" data-ar="أدوات سريعة">Quick Tools:</span>
+          {toolLinks.map((link) => (
+            <Link
+              key={link.href}
+              to={link.href}
+              className="text-champagne/60 hover:text-champagne transition-colors duration-300 font-body font-light"
               data-en={link.labelEn}
               data-ar={link.labelAr}
             >

@@ -23,8 +23,9 @@ const Navigation = () => {
 
   const navLinks = [
     { labelEn: "Collection", labelAr: "المجموعة", href: "#products" },
+    { labelEn: "Gift Finder", labelAr: "دليل الهدايا", href: "/gift", isRoute: true },
+    { labelEn: "Room Fit", labelAr: "مقاس الركن", href: "/room-fit", isRoute: true },
     { labelEn: "Our Story", labelAr: "قصتنا", href: "/our-story", isRoute: true },
-    { labelEn: "Careers", labelAr: "الوظائف", href: "/careers", isRoute: true },
     { labelEn: "Contact", labelAr: "تواصل", href: "#contact" },
   ];
 

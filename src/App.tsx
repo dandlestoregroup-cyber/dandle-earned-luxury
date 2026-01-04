@@ -26,6 +26,9 @@ import Careers from "./pages/Careers";
 import OurStory from "./pages/OurStory";
 import Privacy from "./pages/trust/Privacy";
 import Terms from "./pages/trust/Terms";
+import GiftPicker from "./pages/GiftPicker";
+import RoomFit from "./pages/RoomFit";
+import PrioritySlot from "./pages/PrioritySlot";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +61,9 @@ const App = () => (
             <Route path="/our-story" element={<OurStory />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/gift" element={<GiftPicker />} />
+            <Route path="/room-fit" element={<RoomFit />} />
+            <Route path="/priority-slot" element={<PrioritySlot />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
