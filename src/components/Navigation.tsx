@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
@@ -92,6 +92,13 @@ const Navigation = () => {
             ))}
             
             <div className="flex items-center gap-4 pl-6 border-l border-white/10">
+              <a 
+                href="tel:+201222804255" 
+                className="flex items-center gap-2 text-sm text-warm-white/80 hover:text-champagne transition-colors"
+              >
+                <Phone className="w-4 h-4" />
+                <span className="hidden lg:inline">01222804255</span>
+              </a>
               <CartDrawer />
               <Button 
                 className="btn-luxury text-xs px-6 py-3 rounded-none"
