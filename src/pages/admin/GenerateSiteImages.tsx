@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import JSZip from "jszip";
 import { 
   Image, 
   Download, 
@@ -20,7 +21,8 @@ import {
   Building2,
   Briefcase,
   Gift,
-  Camera
+  Camera,
+  Archive
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -155,6 +157,56 @@ const GenerateSiteImages = () => {
     toast.success('Batch generation complete!');
   }, [images, generateSingleImage]);
 
+  const downloadAllAsZip = useCallback(async () => {
+    const generatedImages = images.filter(
+      img => img.status === 'exists' || img.localGeneratedUrl || img.generatedUrl
+    );
+    
+    if (generatedImages.length === 0) {
+      toast.error('No generated images to download');
+      return;
+    }
+
+    toast.info(`Preparing ZIP with ${generatedImages.length} images...`);
+    
+    const zip = new JSZip();
+    let successCount = 0;
+
+    for (const image of generatedImages) {
+      const imageUrl = image.localGeneratedUrl || image.generatedUrl;
+      if (!imageUrl) continue;
+
+      try {
+        const response = await fetch(imageUrl);
+        if (!response.ok) continue;
+        
+        const blob = await response.blob();
+        const folderPath = `${image.category}/${image.filename}`;
+        zip.file(folderPath, blob);
+        successCount++;
+      } catch (err) {
+        console.warn(`Failed to fetch ${image.filename}:`, err);
+      }
+    }
+
+    if (successCount === 0) {
+      toast.error('Could not fetch any images');
+      return;
+    }
+
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dandle-site-images-${new Date().toISOString().split('T')[0]}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast.success(`Downloaded ${successCount} images as ZIP`);
+  }, [images]);
+
   const openPreview = (image: ImageState) => {
     setSelectedImage(image);
     setPreviewOpen(true);
@@ -213,23 +265,33 @@ const GenerateSiteImages = () => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between py-4">
           <CardTitle className="text-lg">Batch Generation</CardTitle>
-          <Button 
-            onClick={generateMissingImages}
-            disabled={batchGenerating || missingCount === 0}
-            className="bg-dandle-orange hover:bg-dandle-orange/90"
-          >
-            {batchGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Generating ({Math.round(batchProgress)}%)
-              </>
-            ) : (
-              <>
-                <Wand2 className="w-4 h-4 mr-2" />
-                Generate All Missing ({missingCount})
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline"
+              onClick={downloadAllAsZip}
+              disabled={batchGenerating || existingCount === 0}
+            >
+              <Archive className="w-4 h-4 mr-2" />
+              Download ZIP ({existingCount})
+            </Button>
+            <Button 
+              onClick={generateMissingImages}
+              disabled={batchGenerating || missingCount === 0}
+              className="bg-dandle-orange hover:bg-dandle-orange/90"
+            >
+              {batchGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating ({Math.round(batchProgress)}%)
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-4 h-4 mr-2" />
+                  Generate All Missing ({missingCount})
+                </>
+              )}
+            </Button>
+          </div>
         </CardHeader>
         {batchGenerating && (
           <CardContent className="pt-0">
