@@ -17,7 +17,6 @@ const Footer = () => {
   const toolLinks = [
     { labelEn: "Gift Finder", labelAr: "دليل الهدايا", href: "/gift" },
     { labelEn: "Room Fit", labelAr: "مقاس الركن", href: "/room-fit" },
-    { labelEn: "Priority Slot", labelAr: "أولوية الاستلام", href: "/priority-slot" },
   ];
 
   return (

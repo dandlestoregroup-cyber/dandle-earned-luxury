@@ -29,7 +29,7 @@ import Privacy from "./pages/trust/Privacy";
 import Terms from "./pages/trust/Terms";
 import GiftPicker from "./pages/GiftPicker";
 import RoomFit from "./pages/RoomFit";
-import PrioritySlot from "./pages/PrioritySlot";
+
 import Compare from "./pages/Compare";
 
 const queryClient = new QueryClient();
@@ -66,7 +66,7 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/gift" element={<GiftPicker />} />
             <Route path="/room-fit" element={<RoomFit />} />
-            <Route path="/priority-slot" element={<PrioritySlot />} />
+            
             <Route path="/compare" element={<Compare />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
