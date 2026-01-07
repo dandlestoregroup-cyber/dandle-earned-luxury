@@ -91,6 +91,10 @@ const ProductDetail = () => {
     ? formatPrice(product.commerce.price, product.commerce.currencyCode)
     : "Price on request";
 
+  const heroImageSeoUrl = product.heroImage.src.startsWith("http")
+    ? product.heroImage.src
+    : `https://dandle-earned-luxury.lovable.app${product.heroImage.src}`;
+
   // Generate JSON-LD Product Schema
   const productSchema = {
     "@context": "https://schema.org",
@@ -101,7 +105,7 @@ const ProductDetail = () => {
       "@type": "Brand",
       "name": "DANDLE"
     },
-    "image": `https://dandle-earned-luxury.lovable.app${product.heroImage.src}`,
+    "image": heroImageSeoUrl,
     "url": `https://dandle-earned-luxury.lovable.app/products/${product.productHandle}`,
     "offers": {
       "@type": "Offer",
@@ -128,7 +132,7 @@ const ProductDetail = () => {
         {/* Open Graph */}
         <meta property="og:title" content={`${product.title} | DANDLE`} />
         <meta property="og:description" content={product.subtitle} />
-        <meta property="og:image" content={`https://dandle-earned-luxury.lovable.app${product.heroImage.src}`} />
+        <meta property="og:image" content={heroImageSeoUrl} />
         <meta property="og:url" content={`https://dandle-earned-luxury.lovable.app/products/${product.productHandle}`} />
         <meta property="og:type" content="product" />
         
@@ -136,8 +140,8 @@ const ProductDetail = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${product.title} | DANDLE`} />
         <meta name="twitter:description" content={product.subtitle} />
-        <meta name="twitter:image" content={`https://dandle-earned-luxury.lovable.app${product.heroImage.src}`} />
-        
+        <meta name="twitter:image" content={heroImageSeoUrl} />
+
         {/* Product Schema */}
         <script type="application/ld+json">
           {JSON.stringify(productSchema)}

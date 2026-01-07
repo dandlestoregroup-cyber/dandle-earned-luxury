@@ -1,11 +1,15 @@
 // Lovable Catalog - Single Source of Truth for Product Images
 // This catalog is INDEPENDENT of Shopify and controls all visual rendering
 
+import { siteImageManifest } from "@/data/siteImageManifest";
+import { getStorageUrl } from "@/utils/siteImageResolver";
+
 export interface LovableImage {
-  src: string;        // Import path or asset URL
-  width: number;      // Exact pixel width
-  height: number;     // Exact pixel height
-  alt: string;        // Descriptive alt text
+  src: string; // Import path or asset URL
+  fallbackSrc?: string; // Optional fallback URL if src 404s
+  width: number; // Exact pixel width
+  height: number; // Exact pixel height
+  alt: string; // Descriptive alt text
 }
 
 export interface LovableProduct {
@@ -254,9 +258,51 @@ export const lovableCatalog: LovableProduct[] = [
   }
 ];
 
+// Helper: Map catalog handles to manifest handles
+const normalizeHandleForManifest = (handle: string): string => {
+  // The catalog uses "easyup" while the manifest uses "easyup-standard"
+  if (handle === "easyup") return "easyup-standard";
+  return handle;
+};
+
 // Helper: Get product by handle - fail-safe
 export function getLovableProduct(handle: string): LovableProduct | null {
-  return lovableCatalog.find(p => p.productHandle === handle) || null;
+  const base = lovableCatalog.find((p) => p.productHandle === handle) || null;
+  if (!base) return null;
+
+  // Hydrate hero + gallery from the site image manifest (generated images live in storage)
+  const manifestHandle = normalizeHandleForManifest(base.productHandle);
+
+  const heroManifest = siteImageManifest.find(
+    (img) => img.category === "product-hero" && img.productHandle === manifestHandle
+  );
+  const galleryManifest = siteImageManifest.filter(
+    (img) => img.category === "product-gallery" && img.productHandle === manifestHandle
+  );
+
+  const heroImage = heroManifest
+    ? {
+        ...base.heroImage,
+        src: getStorageUrl(heroManifest),
+        fallbackSrc: heroManifest.referenceUrl,
+        width: heroManifest.dimensions.width,
+        height: heroManifest.dimensions.height,
+      }
+    : base.heroImage;
+
+  const generatedGallery = galleryManifest.map((img) => ({
+    src: getStorageUrl(img),
+    fallbackSrc: img.referenceUrl,
+    width: img.dimensions.width,
+    height: img.dimensions.height,
+    alt: `${base.title} — ${img.setting}`,
+  }));
+
+  return {
+    ...base,
+    heroImage,
+    gallery: generatedGallery.length ? [...generatedGallery, ...base.gallery] : base.gallery,
+  };
 }
 
 // Helper: Get all product handles for routing
