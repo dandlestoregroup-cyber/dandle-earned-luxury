@@ -34,7 +34,7 @@ const Footer = () => {
             DANDLE
           </h3>
           <p 
-            className="text-warm-white/40 text-sm tracking-[0.15em] uppercase font-body font-light"
+            className="text-warm-white/70 text-sm tracking-[0.15em] uppercase font-body font-light"
             data-en="The Art of Rest"
             data-ar="فن الراحة"
           >
@@ -54,7 +54,7 @@ const Footer = () => {
             <Link
               key={link.href}
               to={link.href}
-              className="text-warm-white/50 hover:text-champagne transition-colors duration-300 font-body font-light tracking-wide link-underline"
+              className="text-warm-white/80 hover:text-champagne transition-colors duration-300 font-body font-light tracking-wide link-underline"
               data-en={link.labelEn}
               data-ar={link.labelAr}
             >
@@ -71,12 +71,12 @@ const Footer = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.25, duration: 0.6 }}
         >
-          <span className="text-warm-white/30 uppercase tracking-widest" data-en="Quick Tools" data-ar="أدوات سريعة">Quick Tools:</span>
+          <span className="text-warm-white/60 uppercase tracking-widest" data-en="Quick Tools" data-ar="أدوات سريعة">Quick Tools:</span>
           {toolLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              className="text-champagne/60 hover:text-champagne transition-colors duration-300 font-body font-light"
+              className="text-champagne/90 hover:text-champagne transition-colors duration-300 font-body font-light"
               data-en={link.labelEn}
               data-ar={link.labelAr}
             >
@@ -97,7 +97,7 @@ const Footer = () => {
             href="https://facebook.com/dandlestore"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-warm-white/50 hover:text-champagne hover:border-champagne/50 transition-all duration-300"
+            className="w-10 h-10 rounded-full border border-white/40 flex items-center justify-center text-warm-white/80 hover:text-champagne hover:border-champagne/50 transition-all duration-300"
             aria-label="Facebook"
           >
             <Facebook size={18} />
@@ -106,7 +106,7 @@ const Footer = () => {
             href="https://instagram.com/dandlestore"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-warm-white/50 hover:text-champagne hover:border-champagne/50 transition-all duration-300"
+            className="w-10 h-10 rounded-full border border-white/40 flex items-center justify-center text-warm-white/80 hover:text-champagne hover:border-champagne/50 transition-all duration-300"
             aria-label="Instagram"
           >
             <Instagram size={18} />
@@ -117,14 +117,14 @@ const Footer = () => {
         <div className="w-24 h-px bg-gradient-to-r from-transparent via-champagne/30 to-transparent mx-auto mb-10" />
         
         {/* Copyright */}
-        <div className="text-center text-warm-white/30 text-xs font-body font-light tracking-wide space-y-2">
+        <div className="text-center text-warm-white/60 text-xs font-body font-light tracking-wide space-y-2">
           <p data-en={`© ${currentYear} Dandle Store Group`} data-ar={`© ${currentYear} مجموعة داندل ستور`}>
             © {currentYear} Dandle Store Group
           </p>
-          <p className="text-warm-white/20">
-            <Link to="/privacy" className="hover:text-warm-white/40 transition-colors">Privacy</Link>
+          <p className="text-warm-white/50">
+            <Link to="/privacy" className="hover:text-warm-white/80 transition-colors">Privacy</Link>
             <span className="mx-3">·</span>
-            <Link to="/terms" className="hover:text-warm-white/40 transition-colors">Terms</Link>
+            <Link to="/terms" className="hover:text-warm-white/80 transition-colors">Terms</Link>
           </p>
         </div>
       </div>
