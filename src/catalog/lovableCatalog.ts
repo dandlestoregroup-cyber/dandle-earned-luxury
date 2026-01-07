@@ -49,7 +49,7 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Your Daily Sanctuary",
     aspectRatio: 1,
     heroImage: {
-      src: "/images/dandle-relaxmax-flagship.webp",
+      src: "/images/relaxmax-hero.png",
       width: 1024,
       height: 1024,
       alt: "Dandle RelaxMax: The flagship 90cm standard recliner. Iconic cinematic comfort and perfectly balanced proportions."
@@ -79,11 +79,11 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "cozycompanion",
     title: "CozyCompanion Loveseat",
     subtitle: "Comfort for Two",
-    aspectRatio: 1.79,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/dandle-cozycompanion-hero.webp",
-      width: 2752,
-      height: 1536,
+      src: "/images/cozycompanion-hero.png",
+      width: 1024,
+      height: 1024,
       alt: "Dandle CozyCompanion: A premium two-seated couch recliner. Boutique comfort designed for intimate, upscale living."
     },
     gallery: [
@@ -107,7 +107,7 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Flow-first performance",
     aspectRatio: 1,
     heroImage: {
-      src: "/images/dandle-worknest.jpg",
+      src: "/images/worknest-hero.png",
       width: 1024,
       height: 1024,
       alt: "Dandle WorkNest Productive Sanctuary"
@@ -120,7 +120,7 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Big Comfort, Small Footprint",
     aspectRatio: 1,
     heroImage: {
-      src: "/images/dandle-spacesaver.jpg",
+      src: "/images/spacesaver-hero.png",
       width: 1024,
       height: 1024,
       alt: "Dandle SpaceSaver Intelligent Footprint"
@@ -166,7 +166,7 @@ export const lovableCatalog: LovableProduct[] = [
     subtitle: "Sit Easy, Stand Easier",
     aspectRatio: 1,
     heroImage: {
-      src: "/images/dandle-easyup-standard.jpg",
+      src: "/images/easyup-standard-hero.png",
       width: 1024,
       height: 1024,
       alt: "Dandle EasyUp Standard 90cm Power Lift"
@@ -222,10 +222,10 @@ export const lovableCatalog: LovableProduct[] = [
     productHandle: "complete-set",
     title: "Complete Living Room Set",
     subtitle: "Comfort for the Whole Family",
-    aspectRatio: 1.5,
+    aspectRatio: 1,
     heroImage: {
-      src: "/images/dandle-heritage-set.jpg",
-      width: 1536,
+      src: "/images/complete-set-hero.png",
+      width: 1024,
       height: 1024,
       alt: "Dandle Heritage Set Cinematic Suite"
     },
