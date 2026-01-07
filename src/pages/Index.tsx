@@ -2,7 +2,6 @@ import { Helmet } from "react-helmet";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Quote from "@/components/Quote";
-import ProductGallery from "@/components/ProductGallery";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
@@ -10,7 +9,6 @@ import Partners from "@/components/Partners";
 import CollectionIntro from "@/components/CollectionIntro";
 import TrustBlock from "@/components/TrustBlock";
 import GiftOfComfort from "@/components/GiftOfComfort";
-import LifestyleGallery from "@/components/LifestyleGallery";
 import { generateOrganizationSchema, generateLocalBusinessSchema } from "@/utils/structuredData";
 
 const Index = () => {
@@ -29,10 +27,6 @@ const Index = () => {
         <Hero />
         <Quote />
         <CollectionIntro />
-        <div id="products">
-          <ProductGallery />
-        </div>
-        <LifestyleGallery />
         <GiftOfComfort />
         <TrustBlock />
         <Partners />
