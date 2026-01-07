@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import Partners from "@/components/Partners";
 import CollectionIntro from "@/components/CollectionIntro";
+import ProductGallery from "@/components/ProductGallery";
 import TrustBlock from "@/components/TrustBlock";
 import GiftOfComfort from "@/components/GiftOfComfort";
 import { generateOrganizationSchema, generateLocalBusinessSchema } from "@/utils/structuredData";
@@ -27,6 +28,7 @@ const Index = () => {
         <Hero />
         <Quote />
         <CollectionIntro />
+        <ProductGallery />
         <GiftOfComfort />
         <TrustBlock />
         <Partners />

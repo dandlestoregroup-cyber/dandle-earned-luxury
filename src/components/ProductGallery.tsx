@@ -18,11 +18,25 @@ const ProductGallery = () => {
     setTimeout(() => setSelectedProduct(null), 300);
   };
 
+
+  const featuredOrder = [
+    "relaxmax",
+    "easyup",
+    "spacesaver",
+    "worknest",
+    "cozycompanion",
+    "complete-set",
+  ] as const;
+
+  const featuredProducts = featuredOrder
+    .map((id) => products.find((product) => product.id === id))
+    .filter((product): product is Product => Boolean(product));
+
   return (
     <section className="bg-cream py-8 md:py-16 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {products.map((product, index) => (
+          {featuredProducts.map((product, index) => (
             <motion.div 
               key={product.id}
               initial={{ opacity: 0, y: 40 }}
