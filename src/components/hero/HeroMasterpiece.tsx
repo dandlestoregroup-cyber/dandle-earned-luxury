@@ -2,9 +2,36 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowRight, Play, Volume2, VolumeX, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getStorageUrl } from "@/utils/siteImageResolver";
+import { siteImageManifest } from "@/data/siteImageManifest";
 
 // Refined easing (as tuple for framer-motion)
 const REFINED_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+// Get hero background with fallback
+const heroImage = siteImageManifest.find(img => img.id === 'hero-relaxmax');
+const heroSrc = heroImage ? getStorageUrl(heroImage) : '/images/relaxmax-hero-offwhite.jpg';
+const heroFallback = heroImage?.generatedUrl || heroImage?.referenceUrl || '/images/relaxmax-hero-offwhite.jpg';
+
+// Hero background image component with fallback
+const HeroBackgroundImage = ({ isLoaded }: { isLoaded: boolean }) => {
+  const [imgSrc, setImgSrc] = useState(heroSrc);
+  
+  return (
+    <motion.img
+      src={imgSrc}
+      alt="DANDLE Refined Recliner"
+      className="w-full h-full object-cover"
+      initial={{ scale: 1.1, filter: "blur(6px)" }}
+      animate={{ 
+        scale: isLoaded ? 1 : 1.1, 
+        filter: isLoaded ? "blur(0px)" : "blur(6px)" 
+      }}
+      transition={{ duration: 2, ease: REFINED_EASE }}
+      onError={() => setImgSrc(heroFallback)}
+    />
+  );
+};
 
 // Animated words with proper sizing buffer
 const HERO_WORDS = [
@@ -177,17 +204,7 @@ const HeroMasterpiece = () => {
         className="absolute inset-0 z-0"
         style={{ y, scale }}
       >
-        <motion.img
-          src="/images/relaxmax-hero-offwhite.jpg"
-          alt="DANDLE Refined Recliner"
-          className="w-full h-full object-cover"
-          initial={{ scale: 1.1, filter: "blur(6px)" }}
-          animate={{ 
-            scale: isLoaded ? 1 : 1.1, 
-            filter: isLoaded ? "blur(0px)" : "blur(6px)" 
-          }}
-          transition={{ duration: 2, ease: REFINED_EASE }}
-        />
+        <HeroBackgroundImage isLoaded={isLoaded} />
       </motion.div>
 
       {/* Gradient Overlays for Text Readability - z-5, pointer-events-none */}
