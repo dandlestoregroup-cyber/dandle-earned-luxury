@@ -64,6 +64,14 @@ export const ProductImageGallery = ({
           alt={`${altPrefix} - ${selectedImage.alt}`}
           className="w-full h-full object-contain"
           loading="eager"
+          onError={(e) => {
+            const fallback = selectedImage.fallbackSrc;
+            if (!fallback) return;
+            const target = e.currentTarget;
+            if (target.dataset.fallbackApplied === "1") return;
+            target.dataset.fallbackApplied = "1";
+            target.src = fallback;
+          }}
         />
 
         {/* Navigation Arrows (Desktop) */}
@@ -115,6 +123,14 @@ export const ProductImageGallery = ({
                 alt={img.alt}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                onError={(e) => {
+                  const fallback = img.fallbackSrc;
+                  if (!fallback) return;
+                  const target = e.currentTarget;
+                  if (target.dataset.fallbackApplied === "1") return;
+                  target.dataset.fallbackApplied = "1";
+                  target.src = fallback;
+                }}
               />
             </button>
           ))}
@@ -145,6 +161,14 @@ export const ProductImageGallery = ({
                   alt={`${altPrefix} - ${img.alt}`}
                   className="w-full h-full object-contain"
                   loading={idx === 0 ? "eager" : "lazy"}
+                  onError={(e) => {
+                    const fallback = img.fallbackSrc;
+                    if (!fallback) return;
+                    const target = e.currentTarget;
+                    if (target.dataset.fallbackApplied === "1") return;
+                    target.dataset.fallbackApplied = "1";
+                    target.src = fallback;
+                  }}
                 />
               </div>
             ))}

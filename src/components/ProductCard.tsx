@@ -74,6 +74,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const lovableProduct = getLovableProduct(product.id);
   const defaultHeroImage = lovableProduct?.heroImage.src || product.imageUrl;
+  const defaultHeroFallback = lovableProduct?.heroImage.fallbackSrc || product.imageUrl;
   
   const [lang, setLang] = useState<LangKey>('en');
   const [isHovered, setIsHovered] = useState(false);
@@ -266,6 +267,13 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         <motion.img
           src={displayImage}
           alt={product.name}
+          onError={(e) => {
+            const target = e.currentTarget;
+            // Prevent endless loops if the fallback also fails
+            if (target.dataset.fallbackApplied === "1") return;
+            target.dataset.fallbackApplied = "1";
+            target.src = defaultHeroFallback;
+          }}
           className="w-full h-full object-contain object-center"
           style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
           animate={{ 
