@@ -15,7 +15,7 @@ const lifestyleCategories = [
   { id: 'lifestyle-office', labelEn: 'Office', labelAr: 'المكتب' },
 ];
 
-// Format manifest images for carousel display
+// Format manifest images for carousel display - always use referenceUrl as source (these are real images)
 const formatManifestImages = (images: SiteImage[]) => images.map(img => ({
   src: img.generatedUrl || img.referenceUrl,
   alt: `${img.product} in ${img.setting}`,
@@ -26,8 +26,8 @@ const formatManifestImages = (images: SiteImage[]) => images.map(img => ({
   category: img.category,
 }));
 
-// Fallback images if manifest is empty
-const fallbackImages = [
+// Use curated lifestyle images directly from public folder
+const lifestyleImages = [
   {
     src: "/images/complete-set-classic.jpg",
     alt: "DANDLE recliner in elegant home living room",
@@ -35,6 +35,24 @@ const fallbackImages = [
     captionAr: "في المنزل",
     subtitleEn: "Where comfort meets family",
     subtitleAr: "حيث تلتقي الراحة بالعائلة",
+    category: 'lifestyle-home',
+  },
+  {
+    src: "/images/lifestyle-reading-nook.jpg",
+    alt: "Reading nook with DANDLE recliner",
+    captionEn: "Reading Nook",
+    captionAr: "ركن القراءة",
+    subtitleEn: "Your private sanctuary",
+    subtitleAr: "ملاذك الخاص",
+    category: 'lifestyle-home',
+  },
+  {
+    src: "/images/cozycompanion-couple-lifestyle.jpg",
+    alt: "CozyCompanion loveseat family moment",
+    captionEn: "Family Moments",
+    captionAr: "لحظات عائلية",
+    subtitleEn: "Shared comfort, lasting memories",
+    subtitleAr: "راحة مشتركة، ذكريات دائمة",
     category: 'lifestyle-home',
   },
   {
@@ -47,20 +65,24 @@ const fallbackImages = [
     category: 'lifestyle-hotel',
   },
   {
-    src: "/images/complete-set-family-modern.jpg",
-    alt: "Boutique hotel suite with DANDLE comfort",
+    src: "/images/complete-set-coastal-modern.jpg",
+    alt: "Modern coastal living with DANDLE",
     captionEn: "Boutique Hotel",
     captionAr: "فندق بوتيك",
     subtitleEn: "Premium hospitality comfort",
     subtitleAr: "راحة ضيافة فاخرة",
     category: 'lifestyle-hotel',
   },
+  {
+    src: "/images/relaxmax-lifestyle-day.png",
+    alt: "RelaxMax in executive office",
+    captionEn: "Executive Office",
+    captionAr: "المكتب التنفيذي",
+    subtitleEn: "Work in premium comfort",
+    subtitleAr: "اعمل في راحة فاخرة",
+    category: 'lifestyle-office',
+  },
 ];
-
-// Use manifest images if available, otherwise fallback
-const lifestyleImages = manifestLifestyleImages.length > 0 
-  ? formatManifestImages(manifestLifestyleImages)
-  : fallbackImages;
 
 const LifestyleGallery = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
