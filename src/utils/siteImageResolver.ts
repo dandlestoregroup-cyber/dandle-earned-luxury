@@ -55,6 +55,7 @@ export function getResolvedImage(imageId: string): SiteImage & { resolvedUrl: st
  */
 export function getLifestyleImagesForCarousel(): Array<{
   src: string;
+  fallbackSrc: string;
   alt: string;
   captionEn: string;
   captionAr: string;
@@ -63,11 +64,14 @@ export function getLifestyleImagesForCarousel(): Array<{
   category: ImageCategory;
 }> {
   const lifestyleCategories: ImageCategory[] = ['lifestyle-home', 'lifestyle-hotel', 'lifestyle-office'];
-  
+
   return siteImageManifest
-    .filter(img => lifestyleCategories.includes(img.category))
-    .map(img => ({
-      src: img.generatedUrl || img.referenceUrl,
+    .filter((img) => lifestyleCategories.includes(img.category))
+    .map((img) => ({
+      // Always prefer the deterministic storage URL (generated images live here)
+      // and let the UI fall back if the file doesn't exist yet.
+      src: getStorageUrl(img),
+      fallbackSrc: img.generatedUrl || img.referenceUrl,
       alt: `${img.product} in ${img.setting}`,
       captionEn: img.captionEn || img.setting,
       captionAr: img.captionAr || img.setting,
@@ -80,21 +84,27 @@ export function getLifestyleImagesForCarousel(): Array<{
 /**
  * Get the gift campaign background image
  */
-export function getGiftCampaignBackground(): string {
+export function getGiftCampaignBackground(): { src: string; fallbackSrc: string } {
   // Look for gift-hero in manifest
-  const giftHero = siteImageManifest.find(img => img.id === 'gift-hero');
+  const giftHero = siteImageManifest.find((img) => img.id === 'gift-hero');
   if (giftHero) {
-    return giftHero.generatedUrl || giftHero.referenceUrl;
+    return {
+      src: getStorageUrl(giftHero),
+      fallbackSrc: giftHero.generatedUrl || giftHero.referenceUrl,
+    };
   }
-  
+
   // Fallback to a good lifestyle image
-  const readingNook = siteImageManifest.find(img => img.id === 'lifestyle-home-reading');
+  const readingNook = siteImageManifest.find((img) => img.id === 'lifestyle-home-reading');
   if (readingNook) {
-    return readingNook.generatedUrl || readingNook.referenceUrl;
+    return {
+      src: getStorageUrl(readingNook),
+      fallbackSrc: readingNook.generatedUrl || readingNook.referenceUrl,
+    };
   }
-  
+
   // Final fallback
-  return '/images/lifestyle-reading-nook.jpg';
+  return { src: '/images/lifestyle-reading-nook.jpg', fallbackSrc: '/images/lifestyle-reading-nook.jpg' };
 }
 
 /**

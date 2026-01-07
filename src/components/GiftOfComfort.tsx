@@ -3,10 +3,8 @@ import { Gift, Heart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { getGiftCampaignBackground } from "@/utils/siteImageResolver";
-
 // Get background from resolver (manifest-driven with fallback)
-const backgroundImage = getGiftCampaignBackground();
-
+const { src: backgroundImage, fallbackSrc: backgroundFallback } = getGiftCampaignBackground();
 const GiftOfComfort = () => {
   const navigate = useNavigate();
   
@@ -37,6 +35,11 @@ const GiftOfComfort = () => {
           alt="Gift of Comfort"
           className="w-full h-full object-cover"
           loading="lazy"
+          onError={(e) => {
+            if (e.currentTarget.src !== backgroundFallback) {
+              e.currentTarget.src = backgroundFallback;
+            }
+          }}
         />
         <div className="absolute inset-0 bg-obsidian/70" />
       </div>
