@@ -11,7 +11,7 @@ for (const entry of generationManifest) {
 
 export const productImageData: Record<string, { mainImage: string; galleryImages: string[] }> = {
   'relaxmax': {
-    mainImage: '/images/dandle-relaxmax-flagship.webp',
+    mainImage: '/images/relaxmax-hero.png',
     galleryImages: [
       '/images/relaxmax-hero-offwhite.jpg',
       '/images/relaxmax-brown-lifestyle.jpg',
@@ -34,7 +34,7 @@ export const productImageData: Record<string, { mainImage: string; galleryImages
     ],
   },
   'cozycompanion': {
-    mainImage: '/images/dandle-cozycompanion-hero.webp',
+    mainImage: '/images/cozycompanion-hero.png',
     galleryImages: [
       '/images/cozycompanion-beige-front.jpg',
       '/images/cozycompanion-yellow-front.jpg',
@@ -43,7 +43,7 @@ export const productImageData: Record<string, { mainImage: string; galleryImages
     ],
   },
   'easyup': {
-    mainImage: '/images/dandle-easyup-standard.jpg',
+    mainImage: '/images/easyup-standard-hero.png',
     galleryImages: [
       '/images/easyup-beige-front.jpg',
       '/images/easyup-beige-lifted.jpg',
@@ -62,14 +62,14 @@ export const productImageData: Record<string, { mainImage: string; galleryImages
     ],
   },
   'worknest': {
-    mainImage: '/images/dandle-worknest.jpg',
+    mainImage: '/images/worknest-hero.png',
     galleryImages: [
       '/images/worknest-blue-front.webp',
       ...(generatedByProduct['worknest'] || []),
     ],
   },
   'spacesaver': {
-    mainImage: '/images/dandle-spacesaver.jpg',
+    mainImage: '/images/spacesaver-hero.png',
     galleryImages: [
       '/images/spacesaver-offwhite-reclined.jpg',
       '/images/spacesaver-offwhite-side.jpg',
@@ -78,7 +78,7 @@ export const productImageData: Record<string, { mainImage: string; galleryImages
     ],
   },
   'complete-set': {
-    mainImage: '/images/dandle-heritage-set.jpg',
+    mainImage: '/images/complete-set-hero.png',
     galleryImages: [
       '/images/complete-set-classic.jpg',
       '/images/complete-set-coastal-modern.jpg',
