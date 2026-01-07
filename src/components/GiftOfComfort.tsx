@@ -2,6 +2,12 @@ import { motion } from "framer-motion";
 import { Gift, Heart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { getGiftCampaignImages } from "@/data/siteImageManifest";
+
+// Get gift campaign images from manifest
+const giftImages = getGiftCampaignImages();
+const heroGiftImage = giftImages.find(img => img.id === 'gift-hero');
+const backgroundImage = heroGiftImage?.generatedUrl || heroGiftImage?.referenceUrl || "/images/lifestyle-reading-nook.jpg";
 
 const GiftOfComfort = () => {
   const navigate = useNavigate();
@@ -29,8 +35,8 @@ const GiftOfComfort = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/images/lifestyle-reading-nook.jpg"
-          alt="Lifestyle"
+          src={backgroundImage}
+          alt="Gift of Comfort"
           className="w-full h-full object-cover"
           loading="lazy"
         />

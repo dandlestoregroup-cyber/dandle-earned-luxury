@@ -2,15 +2,40 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
+import { getLifestyleImages, SiteImage } from "@/data/siteImageManifest";
 
-const lifestyleImages = [
+// Get lifestyle images from manifest and format for carousel
+const manifestLifestyleImages = getLifestyleImages();
+
+// Group by category for tab navigation
+const lifestyleCategories = [
+  { id: 'all', labelEn: 'All Spaces', labelAr: 'كل الأماكن' },
+  { id: 'lifestyle-home', labelEn: 'Home', labelAr: 'المنزل' },
+  { id: 'lifestyle-hotel', labelEn: 'Hotel', labelAr: 'الفندق' },
+  { id: 'lifestyle-office', labelEn: 'Office', labelAr: 'المكتب' },
+];
+
+// Format manifest images for carousel display
+const formatManifestImages = (images: SiteImage[]) => images.map(img => ({
+  src: img.generatedUrl || img.referenceUrl,
+  alt: `${img.product} in ${img.setting}`,
+  captionEn: img.captionEn || img.setting,
+  captionAr: img.captionAr || img.setting,
+  subtitleEn: img.subtitleEn || `Experience ${img.product}`,
+  subtitleAr: img.subtitleAr || `تجربة ${img.product}`,
+  category: img.category,
+}));
+
+// Fallback images if manifest is empty
+const fallbackImages = [
   {
     src: "/images/complete-set-classic.jpg",
     alt: "DANDLE recliner in elegant home living room",
     captionEn: "At Home",
     captionAr: "في المنزل",
     subtitleEn: "Where comfort meets family",
-    subtitleAr: "حيث تلتقي الراحة بالعائلة"
+    subtitleAr: "حيث تلتقي الراحة بالعائلة",
+    category: 'lifestyle-home',
   },
   {
     src: "/images/complete-set-sunset-fireplace.jpg",
@@ -18,7 +43,8 @@ const lifestyleImages = [
     captionEn: "Vacation Rental",
     captionAr: "إيجار العطلات",
     subtitleEn: "Elevate guest experiences",
-    subtitleAr: "ارتقِ بتجارب الضيوف"
+    subtitleAr: "ارتقِ بتجارب الضيوف",
+    category: 'lifestyle-hotel',
   },
   {
     src: "/images/complete-set-family-modern.jpg",
@@ -26,9 +52,15 @@ const lifestyleImages = [
     captionEn: "Boutique Hotel",
     captionAr: "فندق بوتيك",
     subtitleEn: "Premium hospitality comfort",
-    subtitleAr: "راحة ضيافة فاخرة"
-  }
+    subtitleAr: "راحة ضيافة فاخرة",
+    category: 'lifestyle-hotel',
+  },
 ];
+
+// Use manifest images if available, otherwise fallback
+const lifestyleImages = manifestLifestyleImages.length > 0 
+  ? formatManifestImages(manifestLifestyleImages)
+  : fallbackImages;
 
 const LifestyleGallery = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);

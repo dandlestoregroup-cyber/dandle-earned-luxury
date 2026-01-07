@@ -13,6 +13,7 @@ import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
 import GenerateImages from "./pages/admin/GenerateImages";
 import GenerateHeroAssets from "./pages/admin/GenerateHeroAssets";
+import GenerateSiteImages from "./pages/admin/GenerateSiteImages";
 import AdminLayout from "./components/AdminLayout";
 import About from "./pages/trust/About";
 import Warranty from "./pages/trust/Warranty";
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/order/:reference" element={<OrderStatus />} />
             <Route path="/admin/generate-images" element={<AdminLayout><GenerateImages /></AdminLayout>} />
             <Route path="/admin/generate-hero" element={<AdminLayout><GenerateHeroAssets /></AdminLayout>} />
+            <Route path="/admin/site-images" element={<AdminLayout><GenerateSiteImages /></AdminLayout>} />
             <Route path="/about" element={<About />} />
             <Route path="/warranty" element={<Warranty />} />
             <Route path="/delivery" element={<Delivery />} />

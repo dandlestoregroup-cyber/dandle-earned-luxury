@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.submit-career-application]
 verify_jwt = false
+
+[functions.generate-site-image]
+verify_jwt = false
