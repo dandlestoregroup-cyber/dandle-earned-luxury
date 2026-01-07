@@ -55,7 +55,7 @@ const Contact = () => {
               </span>
             </a>
             <p 
-              className="text-warm-white/40 text-sm mt-4 font-body font-light"
+              className="text-champagne/90 text-sm mt-4 font-body font-light"
               data-en="Daily: 10AM-3PM & 7PM-9PM"
               data-ar="يومياً: 10ص-3م و 7م-9م"
             >
@@ -71,12 +71,12 @@ const Contact = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col md:flex-row justify-center gap-8 md:gap-16 mb-12"
           >
-            <div className="flex items-center justify-center gap-3 text-warm-white/60">
-              <MapPin className="w-4 h-4 text-champagne/60" />
+            <div className="flex items-center justify-center gap-3 text-warm-white/90">
+              <MapPin className="w-4 h-4 text-champagne" />
               <span className="text-sm font-body font-light">Istikbal City Stars</span>
             </div>
-            <div className="flex items-center justify-center gap-3 text-warm-white/60">
-              <MapPin className="w-4 h-4 text-champagne/60" />
+            <div className="flex items-center justify-center gap-3 text-warm-white/90">
+              <MapPin className="w-4 h-4 text-champagne" />
               <span className="text-sm font-body font-light">Istikbal Al Sawalhi</span>
             </div>
           </motion.div>
