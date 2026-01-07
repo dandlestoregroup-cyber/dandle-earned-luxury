@@ -78,6 +78,12 @@ const LifestyleGallery = () => {
                   <img
                     src={image.src}
                     alt={image.alt}
+                    onError={(e) => {
+                      // If generated storage image is missing, fall back to the reference/local image.
+                      if (e.currentTarget.src !== image.fallbackSrc) {
+                        e.currentTarget.src = image.fallbackSrc;
+                      }
+                    }}
                     className={`w-full h-full object-cover object-center ${
                       selectedIndex === index 
                         ? index % 2 === 0 
