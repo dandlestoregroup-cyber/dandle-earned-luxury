@@ -10,6 +10,7 @@ import Partners from "@/components/Partners";
 import CollectionIntro from "@/components/CollectionIntro";
 import TrustBlock from "@/components/TrustBlock";
 import GiftOfComfort from "@/components/GiftOfComfort";
+import LifestyleGallery from "@/components/LifestyleGallery";
 import { generateOrganizationSchema, generateLocalBusinessSchema } from "@/utils/structuredData";
 
 const Index = () => {
@@ -31,6 +32,7 @@ const Index = () => {
         <div id="products">
           <ProductGallery />
         </div>
+        <LifestyleGallery />
         <GiftOfComfort />
         <TrustBlock />
         <Partners />

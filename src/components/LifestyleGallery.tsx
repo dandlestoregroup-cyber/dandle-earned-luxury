@@ -2,87 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { getLifestyleImages, SiteImage } from "@/data/siteImageManifest";
+import { getLifestyleImagesForCarousel } from "@/utils/siteImageResolver";
 
-// Get lifestyle images from manifest and format for carousel
-const manifestLifestyleImages = getLifestyleImages();
-
-// Group by category for tab navigation
-const lifestyleCategories = [
-  { id: 'all', labelEn: 'All Spaces', labelAr: 'كل الأماكن' },
-  { id: 'lifestyle-home', labelEn: 'Home', labelAr: 'المنزل' },
-  { id: 'lifestyle-hotel', labelEn: 'Hotel', labelAr: 'الفندق' },
-  { id: 'lifestyle-office', labelEn: 'Office', labelAr: 'المكتب' },
-];
-
-// Format manifest images for carousel display - always use referenceUrl as source (these are real images)
-const formatManifestImages = (images: SiteImage[]) => images.map(img => ({
-  src: img.generatedUrl || img.referenceUrl,
-  alt: `${img.product} in ${img.setting}`,
-  captionEn: img.captionEn || img.setting,
-  captionAr: img.captionAr || img.setting,
-  subtitleEn: img.subtitleEn || `Experience ${img.product}`,
-  subtitleAr: img.subtitleAr || `تجربة ${img.product}`,
-  category: img.category,
-}));
-
-// Use curated lifestyle images directly from public folder
-const lifestyleImages = [
-  {
-    src: "/images/complete-set-classic.jpg",
-    alt: "DANDLE recliner in elegant home living room",
-    captionEn: "At Home",
-    captionAr: "في المنزل",
-    subtitleEn: "Where comfort meets family",
-    subtitleAr: "حيث تلتقي الراحة بالعائلة",
-    category: 'lifestyle-home',
-  },
-  {
-    src: "/images/lifestyle-reading-nook.jpg",
-    alt: "Reading nook with DANDLE recliner",
-    captionEn: "Reading Nook",
-    captionAr: "ركن القراءة",
-    subtitleEn: "Your private sanctuary",
-    subtitleAr: "ملاذك الخاص",
-    category: 'lifestyle-home',
-  },
-  {
-    src: "/images/cozycompanion-couple-lifestyle.jpg",
-    alt: "CozyCompanion loveseat family moment",
-    captionEn: "Family Moments",
-    captionAr: "لحظات عائلية",
-    subtitleEn: "Shared comfort, lasting memories",
-    subtitleAr: "راحة مشتركة، ذكريات دائمة",
-    category: 'lifestyle-home',
-  },
-  {
-    src: "/images/complete-set-sunset-fireplace.jpg",
-    alt: "Refined vacation rental with premium recliner",
-    captionEn: "Vacation Rental",
-    captionAr: "إيجار العطلات",
-    subtitleEn: "Elevate guest experiences",
-    subtitleAr: "ارتقِ بتجارب الضيوف",
-    category: 'lifestyle-hotel',
-  },
-  {
-    src: "/images/complete-set-coastal-modern.jpg",
-    alt: "Modern coastal living with DANDLE",
-    captionEn: "Boutique Hotel",
-    captionAr: "فندق بوتيك",
-    subtitleEn: "Premium hospitality comfort",
-    subtitleAr: "راحة ضيافة فاخرة",
-    category: 'lifestyle-hotel',
-  },
-  {
-    src: "/images/relaxmax-lifestyle-day.png",
-    alt: "RelaxMax in executive office",
-    captionEn: "Executive Office",
-    captionAr: "المكتب التنفيذي",
-    subtitleEn: "Work in premium comfort",
-    subtitleAr: "اعمل في راحة فاخرة",
-    category: 'lifestyle-office',
-  },
-];
+// Get lifestyle images from resolver (manifest-driven with fallbacks)
+const lifestyleImages = getLifestyleImagesForCarousel();
 
 const LifestyleGallery = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);

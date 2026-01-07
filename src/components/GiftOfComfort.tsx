@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 import { Gift, Heart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { getGiftCampaignBackground } from "@/utils/siteImageResolver";
 
-// Use existing curated lifestyle image for Gift of Comfort background
-const backgroundImage = "/images/lifestyle-reading-nook.jpg";
+// Get background from resolver (manifest-driven with fallback)
+const backgroundImage = getGiftCampaignBackground();
 
 const GiftOfComfort = () => {
   const navigate = useNavigate();
