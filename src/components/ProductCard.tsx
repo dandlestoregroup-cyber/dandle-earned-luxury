@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { productColorImages, getProductColorImage } from "@/data/productColorImages";
 import { PALETTE_MAP } from "@/data/palette";
 import { getLangFromStorage, type LangKey } from "@/i18n/strings";
+import WishlistButton from "@/components/WishlistButton";
 
 // Arabic product translations
 const productTranslations: Record<string, { name: string; tagline: string }> = {
@@ -263,6 +264,19 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
       {/* Image Container - Multi-layer depth */}
       <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-b from-cream to-warm-beige/30">
+        {/* Wishlist Button - Top Left */}
+        {!product.comingSoon && (
+          <div className="absolute top-4 left-4 z-30">
+            <WishlistButton 
+              product={{ 
+                id: product.id, 
+                name: product.name,
+                color: selectedColor || undefined 
+              }} 
+              size="sm"
+            />
+          </div>
+        )}
         {/* Layer 1: Product Image with zoom and brightness */}
         <motion.img
           src={displayImage}

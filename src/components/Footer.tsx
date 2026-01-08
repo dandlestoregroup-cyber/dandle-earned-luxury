@@ -116,6 +116,23 @@ const Footer = () => {
         {/* Divider */}
         <div className="w-24 h-px bg-gradient-to-r from-transparent via-champagne/30 to-transparent mx-auto mb-10" />
         
+        {/* Locked Service Info */}
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.35, duration: 0.6 }}
+        >
+          <p 
+            className="text-warm-white/80 text-sm font-body font-light"
+            data-en="Delivery in 14 days nationwide. 2-year warranty."
+            data-ar="التسليم خلال 14 يوم في جميع المحافظات. ضمان سنتين."
+          >
+            Delivery in 14 days nationwide. 2-year warranty.
+          </p>
+        </motion.div>
+        
         {/* Copyright */}
         <div className="text-center text-warm-white/60 text-xs font-body font-light tracking-wide space-y-2">
           <p data-en={`© ${currentYear} Dandle Store Group`} data-ar={`© ${currentYear} مجموعة داندل ستور`}>

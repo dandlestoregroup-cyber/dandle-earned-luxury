@@ -10,6 +10,8 @@ import CollectionIntro from "@/components/CollectionIntro";
 import ProductGallery from "@/components/ProductGallery";
 import TrustBlock from "@/components/TrustBlock";
 import GiftOfComfort from "@/components/GiftOfComfort";
+import AmazonVerification from "@/components/AmazonVerification";
+import WishlistModal from "@/components/WishlistModal";
 import { generateOrganizationSchema, generateLocalBusinessSchema } from "@/utils/structuredData";
 
 const Index = () => {
@@ -31,11 +33,13 @@ const Index = () => {
         <ProductGallery />
         <GiftOfComfort />
         <TrustBlock />
+        <AmazonVerification variant="home" />
         <Partners />
         <Contact />
       </main>
       <Footer />
       <WhatsAppFloat />
+      <WishlistModal />
     </div>
   );
 };
