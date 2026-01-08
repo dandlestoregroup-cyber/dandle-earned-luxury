@@ -10,36 +10,25 @@ const Quote = () => {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
+        {/* Main Quote - Locked */}
         <p 
           className="font-headline text-3xl md:text-5xl lg:text-6xl text-warm-white font-light leading-tight tracking-tight"
-          data-en="You know you found it the moment you see it."
-          data-ar="تعرف أنك وجدته لحظة ما تشوفه."
+          data-en="Dandle doesn't explain."
+          data-ar="داندل لا يشرح."
         >
-          You know you found it<br className="hidden md:block" /> the moment you see it.
+          Dandle doesn't explain.
         </p>
         
         <motion.p
-          className="font-body text-lg md:text-xl text-champagne/80 mt-6 font-light"
+          className="font-headline text-3xl md:text-5xl lg:text-6xl text-dandle-orange font-light leading-tight tracking-tight mt-2"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          data-en="Comfort crafted for the finest."
-          data-ar="راحة صُممت للأرقى."
+          data-en="Dandle attracts."
+          data-ar="داندل يجذب."
         >
-          Comfort crafted for the finest.
-        </motion.p>
-
-        <motion.p
-          className="font-body text-xl md:text-2xl text-dandle-orange mt-4 font-medium"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          data-en="Give yourself the gift of comfort 🎁"
-          data-ar="أهدِ نفسك هدية الراحة 🎁"
-        >
-          Give yourself the gift of comfort 🎁
+          Dandle attracts.
         </motion.p>
         
         <motion.footer 

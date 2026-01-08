@@ -3,34 +3,53 @@ import { Gift, Heart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { getGiftCampaignBackground } from "@/utils/siteImageResolver";
+import { useState, useEffect } from "react";
+import { getLangFromStorage, type LangKey } from "@/i18n/strings";
 
 // Get background from resolver (manifest-driven with fallback)
 const { src: backgroundImage, fallbackSrc: backgroundFallback } = getGiftCampaignBackground();
 
 const GiftOfComfort = () => {
   const navigate = useNavigate();
+  const [lang, setLang] = useState<LangKey>('ar');
+
+  useEffect(() => {
+    const storedLang = getLangFromStorage();
+    setLang(storedLang);
+    const interval = setInterval(() => {
+      const currentLang = getLangFromStorage();
+      setLang(prev => prev !== currentLang ? currentLang : prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const isArabic = lang === 'ar';
   
   const features = [
     {
       icon: Gift,
-      title: "Premium Presentation",
+      titleEn: "Premium Presentation",
       titleAr: "تقديم فاخر",
     },
     {
       icon: Heart,
-      title: "Personalized Note",
+      titleEn: "Personalized Note",
       titleAr: "رسالة شخصية",
     },
     {
       icon: Truck,
-      title: "White-Glove Setup",
+      titleEn: "White-Glove Setup",
       titleAr: "تركيب راقي",
     }
   ];
 
   return (
-    <section id="gift-of-comfort" className="relative py-24 md:py-32 overflow-hidden min-h-[60vh]">
-      {/* Background Image */}
+    <section 
+      id="gift-of-comfort" 
+      className="relative py-24 md:py-32 overflow-hidden"
+      dir={isArabic ? 'rtl' : 'ltr'}
+    >
+      {/* Background Image with proper containment */}
       <div className="absolute inset-0 z-0">
         <img
           src={backgroundImage}
@@ -43,13 +62,13 @@ const GiftOfComfort = () => {
             }
           }}
         />
-        {/* Stronger overlay for text readability */}
-        <div className="absolute inset-0 bg-deep-brown/85" />
+        {/* Strong overlay for text readability */}
+        <div className="absolute inset-0 bg-deep-brown/90" />
       </div>
       
-      {/* Content container with safe-area padding */}
+      {/* Content container with guaranteed safe-area */}
       <div className="container mx-auto px-6 md:px-8 relative z-10">
-        <div className="max-w-2xl py-8">
+        <div className="max-w-2xl py-8 md:py-12">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -58,59 +77,54 @@ const GiftOfComfort = () => {
             className="space-y-4"
           >
             <span 
-              className="text-xs text-dandle-orange tracking-[0.2em] uppercase font-body font-light drop-shadow-md"
-              data-en="Gift of Comfort"
-              data-ar="هدية الراحة"
+              className={`text-xs text-dandle-orange tracking-[0.2em] uppercase font-light drop-shadow-md ${isArabic ? 'font-body-ar' : 'font-body'}`}
             >
-              Gift of Comfort
+              {isArabic ? "هدية الراحة" : "Gift of Comfort"}
             </span>
             
-            {/* Headline - clamped font sizes, max 2 lines */}
+            {/* Headline - max 2 lines, clamped font */}
             <h2 
-              className="font-headline text-[clamp(1.75rem,5vw,3rem)] text-off-white font-light leading-tight drop-shadow-lg"
-              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}
-              data-en="For Refined Taste"
-              data-ar="لأصحاب الذوق الرفيع"
+              className={`text-[clamp(1.5rem,4vw,2.5rem)] text-off-white font-light leading-tight ${isArabic ? 'font-body-ar' : 'font-headline'}`}
+              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}
             >
-              For Refined Taste
+              {isArabic ? "لأصحاب الذوق الرفيع" : "For Refined Taste"}
             </h2>
             
             {/* Subline - one short line */}
             <p 
-              className="text-off-white/80 text-base md:text-lg font-body font-light leading-relaxed max-w-xl drop-shadow-md"
-              style={{ textShadow: '0 1px 8px rgba(0,0,0,0.4)' }}
-              data-en="A gift that becomes part of their daily life — quietly, beautifully, for years."
-              data-ar="هدية تصبح جزءًا من حياته اليومية — بهدوء، بجمال، لسنوات."
+              className={`text-off-white/85 text-sm md:text-base font-light leading-relaxed max-w-lg ${isArabic ? 'font-body-ar' : 'font-body'}`}
+              style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
             >
-              A gift that becomes part of their daily life — quietly, beautifully, for years.
+              {isArabic 
+                ? "هدية تصبح جزءًا من حياته اليومية — بهدوء، بجمال، لسنوات."
+                : "A gift that becomes part of their daily life — quietly, beautifully, for years."
+              }
             </p>
           </motion.div>
 
           {/* Features */}
           <motion.div 
-            className="flex flex-wrap gap-6 mt-8"
+            className="flex flex-wrap gap-4 md:gap-6 mt-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <feature.icon className="w-5 h-5 text-dandle-orange stroke-[1.5] drop-shadow-sm" />
+              <div key={index} className="flex items-center gap-2 md:gap-3">
+                <feature.icon className="w-4 h-4 md:w-5 md:h-5 text-dandle-orange stroke-[1.5] drop-shadow-sm" />
                 <span 
-                  className="text-off-white/90 text-sm font-body font-light drop-shadow-md"
-                  style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
-                  data-en={feature.title}
-                  data-ar={feature.titleAr}
+                  className={`text-off-white/90 text-xs md:text-sm font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
+                  style={{ textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}
                 >
-                  {feature.title}
+                  {isArabic ? feature.titleAr : feature.titleEn}
                 </span>
               </div>
             ))}
           </motion.div>
 
           <motion.div
-            className="mt-10"
+            className="mt-8 md:mt-10"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -118,11 +132,9 @@ const GiftOfComfort = () => {
           >
             <Button
               onClick={() => navigate('/gift')}
-              className="bg-dandle-orange hover:bg-dandle-orange/90 text-off-white rounded-none px-8 py-6 font-body font-medium tracking-wide uppercase shadow-lg"
+              className={`bg-dandle-orange hover:bg-dandle-orange/90 text-off-white rounded-none px-6 md:px-8 py-5 md:py-6 font-medium tracking-wide uppercase shadow-lg ${isArabic ? 'font-body-ar' : 'font-body'}`}
             >
-              <span data-en="Find the Perfect Gift" data-ar="اختر الهدية المثالية">
-                Find the Perfect Gift
-              </span>
+              {isArabic ? "اختر الهدية المثالية" : "Find the Perfect Gift"}
             </Button>
           </motion.div>
         </div>

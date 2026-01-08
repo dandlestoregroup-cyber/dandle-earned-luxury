@@ -12,6 +12,7 @@ export interface Product {
   targetAudience: string;
   imageUrl: string;
   comingSoon?: boolean;
+  beFirstToKnow?: boolean; // For products coming soon but with "Be First to Know" CTA
 }
 
 export const products: Product[] = [
@@ -93,7 +94,7 @@ export const products: Product[] = [
     tagline: "Sit Easy, Stand Easier",
     truth: "Ease. Support. Confidence.",
     story: "EasyUp Lift is everyday independence. Sit easy. Stand easier. The kind of difference you feel all day, not once. Thoughtful as a gift, powerful in daily life.",
-    price: 42900,
+    price: 32000,
     colors: ["Creamy Beige", "Urban Charcoal"],
     features: [
       "Power Lift Mechanism",
@@ -110,7 +111,7 @@ export const products: Product[] = [
     tagline: "Gentle Lift, Compact Design",
     truth: "Compact. Clean. Capable.",
     story: "EasyUp Compact is made for smart spaces—clean, practical, and designed for rooms where every corner matters.",
-    price: 32000,
+    price: 42900,
     colors: ["Urban Charcoal"],
     features: [
       "Power Lift Mechanism",
@@ -138,7 +139,7 @@ export const products: Product[] = [
     ],
     targetAudience: "Remote workers and executives",
     imageUrl: "/images/dandle-worknest.jpg",
-    comingSoon: true,
+    beFirstToKnow: true,
   },
   {
     id: "spacesaver",
@@ -157,7 +158,7 @@ export const products: Product[] = [
     ],
     targetAudience: "Urban dwellers with small spaces",
     imageUrl: "/images/dandle-spacesaver.jpg",
-    comingSoon: true,
+    beFirstToKnow: true,
   },
   {
     id: "complete-set",
