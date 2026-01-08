@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gift, Heart, Users, Tv, BookOpen, Moon, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { Gift, Heart, Users, Tv, BookOpen, Moon, ArrowRight, ArrowLeft, Check, Briefcase, Laptop } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
+import { lovableCatalog } from "@/catalog/lovableCatalog";
 
 const WHATSAPP_NUMBER = "201222804255";
 
@@ -20,12 +21,14 @@ const recipientOptions = [
   { id: "parents", labelEn: "Parents", labelAr: "الوالدين", icon: Users },
   { id: "partner", labelEn: "Partner", labelAr: "الشريك", icon: Heart },
   { id: "self", labelEn: "Myself", labelAr: "لنفسي", icon: Gift },
+  { id: "colleague", labelEn: "Business Partner", labelAr: "شريك عمل", icon: Briefcase },
 ];
 
 const usageOptions = [
   { id: "reading", labelEn: "Reading & Relaxing", labelAr: "القراءة والاسترخاء", icon: BookOpen },
   { id: "tv", labelEn: "Watching TV", labelAr: "مشاهدة التلفزيون", icon: Tv },
   { id: "napping", labelEn: "Napping", labelAr: "القيلولة", icon: Moon },
+  { id: "working", labelEn: "Working from Home", labelAr: "العمل من المنزل", icon: Laptop },
 ];
 
 const budgetOptions = [
@@ -35,6 +38,7 @@ const budgetOptions = [
 ];
 
 const recommendations: Record<string, { product: string; handle: string }> = {
+  // Parents
   "parents-reading-standard": { product: "RelaxMax", handle: "relaxmax" },
   "parents-reading-premium": { product: "ComfortPlus", handle: "comfortplus" },
   "parents-reading-luxury": { product: "CozyCompanion", handle: "cozycompanion" },
@@ -42,8 +46,13 @@ const recommendations: Record<string, { product: string; handle: string }> = {
   "parents-tv-premium": { product: "Diva", handle: "diva" },
   "parents-tv-luxury": { product: "CozyCompanion", handle: "cozycompanion" },
   "parents-napping-standard": { product: "RelaxMax", handle: "relaxmax" },
-  "parents-napping-premium": { product: "EasyUp Standard", handle: "easyup-standard" },
+  "parents-napping-premium": { product: "EasyUp Standard", handle: "easyup" },
   "parents-napping-luxury": { product: "EasyUp Compact", handle: "easyup-compact" },
+  "parents-working-standard": { product: "WorkNest", handle: "worknest" },
+  "parents-working-premium": { product: "WorkNest", handle: "worknest" },
+  "parents-working-luxury": { product: "ComfortPlus", handle: "comfortplus" },
+  
+  // Partner
   "partner-reading-standard": { product: "WorkNest", handle: "worknest" },
   "partner-reading-premium": { product: "ComfortPlus", handle: "comfortplus" },
   "partner-reading-luxury": { product: "CozyCompanion", handle: "cozycompanion" },
@@ -53,6 +62,11 @@ const recommendations: Record<string, { product: string; handle: string }> = {
   "partner-napping-standard": { product: "RelaxMax", handle: "relaxmax" },
   "partner-napping-premium": { product: "ComfortPlus", handle: "comfortplus" },
   "partner-napping-luxury": { product: "Complete Set", handle: "complete-set" },
+  "partner-working-standard": { product: "WorkNest", handle: "worknest" },
+  "partner-working-premium": { product: "WorkNest", handle: "worknest" },
+  "partner-working-luxury": { product: "ComfortPlus", handle: "comfortplus" },
+  
+  // Self
   "self-reading-standard": { product: "WorkNest", handle: "worknest" },
   "self-reading-premium": { product: "ComfortPlus", handle: "comfortplus" },
   "self-reading-luxury": { product: "CozyCompanion", handle: "cozycompanion" },
@@ -60,8 +74,25 @@ const recommendations: Record<string, { product: string; handle: string }> = {
   "self-tv-premium": { product: "Diva", handle: "diva" },
   "self-tv-luxury": { product: "Complete Set", handle: "complete-set" },
   "self-napping-standard": { product: "RelaxMax", handle: "relaxmax" },
-  "self-napping-premium": { product: "EasyUp Standard", handle: "easyup-standard" },
+  "self-napping-premium": { product: "EasyUp Standard", handle: "easyup" },
   "self-napping-luxury": { product: "EasyUp Compact", handle: "easyup-compact" },
+  "self-working-standard": { product: "WorkNest", handle: "worknest" },
+  "self-working-premium": { product: "WorkNest", handle: "worknest" },
+  "self-working-luxury": { product: "ComfortPlus", handle: "comfortplus" },
+  
+  // Business Partner / Colleague
+  "colleague-reading-standard": { product: "RelaxMax", handle: "relaxmax" },
+  "colleague-reading-premium": { product: "ComfortPlus", handle: "comfortplus" },
+  "colleague-reading-luxury": { product: "Diva", handle: "diva" },
+  "colleague-tv-standard": { product: "SpaceSaver", handle: "spacesaver" },
+  "colleague-tv-premium": { product: "Diva", handle: "diva" },
+  "colleague-tv-luxury": { product: "Complete Set", handle: "complete-set" },
+  "colleague-napping-standard": { product: "RelaxMax", handle: "relaxmax" },
+  "colleague-napping-premium": { product: "ComfortPlus", handle: "comfortplus" },
+  "colleague-napping-luxury": { product: "CozyCompanion", handle: "cozycompanion" },
+  "colleague-working-standard": { product: "WorkNest", handle: "worknest" },
+  "colleague-working-premium": { product: "WorkNest", handle: "worknest" },
+  "colleague-working-luxury": { product: "ComfortPlus", handle: "comfortplus" },
 };
 
 const GiftPicker = () => {
@@ -75,6 +106,12 @@ const GiftPicker = () => {
   const getRecommendation = () => {
     const key = `${selection.recipient}-${selection.usage}-${selection.budget}`;
     return recommendations[key] || { product: "RelaxMax", handle: "relaxmax" };
+  };
+
+  const getProductImage = () => {
+    const rec = getRecommendation();
+    const product = lovableCatalog.find(p => p.productHandle === rec.handle);
+    return product?.heroImage.src || "/images/relaxmax-hero.png";
   };
 
   const handleWhatsAppOrder = () => {
@@ -107,7 +144,7 @@ const GiftPicker = () => {
       
       <Navigation />
       
-      <main className="min-h-screen bg-cream-porcelain pt-28 pb-20">
+      <main className="min-h-screen bg-off-white pt-28 pb-20">
         <div className="container mx-auto px-4 max-w-2xl">
           {/* Header */}
           <motion.div
@@ -117,14 +154,14 @@ const GiftPicker = () => {
           >
             <Gift className="w-12 h-12 text-dandle-orange mx-auto mb-4" />
             <h1 
-              className="font-headline text-3xl md:text-4xl text-charcoal mb-2"
+              className="font-headline text-3xl md:text-4xl text-deep-brown mb-2"
               data-en="Gift Finder"
               data-ar="دليل الهدايا"
             >
               Gift Finder
             </h1>
             <p 
-              className="text-charcoal/60"
+              className="text-deep-brown/60"
               data-en="Find the perfect recliner gift in 3 questions"
               data-ar="اختر هدية الكرسي المثالية في ٣ أسئلة"
             >
@@ -138,7 +175,7 @@ const GiftPicker = () => {
               <div
                 key={s}
                 className={`h-1 flex-1 rounded-full transition-colors ${
-                  s <= step ? "bg-dandle-orange" : "bg-charcoal/10"
+                  s <= step ? "bg-dandle-orange" : "bg-deep-brown/10"
                 }`}
               />
             ))}
@@ -155,7 +192,7 @@ const GiftPicker = () => {
                 className="space-y-6"
               >
                 <h2 
-                  className="font-headline text-2xl text-charcoal text-center"
+                  className="font-headline text-2xl text-deep-brown text-center"
                   data-en="Who is it for?"
                   data-ar="لمين الهدية؟"
                 >
@@ -169,12 +206,12 @@ const GiftPicker = () => {
                       className={`p-6 rounded-xl border-2 flex items-center gap-4 transition-all ${
                         selection.recipient === option.id
                           ? "border-dandle-orange bg-dandle-orange/5"
-                          : "border-charcoal/10 hover:border-charcoal/30"
+                          : "border-deep-brown/10 hover:border-deep-brown/30"
                       }`}
                     >
-                      <option.icon className={`w-6 h-6 ${selection.recipient === option.id ? "text-dandle-orange" : "text-charcoal/40"}`} />
+                      <option.icon className={`w-6 h-6 ${selection.recipient === option.id ? "text-dandle-orange" : "text-deep-brown/40"}`} />
                       <span 
-                        className="text-lg text-charcoal"
+                        className="text-lg text-deep-brown"
                         data-en={option.labelEn}
                         data-ar={option.labelAr}
                       >
@@ -198,7 +235,7 @@ const GiftPicker = () => {
                 className="space-y-6"
               >
                 <h2 
-                  className="font-headline text-2xl text-charcoal text-center"
+                  className="font-headline text-2xl text-deep-brown text-center"
                   data-en="Primary use?"
                   data-ar="الاستخدام الأساسي؟"
                 >
@@ -212,12 +249,12 @@ const GiftPicker = () => {
                       className={`p-6 rounded-xl border-2 flex items-center gap-4 transition-all ${
                         selection.usage === option.id
                           ? "border-dandle-orange bg-dandle-orange/5"
-                          : "border-charcoal/10 hover:border-charcoal/30"
+                          : "border-deep-brown/10 hover:border-deep-brown/30"
                       }`}
                     >
-                      <option.icon className={`w-6 h-6 ${selection.usage === option.id ? "text-dandle-orange" : "text-charcoal/40"}`} />
+                      <option.icon className={`w-6 h-6 ${selection.usage === option.id ? "text-dandle-orange" : "text-deep-brown/40"}`} />
                       <span 
-                        className="text-lg text-charcoal"
+                        className="text-lg text-deep-brown"
                         data-en={option.labelEn}
                         data-ar={option.labelAr}
                       >
@@ -241,7 +278,7 @@ const GiftPicker = () => {
                 className="space-y-6"
               >
                 <h2 
-                  className="font-headline text-2xl text-charcoal text-center"
+                  className="font-headline text-2xl text-deep-brown text-center"
                   data-en="Budget range?"
                   data-ar="الميزانية؟"
                 >
@@ -255,12 +292,12 @@ const GiftPicker = () => {
                       className={`p-6 rounded-xl border-2 flex flex-col items-start transition-all ${
                         selection.budget === option.id
                           ? "border-dandle-orange bg-dandle-orange/5"
-                          : "border-charcoal/10 hover:border-charcoal/30"
+                          : "border-deep-brown/10 hover:border-deep-brown/30"
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
                         <span 
-                          className="text-lg text-charcoal"
+                          className="text-lg text-deep-brown"
                           data-en={option.labelEn}
                           data-ar={option.labelAr}
                         >
@@ -289,14 +326,14 @@ const GiftPicker = () => {
                 </div>
                 <div>
                   <h2 
-                    className="font-headline text-2xl text-charcoal mb-2"
+                    className="font-headline text-2xl text-deep-brown mb-2"
                     data-en="Perfect Match Found!"
                     data-ar="وجدنا الهدية المثالية!"
                   >
                     Perfect Match Found!
                   </h2>
                   <p 
-                    className="text-charcoal/60"
+                    className="text-deep-brown/60"
                     data-en="Based on your answers, we recommend:"
                     data-ar="بناءً على إجاباتك، نرشح لك:"
                   >
@@ -304,8 +341,17 @@ const GiftPicker = () => {
                   </p>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-8 shadow-lg border border-charcoal/5">
-                  <h3 className="font-headline text-3xl text-charcoal mb-4">
+                <div className="bg-white rounded-2xl p-8 shadow-lg border border-deep-brown/5">
+                  {/* Product Image */}
+                  <div className="aspect-square max-w-[280px] mx-auto mb-6 bg-off-white rounded-xl overflow-hidden">
+                    <img 
+                      src={getProductImage()} 
+                      alt={getRecommendation().product}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  
+                  <h3 className="font-headline text-3xl text-deep-brown mb-4">
                     {getRecommendation().product}
                   </h3>
                   <Button
@@ -328,7 +374,7 @@ const GiftPicker = () => {
                 <Button
                   variant="outline"
                   onClick={() => setStep((s) => (s - 1) as Step)}
-                  className="flex-1"
+                  className="flex-1 border-deep-brown/20 text-deep-brown"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   <span data-en="Back" data-ar="رجوع">Back</span>
@@ -352,7 +398,7 @@ const GiftPicker = () => {
                 setStep(1);
                 setSelection({ recipient: "", usage: "", budget: "" });
               }}
-              className="w-full mt-6"
+              className="w-full mt-6 text-deep-brown"
             >
               <span data-en="Start Over" data-ar="ابدأ من جديد">Start Over</span>
             </Button>
