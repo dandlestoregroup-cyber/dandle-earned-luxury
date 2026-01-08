@@ -3,8 +3,10 @@ import { Gift, Heart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { getGiftCampaignBackground } from "@/utils/siteImageResolver";
+
 // Get background from resolver (manifest-driven with fallback)
 const { src: backgroundImage, fallbackSrc: backgroundFallback } = getGiftCampaignBackground();
+
 const GiftOfComfort = () => {
   const navigate = useNavigate();
   
@@ -41,7 +43,7 @@ const GiftOfComfort = () => {
             }
           }}
         />
-        <div className="absolute inset-0 bg-obsidian/70" />
+        <div className="absolute inset-0 bg-deep-brown/70" />
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
@@ -53,7 +55,7 @@ const GiftOfComfort = () => {
             transition={{ duration: 0.8 }}
           >
             <span 
-              className="text-xs text-champagne tracking-[0.2em] uppercase font-body font-light"
+              className="text-xs text-dandle-orange tracking-[0.2em] uppercase font-body font-light"
               data-en="Gift of Comfort"
               data-ar="هدية الراحة"
             >
@@ -61,7 +63,7 @@ const GiftOfComfort = () => {
             </span>
             
             <h2 
-              className="font-headline text-4xl md:text-5xl text-warm-white mt-4 mb-6 font-light leading-tight"
+              className="font-headline text-4xl md:text-5xl text-off-white mt-4 mb-6 font-light leading-tight"
               data-en="For Refined Taste"
               data-ar="لأصحاب الذوق الرفيع"
             >
@@ -69,7 +71,7 @@ const GiftOfComfort = () => {
             </h2>
             
             <p 
-              className="text-warm-white/70 text-lg font-body font-light leading-relaxed mb-10"
+              className="text-off-white/70 text-lg font-body font-light leading-relaxed mb-10"
               data-en="Give someone exceptional comfort. A gift that becomes part of their daily life — quietly, beautifully, for years."
               data-ar="أهدِ شخصًا راحة استثنائية. هدية تصبح جزءًا من حياته اليومية — بهدوء، بجمال، لسنوات."
             >
@@ -87,9 +89,9 @@ const GiftOfComfort = () => {
           >
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
-                <feature.icon className="w-5 h-5 text-champagne stroke-[1.5]" />
+                <feature.icon className="w-5 h-5 text-dandle-orange stroke-[1.5]" />
                 <span 
-                  className="text-warm-white/80 text-sm font-body font-light"
+                  className="text-off-white/80 text-sm font-body font-light"
                   data-en={feature.title}
                   data-ar={feature.titleAr}
                 >
@@ -107,7 +109,7 @@ const GiftOfComfort = () => {
           >
             <Button
               onClick={() => navigate('/gift')}
-              className="btn-refined rounded-none"
+              className="bg-dandle-orange hover:bg-dandle-orange/90 text-off-white rounded-none px-8 py-6 font-body font-medium tracking-wide uppercase"
             >
               <span data-en="Find the Perfect Gift" data-ar="اختر الهدية المثالية">
                 Find the Perfect Gift

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
 interface LCornerFrameProps {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   /** Show all 4 corners (default) or just top 2 */
   fullFrame?: boolean;
