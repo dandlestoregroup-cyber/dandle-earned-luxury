@@ -81,17 +81,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Refined palette
-        nileBlue: "hsl(var(--nile-blue))",
+        // LOCKED BRAND PALETTE
         dandleOrange: "hsl(var(--dandle-orange))",
-        warmBeige: "hsl(var(--warm-beige))",
-        bronze: "hsl(var(--bronze))",
-        charcoal: "hsl(var(--charcoal))",
-        warmWhite: "hsl(var(--warm-white))",
-        obsidian: "hsl(var(--obsidian))",
-        champagne: "hsl(var(--champagne))",
-        cream: "hsl(var(--cream))",
-        smoke: "hsl(var(--smoke))",
+        deepBrown: "hsl(var(--deep-brown))",
+        offWhite: "hsl(var(--off-white))",
+        warmCream: "hsl(var(--warm-cream))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -104,12 +98,11 @@ export default {
         '3/4': '3 / 4',
       },
       fontFamily: {
-        headline: ['Playfair Display', 'serif'],
-        'headline-ar': ['Cairo', 'serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        headline: ['Montserrat', 'sans-serif'],
+        'headline-ar': ['Cairo', 'sans-serif'],
+        body: ['Montserrat', 'sans-serif'],
         'body-ar': ['Cairo', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Montserrat', 'sans-serif'],
       },
       letterSpacing: {
         'headline': '-0.03em',
