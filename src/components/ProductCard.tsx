@@ -8,17 +8,62 @@ import { PALETTE_MAP } from "@/data/palette";
 import { getLangFromStorage, type LangKey } from "@/i18n/strings";
 import WishlistButton from "@/components/WishlistButton";
 
-// Arabic product translations
-const productTranslations: Record<string, { name: string; tagline: string }> = {
-  relaxmax: { name: "ريلاكس ماكس", tagline: "ملاذك اليومي" },
-  comfortplus: { name: "كومفورت بلس", tagline: "استرخاء عميق ومريح" },
-  diva: { name: "ديفا", tagline: "حيث يلتقي الأناقة بالراحة" },
-  cozycompanion: { name: "كوزي كومبانيون", tagline: "راحة لاثنين" },
-  easyup: { name: "إيزي أب", tagline: "اجلس براحة، قوم بسهولة" },
-  "easyup-compact": { name: "إيزي أب كومباكت", tagline: "اجلس براحة، قوم بسهولة" },
-  worknest: { name: "وورك نست", tagline: "أداء بلا توقف" },
-  spacesaver: { name: "سبيس سيفر", tagline: "راحة كبيرة، مساحة صغيرة" },
-  "complete-set": { name: "طقم العائلة", tagline: "راحة لكل العائلة" },
+// Arabic product translations with proper format: Arabic name (English name)
+const productTranslations: Record<string, { name: string; nameWithEnglish: string; tagline: string; truth: string }> = {
+  relaxmax: { 
+    name: "ريلاكس ماكس", 
+    nameWithEnglish: "ريلاكس ماكس (RelaxMax)",
+    tagline: "المقعد الافتراضي", 
+    truth: "مألوف. سهل. صحيح."
+  },
+  comfortplus: { 
+    name: "كومفورت بلس", 
+    nameWithEnglish: "كومفورت بلس (ComfortPlus)",
+    tagline: "استرخِ عميقاً. فكّر بوضوح.", 
+    truth: "تحرّر. تجدد. عودة."
+  },
+  diva: { 
+    name: "ديفا", 
+    nameWithEnglish: "ديفا (Diva)",
+    tagline: "حيث تلتقي الأناقة بالراحة", 
+    truth: "جريء. جميل. لا يُنسى."
+  },
+  cozycompanion: { 
+    name: "كوزي كومبانيون", 
+    nameWithEnglish: "كوزي كومبانيون (CozyCompanion)",
+    tagline: "راحة لاثنين", 
+    truth: "اجتمع. استرخِ. ابقَ."
+  },
+  easyup: { 
+    name: "إيزي أب", 
+    nameWithEnglish: "إيزي أب (EasyUp Lift)",
+    tagline: "اجلس براحة، قوم بسهولة", 
+    truth: "سهولة. دعم. ثقة."
+  },
+  "easyup-compact": { 
+    name: "إيزي أب كومباكت", 
+    nameWithEnglish: "إيزي أب كومباكت (EasyUp Compact)",
+    tagline: "رفع لطيف، تصميم مدمج", 
+    truth: "مدمج. نظيف. قادر."
+  },
+  worknest: { 
+    name: "وورك نست", 
+    nameWithEnglish: "وورك نست (WorkNest)",
+    tagline: "اشعر أفضل. اعمل أفضل.", 
+    truth: "راحة. وضوح. إنتاج."
+  },
+  spacesaver: { 
+    name: "سبيس سيفر", 
+    nameWithEnglish: "سبيس سيفر (SpaceSaver)",
+    tagline: "راحة ذكية في مساحة صغيرة", 
+    truth: "ذكي. مساحة. راحة."
+  },
+  "complete-set": { 
+    name: "طقم العائلة", 
+    nameWithEnglish: "طقم العائلة (Complete Set)",
+    tagline: "راحة للعائلة بأكملها", 
+    truth: "اجتمع. استرخِ. ابقَ."
+  },
 };
 
 // Map product color names to palette keys
@@ -130,7 +175,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   const getPriceDisplay = () => {
-    if (product.comingSoon) return null;
+    if (product.comingSoon || product.beFirstToKnow) return null;
     if (product.priceManual && product.pricePower) {
       return `${formatPrice(product.priceManual)} — ${formatPrice(product.pricePower)}`;
     }
@@ -168,10 +213,10 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     mouseY.set(0);
   };
 
-  // WhatsApp notification for ComingSoon products
+  // WhatsApp notification for ComingSoon or BeFirstToKnow products
   const handleCardClick = () => {
-    if (product.comingSoon) {
-      const productName = isArabic && translation ? translation.name : product.name;
+    if (product.comingSoon || product.beFirstToKnow) {
+      const productName = isArabic && translation ? translation.nameWithEnglish : product.name;
       const message = `ممكن تنبهوني أول ما ${productName} يبقى متاح؟`;
       const encodedMessage = encodeURIComponent(message);
       window.open(`https://wa.me/201222804255?text=${encodedMessage}`, '_blank', 'noopener,noreferrer');
@@ -180,8 +225,10 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     }
   };
 
-  const displayName = isArabic && translation ? translation.name : product.name;
+  // Display names with proper Arabic format
+  const displayName = isArabic && translation ? translation.nameWithEnglish : product.name;
   const displayTagline = isArabic && translation ? translation.tagline : product.tagline;
+  const displayTruth = isArabic && translation ? translation.truth : product.truth;
 
   // Animation variants for choreographed sequence
   const choreographyDelays = {
@@ -190,10 +237,15 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     gradient: 0.3,
     tagline: 0.4,
     productName: 0.5,
+    truth: 0.55,
     price: 0.6,
     swatches: 0.6,
     cta: 0.7,
   };
+
+  // Determine badge type
+  const showComingSoonBadge = product.comingSoon;
+  const showBeFirstBadge = product.beFirstToKnow && !product.comingSoon;
 
   return (
     <motion.div
@@ -265,7 +317,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       {/* Image Container - Multi-layer depth */}
       <div className="relative aspect-[3/4] overflow-hidden bg-gradient-to-b from-cream to-warm-beige/30">
         {/* Wishlist Button - Top Left */}
-        {!product.comingSoon && (
+        {!product.comingSoon && !product.beFirstToKnow && (
           <div className="absolute top-4 left-4 z-30">
             <WishlistButton 
               product={{ 
@@ -277,13 +329,13 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
             />
           </div>
         )}
+        
         {/* Layer 1: Product Image with zoom and brightness */}
         <motion.img
           src={displayImage}
           alt={product.name}
           onError={(e) => {
             const target = e.currentTarget;
-            // Prevent endless loops if the fallback also fails
             if (target.dataset.fallbackApplied === "1") return;
             target.dataset.fallbackApplied = "1";
             target.src = defaultHeroFallback;
@@ -334,13 +386,11 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
           }}
         />
         
-        {/* ComingSoon Badge - 3D ribbon with shimmer */}
-        {product.comingSoon && (
+        {/* Coming Soon Badge */}
+        {showComingSoonBadge && (
           <motion.div 
-            className="absolute top-4 left-4 z-20"
-            animate={{ 
-              scale: isHovered ? 1.05 : 1,
-            }}
+            className="absolute top-4 right-4 z-20"
+            animate={{ scale: isHovered ? 1.05 : 1 }}
             transition={{ duration: 0.3 }}
           >
             <div className="relative overflow-hidden">
@@ -349,13 +399,33 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
                 style={{
                   boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255,255,255,0.3)",
                 }}
+              >
+                {isArabic ? "قريباً" : "Coming Soon"}
+              </motion.span>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Be First to Know Badge */}
+        {showBeFirstBadge && (
+          <motion.div 
+            className="absolute top-4 right-4 z-20"
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="relative overflow-hidden">
+              <motion.span 
+                className="inline-block bg-gradient-to-r from-dandle-orange via-dandle-orange/90 to-dandle-orange text-off-white px-4 py-2 text-xs font-semibold tracking-wide rounded-sm"
+                style={{
+                  boxShadow: "0 4px 12px rgba(199, 108, 61, 0.3), inset 0 1px 0 rgba(255,255,255,0.2)",
+                }}
                 animate={{
                   boxShadow: isHovered 
-                    ? "0 8px 24px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255,255,255,0.4)"
-                    : "0 4px 12px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255,255,255,0.3)",
+                    ? "0 8px 24px rgba(199, 108, 61, 0.4), inset 0 1px 0 rgba(255,255,255,0.3)"
+                    : "0 4px 12px rgba(199, 108, 61, 0.3), inset 0 1px 0 rgba(255,255,255,0.2)",
                 }}
               >
-                قريباً - اضغط للإشعار
+                {isArabic ? "كن أول من يعرف" : "Be First to Know"}
               </motion.span>
               {/* Shimmer pass effect */}
               <motion.div
@@ -385,7 +455,10 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         >
           {/* Tagline - letter-spacing expansion */}
           <motion.p 
-            className="font-body text-champagne text-[11px] uppercase mb-1"
+            className={cn(
+              "text-champagne text-[11px] uppercase mb-1",
+              isArabic ? "font-body-ar" : "font-body"
+            )}
             style={{ 
               textShadow: "0 2px 8px rgba(0,0,0,0.5)",
               transformStyle: "preserve-3d",
@@ -407,9 +480,12 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
           </motion.p>
           
           {/* Product Name - with champagne shimmer pass */}
-          <motion.div className="relative overflow-hidden mb-3">
+          <motion.div className="relative overflow-hidden mb-2">
             <motion.h3 
-              className="font-headline text-2xl text-warm-white font-bold"
+              className={cn(
+                "text-2xl text-warm-white font-bold",
+                isArabic ? "font-body-ar" : "font-headline"
+              )}
               style={{ 
                 textShadow: "0 4px 16px rgba(0,0,0,0.6)",
                 transformStyle: "preserve-3d",
@@ -426,29 +502,34 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              {/* First letter gold foil effect */}
-              <span className="relative inline-block">
-                <span className="bg-gradient-to-br from-champagne via-champagne-light to-champagne bg-clip-text text-transparent">
-                  {displayName.charAt(0)}
-                </span>
-              </span>
-              {displayName.slice(1)}
+              {displayName}
             </motion.h3>
-            {/* Shimmer pass on name */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: "linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent)",
-              }}
-              initial={{ x: "-100%" }}
-              animate={{ x: isHovered ? "200%" : "-100%" }}
-              transition={{
-                duration: 0.8,
-                delay: isHovered ? choreographyDelays.productName + 0.2 : 0,
-                ease: "easeInOut",
-              }}
-            />
           </motion.div>
+
+          {/* 3-Word Truth */}
+          <motion.p 
+            className={cn(
+              "text-dandle-orange text-sm font-medium mb-3",
+              isArabic ? "font-body-ar" : "font-body"
+            )}
+            style={{ 
+              textShadow: "0 2px 8px rgba(0,0,0,0.4)",
+              transformStyle: "preserve-3d",
+              transform: "translateZ(25px)",
+            }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ 
+              opacity: isHovered ? 1 : 0, 
+              y: isHovered ? 0 : 15,
+            }}
+            transition={{ 
+              duration: 0.4, 
+              delay: isHovered ? choreographyDelays.truth : 0,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            {displayTruth}
+          </motion.p>
           
           {/* Price with scale bounce or WhatsApp CTA */}
           <motion.div
@@ -470,143 +551,124 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
               damping: 20,
             }}
           >
-            {product.comingSoon ? (
-              <motion.span 
-                className="relative inline-flex items-center gap-2 text-warm-white text-sm font-medium px-5 py-2.5 rounded-sm overflow-hidden"
-                style={{
-                  background: "rgba(255,255,255,0.1)",
-                  backdropFilter: "blur(8px)",
-                }}
-                whileHover={{ 
-                  background: "rgba(212, 175, 55, 0.2)",
-                }}
-              >
-                {/* Border draw animation */}
-                <motion.span
-                  className="absolute inset-0 rounded-sm pointer-events-none"
-                  style={{ border: "1px solid rgba(212, 175, 55, 0.6)" }}
-                  initial={{ clipPath: "inset(0 100% 0 0)" }}
-                  animate={{ clipPath: isHovered ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)" }}
-                  transition={{ 
-                    duration: 0.6, 
-                    delay: isHovered ? choreographyDelays.cta : 0,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                />
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                </svg>
-                إشعار على واتساب
-              </motion.span>
+            {(product.comingSoon || product.beFirstToKnow) ? (
+              <p className={cn(
+                "text-champagne/90 text-sm",
+                isArabic ? "font-body-ar" : "font-body"
+              )}>
+                {isArabic ? "إشعار على واتساب" : "Get notified on WhatsApp"}
+              </p>
             ) : (
-              <div className="relative inline-block">
-                <p 
-                  className="font-body text-warm-white text-xl font-medium"
-                  style={{ textShadow: "0 2px 8px rgba(0,0,0,0.4)" }}
-                >
-                  {getPriceDisplay()}
-                </p>
-                {/* Price underline draws itself */}
-                <motion.div
-                  className="absolute -bottom-1 left-0 h-[1px] bg-gradient-to-r from-champagne/60 to-transparent"
-                  initial={{ width: "0%" }}
-                  animate={{ width: isHovered ? "100%" : "0%" }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: isHovered ? choreographyDelays.price + 0.1 : 0,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                />
-              </div>
+              <p className="font-body text-lg text-warm-white font-medium">
+                {getPriceDisplay()}
+              </p>
             )}
           </motion.div>
+
+          {/* Color Swatches - staggered pop-in */}
+          {colors.length > 0 && !product.comingSoon && !product.beFirstToKnow && (
+            <motion.div 
+              className="flex gap-2 mt-3"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ 
+                opacity: isHovered ? 1 : 0, 
+                y: isHovered ? 0 : 10,
+              }}
+              transition={{ 
+                duration: 0.4, 
+                delay: isHovered ? choreographyDelays.swatches : 0,
+              }}
+            >
+              {colors.slice(0, 5).map((color, index) => (
+                <motion.button
+                  key={color}
+                  onClick={(e) => handleSwatchClick(e, color)}
+                  onMouseEnter={() => setHoveredSwatchIndex(index)}
+                  onMouseLeave={() => setHoveredSwatchIndex(null)}
+                  className={cn(
+                    "relative w-6 h-6 rounded-full border-2 transition-all duration-200",
+                    selectedColor === color 
+                      ? "border-champagne scale-110" 
+                      : "border-white/40 hover:border-champagne/60"
+                  )}
+                  style={{ 
+                    backgroundColor: getColorHex(color),
+                    boxShadow: selectedColor === color 
+                      ? "0 0 12px rgba(212, 175, 55, 0.4)" 
+                      : "0 2px 8px rgba(0,0,0,0.2)",
+                  }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ 
+                    scale: isHovered ? 1 : 0, 
+                    opacity: isHovered ? 1 : 0,
+                  }}
+                  transition={{ 
+                    duration: 0.3,
+                    delay: isHovered ? choreographyDelays.swatches + (index * 0.05) : 0,
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 15,
+                  }}
+                  title={color}
+                >
+                  {/* Tooltip */}
+                  {hoveredSwatchIndex === index && (
+                    <motion.span
+                      className="absolute -top-8 left-1/2 -translate-x-1/2 bg-obsidian/90 text-warm-white text-[10px] px-2 py-1 rounded whitespace-nowrap"
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      {color}
+                    </motion.span>
+                  )}
+                </motion.button>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
-        
-        {/* Swatches - Top Right with staggered reveal */}
-        {colors.length > 0 && !product.comingSoon && (
-          <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
-            {colors.slice(0, 4).map((colorName, index) => (
-              <motion.button
-                key={colorName}
-                type="button"
-                onClick={(e) => handleSwatchClick(e, colorName)}
-                onMouseEnter={() => setHoveredSwatchIndex(index)}
-                onMouseLeave={() => setHoveredSwatchIndex(null)}
-                className={cn(
-                  "w-7 h-7 rounded-full border-2 transition-all duration-200",
-                  selectedColor === colorName 
-                    ? "border-champagne scale-110 ring-2 ring-champagne/50" 
-                    : "border-white/50"
-                )}
-                style={{ 
-                  backgroundColor: getColorHex(colorName),
-                  boxShadow: hoveredSwatchIndex === index 
-                    ? "0 0 16px rgba(212, 175, 55, 0.5)"
-                    : "0 4px 8px rgba(0,0,0,0.2)",
-                }}
-                initial={{ opacity: 0, scale: 0, x: 20 }}
-                animate={{ 
-                  opacity: isHovered ? (hoveredSwatchIndex !== null && hoveredSwatchIndex !== index ? 0.5 : 1) : 1, 
-                  scale: isHovered ? 1 : 1,
-                  x: 0,
-                }}
-                whileHover={{ scale: 1.15 }}
-                transition={{ 
-                  duration: 0.3, 
-                  delay: isHovered ? choreographyDelays.swatches + (index * 0.1) : 0,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                title={colorName}
-                aria-label={`Preview ${colorName}`}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Corner champagne inner glow */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none z-5"
-          style={{
-            boxShadow: "inset 0 0 20px rgba(212, 175, 55, 0.08)",
-          }}
-          animate={{
-            boxShadow: isHovered 
-              ? "inset 0 0 30px rgba(212, 175, 55, 0.15)"
-              : "inset 0 0 20px rgba(212, 175, 55, 0.08)",
-          }}
-          transition={{ duration: 0.4 }}
-        />
       </div>
-
-      {/* Static Info (visible when not hovering) - Exit animation */}
-      <motion.div 
-        className="p-4 md:p-5 text-center"
-        dir={isArabic ? 'rtl' : 'ltr'}
-        animate={{ 
-          opacity: isHovered ? 0 : 1,
-          y: isHovered ? 10 : 0,
-        }}
-        transition={{ 
-          duration: 0.3,
-          ease: isHovered ? "easeIn" : "easeOut",
-        }}
-      >
-        <h3 className="font-headline text-lg md:text-xl text-charcoal font-bold mb-0.5">
-          {displayName}
-        </h3>
-        <p className="font-body text-[11px] md:text-xs text-champagne-dark tracking-[0.15em] uppercase mb-2">
+      
+      {/* Bottom Info - Always visible */}
+      <div className={cn("p-5 bg-cream", isArabic ? "text-right" : "text-left")} dir={isArabic ? 'rtl' : 'ltr'}>
+        {/* Tagline visible always */}
+        <p className={cn(
+          "text-[10px] uppercase tracking-[0.15em] text-bronze/70 mb-1",
+          isArabic ? "font-body-ar" : "font-body"
+        )}>
           {displayTagline}
         </p>
-        {product.comingSoon ? (
-          <p className="font-body text-sm text-champagne-dark font-medium">
-            قريباً
+        
+        <h4 className={cn(
+          "text-lg text-charcoal font-medium mb-1",
+          isArabic ? "font-body-ar" : "font-headline"
+        )}>
+          {displayName}
+        </h4>
+        
+        {/* 3-Word Truth - Always visible */}
+        <p className={cn(
+          "text-xs text-dandle-orange font-medium mb-2",
+          isArabic ? "font-body-ar" : "font-body"
+        )}>
+          {displayTruth}
+        </p>
+        
+        {(product.comingSoon || product.beFirstToKnow) ? (
+          <p className={cn(
+            "text-sm text-dandle-orange",
+            isArabic ? "font-body-ar" : "font-body"
+          )}>
+            {showBeFirstBadge 
+              ? (isArabic ? "كن أول من يعرف" : "Be First to Know")
+              : (isArabic ? "قريباً" : "Coming Soon")}
           </p>
         ) : (
-          <p className="font-headline text-lg md:text-xl text-charcoal font-medium">
+          <p className="font-body text-sm text-charcoal/80">
             {getPriceDisplay()}
           </p>
         )}
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
