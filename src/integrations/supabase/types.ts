@@ -35,6 +35,54 @@ export type Database = {
         }
         Relationships: []
       }
+      wishlist_leads: {
+        Row: {
+          created_at: string
+          customer_name: string
+          email: string | null
+          id: string
+          notes: string | null
+          phone: string
+          product_color: string | null
+          product_fabric: string | null
+          product_id: string
+          product_name: string
+          product_type: string | null
+          remarked_at: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_name: string
+          email?: string | null
+          id?: string
+          notes?: string | null
+          phone: string
+          product_color?: string | null
+          product_fabric?: string | null
+          product_id: string
+          product_name: string
+          product_type?: string | null
+          remarked_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_name?: string
+          email?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string
+          product_color?: string | null
+          product_fabric?: string | null
+          product_id?: string
+          product_name?: string
+          product_type?: string | null
+          remarked_at?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
