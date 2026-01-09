@@ -226,8 +226,8 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     }
   };
 
-  // Display names - Arabic ONLY (no English brackets per spec)
-  const displayName = isArabic && translation ? translation.name : product.name;
+  // Display names - Arabic WITH English in brackets per spec: سبيس سيفر (SpaceSaver)
+  const displayName = isArabic && translation ? translation.nameWithEnglish : product.name;
   const displayTagline = isArabic && translation ? translation.tagline : product.tagline;
   const displayTruth = isArabic && translation ? translation.truth : product.truth;
 

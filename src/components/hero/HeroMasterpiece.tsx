@@ -322,22 +322,22 @@ const HeroMasterpiece = () => {
                   </span>
                 </motion.div>
 
-                {/* Main Headline - Brand Spec */}
+                {/* Main Headline - Changed per spec: not repeating belief line */}
                 <motion.h1
-                  className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-deep-brown leading-none tracking-tight font-bold uppercase mb-4 ${isArabic ? 'font-body-ar' : 'font-headline'}`}
+                  className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-deep-brown leading-none tracking-tight font-bold mb-4 ${isArabic ? 'font-body-ar' : 'font-headline'}`}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8, ease: REFINED_EASE }}
                 >
                   {isArabic ? (
                     <>
-                      الغرفة<br />
-                      <span className="text-dandle-orange">تبدو صحيحة</span>
+                      المكان<br />
+                      <span className="text-dandle-orange">اكتمل</span>
                     </>
                   ) : (
                     <>
-                      THE ROOM<br />
-                      <span className="text-dandle-orange">FEELS RIGHT</span>
+                      The Room<br />
+                      <span className="text-dandle-orange">Feels Complete</span>
                     </>
                   )}
                 </motion.h1>
@@ -350,7 +350,7 @@ const HeroMasterpiece = () => {
                   transition={{ delay: 0.6, duration: 0.6 }}
                 />
 
-                {/* Subline - Locked Hook (SIMPLIFIED per spec) */}
+                {/* Subline - Locked Hook with full version per spec */}
                 <motion.p
                   className={`text-deep-brown/80 text-base md:text-lg mb-4 max-w-xl ${isArabic ? 'font-body-ar' : 'font-body'}`}
                   initial={{ opacity: 0, y: 20 }}
@@ -358,8 +358,8 @@ const HeroMasterpiece = () => {
                   transition={{ delay: 0.7, duration: 0.7 }}
                 >
                   {isArabic 
-                    ? "تعرف أنك وجدته لحظة ما تشوفه. أهدِ نفسك هدية الراحة 🎁"
-                    : "You know you found it the moment you see it. Give yourself the gift of comfort 🎁"
+                    ? "تعرف أنك وجدته لحظة ما تشوفه. راحة صُنعت لأصحاب الذوق الرفيع. أهدِ نفسك هدية الراحة 🎁"
+                    : "You know you found it the moment you see it. Comfort crafted for the finest. Give yourself the gift of comfort 🎁"
                   }
                 </motion.p>
 
