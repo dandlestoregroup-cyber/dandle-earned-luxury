@@ -35,12 +35,11 @@ export const lovableCatalog: LovableProduct[] = [
       alt: "Dandle Diva Signature Persona Lounge"
     },
     gallery: [
-      {
-        src: "/images/diva-red-front.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "Diva Recliner - Front View"
-      }
+      { src: "/images/diva-red-front.jpg", width: 2752, height: 1536, alt: "Diva Recliner - Front View" },
+      { src: "/images/diva-terracotta-reclined.webp", width: 2752, height: 1536, alt: "Diva Recliner - Terracotta Reclined" },
+      { src: "/images/diva-desert-sage-green.webp", width: 2752, height: 1536, alt: "Diva Recliner - Desert Sage Green" },
+      { src: "/images/diva-giza-gold.webp", width: 2752, height: 1536, alt: "Diva Recliner - Giza Gold" },
+      { src: "/images/diva-oasis-green.webp", width: 2752, height: 1536, alt: "Diva Recliner - Oasis Green" }
     ]
   },
   {
@@ -87,18 +86,10 @@ export const lovableCatalog: LovableProduct[] = [
       alt: "Dandle CozyCompanion: A premium two-seated couch recliner. Boutique comfort designed for intimate, upscale living."
     },
     gallery: [
-      {
-        src: "/images/cozycompanion-yellow-front.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "CozyCompanion - Yellow Front View"
-      },
-      {
-        src: "/images/cozycompanion-couple-lifestyle.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "CozyCompanion - Lifestyle Couple"
-      }
+      { src: "/images/cozycompanion-yellow-front.jpg", width: 2752, height: 1536, alt: "CozyCompanion - Yellow Front View" },
+      { src: "/images/cozycompanion-couple-lifestyle.webp", width: 2752, height: 1536, alt: "CozyCompanion - Couple Lifestyle" },
+      { src: "/images/cozycompanion-mocha-taupe.webp", width: 2752, height: 1536, alt: "CozyCompanion - Mocha Taupe" },
+      { src: "/images/cozycompanion-coastal-fog.webp", width: 2752, height: 1536, alt: "CozyCompanion - Coastal Fog" }
     ]
   },
   {
@@ -112,7 +103,11 @@ export const lovableCatalog: LovableProduct[] = [
       height: 1024,
       alt: "Dandle WorkNest Productive Sanctuary"
     },
-    gallery: []
+    gallery: [
+      { src: "/images/worknest-oasis-green.webp", width: 2752, height: 1536, alt: "WorkNest - Oasis Green" },
+      { src: "/images/worknest-desert-grey-reclined.webp", width: 2752, height: 1536, alt: "WorkNest - Desert Grey Reclined" },
+      { src: "/images/worknest-oasis-green-lifestyle.webp", width: 2752, height: 1536, alt: "WorkNest - Oasis Green Lifestyle" }
+    ]
   },
   {
     productHandle: "spacesaver",
@@ -126,18 +121,12 @@ export const lovableCatalog: LovableProduct[] = [
       alt: "Dandle SpaceSaver Intelligent Footprint"
     },
     gallery: [
-      {
-        src: "/images/spacesaver-offwhite-reclined.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "SpaceSaver - Off-White Reclined"
-      },
-      {
-        src: "/images/spacesaver-offwhite-side.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "SpaceSaver - Side View"
-      }
+      { src: "/images/spacesaver-offwhite-reclined.jpg", width: 2752, height: 1536, alt: "SpaceSaver - Off-White Reclined" },
+      { src: "/images/spacesaver-offwhite-side.jpg", width: 2752, height: 1536, alt: "SpaceSaver - Side View" },
+      { src: "/images/spacesaver-desert-grey.webp", width: 2752, height: 1536, alt: "SpaceSaver - Desert Grey" },
+      { src: "/images/spacesaver-desert-grey-reclined.webp", width: 2752, height: 1536, alt: "SpaceSaver - Desert Grey Reclined" },
+      { src: "/images/spacesaver-mocha-taupe.webp", width: 2752, height: 1536, alt: "SpaceSaver - Mocha Taupe" },
+      { src: "/images/spacesaver-burgundy-lifestyle.webp", width: 2752, height: 1536, alt: "SpaceSaver - Burgundy Lifestyle" }
     ]
   },
   {
@@ -172,18 +161,13 @@ export const lovableCatalog: LovableProduct[] = [
       alt: "Dandle EasyUp Standard 90cm Power Lift"
     },
     gallery: [
-      {
-        src: "/images/easyup-beige-front.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "EasyUp - Beige Front"
-      },
-      {
-        src: "/images/easyup-beige-lifted.jpg",
-        width: 2752,
-        height: 1536,
-        alt: "EasyUp - Lifted Position"
-      }
+      { src: "/images/easyup-beige-front.jpg", width: 2752, height: 1536, alt: "EasyUp - Beige Front" },
+      { src: "/images/easyup-beige-lifted.jpg", width: 2752, height: 1536, alt: "EasyUp - Lifted Position" },
+      { src: "/images/easyup-standard-coastal-fog.webp", width: 2752, height: 1536, alt: "EasyUp - Coastal Fog" },
+      { src: "/images/easyup-standard-oasis-green.webp", width: 2752, height: 1536, alt: "EasyUp - Oasis Green" },
+      { src: "/images/easyup-standard-mocha-taupe.webp", width: 2752, height: 1536, alt: "EasyUp - Mocha Taupe" },
+      { src: "/images/easyup-standard-mocha-taupe-lifted.webp", width: 2752, height: 1536, alt: "EasyUp - Mocha Taupe Lifted" },
+      { src: "/images/easyup-lift-assist-lifestyle.webp", width: 2752, height: 1536, alt: "EasyUp - Lift Assist Lifestyle" }
     ]
   },
   {
@@ -198,24 +182,10 @@ export const lovableCatalog: LovableProduct[] = [
       alt: "Dandle EasyUp Compact Slim Power Lift"
     },
     gallery: [
-      {
-        src: "/images/easyup-compact-charcoal-front.png",
-        width: 2752,
-        height: 1536,
-        alt: "EasyUp Compact - Charcoal Front"
-      },
-      {
-        src: "/images/easyup-compact-charcoal-reclined.png",
-        width: 2752,
-        height: 1536,
-        alt: "EasyUp Compact - Charcoal Reclined"
-      },
-      {
-        src: "/images/easyup-compact-charcoal-side.png",
-        width: 2752,
-        height: 1536,
-        alt: "EasyUp Compact - Charcoal Side"
-      }
+      { src: "/images/easyup-compact-charcoal-front.png", width: 2752, height: 1536, alt: "EasyUp Compact - Charcoal Front" },
+      { src: "/images/easyup-compact-charcoal-reclined.png", width: 2752, height: 1536, alt: "EasyUp Compact - Charcoal Reclined" },
+      { src: "/images/easyup-compact-charcoal-side.png", width: 2752, height: 1536, alt: "EasyUp Compact - Charcoal Side" },
+      { src: "/images/easyup-compact-oasis-green.webp", width: 2752, height: 1536, alt: "EasyUp Compact - Oasis Green" }
     ]
   },
   {
