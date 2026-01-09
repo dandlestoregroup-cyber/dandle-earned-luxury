@@ -1,43 +1,60 @@
 import { motion } from "framer-motion";
 import { MapPin, Shield, Truck, Palette } from "lucide-react";
-
-const trustPoints = [
-  {
-    icon: MapPin,
-    titleEn: "Handcrafted in Cairo",
-    titleAr: "مصنوع يدويًا في القاهرة",
-  },
-  {
-    icon: Shield,
-    titleEn: "5-Year Warranty",
-    titleAr: "ضمان 5 سنوات",
-  },
-  {
-    icon: Truck,
-    titleEn: "White-Glove Delivery",
-    titleAr: "توصيل راقي",
-  },
-  {
-    icon: Palette,
-    titleEn: "Egyptian-Inspired Colors",
-    titleAr: "ألوان مستوحاة من مصر",
-  },
-];
+import { useState, useEffect } from "react";
+import { getLangFromStorage, type LangKey } from "@/i18n/strings";
 
 const TrustBlock = () => {
+  const [lang, setLang] = useState<LangKey>('ar');
+
+  useEffect(() => {
+    const storedLang = getLangFromStorage();
+    setLang(storedLang);
+    const interval = setInterval(() => {
+      const currentLang = getLangFromStorage();
+      setLang(prev => prev !== currentLang ? currentLang : prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const isArabic = lang === 'ar';
+
+  const trustPoints = [
+    {
+      icon: MapPin,
+      titleEn: "Handcrafted in Cairo",
+      titleAr: "مصنوع يدويًا في القاهرة",
+    },
+    {
+      icon: Shield,
+      titleEn: "2-Year Warranty",
+      titleAr: "ضمان سنتين",
+    },
+    {
+      icon: Truck,
+      titleEn: "14-Day Delivery",
+      titleAr: "توصيل خلال ١٤ يوم",
+    },
+    {
+      icon: Palette,
+      titleEn: "Egyptian-Inspired Colors",
+      titleAr: "ألوان مستوحاة من مصر",
+    },
+  ];
+
   return (
-    <section className="bg-warm-white py-20 md:py-28 px-4">
+    <section 
+      className="bg-warm-white py-20 md:py-28 px-4"
+      dir={isArabic ? 'rtl' : 'ltr'}
+    >
       <div className="max-w-6xl mx-auto">
         <motion.h2
-          className="font-headline text-3xl md:text-4xl text-charcoal text-center mb-4 font-light"
+          className={`text-3xl md:text-4xl text-charcoal text-center mb-4 font-light ${isArabic ? 'font-body-ar' : 'font-headline'}`}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          data-en="Why Families Choose Dandle"
-          data-ar="لماذا تختار العائلات Dandle"
         >
-          Why Families Choose Dandle
+          {isArabic ? "لماذا يختار الناس داندل" : "Why People Choose Dandle"}
         </motion.h2>
         
         <motion.div 
@@ -59,12 +76,8 @@ const TrustBlock = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <point.icon className="w-6 h-6 text-bronze mb-4 stroke-[1.5]" />
-              <p 
-                className="font-body text-sm text-charcoal/80 font-light tracking-wide"
-                data-en={point.titleEn}
-                data-ar={point.titleAr}
-              >
-                {point.titleEn}
+              <p className={`text-sm text-charcoal/80 font-light tracking-wide ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                {isArabic ? point.titleAr : point.titleEn}
               </p>
             </motion.div>
           ))}
