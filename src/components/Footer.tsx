@@ -49,7 +49,7 @@ const Footer = () => {
             DANDLE
           </h3>
           <p className={`text-warm-white/70 text-sm tracking-[0.15em] uppercase font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}>
-            {isArabic ? "فن الراحة" : "The Art of Rest"}
+            {isArabic ? "راحة تصنع الفرق" : "Comfort That Transforms"}
           </p>
         </motion.div>
         
