@@ -29,6 +29,7 @@ import Privacy from "./pages/trust/Privacy";
 import Terms from "./pages/trust/Terms";
 import GiftPicker from "./pages/GiftPicker";
 import RoomFit from "./pages/RoomFit";
+import ChairFinder from "./pages/ChairFinder";
 
 import Compare from "./pages/Compare";
 
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/gift" element={<GiftPicker />} />
             <Route path="/room-fit" element={<RoomFit />} />
+            <Route path="/chair-finder" element={<ChairFinder />} />
             
             <Route path="/compare" element={<Compare />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
