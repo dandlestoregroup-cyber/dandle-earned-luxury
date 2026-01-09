@@ -7,7 +7,7 @@ export const productSwatches: Record<string, string[]> = {
   'diva': ['nile-sapphire', 'desert-sage', 'nile-mist', 'sandstorm-ochre', 'oasis-green', 'blue-nile-denim', 'giza-gold'],
   'cozycompanion': ['alexandria-linen', 'mocha-taupe', 'coastal-fog', 'amber-sand', 'papyrus-stripe', 'desert-grey', 'clay-pottery'],
   'easyup': ['desert-grey', 'coastal-fog', 'mocha-taupe', 'amber-sand', 'alexandria-linen', 'papyrus-stripe', 'nile-sapphire'],
-  'easyup-compact': ['coastal-fog', 'desert-grey', 'mocha-taupe', 'alexandria-linen', 'amber-sand', 'papyrus-stripe', 'clay-pottery'],
+  'easyup-compact': ['nile-sapphire', 'desert-grey', 'mocha-taupe'], // Limited to 3 colors: Navy Blue, Stone Grey, Espresso Brown
   'worknest': ['blue-nile-denim', 'desert-grey', 'coastal-fog', 'nile-sapphire', 'oasis-green', 'mocha-taupe', 'amber-sand'],
   'spacesaver': ['nile-mist', 'alexandria-linen', 'desert-sage', 'papyrus-stripe', 'amber-sand', 'giza-gold', 'sandstorm-ochre'],
   'complete-set': ['alexandria-linen', 'mocha-taupe', 'desert-sage', 'coastal-fog', 'nile-mist', 'amber-sand', 'papyrus-stripe'],
