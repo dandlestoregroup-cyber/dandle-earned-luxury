@@ -9,7 +9,7 @@ const SOUND_PREF_KEY = 'dandle_hero_sound_pref';
 const OVERLAY_SCENES = [
   { en: "The Art of Rest", ar: "فن الراحة" },
   { en: "Crafted in Egypt. Made for real homes.", ar: "صناعة مصرية… لبيوت حقيقية." },
-  { en: "White-glove service • 5-year warranty", ar: "خدمة راقية • ضمان 5 سنوات" },
+  { en: "14-Day Delivery • 2-Year Warranty", ar: "توصيل خلال ١٤ يوم • ضمان سنتين" },
 ];
 
 interface HeroVideoProps {

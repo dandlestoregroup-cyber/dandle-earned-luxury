@@ -126,7 +126,7 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>{product.title} | DANDLE Recliners - Earned Luxury</title>
-        <meta name="description" content={`${product.title} - ${product.subtitle}. Premium Egyptian recliner with 5-year warranty. Free delivery & installation.`} />
+        <meta name="description" content={`${product.title} - ${product.subtitle}. Premium Egyptian recliner with 2-year warranty. Free delivery & installation.`} />
         <link rel="canonical" href={`https://dandle-earned-luxury.lovable.app/products/${product.productHandle}`} />
         
         {/* Open Graph */}
@@ -223,7 +223,7 @@ const ProductDetail = () => {
             <div className="grid grid-cols-3 gap-4 py-4 border-t border-border">
               <div className="flex flex-col items-center text-center">
                 <Shield className="w-5 h-5 text-bronze mb-1" />
-                <span className="text-xs text-muted-foreground">5-Year Warranty</span>
+                <span className="text-xs text-muted-foreground">2-Year Warranty</span>
               </div>
               <div className="flex flex-col items-center text-center">
                 <Truck className="w-5 h-5 text-bronze mb-1" />

@@ -30,8 +30,8 @@ const Warranty = () => {
   const warranties = [
     {
       icon: Shield,
-      titleEn: "5-Year Frame Warranty",
-      titleAr: "ضمان الهيكل 5 سنوات",
+      titleEn: "2-Year Frame Warranty",
+      titleAr: "ضمان الهيكل سنتين",
       descEn: "Comprehensive coverage on all structural components and frame integrity",
       descAr: "تغطية شاملة لجميع المكونات الهيكلية وسلامة الإطار",
       color: "text-nile-blue"

@@ -77,8 +77,7 @@ const Terms = () => {
                     Warranty
                   </h2>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>5-year warranty on frame and mechanism</li>
-                    <li>2-year warranty on leather and upholstery</li>
+                    <li>2-year comprehensive warranty on frame, mechanism, and upholstery</li>
                     <li>1-year warranty on electrical components (for power recliners)</li>
                     <li>Warranty does not cover normal wear and tear or misuse</li>
                   </ul>

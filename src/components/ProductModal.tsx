@@ -52,17 +52,17 @@ const modalTranslations = {
   target: { en: "Target: High-performing professionals", ar: "الفئة المستهدفة: المحترفون المتميزون" },
 };
 
-// Arabic product names for modal
+// Arabic product names for modal - Format: Arabic (English) per spec
 const productNamesAr: Record<string, string> = {
-  relaxmax: "ريلاكس ماكس",
-  comfortplus: "كومفورت بلس",
-  diva: "ديفا",
-  cozycompanion: "كوزي كومبانيون",
-  easyup: "إيزي أب",
-  "easyup-compact": "إيزي أب كومباكت",
-  worknest: "وورك نست",
-  spacesaver: "سبيس سيفر",
-  "complete-set": "طقم العائلة",
+  relaxmax: "ريلاكس ماكس (RelaxMax)",
+  comfortplus: "كومفورت بلس (ComfortPlus)",
+  diva: "ديفا (Diva)",
+  cozycompanion: "كوزي كومبانيون (CozyCompanion)",
+  easyup: "إيزي أب (EasyUp Lift)",
+  "easyup-compact": "إيزي أب كومباكت (EasyUp Compact)",
+  worknest: "وورك نست (WorkNest)",
+  spacesaver: "سبيس سيفر (SpaceSaver)",
+  "complete-set": "طقم العائلة (Complete Set)",
 };
 
 interface ProductModalProps {
@@ -203,7 +203,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="text-green-600">✓</span> 
-                  <span data-en="5-Year Warranty" data-ar="ضمان 5 سنوات">5-Year Warranty</span>
+                  <span>{isArabic ? "ضمان سنتين" : "2-Year Warranty"}</span>
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="text-green-600">✓</span> 
