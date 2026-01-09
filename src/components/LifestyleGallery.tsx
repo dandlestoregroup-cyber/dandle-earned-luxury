@@ -48,7 +48,7 @@ const LifestyleGallery = () => {
           className="text-center"
         >
           <span 
-            className="text-bronze font-body text-sm tracking-[0.2em] uppercase"
+            className="text-bronze font-body text-sm tracking-wide"
             data-en="In Your Home"
             data-ar="في منزلك"
           >

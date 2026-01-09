@@ -40,7 +40,7 @@ const Quote = () => {
         >
           <span className="w-16 h-px bg-gradient-to-r from-transparent to-champagne/60" />
           <span 
-            className="text-champagne/80 text-xs md:text-sm tracking-[0.2em] uppercase font-body font-light"
+            className="text-champagne/80 text-xs md:text-sm tracking-wide font-body font-light"
             data-en="Since 2022"
             data-ar="منذ ٢٠٢٢"
           >
