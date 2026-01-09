@@ -13,7 +13,7 @@ const CollectionIntro = () => {
         >
           <span className="w-12 h-px bg-gradient-to-r from-transparent to-champagne" />
           <span 
-            className="text-xs text-champagne tracking-[0.2em] uppercase font-body font-light"
+            className="text-xs text-champagne tracking-wide font-body font-light"
             data-en="The Collection"
             data-ar="المجموعة"
           >

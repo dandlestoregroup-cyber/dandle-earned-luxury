@@ -44,7 +44,7 @@ const HeritageTimeline = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
+          <span className="text-bronze font-body text-sm tracking-wide">
             Our Journey
           </span>
           <h2 className="font-headline text-4xl md:text-5xl text-foreground mt-3">

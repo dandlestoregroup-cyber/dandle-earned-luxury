@@ -21,7 +21,7 @@ const Contact = () => {
             transition={{ duration: 0.8 }}
           >
             <span 
-              className="text-xs text-champagne/80 tracking-[0.2em] uppercase font-body font-light"
+              className="text-xs text-champagne/80 tracking-wide font-body font-light"
               data-en="Get in Touch"
               data-ar="تواصل معنا"
             >

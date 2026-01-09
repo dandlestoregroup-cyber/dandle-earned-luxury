@@ -79,7 +79,7 @@ const Partners = () => {
           className="text-center mb-16"
         >
           <span 
-            className={`text-xs text-bronze tracking-[0.2em] uppercase font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
+            className={`text-xs text-bronze tracking-wide font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
           >
             {isArabic ? "شراكاتنا" : "Collaborations"}
           </span>
@@ -131,7 +131,7 @@ const Partners = () => {
               <h3 className={`text-xl text-charcoal font-medium mb-1 ${isArabic ? 'font-body-ar' : 'font-headline'}`}>
                 {isArabic ? partner.nameAr : partner.nameEn}
               </h3>
-              <p className={`text-xs text-dandle-orange tracking-[0.1em] uppercase mb-3 font-medium ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+              <p className={`text-xs text-dandle-orange tracking-wide mb-3 font-medium ${isArabic ? 'font-body-ar' : 'font-body'}`}>
                 {isArabic ? partner.taglineAr : partner.taglineEn}
               </p>
               <p className={`text-charcoal/80 text-sm mb-2 leading-relaxed ${isArabic ? 'font-body-ar' : 'font-body'}`}>

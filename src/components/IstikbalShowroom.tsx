@@ -71,7 +71,7 @@ const IstikbalShowroom = () => {
           >
             <div className="flex items-center gap-2">
               <Star className="w-5 h-5 text-dandle-orange fill-dandle-orange" />
-              <span className={`text-warm-white text-sm tracking-[0.15em] uppercase ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+              <span className={`text-warm-white text-sm tracking-wide ${isArabic ? 'font-body-ar' : 'font-body'}`}>
                 {isArabic ? "شريك رسمي" : "Official Partner"}
               </span>
             </div>
@@ -164,7 +164,7 @@ const IstikbalShowroom = () => {
                 
                 {/* Branch List */}
                 <div className="space-y-4 mt-6">
-                  <h4 className={`text-warm-white font-medium text-sm uppercase tracking-wide mb-3 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                  <h4 className={`text-warm-white font-medium text-sm tracking-wide mb-3 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
                     {isArabic ? "فروعنا" : "Our Branches"}
                   </h4>
                   {branches.map((branch, index) => (

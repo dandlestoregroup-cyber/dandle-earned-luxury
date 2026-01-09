@@ -137,7 +137,6 @@
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: 0.02em;
-    text-transform: uppercase;
   }
   
   h1 { font-weight: 700; line-height: 1.05; }
@@ -152,7 +151,6 @@
   .font-headline {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
-    text-transform: uppercase;
   }
   
   .font-light {

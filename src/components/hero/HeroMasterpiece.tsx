@@ -317,7 +317,7 @@ const HeroMasterpiece = () => {
                   transition={{ delay: 0.2, duration: 0.8 }}
                 >
                   <div className="h-0.5 w-12 md:w-16 bg-dandle-orange" />
-                  <span className="text-xs md:text-sm text-dandle-orange font-body font-medium tracking-[0.25em] uppercase">
+                  <span className="text-xs md:text-sm text-dandle-orange font-body font-medium tracking-wide">
                     Dandle Recliners
                   </span>
                 </motion.div>
@@ -404,7 +404,7 @@ const HeroMasterpiece = () => {
                   {/* Primary CTA - WhatsApp */}
                   <Button
                     onClick={() => window.open('https://wa.link/dandle-recliners', '_blank', 'noopener,noreferrer')}
-                    className="group relative overflow-hidden bg-dandle-orange hover:bg-dandle-orange/90 text-off-white px-8 md:px-10 py-5 md:py-6 text-sm font-body font-medium tracking-[0.1em] uppercase rounded-none transition-all duration-500"
+                    className="group relative overflow-hidden bg-dandle-orange hover:bg-dandle-orange/90 text-off-white px-8 md:px-10 py-5 md:py-6 text-sm font-body font-medium tracking-wide rounded-none transition-all duration-500"
                   >
                     <span className="relative z-10 flex items-center gap-3">
                       {isArabic ? "قدّم طلبك" : "Place Your Order"}
@@ -431,12 +431,12 @@ const HeroMasterpiece = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.5, duration: 0.8 }}
             >
-              <p className="font-headline text-xl md:text-2xl text-dandle-orange font-bold tracking-[0.3em] uppercase">
-                DANDLE
+              <p className="font-headline text-xl md:text-2xl text-dandle-orange font-bold tracking-wide">
+                Dandle
               </p>
               <div className="w-20 h-0.5 bg-dandle-orange mx-auto my-2" />
-              <p className="font-body text-xs text-deep-brown/60 tracking-[0.4em] uppercase">
-                RECLINERS
+              <p className="font-body text-xs text-deep-brown/60 tracking-wide">
+                Recliners
               </p>
             </motion.div>
 
@@ -447,7 +447,7 @@ const HeroMasterpiece = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 2, duration: 0.7 }}
             >
-              <span className="text-[10px] text-deep-brown/40 font-body font-light tracking-[0.25em] uppercase">
+              <span className="text-[10px] text-deep-brown/40 font-body font-light tracking-wide">
                 {isArabic ? "مرر" : "Scroll"}
               </span>
               <motion.div

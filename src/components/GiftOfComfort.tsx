@@ -88,7 +88,7 @@ const GiftOfComfort = () => {
             >
               {/* Label */}
               <span 
-                className={`inline-block text-xs text-dandle-orange tracking-[0.2em] uppercase font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
+                className={`inline-block text-xs text-dandle-orange tracking-wide font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
                 style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
               >
                 {isArabic ? "هدية الراحة" : "Gift of Comfort"}
@@ -153,7 +153,7 @@ const GiftOfComfort = () => {
             >
               <Button
                 onClick={() => navigate('/gift')}
-                className={`bg-dandle-orange hover:bg-dandle-orange/90 text-off-white rounded-none px-6 py-5 font-medium tracking-wide uppercase shadow-xl ${isArabic ? 'font-body-ar' : 'font-body'}`}
+                className={`bg-dandle-orange hover:bg-dandle-orange/90 text-off-white rounded-none px-6 py-5 font-medium tracking-wide shadow-xl ${isArabic ? 'font-body-ar' : 'font-body'}`}
                 style={{ 
                   fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.4)' 

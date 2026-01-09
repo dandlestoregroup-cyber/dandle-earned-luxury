@@ -159,7 +159,7 @@ const OurStory = () => {
           transition={{ duration: 0.8 }}
           className="relative z-10 text-center px-4 max-w-4xl mx-auto"
         >
-          <span className="text-bronze font-body text-sm tracking-[0.3em] uppercase">
+          <span className="text-bronze font-body text-sm tracking-wide">
             {t.tagline}
           </span>
           <h1 className="font-headline text-5xl md:text-7xl text-warm-white mt-4 mb-6">
@@ -215,7 +215,7 @@ const OurStory = () => {
               transition={{ duration: 0.6 }}
               className="text-center"
             >
-              <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
+              <span className="text-bronze font-body text-sm tracking-wide">
                 {t.founderTitle}
               </span>
               <blockquote className="font-headline text-2xl md:text-3xl text-foreground mt-6 leading-relaxed italic">
@@ -242,7 +242,7 @@ const OurStory = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-6"
           >
-            <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
+            <span className="text-bronze font-body text-sm tracking-wide">
               {t.differentiatorSubtitle}
             </span>
             <h2 className="font-headline text-4xl md:text-5xl text-foreground mt-3">
@@ -288,7 +288,7 @@ const OurStory = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <span className="text-bronze font-body text-sm tracking-[0.2em] uppercase">
+            <span className="text-bronze font-body text-sm tracking-wide">
               {t.catalogSubtitle}
             </span>
             <h2 className="font-headline text-4xl md:text-5xl text-foreground mt-3">

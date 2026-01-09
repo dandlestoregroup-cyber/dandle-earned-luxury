@@ -9,58 +9,59 @@ import { getLangFromStorage, type LangKey } from "@/i18n/strings";
 import WishlistButton from "@/components/WishlistButton";
 
 // Arabic product translations with proper format: Arabic name (English name)
-const productTranslations: Record<string, { name: string; nameWithEnglish: string; tagline: string; truth: string }> = {
+// Arabic product translations with proper format: Arabic name + (English name) with LTR English
+const productTranslations: Record<string, { name: string; englishName: string; tagline: string; truth: string }> = {
   relaxmax: { 
     name: "ريلاكس ماكس", 
-    nameWithEnglish: "ريلاكس ماكس (RelaxMax)",
+    englishName: "RelaxMax",
     tagline: "المقعد الافتراضي", 
     truth: "مألوف. سهل. صحيح."
   },
   comfortplus: { 
     name: "كومفورت بلس", 
-    nameWithEnglish: "كومفورت بلس (ComfortPlus)",
+    englishName: "ComfortPlus",
     tagline: "استرخِ عميقاً. فكّر بوضوح.", 
     truth: "تحرّر. تجدد. عودة."
   },
   diva: { 
     name: "ديفا", 
-    nameWithEnglish: "ديفا (Diva)",
+    englishName: "Diva",
     tagline: "حيث تلتقي الأناقة بالراحة", 
     truth: "جريء. جميل. لا يُنسى."
   },
   cozycompanion: { 
     name: "كوزي كومبانيون", 
-    nameWithEnglish: "كوزي كومبانيون (CozyCompanion)",
+    englishName: "CozyCompanion",
     tagline: "راحة لاثنين", 
     truth: "اجتمع. استرخِ. ابقَ."
   },
   easyup: { 
     name: "إيزي أب", 
-    nameWithEnglish: "إيزي أب (EasyUp Lift)",
+    englishName: "EasyUp Lift",
     tagline: "اجلس براحة، قوم بسهولة", 
     truth: "سهولة. دعم. ثقة."
   },
   "easyup-compact": { 
     name: "إيزي أب كومباكت", 
-    nameWithEnglish: "إيزي أب كومباكت (EasyUp Compact)",
+    englishName: "EasyUp Compact",
     tagline: "رفع لطيف، تصميم مدمج", 
     truth: "مدمج. نظيف. قادر."
   },
   worknest: { 
     name: "وورك نست", 
-    nameWithEnglish: "وورك نست (WorkNest)",
+    englishName: "WorkNest",
     tagline: "اشعر أفضل. اعمل أفضل.", 
     truth: "راحة. وضوح. إنتاج."
   },
   spacesaver: { 
     name: "سبيس سيفر", 
-    nameWithEnglish: "سبيس سيفر (SpaceSaver)",
+    englishName: "SpaceSaver",
     tagline: "راحة ذكية في مساحة صغيرة", 
     truth: "ذكي. مساحة. راحة."
   },
   "complete-set": { 
     name: "طقم العائلة", 
-    nameWithEnglish: "طقم العائلة (Complete Set)",
+    englishName: "Complete Set",
     tagline: "راحة للعائلة بأكملها", 
     truth: "اجتمع. استرخِ. ابقَ."
   },
@@ -227,7 +228,10 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   };
 
   // Display names - Arabic WITH English in brackets per spec: سبيس سيفر (SpaceSaver)
-  const displayName = isArabic && translation ? translation.nameWithEnglish : product.name;
+  // English inside parentheses must render LTR even in RTL context
+  const displayName = isArabic && translation 
+    ? <>{translation.name} (<span dir="ltr">{translation.englishName}</span>)</>
+    : product.name;
   const displayTagline = isArabic && translation ? translation.tagline : product.tagline;
   const displayTruth = isArabic && translation ? translation.truth : product.truth;
 
@@ -457,7 +461,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
           {/* Tagline - letter-spacing expansion */}
           <motion.p 
             className={cn(
-              "text-champagne text-[11px] uppercase mb-1",
+              "text-champagne text-[11px] mb-1 tracking-wide",
               isArabic ? "font-body-ar" : "font-body"
             )}
             style={{ 
@@ -634,7 +638,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
       <div className={cn("p-5 bg-cream", isArabic ? "text-right" : "text-left")} dir={isArabic ? 'rtl' : 'ltr'}>
         {/* Tagline visible always */}
         <p className={cn(
-          "text-[10px] uppercase tracking-[0.15em] text-bronze/70 mb-1",
+          "text-[10px] tracking-wide text-bronze/70 mb-1",
           isArabic ? "font-body-ar" : "font-body"
         )}>
           {displayTagline}
