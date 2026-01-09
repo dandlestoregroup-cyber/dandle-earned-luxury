@@ -47,11 +47,10 @@ export const productColorImages: Record<string, ColorVariant[]> = {
     { swatchKey: 'oasis-green', imageSrc: '/images/easyup-standard-oasis-green.webp' },
   ],
   'easyup-compact': [
-    { swatchKey: 'desert-grey', imageSrc: '/images/easyup-compact-charcoal-front.jpg' },
-    { swatchKey: 'coastal-fog', imageSrc: '/images/easyup-compact-grey-front.webp' },
-    { swatchKey: 'alexandria-linen', imageSrc: '/images/dandle-easyup-compact.jpg' },
-    { swatchKey: 'oasis-green', imageSrc: '/images/easyup-compact-oasis-green.webp' },
-    { swatchKey: 'mocha-taupe', imageSrc: '/images/easyup-compact-charcoal-reclined.png' },
+    // Limited to 3 colors only: Navy Blue, Stone Grey, Espresso Brown (OMASH Damsuk textured leather)
+    { swatchKey: 'nile-sapphire', imageSrc: '/images/easyup-compact-charcoal-front.jpg' }, // Navy Blue
+    { swatchKey: 'desert-grey', imageSrc: '/images/easyup-compact-grey-front.webp' }, // Stone Grey
+    { swatchKey: 'mocha-taupe', imageSrc: '/images/easyup-compact-charcoal-reclined.png' }, // Espresso Brown
   ],
   'worknest': [
     { swatchKey: 'blue-nile-denim', imageSrc: '/images/worknest-blue-front.webp' },

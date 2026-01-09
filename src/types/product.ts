@@ -111,8 +111,8 @@ export const products: Product[] = [
     tagline: "Gentle Lift, Compact Design",
     truth: "Compact. Clean. Capable.",
     story: "EasyUp Compact is made for smart spaces—clean, practical, and designed for rooms where every corner matters. Crafted with OMASH Damsuk textured leather for refined durability.",
-    price: 42900,
-    colors: ["Navy Blue", "Stone Grey", "Espresso Brown"], // Limited colors only per spec
+    price: 32000, // Corrected price per spec
+    colors: ["Navy Blue", "Stone Grey", "Espresso Brown"], // Limited to 3 colors only (OMASH Damsuk)
     features: [
       "Power Lift Mechanism",
       "Compact Design for Small Spaces",
