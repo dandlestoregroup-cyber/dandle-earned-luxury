@@ -41,10 +41,10 @@ const Quote = () => {
           <span className="w-16 h-px bg-gradient-to-r from-transparent to-champagne/60" />
           <span 
             className="text-champagne/80 text-xs md:text-sm tracking-[0.2em] uppercase font-body font-light"
-            data-en="Since 2010"
-            data-ar="منذ ٢٠١٠"
+            data-en="Since 2022"
+            data-ar="منذ ٢٠٢٢"
           >
-            Since 2010
+            Since 2022
           </span>
           <span className="w-16 h-px bg-gradient-to-l from-transparent to-champagne/60" />
         </motion.footer>

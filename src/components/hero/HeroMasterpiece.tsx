@@ -10,7 +10,7 @@ const REFINED_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 // Video overlay scenes - Arabic ONLY for Arabic text, English ONLY for English
 const VIDEO_SCENES = [
-  { en: "The Art of Rest", ar: "فن الراحة" },
+  { en: "Comfort That Transforms", ar: "راحة تصنع الفرق" },
   { en: "Crafted in Egypt", ar: "صناعة مصرية" },
   { en: "For Real Homes", ar: "لبيوت حقيقية" },
 ];
