@@ -110,14 +110,14 @@ export const products: Product[] = [
     name: "Dandle EasyUp Compact",
     tagline: "Gentle Lift, Compact Design",
     truth: "Compact. Clean. Capable.",
-    story: "EasyUp Compact is made for smart spaces—clean, practical, and designed for rooms where every corner matters.",
+    story: "EasyUp Compact is made for smart spaces—clean, practical, and designed for rooms where every corner matters. Crafted with OMASH Damsuk textured leather for refined durability.",
     price: 42900,
-    colors: ["Urban Charcoal"],
+    colors: ["Navy Blue", "Stone Grey", "Espresso Brown"], // Limited colors only per spec
     features: [
       "Power Lift Mechanism",
       "Compact Design for Small Spaces",
-      "Zero-Gravity Positioning",
-      "Enhanced Safety Features",
+      "OMASH Damsuk Textured Leather",
+      "Limited Colors Available",
     ],
     targetAudience: "Seniors and mobility assistance in smaller spaces",
     imageUrl: "/images/dandle-easyup-compact.jpg",

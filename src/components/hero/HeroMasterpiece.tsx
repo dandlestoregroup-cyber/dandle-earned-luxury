@@ -15,12 +15,12 @@ const VIDEO_SCENES = [
   { en: "For Real Homes", ar: "لبيوت حقيقية" },
 ];
 
-// Hero belief rotation - 4th line updated per spec
+// Hero belief rotation - 4th line: non-snobby version per spec
 const BELIEF_STATEMENTS = [
   { en: "This is my seat.", ar: "هذا مقعدي." },
   { en: "The room feels right.", ar: "الغرفة تبدو صحيحة." },
   { en: "I enjoy using it.", ar: "أستمتع باستخدامه." },
-  { en: "A gift I'm proud to give.", ar: "هدية أفتخر بتقديمها." },
+  { en: "A gift I'd be happy to give.", ar: "هدية أسعد بتقديمها." },
 ];
 
 const HeroMasterpiece = () => {
@@ -97,26 +97,43 @@ const HeroMasterpiece = () => {
     return () => clearInterval(interval);
   }, [showVideo]);
 
-  // Video progress & end handling
+  // Video progress & end handling - fade out 2 seconds before end to hide "Mediterra" artifact
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !showVideo) return;
 
     const handleTimeUpdate = () => {
       if (video.duration > 0) {
-        setProgress((video.currentTime / video.duration) * 100);
+        const currentProgress = (video.currentTime / video.duration) * 100;
+        setProgress(currentProgress);
+        
+        // Fade out 2 seconds before end to hide "Mediterra" artifact
+        const timeRemaining = video.duration - video.currentTime;
+        if (timeRemaining <= 2 && !videoFadingOut) {
+          setVideoFadingOut(true);
+          setTimeout(() => {
+            video.pause();
+            setShowVideo(false);
+            setVideoFadingOut(false);
+            setVideoReady(false);
+            setProgress(0);
+            setCurrentScene(0);
+          }, 800);
+        }
       }
     };
 
     const handleEnded = () => {
-      setVideoFadingOut(true);
-      setTimeout(() => {
-        setShowVideo(false);
-        setVideoFadingOut(false);
-        setVideoReady(false);
-        setProgress(0);
-        setCurrentScene(0);
-      }, 800);
+      if (!videoFadingOut) {
+        setVideoFadingOut(true);
+        setTimeout(() => {
+          setShowVideo(false);
+          setVideoFadingOut(false);
+          setVideoReady(false);
+          setProgress(0);
+          setCurrentScene(0);
+        }, 800);
+      }
     };
 
     video.addEventListener("timeupdate", handleTimeUpdate);
@@ -126,7 +143,7 @@ const HeroMasterpiece = () => {
       video.removeEventListener("timeupdate", handleTimeUpdate);
       video.removeEventListener("ended", handleEnded);
     };
-  }, [showVideo]);
+  }, [showVideo, videoFadingOut]);
 
   // Skip video handler
   const handleSkipVideo = useCallback(() => {
@@ -333,7 +350,7 @@ const HeroMasterpiece = () => {
                   transition={{ delay: 0.6, duration: 0.6 }}
                 />
 
-                {/* Subline - Locked Hook */}
+                {/* Subline - Locked Hook (SIMPLIFIED per spec) */}
                 <motion.p
                   className={`text-deep-brown/80 text-base md:text-lg mb-4 max-w-xl ${isArabic ? 'font-body-ar' : 'font-body'}`}
                   initial={{ opacity: 0, y: 20 }}
@@ -341,8 +358,8 @@ const HeroMasterpiece = () => {
                   transition={{ delay: 0.7, duration: 0.7 }}
                 >
                   {isArabic 
-                    ? "تعرف أنك وجدته لحظة ما تشوفه. راحة صُممت للأرقى. أهدِ نفسك هدية الراحة 🎁"
-                    : "You know you found it the moment you see it. Comfort crafted for the finest. Give yourself the gift of comfort 🎁"
+                    ? "تعرف أنك وجدته لحظة ما تشوفه. أهدِ نفسك هدية الراحة 🎁"
+                    : "You know you found it the moment you see it. Give yourself the gift of comfort 🎁"
                   }
                 </motion.p>
 
