@@ -216,7 +216,8 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   // WhatsApp notification for ComingSoon or BeFirstToKnow products
   const handleCardClick = () => {
     if (product.comingSoon || product.beFirstToKnow) {
-      const productName = isArabic && translation ? translation.nameWithEnglish : product.name;
+      // Use Arabic-only name for WhatsApp message
+      const productName = isArabic && translation ? translation.name : product.name;
       const message = `ممكن تنبهوني أول ما ${productName} يبقى متاح؟`;
       const encodedMessage = encodeURIComponent(message);
       window.open(`https://wa.me/201222804255?text=${encodedMessage}`, '_blank', 'noopener,noreferrer');
@@ -225,8 +226,8 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
     }
   };
 
-  // Display names with proper Arabic format
-  const displayName = isArabic && translation ? translation.nameWithEnglish : product.name;
+  // Display names - Arabic ONLY (no English brackets per spec)
+  const displayName = isArabic && translation ? translation.name : product.name;
   const displayTagline = isArabic && translation ? translation.tagline : product.tagline;
   const displayTruth = isArabic && translation ? translation.truth : product.truth;
 

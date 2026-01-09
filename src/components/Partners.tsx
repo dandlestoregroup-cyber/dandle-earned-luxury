@@ -8,40 +8,48 @@ const partners = [
     nameAr: "أوماش دمسوق",
     taglineEn: "Premium Materials",
     taglineAr: "خامات فاخرة",
-    valueEn: "Fine-grade materials and textured finishes.",
-    valueAr: "خامات فاخرة وتشطيبات مميزة.",
-    meaningEn: "Better touch, better wear, better look over time.",
-    meaningAr: "ملمس أفضل، متانة أكثر، مظهر أجمل مع الوقت.",
+    valueEn: "Textured leather and fabric excellence. Micro-detail craftsmanship for durability and refined feel.",
+    valueAr: "جلد محبب وأقمشة فاخرة. حرفية في التفاصيل الدقيقة للمتانة والملمس الراقي.",
+    meaningEn: "Formerly known as Raytex — decades of trusted quality.",
+    meaningAr: "المعروفة سابقاً باسم ريتكس — عقود من الجودة الموثوقة.",
+    highlight: "EasyUp Compact uses OMASH textured leather",
+    highlightAr: "إيزي أب كومباكت يستخدم جلد أوماش المحبب",
   },
   {
     nameEn: "Istikbal",
     nameAr: "إستيكبال",
     taglineEn: "Showroom Network",
     taglineAr: "شبكة المعارض",
-    valueEn: "Try before you decide.",
-    valueAr: "جرّب قبل ما تقرر.",
-    meaningEn: "See the build up close in-person.",
-    meaningAr: "شوف الجودة بنفسك.",
+    valueEn: "Try before you decide. See the build quality up close, in person.",
+    valueAr: "جرّب قبل ما تقرر. شوف الجودة بنفسك في المعرض.",
+    meaningEn: "4 Citystars branches across Cairo.",
+    meaningAr: "4 فروع في سيتي ستارز بالقاهرة.",
+    highlight: null,
+    highlightAr: null,
   },
   {
     nameEn: "Vivian",
     nameAr: "فيفيان",
     taglineEn: "Interior Styling",
     taglineAr: "التصميم الداخلي",
-    valueEn: "Helps the chair fit the room.",
-    valueAr: "بتساعد الكرسي يناسب الغرفة.",
-    meaningEn: "Layout guidance so it looks intentional.",
-    meaningAr: "توجيه التصميم عشان يبان متناسق.",
+    valueEn: "Helps the chair fit the room. Layout guidance so it looks intentional.",
+    valueAr: "بتساعد الكرسي يناسب الغرفة. توجيه التصميم عشان يبان متناسق.",
+    meaningEn: "Free consultation for Dandle customers.",
+    meaningAr: "استشارة مجانية لعملاء Dandle.",
+    highlight: null,
+    highlightAr: null,
   },
   {
     nameEn: "Aqua Offers",
     nameAr: "أكوا أوفرز",
     taglineEn: "Community Partner",
     taglineAr: "شريك المجتمع",
-    valueEn: "Curated collaborations and shared visibility.",
-    valueAr: "تعاونات مختارة ورؤية مشتركة.",
-    meaningEn: "Exclusive member benefits.",
-    meaningAr: "مميزات حصرية للأعضاء.",
+    valueEn: "Curated collaborations and shared visibility. Local partnerships that matter.",
+    valueAr: "تعاونات مختارة ورؤية مشتركة. شراكات محلية مهمة.",
+    meaningEn: "Exclusive member benefits and offers.",
+    meaningAr: "مميزات وعروض حصرية للأعضاء.",
+    highlight: null,
+    highlightAr: null,
   },
 ];
 
@@ -109,12 +117,12 @@ const Partners = () => {
           </div>
         </motion.div>
 
-        {/* Partner Cards - Grid with descriptions */}
+        {/* Partner Cards - Grid with enriched descriptions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {partners.map((partner, index) => (
             <motion.div 
               key={partner.nameEn} 
-              className="bg-off-white p-6 rounded-sm shadow-sm hover:shadow-md transition-shadow"
+              className="bg-off-white p-6 rounded-sm shadow-sm hover:shadow-md transition-shadow border border-champagne/10"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -123,15 +131,24 @@ const Partners = () => {
               <h3 className={`text-xl text-charcoal font-medium mb-1 ${isArabic ? 'font-body-ar' : 'font-headline'}`}>
                 {isArabic ? partner.nameAr : partner.nameEn}
               </h3>
-              <p className={`text-xs text-bronze tracking-[0.1em] uppercase mb-3 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+              <p className={`text-xs text-dandle-orange tracking-[0.1em] uppercase mb-3 font-medium ${isArabic ? 'font-body-ar' : 'font-body'}`}>
                 {isArabic ? partner.taglineAr : partner.taglineEn}
               </p>
-              <p className={`text-charcoal/80 text-sm mb-2 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+              <p className={`text-charcoal/80 text-sm mb-2 leading-relaxed ${isArabic ? 'font-body-ar' : 'font-body'}`}>
                 {isArabic ? partner.valueAr : partner.valueEn}
               </p>
-              <p className={`text-charcoal/60 text-xs ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+              <p className={`text-charcoal/50 text-xs ${isArabic ? 'font-body-ar' : 'font-body'}`}>
                 {isArabic ? partner.meaningAr : partner.meaningEn}
               </p>
+              
+              {/* Special highlight for OMASH */}
+              {partner.highlight && (
+                <div className="mt-3 pt-3 border-t border-champagne/20">
+                  <p className={`text-dandle-orange text-xs font-medium ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                    {isArabic ? partner.highlightAr : partner.highlight}
+                  </p>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

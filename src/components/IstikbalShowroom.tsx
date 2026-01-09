@@ -1,95 +1,117 @@
 import { motion } from "framer-motion";
 import { MapPin, Calendar, Star, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { getLangFromStorage, type LangKey } from "@/i18n/strings";
+
+// All 4 Citystars branches with addresses
+const branches = [
+  {
+    nameEn: "Citystars Branch 1",
+    nameAr: "فرع سيتي ستارز 1",
+    addressEn: "Citystars Mall, Phase 1, Ground Floor, Nasr City",
+    addressAr: "سيتي ستارز مول، المرحلة الأولى، الدور الأرضي، مدينة نصر",
+  },
+  {
+    nameEn: "Citystars Branch 2",
+    nameAr: "فرع سيتي ستارز 2",
+    addressEn: "Citystars Mall, Phase 2, First Floor, Nasr City",
+    addressAr: "سيتي ستارز مول، المرحلة الثانية، الدور الأول، مدينة نصر",
+  },
+  {
+    nameEn: "Citystars Branch 3",
+    nameAr: "فرع سيتي ستارز 3",
+    addressEn: "Citystars Mall, Furniture Zone, Second Floor, Nasr City",
+    addressAr: "سيتي ستارز مول، منطقة الأثاث، الدور الثاني، مدينة نصر",
+  },
+  {
+    nameEn: "Citystars Branch 4",
+    nameAr: "فرع سيتي ستارز 4",
+    addressEn: "Citystars Mall, Home Section, Third Floor, Nasr City",
+    addressAr: "سيتي ستارز مول، قسم المنزل، الدور الثالث، مدينة نصر",
+  },
+];
 
 const IstikbalShowroom = () => {
+  const [lang, setLang] = useState<LangKey>('ar');
+
+  useEffect(() => {
+    const storedLang = getLangFromStorage();
+    setLang(storedLang);
+    const interval = setInterval(() => {
+      const currentLang = getLangFromStorage();
+      setLang(prev => prev !== currentLang ? currentLang : prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const isArabic = lang === 'ar';
+
   const handleBookAppointment = () => {
-    const message = encodeURIComponent(
-      "Hello DANDLE! I'd like to book an appointment to visit the Istikbal showroom and experience your recliners. Please let me know available slots."
-    );
-    window.open(`https://wa.me/201222804255?text=${message}`, "_blank");
+    const message = isArabic
+      ? "مرحباً Dandle! أريد حجز موعد لزيارة معرض إستيكبال وتجربة الريكلاينرز. من فضلكم أخبروني بالمواعيد المتاحة."
+      : "Hello DANDLE! I'd like to book an appointment to visit the Istikbal showroom and experience your recliners. Please let me know available slots.";
+    window.open(`https://wa.me/201222804255?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   return (
-    <section className="istikbal-section py-10 md:py-14 bg-gradient-to-br from-bronze/90 via-bronze to-charcoal/80 overflow-hidden relative">
+    <section 
+      className="istikbal-section py-12 md:py-16 bg-gradient-to-br from-bronze/90 via-bronze to-charcoal/80 overflow-hidden relative"
+      dir={isArabic ? 'rtl' : 'ltr'}
+    >
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 items-start">
           {/* Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: isArabic ? 30 : -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="space-y-5"
+            className="space-y-6"
           >
             <div className="flex items-center gap-2">
               <Star className="w-5 h-5 text-dandle-orange fill-dandle-orange" />
-              <span 
-                className="text-warm-white font-body text-sm tracking-[0.15em] uppercase"
-                data-en="Official Partner"
-                data-ar="شريك رسمي"
-              >
-                Official Partner
+              <span className={`text-warm-white text-sm tracking-[0.15em] uppercase ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                {isArabic ? "شريك رسمي" : "Official Partner"}
               </span>
             </div>
             
-            <h2 
-              className="font-headline text-3xl md:text-4xl text-warm-white leading-tight"
-              data-en="Come feel the difference."
-              data-ar="تعال واشعر بالفرق."
-            >
-              Come feel the difference.
+            <h2 className={`text-3xl md:text-4xl text-warm-white leading-tight ${isArabic ? 'font-body-ar' : 'font-headline'}`}>
+              {isArabic ? "تعال واشعر بالفرق." : "Come feel the difference."}
             </h2>
             
-            <p 
-              className="text-base text-warm-white/90 font-body leading-relaxed"
-              data-en="Experience Dandle at Istikbal showrooms. Sit, relax, and discover which model calls to you."
-              data-ar="جرب Dandle في صالات عرض إستيكبال. اجلس، استرخِ، واكتشف أي موديل يناديك."
-            >
-              Experience Dandle at Istikbal showrooms. Sit, relax, and discover which model calls to you.
+            <p className={`text-base md:text-lg text-warm-white/90 leading-relaxed ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+              {isArabic 
+                ? "جرب Dandle في صالات عرض إستيكبال. اجلس، استرخِ، واكتشف أي موديل يناديك."
+                : "Experience Dandle at Istikbal showrooms. Sit, relax, and discover which model calls to you."
+              }
             </p>
 
-            <div className="space-y-3 pt-2">
+            <div className="space-y-4 pt-2">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-full bg-dandle-orange/30 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-4 h-4 text-warm-white" />
+                <div className="w-10 h-10 rounded-full bg-dandle-orange/30 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-warm-white" />
                 </div>
                 <div>
-                  <h4 
-                    className="font-headline text-base text-warm-white"
-                    data-en="Dedicated DANDLE Section"
-                    data-ar="قسم DANDLE مخصص"
-                  >
-                    Dedicated DANDLE Section
+                  <h4 className={`text-base text-warm-white font-medium ${isArabic ? 'font-body-ar' : 'font-headline'}`}>
+                    {isArabic ? "قسم DANDLE مخصص" : "Dedicated DANDLE Section"}
                   </h4>
-                  <p 
-                    className="text-warm-white/70 font-body text-sm"
-                    data-en="Full collection on display inside Istikbal showrooms"
-                    data-ar="المجموعة الكاملة معروضة داخل صالات عرض إستيكبال"
-                  >
-                    Full collection on display inside Istikbal showrooms
+                  <p className={`text-warm-white/70 text-sm ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                    {isArabic ? "المجموعة الكاملة معروضة داخل صالات عرض إستيكبال" : "Full collection on display inside Istikbal showrooms"}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-full bg-dandle-orange/30 flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-4 h-4 text-warm-white" />
+                <div className="w-10 h-10 rounded-full bg-dandle-orange/30 flex items-center justify-center flex-shrink-0">
+                  <Calendar className="w-5 h-5 text-warm-white" />
                 </div>
                 <div>
-                  <h4 
-                    className="font-headline text-base text-warm-white"
-                    data-en="Personal Consultation"
-                    data-ar="استشارة شخصية"
-                  >
-                    Personal Consultation
+                  <h4 className={`text-base text-warm-white font-medium ${isArabic ? 'font-body-ar' : 'font-headline'}`}>
+                    {isArabic ? "استشارة شخصية" : "Personal Consultation"}
                   </h4>
-                  <p 
-                    className="text-warm-white/70 font-body text-sm"
-                    data-en="Book a private appointment with our comfort specialists"
-                    data-ar="احجز موعداً خاصاً مع متخصصي الراحة لدينا"
-                  >
-                    Book a private appointment with our comfort specialists
+                  <p className={`text-warm-white/70 text-sm ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                    {isArabic ? "احجز موعداً خاصاً مع متخصصي الراحة لدينا" : "Book a private appointment with our comfort specialists"}
                   </p>
                 </div>
               </div>
@@ -99,60 +121,70 @@ const IstikbalShowroom = () => {
               <Button
                 onClick={handleBookAppointment}
                 size="lg"
-                className="bg-dandle-orange hover:bg-dandle-orange/90 text-white font-headline text-base px-6 py-5 rounded-full"
+                className="bg-dandle-orange hover:bg-dandle-orange/90 text-white font-medium text-base px-6 py-5 rounded-full"
               >
                 <Calendar className="w-4 h-4 mr-2" />
-                <span data-en="Book an Appointment" data-ar="احجز موعد">Book an Appointment</span>
+                {isArabic ? "احجز موعد" : "Book an Appointment"}
               </Button>
               
               <Button
                 variant="outline"
                 size="lg"
-                className="border-warm-white/50 text-warm-white hover:bg-warm-white/20 font-body px-6 py-5 rounded-full"
+                className="border-warm-white/50 text-warm-white hover:bg-warm-white/20 font-medium px-6 py-5 rounded-full"
                 onClick={() => window.open("tel:+201222804255")}
               >
                 <Phone className="w-4 h-4 mr-2" />
-                <span data-en="Call Showroom" data-ar="اتصل بالمعرض">Call Showroom</span>
+                {isArabic ? "اتصل بالمعرض" : "Call Showroom"}
               </Button>
             </div>
           </motion.div>
 
-          {/* Visual Element - Compact */}
+          {/* Branches List - All 4 Citystars */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: isArabic ? -30 : 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative bg-gradient-to-br from-warm-white/10 to-dandle-orange/20 rounded-2xl p-6 md:p-8">
+            <div className="bg-gradient-to-br from-warm-white/10 to-dandle-orange/10 rounded-lg p-6 md:p-8 backdrop-blur-sm">
               {/* Decorative circles */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-dandle-orange/15 rounded-full -translate-y-1/2 translate-x-1/4" />
-              <div className="absolute bottom-0 left-0 w-16 h-16 bg-warm-white/10 rounded-full translate-y-1/3 -translate-x-1/4" />
+              <div className="absolute top-0 right-0 w-20 h-20 bg-dandle-orange/15 rounded-full -translate-y-1/2 translate-x-1/4" />
+              <div className="absolute bottom-0 left-0 w-14 h-14 bg-warm-white/10 rounded-full translate-y-1/3 -translate-x-1/4" />
               
-              <div className="relative z-10 text-center space-y-4">
-                <div className="inline-block">
-                  <span className="font-headline text-5xl md:text-6xl text-warm-white">
+              <div className="relative z-10">
+                <div className="text-center mb-6">
+                  <span className={`text-5xl md:text-6xl text-warm-white ${isArabic ? 'font-body-ar' : 'font-headline'}`}>
                     Istikbal
                   </span>
+                  <p className={`text-warm-white/80 text-base mt-2 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                    {isArabic ? "حيث تلتقي الجودة بالراحة" : "Where Quality Meets Comfort"}
+                  </p>
                 </div>
                 
-                <p 
-                  className="font-body text-lg text-warm-white/95"
-                  data-en="Where Quality Meets Comfort"
-                  data-ar="حيث تلتقي الجودة بالراحة"
-                >
-                  Where Quality Meets Comfort
-                </p>
-                
-                <p 
-                  className="text-warm-white/80 text-base font-body leading-relaxed max-w-sm mx-auto"
-                  data-en="Walk in curious. Sit down. Feel the difference. Leave knowing exactly what comfort means to you."
-                  data-ar="ادخل بفضول. اجلس. اشعر بالفرق. غادر وأنت تعرف تماماً ما تعنيه الراحة لك."
-                >
-                  Walk in curious. Sit down. Feel the difference. 
-                  Leave knowing exactly what comfort means to you.
-                </p>
+                {/* Branch List */}
+                <div className="space-y-4 mt-6">
+                  <h4 className={`text-warm-white font-medium text-sm uppercase tracking-wide mb-3 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                    {isArabic ? "فروعنا" : "Our Branches"}
+                  </h4>
+                  {branches.map((branch, index) => (
+                    <motion.div
+                      key={branch.nameEn}
+                      className="bg-warm-white/10 rounded-sm p-4 border border-warm-white/10"
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                    >
+                      <h5 className={`text-warm-white font-medium text-base mb-1 ${isArabic ? 'font-body-ar' : 'font-headline'}`}>
+                        {isArabic ? branch.nameAr : branch.nameEn}
+                      </h5>
+                      <p className={`text-warm-white/70 text-sm leading-relaxed ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+                        {isArabic ? branch.addressAr : branch.addressEn}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
