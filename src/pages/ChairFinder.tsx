@@ -60,17 +60,17 @@ const initialSelection: Selection = {
   notes: "",
 };
 
-// Product data with Arabic names
+// Product data with Arabic names - Format: Arabic (English) per spec
 const models = [
-  { handle: "relaxmax", nameEn: "RelaxMax", nameAr: "ريلاكس ماكس", price: 21900, priceWithPower: 28900, hasMechanism: true, hasMovement: true, hasRotation: true },
-  { handle: "diva", nameEn: "Diva", nameAr: "ديفا", price: 23900, priceWithPower: 30900, hasMechanism: true, hasMovement: true, hasRotation: true },
-  { handle: "comfortplus", nameEn: "ComfortPlus", nameAr: "كمفورت بلس", price: 29900, priceWithPower: 36900, hasMechanism: true, hasMovement: true, hasRotation: true },
-  { handle: "worknest", nameEn: "WorkNest", nameAr: "ورك نست", price: 26900, priceWithPower: 33900, hasMechanism: true, hasMovement: false, hasRotation: true },
-  { handle: "spacesaver", nameEn: "SpaceSaver", nameAr: "سبيس سيفر", price: 24900, priceWithPower: 29900, hasMechanism: true, hasMovement: false, hasRotation: false },
-  { handle: "cozycompanion", nameEn: "CozyCompanion", nameAr: "كوزي كومبانيون", price: 42000, priceWithPower: 54000, hasMechanism: true, hasMovement: false, hasRotation: false },
-  { handle: "easyup", nameEn: "EasyUp Standard", nameAr: "إيزي أب ستاندرد", price: 32000, priceWithPower: 32000, hasMechanism: false, hasMovement: false, hasRotation: false },
-  { handle: "easyup-compact", nameEn: "EasyUp Compact", nameAr: "إيزي أب كومباكت", price: 42900, priceWithPower: 42900, hasMechanism: false, hasMovement: false, hasRotation: false, limitedColors: true },
-  { handle: "complete-set", nameEn: "Complete Set", nameAr: "الطقم الكامل", price: 62900, priceWithPower: 90900, hasMechanism: true, hasMovement: true, hasRotation: true },
+  { handle: "relaxmax", nameEn: "RelaxMax", nameAr: "ريلاكس ماكس (RelaxMax)", price: 21900, priceWithPower: 28900, hasMechanism: true, hasMovement: true, hasRotation: true },
+  { handle: "diva", nameEn: "Diva", nameAr: "ديفا (Diva)", price: 23900, priceWithPower: 30900, hasMechanism: true, hasMovement: true, hasRotation: true },
+  { handle: "comfortplus", nameEn: "ComfortPlus", nameAr: "كومفورت بلس (ComfortPlus)", price: 29900, priceWithPower: 36900, hasMechanism: true, hasMovement: true, hasRotation: true },
+  { handle: "worknest", nameEn: "WorkNest", nameAr: "وورك نست (WorkNest)", price: 26900, priceWithPower: 33900, hasMechanism: true, hasMovement: false, hasRotation: true },
+  { handle: "spacesaver", nameEn: "SpaceSaver", nameAr: "سبيس سيفر (SpaceSaver)", price: 24900, priceWithPower: 29900, hasMechanism: true, hasMovement: false, hasRotation: false },
+  { handle: "cozycompanion", nameEn: "CozyCompanion", nameAr: "كوزي كومبانيون (CozyCompanion)", price: 42000, priceWithPower: 54000, hasMechanism: true, hasMovement: false, hasRotation: false },
+  { handle: "easyup", nameEn: "EasyUp Standard", nameAr: "إيزي أب ستاندرد (EasyUp Standard)", price: 32000, priceWithPower: 32000, hasMechanism: false, hasMovement: false, hasRotation: false },
+  { handle: "easyup-compact", nameEn: "EasyUp Compact", nameAr: "إيزي أب كومباكت (EasyUp Compact)", price: 42900, priceWithPower: 42900, hasMechanism: false, hasMovement: false, hasRotation: false, limitedColors: true },
+  { handle: "complete-set", nameEn: "Complete Set", nameAr: "الطقم الكامل (Complete Set)", price: 62900, priceWithPower: 90900, hasMechanism: true, hasMovement: true, hasRotation: true },
 ];
 
 const cities = [

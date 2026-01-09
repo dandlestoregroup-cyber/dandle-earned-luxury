@@ -118,8 +118,8 @@ const FAQ = () => {
         {
           qEn: "What warranty do you offer?",
           qAr: "ما الضمان الذي تقدمونه؟",
-          aEn: "We offer a 5-year frame warranty, 2-year motor warranty, and 1-year upholstery warranty. Visit our Warranty page for complete details.",
-          aAr: "نقدم ضمان 5 سنوات للهيكل وسنتين للمحرك وسنة للتنجيد. زر صفحة الضمان للتفاصيل الكاملة."
+          aEn: "We offer a comprehensive 2-year warranty covering the frame, motor, and upholstery. Visit our Warranty page for complete details.",
+          aAr: "نقدم ضمان شامل لمدة سنتين يغطي الهيكل والمحرك والتنجيد. زر صفحة الضمان للتفاصيل الكاملة."
         },
         {
           qEn: "How do I make a warranty claim?",
