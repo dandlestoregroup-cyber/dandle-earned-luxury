@@ -59,7 +59,7 @@ const Footer = () => {
           <h3 className="font-headline text-3xl md:text-4xl font-light text-off-white tracking-tight mb-3">
             Dandle
           </h3>
-          <p className={`text-off-white/70 text-sm tracking-[0.12em] font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+          <p className={`text-off-white text-sm tracking-[0.12em] font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}>
             {isArabic ? "راحة تصنع الفرق" : "Comfort That Transforms"}
           </p>
         </motion.div>
@@ -76,7 +76,7 @@ const Footer = () => {
             <Link
               key={link.href}
               to={link.href}
-              className={`text-off-white/80 hover:text-dandle-orange transition-colors duration-300 font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
+              className={`text-off-white hover:text-dandle-orange transition-colors duration-300 font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
             >
               {isArabic ? link.labelAr : link.labelEn}
             </Link>
@@ -91,14 +91,14 @@ const Footer = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.25, duration: 0.6 }}
         >
-          <span className={`text-off-white/50 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+          <span className={`text-off-white/90 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
             {isArabic ? "أدوات:" : "Tools:"}
           </span>
           {toolLinks.map((link, index) => (
             <span key={link.href} className="flex items-center gap-2">
               <Link
                 to={link.href}
-                className={`text-dandle-orange/90 hover:text-dandle-orange transition-colors duration-300 font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}
+                className={`text-dandle-orange hover:text-dandle-orange/80 transition-colors duration-300 font-medium ${isArabic ? 'font-body-ar' : 'font-body'}`}
               >
                 {isArabic ? link.labelAr : link.labelEn}
               </Link>
@@ -172,7 +172,7 @@ const Footer = () => {
         </motion.div>
         
         {/* Copyright & Legal */}
-        <div className={`text-center text-off-white/50 text-xs font-light space-y-2 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+        <div className={`text-center text-off-white/80 text-xs font-light space-y-2 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
           <p>
             {isArabic 
               ? `© ${currentYear} مجموعة داندل ستور`
