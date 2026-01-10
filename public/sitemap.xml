@@ -180,7 +180,71 @@
     </image:image>
   </url>
 
-  <!-- API Endpoints for Crawlers -->
+  <!-- Trust Pages -->
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/about</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/faq</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/warranty</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/delivery</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/payment</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/returns</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/installation</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/contact</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- API Endpoints for Crawlers and AI Agents -->
+  <url>
+    <loc>https://dandle-earned-luxury.lovable.app/content-manifest.json</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://dandle-earned-luxury.lovable.app/images-manifest.json</loc>
     <lastmod>2025-12-12</lastmod>
