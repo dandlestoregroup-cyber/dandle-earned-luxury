@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Product } from "@/types/product";
 import { getLovableProduct } from "@/catalog/lovableCatalog";
 import { cn } from "@/lib/utils";
@@ -154,18 +155,37 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const translation = productTranslations[product.id];
   
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [currentColorIndex, setCurrentColorIndex] = useState(0);
   const colors = product.colors || [];
 
   const displayImage = useMemo(() => {
-    if (selectedColor) {
-      const paletteKey = colorToPaletteKey[selectedColor];
+    const colorToUse = selectedColor || (colors.length > 0 ? colors[currentColorIndex] : null);
+    if (colorToUse) {
+      const paletteKey = colorToPaletteKey[colorToUse];
       if (paletteKey) {
         const colorImage = getProductColorImage(product.id, paletteKey);
         if (colorImage) return colorImage;
       }
     }
     return defaultHeroImage;
-  }, [selectedColor, defaultHeroImage, product.id]);
+  }, [selectedColor, currentColorIndex, defaultHeroImage, product.id, colors]);
+
+  // Navigation handlers for image arrows
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (colors.length > 0) {
+      setCurrentColorIndex(prev => prev === 0 ? colors.length - 1 : prev - 1);
+      setSelectedColor(null);
+    }
+  };
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (colors.length > 0) {
+      setCurrentColorIndex(prev => prev === colors.length - 1 ? 0 : prev + 1);
+      setSelectedColor(null);
+    }
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-EG", {
@@ -333,6 +353,40 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
               size="sm"
             />
           </div>
+        )}
+        
+        {/* Image Navigation Arrows - Always visible when multiple colors */}
+        {colors.length > 1 && !product.comingSoon && !product.beFirstToKnow && (
+          <>
+            <button
+              onClick={handlePrevImage}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-off-white/90 hover:bg-off-white shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110"
+              aria-label="Previous color"
+            >
+              <ChevronLeft className="w-5 h-5 text-deep-brown" />
+            </button>
+            <button
+              onClick={handleNextImage}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-off-white/90 hover:bg-off-white shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110"
+              aria-label="Next color"
+            >
+              <ChevronRight className="w-5 h-5 text-deep-brown" />
+            </button>
+            {/* Image counter indicator */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex gap-1.5">
+              {colors.slice(0, 7).map((_, index) => (
+                <span
+                  key={index}
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full transition-all duration-200",
+                    currentColorIndex === index 
+                      ? "bg-dandle-orange w-3" 
+                      : "bg-deep-brown/40"
+                  )}
+                />
+              ))}
+            </div>
+          </>
         )}
         
         {/* Layer 1: Product Image with zoom and brightness */}

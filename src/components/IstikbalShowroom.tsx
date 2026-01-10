@@ -4,31 +4,35 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { getLangFromStorage, type LangKey } from "@/i18n/strings";
 
-// All 4 Citystars branches with addresses
+// All 4 Istikbal showroom locations in Egypt
 const branches = [
   {
-    nameEn: "Citystars Branch 1",
-    nameAr: "فرع سيتي ستارز 1",
-    addressEn: "Citystars Mall, Phase 1, Ground Floor, Nasr City",
-    addressAr: "سيتي ستارز مول، المرحلة الأولى، الدور الأرضي، مدينة نصر",
+    nameEn: "Istikbal Dokki",
+    nameAr: "إستيكبال الدقي",
+    addressEn: "84 Mohy El Din Abou El Ezz St., Dokki, Giza",
+    addressAr: "84 محيي الدين أبو العز، الدقي، محافظة الجيزة",
+    city: "Giza",
   },
   {
-    nameEn: "Citystars Branch 2",
-    nameAr: "فرع سيتي ستارز 2",
-    addressEn: "Citystars Mall, Phase 2, First Floor, Nasr City",
-    addressAr: "سيتي ستارز مول، المرحلة الثانية، الدور الأول، مدينة نصر",
+    nameEn: "Istikbal City Stars",
+    nameAr: "إستيكبال سيتي ستارز",
+    addressEn: "City Stars Mall, Nasr City, Cairo",
+    addressAr: "سيتي ستارز مول، مدينة نصر، القاهرة",
+    city: "Cairo",
   },
   {
-    nameEn: "Citystars Branch 3",
-    nameAr: "فرع سيتي ستارز 3",
-    addressEn: "Citystars Mall, Furniture Zone, Second Floor, Nasr City",
-    addressAr: "سيتي ستارز مول، منطقة الأثاث، الدور الثاني، مدينة نصر",
+    nameEn: "Istikbal Nasr City",
+    nameAr: "إستيكبال مدينة نصر",
+    addressEn: "28 Atiya Al Sawalhi St., Zone 8, Nasr City, Cairo",
+    addressAr: "28 عطية الصوالحي، المنطقة الثامنة، مدينة نصر، القاهرة",
+    city: "Cairo",
   },
   {
-    nameEn: "Citystars Branch 4",
-    nameAr: "فرع سيتي ستارز 4",
-    addressEn: "Citystars Mall, Home Section, Third Floor, Nasr City",
-    addressAr: "سيتي ستارز مول، قسم المنزل، الدور الثالث، مدينة نصر",
+    nameEn: "Istikbal Alexandria",
+    nameAr: "إستيكبال الإسكندرية",
+    addressEn: "24 Fawzi Moaz St., Ezbet Saad, Sidi Gaber, Alexandria",
+    addressAr: "24 محمد فوزي معاذ، عزبة سعد، سيدي جابر، الإسكندرية",
+    city: "Alexandria",
   },
 ];
 
@@ -165,7 +169,7 @@ const IstikbalShowroom = () => {
                 {/* Branch List */}
                 <div className="space-y-4 mt-6">
                   <h4 className={`text-warm-white font-medium text-sm tracking-wide mb-3 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
-                    {isArabic ? "فروعنا" : "Our Branches"}
+                    {isArabic ? "فروع إستيكبال" : "Istikbal Showrooms"}
                   </h4>
                   {branches.map((branch, index) => (
                     <motion.div
