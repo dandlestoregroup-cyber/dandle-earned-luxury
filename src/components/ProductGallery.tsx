@@ -19,9 +19,13 @@ const ProductGallery = () => {
   };
 
 
+  // All products in order per spec
   const featuredOrder = [
     "relaxmax",
     "easyup",
+    "easyup-compact",
+    "comfortplus",
+    "diva",
     "spacesaver",
     "worknest",
     "cozycompanion",

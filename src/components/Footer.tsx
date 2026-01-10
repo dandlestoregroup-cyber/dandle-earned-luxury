@@ -23,15 +23,19 @@ const Footer = () => {
   const links = [
     { labelEn: "Collection", labelAr: "المجموعة", href: "/#products" },
     { labelEn: "Our Story", labelAr: "قصتنا", href: "/our-story" },
+    { labelEn: "About", labelAr: "من نحن", href: "/about" },
     { labelEn: "Warranty", labelAr: "الضمان", href: "/warranty" },
     { labelEn: "Delivery", labelAr: "التوصيل", href: "/delivery" },
+    { labelEn: "FAQ", labelAr: "أسئلة شائعة", href: "/faq" },
     { labelEn: "Contact", labelAr: "تواصل", href: "/contact" },
+    { labelEn: "Careers", labelAr: "الوظائف", href: "/careers" },
   ];
 
   const toolLinks = [
     { labelEn: "Gift Finder", labelAr: "دليل الهدايا", href: "/gift" },
     { labelEn: "Chair Finder", labelAr: "دليل الكرسي", href: "/chair-finder" },
     { labelEn: "Room Fit", labelAr: "مقاس الركن", href: "/room-fit" },
+    { labelEn: "Compare", labelAr: "قارن", href: "/compare" },
   ];
 
   return (
