@@ -40,11 +40,11 @@ const Footer = () => {
 
   return (
     <footer 
-      className="bg-deep-brown border-t border-dandle-orange/10" 
+      className="bg-deep-brown border-t border-dandle-orange/10 text-off-white" 
       dir={isArabic ? 'rtl' : 'ltr'}
       style={{
         paddingTop: '3rem',
-        paddingBottom: 'max(5rem, calc(3rem + env(safe-area-inset-bottom, 0px)))', // Extra bottom padding for WhatsApp button
+        paddingBottom: 'max(5rem, calc(3rem + env(safe-area-inset-bottom, 0px)))',
       }}
     >
       <div className="container mx-auto px-6">
@@ -59,7 +59,7 @@ const Footer = () => {
           <h3 className="font-headline text-3xl md:text-4xl font-light text-off-white tracking-tight mb-3">
             Dandle
           </h3>
-          <p className={`text-off-white text-sm tracking-[0.12em] font-light ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+          <p className={`text-sm tracking-[0.12em] font-light opacity-90 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
             {isArabic ? "راحة تصنع الفرق" : "Comfort That Transforms"}
           </p>
         </motion.div>
@@ -91,7 +91,7 @@ const Footer = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.25, duration: 0.6 }}
         >
-          <span className={`text-off-white/90 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+          <span className={`opacity-90 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
             {isArabic ? "أدوات:" : "Tools:"}
           </span>
           {toolLinks.map((link, index) => (
@@ -102,7 +102,7 @@ const Footer = () => {
               >
                 {isArabic ? link.labelAr : link.labelEn}
               </Link>
-              {index < toolLinks.length - 1 && <span className="text-off-white/30">•</span>}
+              {index < toolLinks.length - 1 && <span className="opacity-30">•</span>}
             </span>
           ))}
         </motion.div>
@@ -119,7 +119,7 @@ const Footer = () => {
             href="https://facebook.com/dandlestoregroup"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 rounded-full border border-off-white/30 flex items-center justify-center text-off-white/70 hover:text-dandle-orange hover:border-dandle-orange/50 transition-all duration-300"
+            className="w-10 h-10 rounded-full border border-current/30 flex items-center justify-center opacity-80 hover:text-dandle-orange hover:opacity-100 hover:border-dandle-orange/50 transition-all duration-300"
             aria-label="Facebook"
           >
             <Facebook size={18} />
@@ -128,7 +128,7 @@ const Footer = () => {
             href="https://instagram.com/dandlestoregroup"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 rounded-full border border-off-white/30 flex items-center justify-center text-off-white/70 hover:text-dandle-orange hover:border-dandle-orange/50 transition-all duration-300"
+            className="w-10 h-10 rounded-full border border-current/30 flex items-center justify-center opacity-80 hover:text-dandle-orange hover:opacity-100 hover:border-dandle-orange/50 transition-all duration-300"
             aria-label="Instagram"
           >
             <Instagram size={18} />
@@ -145,7 +145,7 @@ const Footer = () => {
         >
           <a 
             href="tel:+201222804255" 
-            className="inline-flex items-center gap-2 text-off-white/90 hover:text-dandle-orange transition-colors text-base font-light"
+            className="inline-flex items-center gap-2 opacity-90 hover:text-dandle-orange hover:opacity-100 transition-colors text-base font-light"
           >
             <Phone size={16} className="text-dandle-orange" />
             <span dir="ltr">01222804255</span>
@@ -163,7 +163,7 @@ const Footer = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.35, duration: 0.6 }}
         >
-          <p className={`text-off-white/90 text-sm font-medium ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+          <p className={`text-sm font-medium opacity-90 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
             {isArabic 
               ? "التسليم خلال 14 يوم في جميع المحافظات. ضمان سنتين."
               : "Delivery in 14 days nationwide. 2-year warranty."
@@ -172,7 +172,7 @@ const Footer = () => {
         </motion.div>
         
         {/* Copyright & Legal */}
-        <div className={`text-center text-off-white/80 text-xs font-light space-y-2 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
+        <div className={`text-center text-xs font-light space-y-2 opacity-80 ${isArabic ? 'font-body-ar' : 'font-body'}`}>
           <p>
             {isArabic 
               ? `© ${currentYear} مجموعة داندل ستور`
@@ -180,11 +180,11 @@ const Footer = () => {
             }
           </p>
           <p>
-            <Link to="/privacy" className="hover:text-off-white/80 transition-colors">
+            <Link to="/privacy" className="hover:opacity-100 transition-opacity">
               {isArabic ? "الخصوصية" : "Privacy"}
             </Link>
             <span className="mx-2">·</span>
-            <Link to="/terms" className="hover:text-off-white/80 transition-colors">
+            <Link to="/terms" className="hover:opacity-100 transition-opacity">
               {isArabic ? "الشروط" : "Terms"}
             </Link>
           </p>

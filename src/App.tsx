@@ -30,8 +30,8 @@ import Terms from "./pages/trust/Terms";
 import GiftPicker from "./pages/GiftPicker";
 import RoomFit from "./pages/RoomFit";
 import ChairFinder from "./pages/ChairFinder";
-
 import Compare from "./pages/Compare";
+import QaVisual from "./pages/QaVisual";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +70,7 @@ const App = () => (
             <Route path="/chair-finder" element={<ChairFinder />} />
             
             <Route path="/compare" element={<Compare />} />
+            <Route path="/qa" element={<QaVisual />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
