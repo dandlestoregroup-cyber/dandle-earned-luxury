@@ -12,3 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Sitemap
+Sitemap: https://dandle-earned-luxury.lovable.app/sitemap.xml
+
+# Content extraction endpoints for AI agents
+# Static: /content-manifest.json
+# API: /functions/v1/content
