@@ -12,7 +12,7 @@ const Quote = () => {
       >
         {/* Main Quote */}
         <p 
-          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white/90 font-light leading-relaxed tracking-tight"
+          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white opacity-90 font-light leading-relaxed tracking-tight"
           data-en="We don't sell; it's for people who don't need convincing —"
           data-ar="نحن لا نبيع؛ هذا لمن لا يحتاجون إقناعاً —"
         >
@@ -32,15 +32,27 @@ const Quote = () => {
         </motion.p>
         
         <motion.p
-          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white/80 font-light leading-relaxed tracking-tight mt-4"
+          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white opacity-80 font-light leading-relaxed tracking-tight mt-4"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          data-en="They don't compare. They recognize."
-          data-ar="لا يقارنون. يتعرّفون."
+          data-en="They don't compare."
+          data-ar="لا يقارنون."
         >
-          They don't compare. They recognize.
+          They don't compare.
+        </motion.p>
+        
+        <motion.p
+          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white font-light leading-relaxed tracking-tight mt-2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.38, duration: 0.6 }}
+          data-en="They recognize."
+          data-ar="يتعرّفون."
+        >
+          They recognize.
         </motion.p>
         
         <motion.p
@@ -62,15 +74,15 @@ const Quote = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          <span className="w-16 h-px bg-gradient-to-r from-transparent to-champagne/60" />
+          <span className="w-16 h-px bg-gradient-to-r from-transparent to-champagne opacity-60" />
           <span 
-            className="text-champagne/80 text-xs md:text-sm tracking-wide font-body font-light"
+            className="text-champagne opacity-80 text-xs md:text-sm tracking-wide font-body font-light"
             data-en="Since 2022"
             data-ar="منذ ٢٠٢٢"
           >
             Since 2022
           </span>
-          <span className="w-16 h-px bg-gradient-to-l from-transparent to-champagne/60" />
+          <span className="w-16 h-px bg-gradient-to-l from-transparent to-champagne opacity-60" />
         </motion.footer>
       </motion.blockquote>
     </section>
