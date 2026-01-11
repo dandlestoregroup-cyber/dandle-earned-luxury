@@ -10,25 +10,49 @@ const Quote = () => {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Main Quote - Locked */}
+        {/* Main Quote */}
         <p 
-          className="font-headline text-3xl md:text-5xl lg:text-6xl text-warm-white font-light leading-tight tracking-tight"
-          data-en="Dandle doesn't explain."
-          data-ar="داندل لا يشرح."
+          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white/90 font-light leading-relaxed tracking-tight"
+          data-en="We don't sell; it's for people who don't need convincing —"
+          data-ar="نحن لا نبيع؛ هذا لمن لا يحتاجون إقناعاً —"
         >
-          Dandle doesn't explain.
+          We don't sell; it's for people who don't need convincing —
         </p>
         
         <motion.p
-          className="font-headline text-3xl md:text-5xl lg:text-6xl text-dandle-orange font-light leading-tight tracking-tight mt-2"
+          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white font-light leading-relaxed tracking-tight mt-4"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          data-en="Dandle attracts."
-          data-ar="داندل يجذب."
+          transition={{ delay: 0.15, duration: 0.6 }}
+          data-en="people who know what they deserve and choose accordingly."
+          data-ar="أناس يعرفون ما يستحقون ويختارون وفقاً لذلك."
         >
-          Dandle attracts.
+          people who know what they deserve and choose accordingly.
+        </motion.p>
+        
+        <motion.p
+          className="font-headline text-xl md:text-3xl lg:text-4xl text-warm-white/80 font-light leading-relaxed tracking-tight mt-4"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          data-en="They don't compare. They recognize."
+          data-ar="لا يقارنون. يتعرّفون."
+        >
+          They don't compare. They recognize.
+        </motion.p>
+        
+        <motion.p
+          className="font-headline text-2xl md:text-4xl lg:text-5xl text-dandle-orange font-medium leading-tight tracking-tight mt-6"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.45, duration: 0.6 }}
+          data-en="It attracts. No explanation."
+          data-ar="يجذب. بلا تفسير."
+        >
+          It attracts. No explanation.
         </motion.p>
         
         <motion.footer 
