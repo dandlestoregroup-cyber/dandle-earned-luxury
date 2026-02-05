@@ -5,6 +5,10 @@ import "./index.css";
 import "./i18n/config";
 import { initDandleUi } from "./dandle-ui";
 import { initHeroVideoInstantPlay } from "./patches/heroVideoInstantPlay";
+import { registerSW } from "virtual:pwa-register";
+
+// Register service worker
+registerSW({ immediate: true });
 
 initDandleUi();
 initHeroVideoInstantPlay();
