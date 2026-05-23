@@ -14,6 +14,7 @@ import OrderStatus from "./pages/OrderStatus";
 import NotFound from "./pages/NotFound";
 import GenerateImages from "./pages/admin/GenerateImages";
 import AdminLayout from "./components/AdminLayout";
+import NourChatWidget from "./components/nour/NourChatWidget";
 import About from "./pages/trust/About";
 import Warranty from "./pages/trust/Warranty";
 import Delivery from "./pages/trust/Delivery";
@@ -94,6 +95,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <NourChatWidget hideOnRoutes={["/cart", "/order/", "/nour-chat", "/admin"]} />
         </BrowserRouter>
       </TooltipProvider>
     </CartProvider>
