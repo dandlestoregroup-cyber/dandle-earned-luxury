@@ -91,7 +91,7 @@ export const products: Product[] = [
       "Laptop Storage",
     ],
     targetAudience: "Remote workers and executives",
-    imageUrl: "https://picsum.photos/400/300?random=tech",
+    imageUrl: "/images/worknest-blue-front.webp",
   },
   {
     id: "easyup",
@@ -186,6 +186,6 @@ export const products: Product[] = [
       "Full Home Comfort Solution",
     ],
     targetAudience: "Families seeking complete home solutions",
-    imageUrl: "https://picsum.photos/400/300?random=set",
+    imageUrl: "/images/complete-set-classic.jpg",
   },
 ];

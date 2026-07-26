@@ -1,24 +1,24 @@
-// Lovable Catalog - Single Source of Truth for Product Images
+// Dandle Catalog - Single Source of Truth for Product Images
 // This catalog is INDEPENDENT of Shopify and controls all visual rendering
 
-export interface LovableImage {
+export interface DandleImage {
   src: string;        // Import path or asset URL
   width: number;      // Exact pixel width
   height: number;     // Exact pixel height
   alt: string;        // Descriptive alt text
 }
 
-export interface LovableProduct {
+export interface DandleProduct {
   productHandle: string;
   title: string;
   subtitle: string;
-  heroImage: LovableImage;
-  gallery: LovableImage[];
+  heroImage: DandleImage;
+  gallery: DandleImage[];
   aspectRatio: number;  // width/height for perfect containers
 }
 
-// 27 HD Product Images - Lovable as Visual Master
-export const lovableCatalog: LovableProduct[] = [
+// 27 HD Product Images - GitHub as visual master
+export const dandleCatalog: DandleProduct[] = [
   {
     productHandle: "diva",
     title: "Diva Recliner",
@@ -255,11 +255,11 @@ export const lovableCatalog: LovableProduct[] = [
 ];
 
 // Helper: Get product by handle - fail-safe
-export function getLovableProduct(handle: string): LovableProduct | null {
-  return lovableCatalog.find(p => p.productHandle === handle) || null;
+export function getDandleProduct(handle: string): DandleProduct | null {
+  return dandleCatalog.find(p => p.productHandle === handle) || null;
 }
 
 // Helper: Get all product handles for routing
 export function getAllProductHandles(): string[] {
-  return lovableCatalog.map(p => p.productHandle);
+  return dandleCatalog.map(p => p.productHandle);
 }

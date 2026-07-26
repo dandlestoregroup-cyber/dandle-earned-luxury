@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { LovableImage } from "@/catalog/lovableCatalog";
+import { DandleImage } from "@/catalog/dandleCatalog";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProductImageGalleryProps {
-  images: LovableImage[];
+  images: DandleImage[];
   aspectRatio: number;
   altPrefix: string;
 }

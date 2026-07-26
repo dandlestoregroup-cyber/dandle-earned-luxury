@@ -3,9 +3,7 @@ import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
-import { useShopifyCartStore } from "@/stores/shopifyCartStore";
 import { useNavigate } from "react-router-dom";
-import CartDrawer from "@/components/CartDrawer";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +27,7 @@ const Navigation = () => {
     { label: "AR View", href: "#ar-demo" },
     { label: "About", href: "#story" },
     { label: "Contact", href: "#contact" },
-    { label: "Nour AI", href: "/nour-chat", isRoute: true },
+    { label: "Ask Nour", href: "/nour-chat", isRoute: true },
   ];
 
   return (
@@ -70,7 +68,20 @@ const Navigation = () => {
                 </a>
               )
             ))}
-            <CartDrawer />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              onClick={() => navigate("/cart")}
+              aria-label={`Open cart with ${getTotalItems()} items`}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {getTotalItems() > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs text-accent-foreground">
+                  {getTotalItems()}
+                </span>
+              )}
+            </Button>
             <Button variant="hero" size="lg" onClick={() => navigate('/#collection')}>
               Shop Now
             </Button>

@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import CheckoutForm, { CustomerData } from '@/components/CheckoutForm';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const Cart = () => {
@@ -48,36 +47,40 @@ const Cart = () => {
         };
       });
 
-      // Call edge function to create Shopify order
-      const { data, error } = await supabase.functions.invoke('create-order', {
-        body: {
+      // Vercel owns the protected order-intent boundary. It forwards to TakeApp
+      // only after verified server-side bridge credentials are enabled.
+      const response = await fetch('/api/order-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           customer: customerData,
           items: cartItems,
           totalPrice: getTotalPrice(),
-        },
+        }),
       });
+      const data = await response.json();
 
       let orderReference = '';
       let trackingUrl = '';
-      let productLinks: Array<{ name: string; url: string }> = [];
 
-      if (error) {
-        console.error('Error creating order:', error);
+      if (!response.ok) {
+        console.error('Error creating order intent:', data);
         // Generate fallback reference
         orderReference = `DN-${Date.now().toString(36).toUpperCase()}`;
         toast.error('Order sync pending', {
-          description: 'Your order will be processed via WhatsApp.',
+          description: 'Nothing was charged. Continue to WhatsApp for manual confirmation.',
         });
-      } else if (data?.success) {
-        orderReference = data.order.reference;
-        trackingUrl = data.order.trackingUrl;
-        productLinks = data.productLinks || [];
-        toast.success('Order created!', {
+      } else if (data?.synced) {
+        orderReference = data.reference;
+        trackingUrl = data.trackingUrl || '';
+        toast.success('Order synced!', {
           description: `Reference: ${orderReference}`,
         });
       } else {
-        // Use fallback reference from edge function
-        orderReference = data?.fallback?.reference || `DN-${Date.now().toString(36).toUpperCase()}`;
+        orderReference = data?.reference || `DN-${Date.now().toString(36).toUpperCase()}`;
+        toast.info('Manual confirmation required', {
+          description: 'Nothing was charged. Send the prepared order to Dandle on WhatsApp.',
+        });
       }
 
       // Build WhatsApp message with order details and links

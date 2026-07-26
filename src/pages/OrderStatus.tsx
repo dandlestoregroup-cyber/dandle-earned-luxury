@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Package, MessageCircle, ArrowLeft, Clock, CheckCircle2, Truck } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface OrderData {
   reference: string;
@@ -50,12 +49,12 @@ const OrderStatus = () => {
     // In a full implementation, this would query Shopify for the order
     const fetchOrderStatus = async () => {
       try {
-        // Try to get order from edge function
-        const { data, error: fetchError } = await supabase.functions.invoke('get-order-status', {
-          body: { reference }
+        const response = await fetch(`/api/order-status?reference=${encodeURIComponent(reference)}`, {
+          cache: "no-store",
         });
+        const data = await response.json();
 
-        if (fetchError || !data?.success) {
+        if (!response.ok || !data?.success) {
           // Fallback to showing basic order info from reference
           setOrder({
             reference: reference,

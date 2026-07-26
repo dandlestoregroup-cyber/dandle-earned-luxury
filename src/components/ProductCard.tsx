@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Product } from "@/types/product";
-import { getLovableProduct } from "@/catalog/lovableCatalog";
+import { getDandleProduct } from "@/catalog/dandleCatalog";
 import { colorNameToFabricId, getFabricColorById, allFabricColors } from "@/data/fabricColors";
 
 interface ProductCardProps {
@@ -9,9 +9,9 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onClick }: ProductCardProps) => {
-  // Try to load hero image from Lovable catalog (master)
-  const lovableProduct = getLovableProduct(product.id);
-  const heroImage = lovableProduct?.heroImage.src || product.imageUrl;
+  // Try to load hero image from Dandle catalog (master)
+  const dandleProduct = getDandleProduct(product.id);
+  const heroImage = dandleProduct?.heroImage.src || product.imageUrl;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-EG", {
