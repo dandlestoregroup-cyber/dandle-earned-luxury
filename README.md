@@ -1,73 +1,61 @@
-# Welcome to your Lovable project
+# Dandle Earned Luxury
 
-## Project info
+Dandle's customer-facing catalogue, Nour adviser, website order flow, order tracking and operations launchpad.
 
-**URL**: https://lovable.dev/projects/e9672d8a-f84c-4786-ad81-3938214a9d25
+## Architecture
 
-## How can I edit this code?
+- **GitHub** is the source of truth for application code.
+- **Vercel** hosts the Vite site, serverless API boundary and Nour AI Gateway access.
+- **TakeApp** remains the commercial back office for order review, acceptance/amendment, customers, fulfilment and communication.
+- **PayTabs Egypt** is the card-payment provider for accepted/amended orders only.
+- **WhatsApp** is post-order communication/support, not an order-creation path.
+- No Base44, Lovable runtime or client-side Shopify checkout is required.
 
-There are several ways of editing your application.
+## Order truth
 
-**Use Lovable**
+1. Customer submits an order on the Dandle website.
+2. The server validates product configurations and recalculates prices from the server catalogue.
+3. TakeApp receives the order with a Dandle reference and status `SUBMITTED`.
+4. Dandle accepts, amends or rejects the order in the commercial back office.
+5. Only accepted/amended orders may request a PayTabs hosted payment page for the 40% deposit.
+6. PayTabs callback data is re-queried server-side before a payment update is recorded.
+7. The remaining 60% is due on delivery.
+8. Order tracking never fabricates a fallback status when the live status bridge is unavailable.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e9672d8a-f84c-4786-ad81-3938214a9d25) and start prompting.
+## Required production environment
 
-Changes made via Lovable will be committed automatically to this repo.
+```text
+TAKEAPP_ORDER_WEBHOOK_URL=
+TAKEAPP_ORDER_STATUS_URL=
+TAKEAPP_PAYMENT_WEBHOOK_URL=
+TAKEAPP_ORDER_WEBHOOK_TOKEN=
+PAYTABS_PROFILE_ID=
+PAYTABS_SERVER_KEY=
+PUBLIC_SITE_URL=https://<production-domain>
+```
 
-**Use your preferred IDE**
+Nour uses Vercel OIDC in hosted environments, with optional `AI_GATEWAY_API_KEY` for compatible local/server setups.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Local development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The Vite application runs at `http://localhost:8080`. Use `vercel dev` to exercise `/api` functions locally.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Verification
 
-**Use GitHub Codespaces**
+```sh
+npm ci
+npx tsc -p tsconfig.app.json --noEmit
+npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --lib ES2022,DOM --types node api/*.ts api/_lib/*.ts
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The pull request CI runs the same compile/build gates and rejects reintroduced Paymob runtime references.
 
-## What technologies are used for this project?
+## Deployment
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e9672d8a-f84c-4786-ad81-3938214a9d25) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Deploy the reviewed `main` branch to the linked Vercel project. Payment must remain visibly unavailable until all PayTabs and TakeApp payment-recording environment values above are configured and `/api/integration-health` reports `paytabs_enabled: true`.

@@ -1,0 +1,8 @@
+upload
+dandle-assets-source
+node_modules
+.git
+.env
+.env.*
+supabase
+README.md

@@ -1,0 +1,47 @@
+name: Dandle CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, agent/dandle-nour-vercel]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck app
+        run: npx tsc -p tsconfig.app.json --noEmit
+
+      - name: Typecheck Vercel APIs
+        run: npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --lib ES2022,DOM --types node api/*.ts api/_lib/*.ts
+
+      - name: Build
+        run: npm run build
+
+      - name: Architecture guardrails
+        shell: bash
+        run: |
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'Paymob|paymob_enabled|egypt\.onboarding\.paymob\.com' api src; then
+            echo "Stale Paymob runtime/reference found. Dandle payment architecture is PayTabs."
+            exit 1
+          fi
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'source: "manual-confirmation"|createdAt: new Date\(\)\.toISOString\(\).*totalPrice: "0"' api src/pages/OrderStatus.tsx; then
+            echo "Fabricated order fallback detected."
+            exit 1
+          fi

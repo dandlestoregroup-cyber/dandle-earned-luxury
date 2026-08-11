@@ -26,175 +26,175 @@ serve(async (req) => {
         "id": "diva-hero",
         "product": "Diva",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/diva-red-front.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/diva-red-front.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "relaxmax-hero",
         "product": "RelaxMax",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/relaxmax-hero-offwhite.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/relaxmax-hero-offwhite.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "relaxmax-day",
         "product": "RelaxMax",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/relaxmax-lifestyle-day.png",
+        "source_url": "https://dandle-comfort.vercel.app/images/relaxmax-lifestyle-day.png",
         "target_resolution": "2752x1536"
       },
       {
         "id": "relaxmax-night",
         "product": "RelaxMax",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/relaxmax-lifestyle-night.png",
+        "source_url": "https://dandle-comfort.vercel.app/images/relaxmax-lifestyle-night.png",
         "target_resolution": "2752x1536"
       },
       {
         "id": "relaxmax-brown",
         "product": "RelaxMax",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/relaxmax-brown-lifestyle.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/relaxmax-brown-lifestyle.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "cozy-hero",
         "product": "CozyCompanion",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/cozycompanion-beige-front.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/cozycompanion-beige-front.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "cozy-yellow",
         "product": "CozyCompanion",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/cozycompanion-yellow-front.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/cozycompanion-yellow-front.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "cozy-lifestyle",
         "product": "CozyCompanion",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/cozycompanion-couple-lifestyle.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/cozycompanion-couple-lifestyle.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "worknest-hero",
         "product": "WorkNest",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/worknest-blue-front.webp",
+        "source_url": "https://dandle-comfort.vercel.app/images/worknest-blue-front.webp",
         "target_resolution": "2752x1536"
       },
       {
         "id": "spacesaver-hero",
         "product": "SpaceSaver",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/spacesaver-red-front.webp",
+        "source_url": "https://dandle-comfort.vercel.app/images/spacesaver-red-front.webp",
         "target_resolution": "2752x1536"
       },
       {
         "id": "spacesaver-reclined",
         "product": "SpaceSaver",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/spacesaver-offwhite-reclined.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/spacesaver-offwhite-reclined.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "spacesaver-side",
         "product": "SpaceSaver",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/spacesaver-offwhite-side.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/spacesaver-offwhite-side.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "comfortplus-hero",
         "product": "ComfortPlus",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/comfortplus-tan-front.webp",
+        "source_url": "https://dandle-comfort.vercel.app/images/comfortplus-tan-front.webp",
         "target_resolution": "2752x1536"
       },
       {
         "id": "easyup-hero",
         "product": "EasyUp Standard",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/easyup-standard-grey-front.webp",
+        "source_url": "https://dandle-comfort.vercel.app/images/easyup-standard-grey-front.webp",
         "target_resolution": "2752x1536"
       },
       {
         "id": "easyup-beige",
         "product": "EasyUp Standard",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/easyup-beige-front.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/easyup-beige-front.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "easyup-lifted",
         "product": "EasyUp Standard",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/easyup-beige-lifted.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/easyup-beige-lifted.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "easyup-compact-hero",
         "product": "EasyUp Compact",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/easyup-compact-grey-front.webp",
+        "source_url": "https://dandle-comfort.vercel.app/images/easyup-compact-grey-front.webp",
         "target_resolution": "2752x1536"
       },
       {
         "id": "easyup-compact-front",
         "product": "EasyUp Compact",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/easyup-compact-charcoal-front.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/easyup-compact-charcoal-front.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "easyup-compact-reclined",
         "product": "EasyUp Compact",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/easyup-compact-charcoal-reclined.png",
+        "source_url": "https://dandle-comfort.vercel.app/images/easyup-compact-charcoal-reclined.png",
         "target_resolution": "2752x1536"
       },
       {
         "id": "easyup-compact-side",
         "product": "EasyUp Compact",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/easyup-compact-charcoal-side.png",
+        "source_url": "https://dandle-comfort.vercel.app/images/easyup-compact-charcoal-side.png",
         "target_resolution": "2752x1536"
       },
       {
         "id": "complete-set-hero",
         "product": "Complete Set",
         "placement": "hero",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/complete-set-classic.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/complete-set-classic.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "complete-set-coastal",
         "product": "Complete Set",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/complete-set-coastal-modern.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/complete-set-coastal-modern.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "complete-set-family",
         "product": "Complete Set",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/complete-set-family-modern.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/complete-set-family-modern.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "complete-set-fireplace",
         "product": "Complete Set",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/complete-set-modern-fireplace.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/complete-set-modern-fireplace.jpg",
         "target_resolution": "2752x1536"
       },
       {
         "id": "complete-set-sunset",
         "product": "Complete Set",
         "placement": "gallery",
-        "source_url": "https://dandle-earned-luxury.lovable.app/images/complete-set-sunset-fireplace.jpg",
+        "source_url": "https://dandle-comfort.vercel.app/images/complete-set-sunset-fireplace.jpg",
         "target_resolution": "2752x1536"
       }
     ]

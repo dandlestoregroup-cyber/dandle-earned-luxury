@@ -9,7 +9,7 @@ import { Product } from "@/types/product";
 import { useCart } from "@/contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Gift, Trophy, Zap } from "lucide-react";
-import { getLovableProduct } from "@/catalog/lovableCatalog";
+import { getDandleProduct } from "@/catalog/dandleCatalog";
 import { ProductImageGallery } from "@/components/product/ProductImageGallery";
 import { ColorFabricSelector } from "@/components/ColorFabricSelector";
 import { colorNameToFabricId, getFabricColorById, allFabricColors } from "@/data/fabricColors";
@@ -20,16 +20,16 @@ interface ProductModalProps {
   onClose: () => void;
 }
 
-const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
-  // Get available fabric IDs for this product
-  const getAvailableFabricIds = (productColors: string[] = []): string[] => {
-    // Map product color names to fabric IDs, or use all fabrics if no specific colors
-    if (productColors.length === 0 || productColors[0] === "Coordinated Styles") {
-      return allFabricColors.map(f => f.id);
-    }
-    return productColors.map(colorName => colorNameToFabricId[colorName] || 'alexandria-linen');
-  };
+const getAvailableFabricIds = (productColors: string[] = []): string[] => {
+  if (productColors.length === 0 || productColors[0] === "Coordinated Styles") {
+    return allFabricColors.map((fabric) => fabric.id);
+  }
+  return productColors.map(
+    (colorName) => colorNameToFabricId[colorName] || "alexandria-linen",
+  );
+};
 
+const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
   const availableFabricIds = getAvailableFabricIds(product?.colors);
   const [selectedFabricId, setSelectedFabricId] = useState(availableFabricIds[0] || "alexandria-linen");
   const [mechanism, setMechanism] = useState<"manual" | "power">("manual");
@@ -41,7 +41,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
       const newAvailableFabricIds = getAvailableFabricIds(product.colors);
       setSelectedFabricId(newAvailableFabricIds[0] || "alexandria-linen");
     }
-  }, [product?.id]);
+  }, [product]);
   
   // Add-ons state
   const [giftWrap, setGiftWrap] = useState(false);
@@ -106,12 +106,12 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
   if (!product) return null;
 
-  // Load gallery from Lovable catalog if available
-  const lovableProduct = getLovableProduct(product.id);
-  const gallery = lovableProduct?.gallery.length
-    ? lovableProduct.gallery
-    : lovableProduct?.heroImage
-    ? [lovableProduct.heroImage]
+  // Load gallery from Dandle catalog if available
+  const dandleProduct = getDandleProduct(product.id);
+  const gallery = dandleProduct?.gallery.length
+    ? dandleProduct.gallery
+    : dandleProduct?.heroImage
+    ? [dandleProduct.heroImage]
     : [];
   const hasGallery = gallery.length > 0;
 
@@ -207,7 +207,9 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
 
               <RadioGroup value={baseType} onValueChange={(value: string) => {
                 playClickSound();
-                setBaseType(value as any);
+                if (value === "fixed" || value === "swivel" || value === "swivel360") {
+                  setBaseType(value);
+                }
               }} className="space-y-2">
                 <label
                   className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all duration-300 active:scale-95 ${

@@ -12,8 +12,6 @@ import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
 import NotFound from "./pages/NotFound";
-import GenerateImages from "./pages/admin/GenerateImages";
-import AdminLayout from "./components/AdminLayout";
 import About from "./pages/trust/About";
 import Warranty from "./pages/trust/Warranty";
 import Delivery from "./pages/trust/Delivery";
@@ -22,6 +20,7 @@ import Payment from "./pages/trust/Payment";
 import Installation from "./pages/trust/Installation";
 import Returns from "./pages/trust/Returns";
 import Contact from "./pages/trust/Contact";
+import BackOfficeHub from "./pages/BackOfficeHub";
 
 const queryClient = new QueryClient();
 
@@ -82,7 +81,7 @@ const App = () => (
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
-            <Route path="/admin/generate-images" element={<AdminLayout><GenerateImages /></AdminLayout>} />
+            <Route path="/backoffice" element={<BackOfficeHub />} />
             <Route path="/about" element={<About />} />
             <Route path="/warranty" element={<Warranty />} />
             <Route path="/delivery" element={<Delivery />} />
