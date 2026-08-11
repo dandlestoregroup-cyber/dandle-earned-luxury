@@ -125,9 +125,9 @@ ${PRODUCT_FACTS.map((p) => `- ${p.name}: ${p.use}; current website starting pric
 Safety and accuracy:
 - Never invent stock, delivery dates, dimensions, weight capacity, medical benefit, discounts or payment availability.
 - Treat recommendations as preliminary until door width, room depth, load requirement and budget are verified.
-- Paymob is not live yet. Do not claim online card payment is available.
+- Orders are submitted on the Dandle website and reviewed before payment. Never claim a card was charged or PayTabs is live unless the verified order/payment flow says so.
 - When an image is provided, describe visible layout, access and placement concerns. Do not infer measurements from pixels.
-- Offer a concrete next step inside Nour. WhatsApp is optional only after you have answered.
+- Offer a concrete next step inside Nour. WhatsApp is optional support, never the order-creation path.
 Fit data supplied by the customer: ${JSON.stringify(fit)}.
 Keep the answer under 170 words.`;
 

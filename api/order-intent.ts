@@ -1,3 +1,5 @@
+import { getVerifiedUnitPrice } from "./_lib/catalog";
+
 type OrderIntentBody = {
   customer?: {
     name?: string;
@@ -15,21 +17,19 @@ type OrderIntentBody = {
     color?: string;
     mechanism?: string;
     quantity?: number;
-    price?: number;
     massageFeature?: boolean;
     handle?: string;
   }>;
-  totalPrice?: number;
 };
 
 const clean = (value: unknown, max = 300) =>
   typeof value === "string" ? value.trim().slice(0, max) : "";
 
 function makeReference() {
-  return `DN-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID()
-    .slice(0, 4)
-    .toUpperCase()}`;
+  return `DN-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
 }
+
+const roundMoney = (value: number) => Math.round(value * 100) / 100;
 
 export default async function handler(request: Request) {
   if (request.method !== "POST") {
@@ -47,45 +47,65 @@ export default async function handler(request: Request) {
       governorate: clean(body.customer?.governorate, 100),
       notes: clean(body.customer?.notes, 800),
     };
-    const items = (Array.isArray(body.items) ? body.items : []).slice(0, 20).map((item) => ({
-      productId: clean(item.productId, 80),
-      productName: clean(item.productName, 160),
-      variantTitle: clean(item.variantTitle, 160),
-      color: clean(item.color, 80),
-      mechanism: clean(item.mechanism, 80),
-      quantity: Math.max(1, Math.min(20, Number(item.quantity) || 1)),
-      price: Math.max(0, Number(item.price) || 0),
-      massageFeature: Boolean(item.massageFeature),
-      handle: clean(item.handle, 100),
-    }));
 
-    if (!customer.name || !customer.phone || !customer.address || items.length === 0) {
-      return Response.json({ error: "Missing required order details" }, { status: 400 });
+    if (!customer.name || !customer.phone || !customer.address || !customer.city || !customer.governorate) {
+      return Response.json({ error: "Missing required order details", charged: false }, { status: 400 });
     }
 
+    const rawItems = Array.isArray(body.items) ? body.items.slice(0, 20) : [];
+    if (rawItems.length === 0) {
+      return Response.json({ error: "Cart is empty", charged: false }, { status: 400 });
+    }
+
+    let items;
+    try {
+      items = rawItems.map((item) => {
+        const productId = clean(item.productId, 80).toLowerCase();
+        const mechanism = clean(item.mechanism, 20).toLowerCase();
+        const quantity = Math.max(1, Math.min(20, Math.trunc(Number(item.quantity) || 1)));
+        const massageFeature = Boolean(item.massageFeature);
+        return {
+          productId,
+          productName: clean(item.productName, 160),
+          variantTitle: clean(item.variantTitle, 160),
+          color: clean(item.color, 80),
+          mechanism,
+          quantity,
+          price: getVerifiedUnitPrice(productId, mechanism, massageFeature),
+          massageFeature,
+          handle: clean(item.handle, 100),
+        };
+      });
+    } catch (error) {
+      console.error("Rejected invalid cart", error);
+      return Response.json(
+        { error: "Cart contains an unsupported product configuration", charged: false },
+        { status: 400 },
+      );
+    }
+
+    const totalPrice = roundMoney(items.reduce((sum, item) => sum + item.price * item.quantity, 0));
     const reference = makeReference();
     const intent = {
       reference,
       customer,
       items,
-      totalPrice: Math.max(0, Number(body.totalPrice) || 0),
+      totalPrice,
+      depositAmount: roundMoney(totalPrice * 0.4),
+      balanceOnDelivery: roundMoney(totalPrice * 0.6),
       currency: "EGP",
       source: "dandle-vercel",
+      status: "SUBMITTED",
+      paymentProvider: "PayTabs",
       createdAt: new Date().toISOString(),
     };
 
-    const webhookUrl = process.env.TAKEAPP_ORDER_WEBHOOK_URL;
-    const webhookToken = process.env.TAKEAPP_ORDER_WEBHOOK_TOKEN;
-
+    const webhookUrl = process.env.TAKEAPP_ORDER_WEBHOOK_URL?.trim();
+    const webhookToken = process.env.TAKEAPP_ORDER_WEBHOOK_TOKEN?.trim();
     if (!webhookUrl || !webhookToken) {
       return Response.json(
-        {
-          reference,
-          synced: false,
-          status: "MANUAL_CONFIRMATION_REQUIRED",
-          charged: false,
-        },
-        { status: 202, headers: { "Cache-Control": "no-store" } },
+        { error: "Order service is not connected", synced: false, charged: false },
+        { status: 503, headers: { "Cache-Control": "no-store" } },
       );
     }
 
@@ -97,19 +117,26 @@ export default async function handler(request: Request) {
       },
       body: JSON.stringify(intent),
     });
-
-    if (!response.ok) {
-      throw new Error(`TakeApp bridge returned ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`TakeApp bridge returned ${response.status}`);
 
     return Response.json(
-      { reference, synced: true, status: "PENDING", charged: false },
+      {
+        reference,
+        synced: true,
+        status: "SUBMITTED",
+        charged: false,
+        totalPrice,
+        depositAmount: roundMoney(totalPrice * 0.4),
+        balanceOnDelivery: roundMoney(totalPrice * 0.6),
+        currency: "EGP",
+        next: "ADMIN_REVIEW",
+      },
       { status: 201, headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
     console.error("Order intent failed", error);
     return Response.json(
-      { error: "Order sync unavailable", charged: false },
+      { error: "Order service is temporarily unavailable", synced: false, charged: false },
       { status: 503, headers: { "Cache-Control": "no-store" } },
     );
   }

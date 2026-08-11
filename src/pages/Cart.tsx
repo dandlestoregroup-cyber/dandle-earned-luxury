@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useCart } from '@/contexts/CartContext';
-import { Button } from '@/components/ui/button';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
-import CheckoutForm, { CustomerData } from '@/components/CheckoutForm';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
+import { Button } from "@/components/ui/button";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import CheckoutForm, { CustomerData } from "@/components/CheckoutForm";
+import { toast } from "sonner";
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
@@ -14,145 +14,47 @@ const Cart = () => {
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const formatPrice = (num: number) => `${num.toLocaleString('en-US')} EGP`;
-
-  const handleCheckoutClick = () => {
-    setShowCheckoutForm(true);
-  };
+  const formatPrice = (num: number) => `${num.toLocaleString("en-US")} EGP`;
 
   const handleFormSubmit = async (customerData: CustomerData) => {
     setIsProcessing(true);
-
     try {
-      // Prepare cart items for the edge function
-      const cartItems = items.map(item => {
-        let price = item.mechanism === 'power' 
-          ? (item.product.pricePower || item.product.price || 0)
-          : (item.product.priceManual || item.product.price || 0);
-        
-        if (item.massageFeature) {
-          price += 9000;
-        }
+      const cartItems = items.map((item) => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        variantTitle: `${item.selectedColor}, ${item.mechanism}`,
+        color: item.selectedColor,
+        mechanism: item.mechanism,
+        quantity: item.quantity,
+        massageFeature: Boolean(item.massageFeature),
+        handle: item.product.id.toLowerCase().replace(/\s+/g, "-"),
+      }));
 
-        return {
-          productId: item.product.id,
-          productName: item.product.name,
-          variantTitle: `${item.selectedColor}, ${item.mechanism}`,
-          color: item.selectedColor,
-          mechanism: item.mechanism,
-          quantity: item.quantity,
-          price,
-          massageFeature: item.massageFeature,
-          handle: item.product.id.toLowerCase().replace(/\s+/g, '-'),
-        };
+      const response = await fetch("/api/order-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customer: customerData, items: cartItems }),
       });
+      const data = await response.json().catch(() => ({}));
 
-      // Vercel owns the protected order-intent boundary. It forwards to TakeApp
-      // only after verified server-side bridge credentials are enabled.
-      const response = await fetch('/api/order-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customer: customerData,
-          items: cartItems,
-          totalPrice: getTotalPrice(),
-        }),
-      });
-      const data = await response.json();
-
-      let orderReference = '';
-      let trackingUrl = '';
-
-      if (!response.ok) {
-        console.error('Error creating order intent:', data);
-        // Generate fallback reference
-        orderReference = `DN-${Date.now().toString(36).toUpperCase()}`;
-        toast.error('Order sync pending', {
-          description: 'Nothing was charged. Continue to WhatsApp for manual confirmation.',
+      if (!response.ok || !data?.synced || !data?.reference) {
+        console.error("Order submission failed", data);
+        toast.error("Order was not submitted", {
+          description: "Your cart is still here. Please try again after the order service is available.",
         });
-      } else if (data?.synced) {
-        orderReference = data.reference;
-        trackingUrl = data.trackingUrl || '';
-        toast.success('Order synced!', {
-          description: `Reference: ${orderReference}`,
-        });
-      } else {
-        orderReference = data?.reference || `DN-${Date.now().toString(36).toUpperCase()}`;
-        toast.info('Manual confirmation required', {
-          description: 'Nothing was charged. Send the prepared order to Dandle on WhatsApp.',
-        });
+        return;
       }
 
-      // Build WhatsApp message with order details and links
-      const orderDetails = items.map(item => {
-        let price = item.mechanism === 'power' 
-          ? (item.product.pricePower || item.product.price || 0)
-          : (item.product.priceManual || item.product.price || 0);
-        
-        if (item.massageFeature) {
-          price += 9000;
-        }
-        
-        const massageText = item.massageFeature ? ' + Massage' : '';
-        const handle = item.product.id.toLowerCase().replace(/\s+/g, '-');
-        return `• ${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText})%0A  ${formatPrice(price * item.quantity)}%0A  🔗 dandle.eg/product/${handle}`;
-      }).join('%0A%0A');
-
-      const total = formatPrice(getTotalPrice());
-      
-      // Build enhanced WhatsApp message
-      const message = `🛍️ *New Order ${orderReference}*%0A%0A` +
-        `👤 *Customer:* ${customerData.name}%0A` +
-        `📱 ${customerData.phone}%0A` +
-        `${customerData.email ? `📧 ${customerData.email}%0A` : ''}%0A` +
-        `📍 *Delivery Address:*%0A` +
-        `${customerData.address}%0A` +
-        `${customerData.city}, ${customerData.governorate}%0A%0A` +
-        `${customerData.notes ? `📝 *Notes:* ${customerData.notes}%0A%0A` : ''}` +
-        `📦 *Order Items:*%0A${orderDetails}%0A%0A` +
-        `💰 *Total: ${total}*%0A%0A` +
-        `${trackingUrl ? `🔗 Track Order: ${trackingUrl}` : ''}`;
-      
-      window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
       clearCart();
-      navigate('/');
-      
-    } catch (err) {
-      console.error('Checkout error:', err);
-      
-      // Fallback to original WhatsApp flow
-      const orderDetails = items.map(item => {
-        let price = item.mechanism === 'power' 
-          ? (item.product.pricePower || item.product.price || 0)
-          : (item.product.priceManual || item.product.price || 0);
-        
-        if (item.massageFeature) {
-          price += 9000;
-        }
-        
-        const massageText = item.massageFeature ? ' + Massage Feature' : '';
-        return `${item.quantity}x ${item.product.name} (${item.selectedColor}, ${item.mechanism}${massageText}) - ${formatPrice(price * item.quantity)}`;
-      }).join('%0A');
-
-      const total = formatPrice(getTotalPrice());
-      
-      const customerInfo = `
-*Customer Details:*
-Name: ${customerData.name}
-Phone: ${customerData.phone}
-${customerData.email ? `Email: ${customerData.email}` : ''}
-
-*Delivery Address:*
-${customerData.address}
-${customerData.city}, ${customerData.governorate}
-
-${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
-
-      const message = `Hello! I'd like to place an order:%0A%0A${customerInfo}%0A*Order Details:*%0A${orderDetails}%0A%0A*Total: ${total}*`;
-      
-      window.open(`https://wa.me/201222804255?text=${message}`, '_blank');
-      clearCart();
-      navigate('/');
+      toast.success("Order submitted for review", {
+        description: `Reference: ${data.reference}. No card was charged.`,
+      });
+      navigate(`/order/${encodeURIComponent(data.reference)}`);
+    } catch (error) {
+      console.error("Checkout error", error);
+      toast.error("Order was not submitted", {
+        description: "Your cart is still here. Nothing was charged.",
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -166,12 +68,8 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
           <div className="text-center max-w-md mx-auto">
             <ShoppingBag className="w-24 h-24 mx-auto mb-6 text-muted-foreground" />
             <h1 className="text-4xl font-bold mb-4">Your Cart is Empty</h1>
-            <p className="text-muted-foreground mb-8">
-              Start adding luxury recliners to your collection
-            </p>
-            <Button onClick={() => navigate('/')} variant="luxury" size="lg">
-              Explore Collection
-            </Button>
+            <p className="text-muted-foreground mb-8">Start adding Dandle comfort to your collection.</p>
+            <Button onClick={() => navigate("/")} variant="luxury" size="lg">Explore Collection</Button>
           </div>
         </main>
         <Footer />
@@ -185,146 +83,81 @@ ${customerData.notes ? `*Notes:* ${customerData.notes}%0A%0A` : ''}`;
       <main className="flex-1 container mx-auto px-4 py-32">
         {showCheckoutForm ? (
           <div className="max-w-2xl mx-auto">
-            <Button
-              variant="ghost"
-              onClick={() => setShowCheckoutForm(false)}
-              className="mb-6"
-              disabled={isProcessing}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Cart
+            <Button variant="ghost" onClick={() => setShowCheckoutForm(false)} className="mb-6" disabled={isProcessing}>
+              <ArrowLeft className="w-4 h-4 mr-2" />Back to Cart
             </Button>
-            <CheckoutForm
-              onSubmit={handleFormSubmit}
-              onCancel={() => setShowCheckoutForm(false)}
-              isProcessing={isProcessing}
-            />
+            <CheckoutForm onSubmit={handleFormSubmit} onCancel={() => setShowCheckoutForm(false)} isProcessing={isProcessing} />
           </div>
         ) : (
           <>
             <h1 className="text-5xl font-bold mb-12">Your Cart</h1>
-            
             <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
-            {items.map((item, index) => {
-              const price = item.mechanism === 'power' 
-                ? (item.product.pricePower || item.product.price || 0)
-                : (item.product.priceManual || item.product.price || 0);
-              
-              return (
-                <div key={`${item.product.id}-${item.selectedColor}-${item.mechanism}-${index}`} 
-                     className="bg-card p-6 rounded-lg flex gap-6">
-                  <img 
-                    src={item.product.imageUrl} 
-                    alt={item.product.name}
-                    className="w-32 h-32 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2">{item.product.name}</h3>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Color: {item.selectedColor}
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Mechanism: {item.mechanism}
-                    </p>
-                    {item.massageFeature && (
-                      <p className="text-sm text-accent font-semibold mb-2">
-                        ✨ Massage Feature Included
-                      </p>
-                    )}
-                    <p className="text-lg font-semibold text-accent">
-                      {formatPrice(item.massageFeature ? price + 9000 : price)}
-                    </p>
-                  </div>
-                  <div className="flex flex-col justify-between items-end">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(item.product.id, item.selectedColor, item.mechanism)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                    <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.product.id, item.selectedColor, item.mechanism, item.quantity - 1)}
-                      >
-                        <Minus className="w-4 h-4" />
-                      </Button>
-                      <span className="w-8 text-center font-semibold">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.product.id, item.selectedColor, item.mechanism, item.quantity + 1)}
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
+              <div className="lg:col-span-2 space-y-4">
+                {items.map((item, index) => {
+                  const basePrice = item.mechanism === "power"
+                    ? item.product.pricePower || item.product.price || 0
+                    : item.product.priceManual || item.product.price || 0;
+                  const unitPrice = item.massageFeature ? basePrice + 9000 : basePrice;
+                  return (
+                    <div key={`${item.product.id}-${item.selectedColor}-${item.mechanism}-${index}`} className="bg-card p-6 rounded-lg flex gap-6">
+                      <img src={item.product.imageUrl} alt={item.product.name} className="w-32 h-32 object-cover rounded-lg" />
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold mb-2">{item.product.name}</h3>
+                        <p className="text-sm text-muted-foreground mb-2">Color: {item.selectedColor}</p>
+                        <p className="text-sm text-muted-foreground mb-2">Mechanism: {item.mechanism}</p>
+                        {item.massageFeature && <p className="text-sm text-accent font-semibold mb-2">Massage feature +9,000 EGP</p>}
+                        <p className="text-lg font-semibold text-accent">{formatPrice(unitPrice)}</p>
+                      </div>
+                      <div className="flex flex-col justify-between items-end">
+                        <Button variant="ghost" size="icon" onClick={() => removeItem(item.product.id, item.selectedColor, item.mechanism)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                        <div className="flex items-center gap-3">
+                          <Button variant="outline" size="icon" onClick={() => updateQuantity(item.product.id, item.selectedColor, item.mechanism, item.quantity - 1)}>
+                            <Minus className="w-4 h-4" />
+                          </Button>
+                          <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                          <Button variant="outline" size="icon" onClick={() => updateQuantity(item.product.id, item.selectedColor, item.mechanism, item.quantity + 1)}>
+                            <Plus className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="lg:col-span-1">
+                <div className="bg-card p-6 rounded-lg sticky top-24">
+                  <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Items ({items.reduce((sum, item) => sum + item.quantity, 0)})</span>
+                      <span>{formatPrice(getTotalPrice())}</span>
+                    </div>
+                    <div className="border-t border-border pt-3">
+                      <div className="flex justify-between text-xl font-bold">
+                        <span>Total</span><span className="text-accent">{formatPrice(getTotalPrice())}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
 
-          <div className="lg:col-span-1">
-            <div className="bg-card p-6 rounded-lg sticky top-24">
-              <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-muted-foreground">
-                  <span>Items ({items.reduce((sum, item) => sum + item.quantity, 0)})</span>
-                  <span>{formatPrice(getTotalPrice())}</span>
-                </div>
-                <div className="border-t border-border pt-3">
-                  <div className="flex justify-between text-xl font-bold">
-                    <span>Total</span>
-                    <span className="text-accent">{formatPrice(getTotalPrice())}</span>
+                  <div className="bg-muted/50 rounded-lg p-4 mb-6 border border-bronze/10">
+                    <h3 className="font-headline text-sm font-semibold mb-3 text-foreground">How the order works</h3>
+                    <ul className="space-y-2 text-sm text-foreground/80">
+                      <li>✓ Submit your order here on Dandle</li>
+                      <li>✓ Dandle reviews, accepts or amends it</li>
+                      <li>✓ Accepted orders unlock the 40% PayTabs deposit</li>
+                      <li>✓ Remaining 60% is due on delivery</li>
+                      <li>✓ Track the same order reference throughout</li>
+                    </ul>
                   </div>
+
+                  <Button onClick={() => setShowCheckoutForm(true)} variant="luxury" size="lg" className="w-full mb-3">Continue to Order Details</Button>
+                  <Button onClick={clearCart} variant="outline" size="lg" className="w-full">Clear Cart</Button>
                 </div>
               </div>
-              
-              {/* Trust Box */}
-              <div className="bg-muted/50 rounded-lg p-4 mb-6 border border-bronze/10">
-                <h3 className="font-headline text-sm font-semibold mb-3 text-foreground">Why Shop With Us</h3>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2 text-foreground/80">
-                    <span className="text-green-600">✓</span>
-                    40% deposit, 60% on delivery
-                  </li>
-                  <li className="flex items-center gap-2 text-foreground/80">
-                    <span className="text-green-600">✓</span>
-                    2-5 year warranty included
-                  </li>
-                  <li className="flex items-center gap-2 text-foreground/80">
-                    <span className="text-green-600">✓</span>
-                    Free delivery scheduling
-                  </li>
-                  <li className="flex items-center gap-2 text-foreground/80">
-                    <span className="text-green-600">✓</span>
-                    WhatsApp support 7 days/week
-                  </li>
-                </ul>
-              </div>
-
-              <Button 
-                onClick={handleCheckoutClick} 
-                variant="luxury" 
-                size="lg" 
-                className="w-full mb-3"
-              >
-                Proceed to Checkout
-              </Button>
-              <Button 
-                onClick={clearCart} 
-                variant="outline" 
-                size="lg" 
-                className="w-full"
-              >
-                Clear Cart
-              </Button>
             </div>
-          </div>
-        </div>
           </>
         )}
       </main>
