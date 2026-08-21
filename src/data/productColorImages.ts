@@ -12,17 +12,11 @@ export type ColorVariant = {
 // Product-specific color variants with actual images
 export const productColorImages: Record<string, ColorVariant[]> = {
   'relaxmax': [
-    { swatchKey: 'alexandria-linen', imageSrc: '/images/relaxmax-hero-offwhite.jpg' },
-    { swatchKey: 'mocha-taupe', imageSrc: '/images/relaxmax-brown-lifestyle.jpg' },
     { swatchKey: 'nile-sapphire', imageSrc: '/images/dandle-relaxmax-flagship.webp' },
     { swatchKey: 'desert-grey', imageSrc: '/images/dandle-relaxmax.jpg' },
-    { swatchKey: 'coastal-fog', imageSrc: '/images/relaxmax-lifestyle-day.png' },
   ],
   'diva': [
     { swatchKey: 'nile-mist', imageSrc: '/images/diva-terracotta-reclined.webp' },
-    { swatchKey: 'desert-sage', imageSrc: '/images/diva-desert-sage-green.webp' },
-    { swatchKey: 'giza-gold', imageSrc: '/images/diva-giza-gold.webp' },
-    { swatchKey: 'oasis-green', imageSrc: '/images/diva-oasis-green.webp' },
     { swatchKey: 'nile-sapphire', imageSrc: '/images/dandle-diva.jpg' },
   ],
   'cozycompanion': [
