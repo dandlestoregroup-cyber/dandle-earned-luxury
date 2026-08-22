@@ -1,7 +1,28 @@
 import assert from "node:assert/strict";
+import { readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import test from "node:test";
-import paymentIntentHandler from "../api/payment-intent.ts";
-import instapayIntentHandler from "../api/instapay-intent.ts";
+
+async function loadVercelHandler(sourceName, tempName) {
+  const sourceUrl = new URL(`../api/${sourceName}.ts`, import.meta.url);
+  const tempUrl = new URL(`../api/${tempName}.ts`, import.meta.url);
+  const source = readFileSync(sourceUrl, "utf8").replace(
+    'from "./_lib/payment";',
+    'from "./_lib/payment.ts";',
+  );
+  writeFileSync(tempUrl, source, "utf8");
+  try {
+    const module = await import(`${tempUrl.href}?payment-flow-test=${Date.now()}`);
+    return module.default;
+  } finally {
+    unlinkSync(tempUrl);
+  }
+}
+
+// Vercel/TypeScript resolves extensionless imports, while Node's native TS
+// loader intentionally does not. Create disposable test copies with only that
+// import made explicit so the actual handler bodies execute in these tests.
+const paymentIntentHandler = await loadVercelHandler("payment-intent", ".payment-intent.test-loader");
+const instapayIntentHandler = await loadVercelHandler("instapay-intent", ".instapay-intent.test-loader");
 
 const KEYS = [
   "TAKEAPP_ORDER_STATUS_URL",
