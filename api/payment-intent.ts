@@ -1,13 +1,32 @@
-const payableStatuses = new Set(["ACCEPTED", "AMENDED", "INVOICE_READY", "AWAITING_PAYMENT"]);
-const referencePattern = /^DN-[A-Z0-9-]{4,48}$/;
-const roundMoney = (value: number) => Math.round(value * 100) / 100;
-
-const clean = (value: unknown, max = 300) =>
-  typeof value === "string" ? value.trim().slice(0, max) : "";
+import {
+  PAYABLE_ORDER_STATUSES,
+  clean,
+  expectedDepositAmount,
+  getInstapayConfig,
+  isSettledPayment,
+  isUncertainPayment,
+  normalizedOrderStatus,
+  normalizedPaymentStatus,
+  referencePattern,
+  unwrapOrder,
+} from "./_lib/payment";
 
 function getOrigin(request: Request) {
   const configured = process.env.PUBLIC_SITE_URL?.trim();
   return (configured || new URL(request.url).origin).replace(/\/$/, "");
+}
+
+async function recordPaymentState(
+  paymentWebhook: string,
+  token: string,
+  payload: Record<string, unknown>,
+) {
+  const response = await fetch(paymentWebhook, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error(`Payment recording webhook returned ${response.status}`);
 }
 
 export default async function handler(request: Request) {
@@ -20,8 +39,13 @@ export default async function handler(request: Request) {
   const statusUrl = process.env.TAKEAPP_ORDER_STATUS_URL?.trim();
   const statusToken = process.env.TAKEAPP_ORDER_WEBHOOK_TOKEN?.trim();
   const paymentWebhook = process.env.TAKEAPP_PAYMENT_WEBHOOK_URL?.trim();
-  if (!profileId || !serverKey || !statusUrl || !statusToken || !paymentWebhook) {
-    return Response.json({ error: "Online payment is not ready", paymentAvailable: false }, { status: 503 });
+  const instapayReady = Boolean(getInstapayConfig());
+
+  if (!statusUrl || !statusToken || !paymentWebhook) {
+    return Response.json(
+      { error: "Payment service is not connected", paymentAvailable: false, fallbackAvailable: false },
+      { status: 503 },
+    );
   }
 
   let reference = "";
@@ -44,27 +68,58 @@ export default async function handler(request: Request) {
       },
     );
     if (!upstream.ok) throw new Error(`TakeApp status bridge returned ${upstream.status}`);
-    const payload = await upstream.json();
-    const order = payload?.order && typeof payload.order === "object" ? payload.order : payload;
-    const status = clean(order?.status, 40).toUpperCase();
-    if (!payableStatuses.has(status)) {
+    const order = unwrapOrder(await upstream.json());
+    const status = normalizedOrderStatus(order);
+    const paymentStatus = normalizedPaymentStatus(order);
+
+    if (!PAYABLE_ORDER_STATUSES.has(status)) {
       return Response.json(
-        { error: "Order is not ready for payment", status, paymentAvailable: false },
+        { error: "Order is not ready for payment", status, paymentAvailable: false, fallbackAvailable: false },
         { status: 409 },
       );
     }
 
-    const paymentStatus = clean(order?.paymentStatus ?? order?.payment_status, 40).toUpperCase();
-    if (["PAID", "DEPOSIT_PAID", "CAPTURED"].includes(paymentStatus)) {
-      return Response.json({ error: "Deposit is already paid", status, paymentStatus }, { status: 409 });
+    if (isSettledPayment(paymentStatus)) {
+      return Response.json(
+        { error: "Deposit is already paid", status, paymentStatus, fallbackAvailable: false },
+        { status: 409 },
+      );
     }
 
-    const totalPrice = Number(order?.totalPrice ?? order?.total_price ?? order?.total);
-    if (!Number.isFinite(totalPrice) || totalPrice <= 0) {
+    if (isUncertainPayment(paymentStatus)) {
+      return Response.json(
+        {
+          error: "A payment is still awaiting verification. Do not pay again yet.",
+          status,
+          paymentStatus,
+          paymentPending: true,
+          fallbackAvailable: false,
+        },
+        { status: 409 },
+      );
+    }
+
+    const depositAmount = expectedDepositAmount(order);
+    if (depositAmount === null) {
       return Response.json({ error: "Verified order total is unavailable" }, { status: 422 });
     }
-    const depositAmount = roundMoney(totalPrice * 0.4);
-    const customer = order?.customer && typeof order.customer === "object" ? order.customer : {};
+
+    if (!profileId || !serverKey) {
+      return Response.json(
+        {
+          error: "Card payment is temporarily unavailable",
+          paymentAvailable: false,
+          fallbackAvailable: instapayReady,
+          reference,
+          depositAmount,
+          currency: "EGP",
+        },
+        { status: 503 },
+      );
+    }
+
+    const customer = (order as Record<string, unknown>).customer;
+    const customerRecord = customer && typeof customer === "object" ? (customer as Record<string, unknown>) : {};
     const origin = getOrigin(request);
     const paymentRequest: Record<string, unknown> = {
       profile_id: Number(profileId),
@@ -78,15 +133,15 @@ export default async function handler(request: Request) {
       return: `${origin}/order/${encodeURIComponent(reference)}?payment=return`,
     };
 
-    const email = clean(customer?.email, 160);
+    const email = clean(customerRecord.email, 160);
     if (email) {
       paymentRequest.customer_details = {
-        name: clean(customer?.name, 120),
+        name: clean(customerRecord.name, 120),
         email,
-        phone: clean(customer?.phone, 40),
-        street1: clean(customer?.address, 500),
-        city: clean(customer?.city, 100),
-        state: clean(customer?.governorate ?? customer?.province, 100),
+        phone: clean(customerRecord.phone, 40),
+        street1: clean(customerRecord.address, 500),
+        city: clean(customerRecord.city, 100),
+        state: clean(customerRecord.governorate ?? customerRecord.province, 100),
         country: "EG",
       };
     }
@@ -102,10 +157,49 @@ export default async function handler(request: Request) {
     const data = await response.json().catch(() => ({}));
     const paymentUrl = typeof data?.redirect_url === "string" ? data.redirect_url : "";
     const transactionRef = typeof data?.tran_ref === "string" ? data.tran_ref : "";
+
     if (!response.ok || !paymentUrl || !transactionRef) {
       console.error("PayTabs payment page creation failed", { status: response.status, trace: data?.trace });
-      return Response.json({ error: "Payment page could not be created", paymentAvailable: false }, { status: 503 });
+      await recordPaymentState(paymentWebhook, statusToken, {
+        type: "PAYMENT_UPDATE",
+        reference,
+        payment: {
+          provider: "PayTabs",
+          status: "NOT_PAID",
+          safeFailureReason: "gateway_error",
+          amount: depositAmount,
+          currency: "EGP",
+          verifiedAt: new Date().toISOString(),
+        },
+      });
+      return Response.json(
+        {
+          error: "Card payment could not be started",
+          paymentAvailable: false,
+          fallbackAvailable: instapayReady,
+          reference,
+          depositAmount,
+          currency: "EGP",
+        },
+        { status: 503 },
+      );
     }
+
+    // Record an active PayTabs attempt before exposing the redirect URL. This
+    // blocks a parallel InstaPay fallback until PayTabs is conclusively unpaid.
+    await recordPaymentState(paymentWebhook, statusToken, {
+      type: "PAYMENT_UPDATE",
+      reference,
+      payment: {
+        provider: "PayTabs",
+        transactionRef,
+        status: "PAYMENT_PENDING",
+        safeFailureReason: null,
+        amount: depositAmount,
+        currency: "EGP",
+        verifiedAt: new Date().toISOString(),
+      },
+    });
 
     return Response.json(
       {
@@ -116,11 +210,19 @@ export default async function handler(request: Request) {
         depositAmount,
         currency: "EGP",
         charged: false,
+        fallbackAvailable: false,
       },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
     console.error("Payment intent failed", error);
-    return Response.json({ error: "Payment service is temporarily unavailable", paymentAvailable: false }, { status: 503 });
+    return Response.json(
+      {
+        error: "Payment service is temporarily unavailable",
+        paymentAvailable: false,
+        fallbackAvailable: instapayReady,
+      },
+      { status: 503 },
+    );
   }
 }

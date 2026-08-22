@@ -1,17 +1,26 @@
-type PayTabsPayload = {
-  tran_ref?: string;
-  cart_id?: string;
-  cart_currency?: string;
-  cart_amount?: string | number;
-  payment_result?: {
-    response_status?: string;
-    response_code?: string;
-    response_message?: string;
-  };
-};
+import {
+  clean,
+  expectedDepositAmount,
+  mapVerifiedPayTabsStatus,
+  referencePattern,
+  unwrapOrder,
+  validateVerifiedPayTabsTransaction,
+  type VerifiedPayTabsPayload,
+} from "./_lib/payment";
 
-const referencePattern = /^DN-[A-Z0-9-]{4,48}$/;
-const roundMoney = (value: number) => Math.round(value * 100) / 100;
+async function readCallback(request: Request): Promise<Record<string, unknown>> {
+  const contentType = request.headers.get("content-type") || "";
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    const form = await request.formData();
+    const payload: Record<string, unknown> = {};
+    form.forEach((value, key) => {
+      payload[key] = typeof value === "string" ? value : value.name;
+    });
+    return payload;
+  }
+  const payload = await request.json();
+  return payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {};
+}
 
 export default async function handler(request: Request) {
   if (request.method !== "POST") {
@@ -27,15 +36,15 @@ export default async function handler(request: Request) {
     return Response.json({ error: "Payment callback is not configured" }, { status: 503 });
   }
 
-  let callback: PayTabsPayload;
+  let callback: Record<string, unknown>;
   try {
-    callback = (await request.json()) as PayTabsPayload;
+    callback = await readCallback(request);
   } catch {
     return Response.json({ error: "Invalid callback payload" }, { status: 400 });
   }
 
-  const tranRef = typeof callback.tran_ref === "string" ? callback.tran_ref.trim() : "";
-  const callbackReference = typeof callback.cart_id === "string" ? callback.cart_id.trim() : "";
+  const tranRef = clean(callback.tran_ref, 120);
+  const callbackReference = clean(callback.cart_id, 64).toUpperCase();
   if (!tranRef || !referencePattern.test(callbackReference)) {
     return Response.json({ error: "Invalid payment reference" }, { status: 400 });
   }
@@ -46,45 +55,61 @@ export default async function handler(request: Request) {
       headers: { authorization: serverKey, "Content-Type": "application/json" },
       body: JSON.stringify({ profile_id: Number(profileId), tran_ref: tranRef }),
     });
-    const verified = (await queryResponse.json()) as PayTabsPayload;
+    const verified = (await queryResponse.json().catch(() => ({}))) as VerifiedPayTabsPayload;
     if (!queryResponse.ok) throw new Error(`PayTabs query returned ${queryResponse.status}`);
 
-    const reference = typeof verified.cart_id === "string" ? verified.cart_id.trim() : "";
-    const currency = typeof verified.cart_currency === "string" ? verified.cart_currency.trim() : "";
-    const amount = Number(verified.cart_amount);
-    const status = verified.payment_result?.response_status || "";
-    if (reference !== callbackReference || currency !== "EGP" || !Number.isFinite(amount) || amount <= 0) {
-      return Response.json({ error: "Verified payment details do not match the order" }, { status: 400 });
+    // The public callback body is attacker-controlled. It may identify the
+    // transaction to query, but it never decides whether money was paid.
+    const verifiedStatus = clean(verified.payment_result?.response_status, 8).toUpperCase();
+    if (!verifiedStatus) {
+      console.error("PayTabs verification returned no status", { callbackReference, tranRef });
+      return Response.json({ error: "Could not verify transaction with PayTabs" }, { status: 502 });
     }
 
     const orderResponse = await fetch(
-      `${statusUrl}${statusUrl.includes("?") ? "&" : "?"}reference=${encodeURIComponent(reference)}`,
+      `${statusUrl}${statusUrl.includes("?") ? "&" : "?"}reference=${encodeURIComponent(callbackReference)}`,
       { headers: { Authorization: `Bearer ${webhookToken}` }, cache: "no-store" },
     );
     if (!orderResponse.ok) throw new Error(`TakeApp status bridge returned ${orderResponse.status}`);
-    const orderPayload = await orderResponse.json();
-    const order = orderPayload?.order && typeof orderPayload.order === "object" ? orderPayload.order : orderPayload;
-    const totalPrice = Number(order?.totalPrice ?? order?.total_price ?? order?.total);
-    if (!Number.isFinite(totalPrice) || totalPrice <= 0) {
+    const order = unwrapOrder(await orderResponse.json());
+    const expectedDeposit = expectedDepositAmount(order);
+    if (expectedDeposit === null) {
       return Response.json({ error: "Verified order total is unavailable" }, { status: 422 });
     }
-    const expectedDeposit = roundMoney(totalPrice * 0.4);
-    if (Math.abs(roundMoney(amount) - expectedDeposit) > 0.01) {
-      return Response.json({ error: "Verified payment amount does not match the order deposit" }, { status: 400 });
+
+    const transactionCheck = validateVerifiedPayTabsTransaction(
+      verified,
+      callbackReference,
+      expectedDeposit,
+    );
+    if (!transactionCheck.ok) {
+      console.error("Rejected mismatched PayTabs transaction", {
+        callbackReference,
+        tranRef,
+        reason: transactionCheck.reason,
+      });
+      return Response.json({ error: "Verified payment details do not match the order" }, { status: 409 });
     }
+
+    const mapped = mapVerifiedPayTabsStatus(
+      verified.payment_result?.response_status,
+      verified.payment_result?.response_message,
+      verified.payment_result?.response_code,
+    );
 
     const paymentUpdate = {
       type: "PAYMENT_UPDATE",
-      reference,
+      reference: callbackReference,
       payment: {
         provider: "PayTabs",
         transactionRef: tranRef,
-        status: status === "A" ? "DEPOSIT_PAID" : status === "P" ? "PAYMENT_PENDING" : "NOT_PAID",
-        responseStatus: status,
-        responseCode: verified.payment_result?.response_code || "",
-        responseMessage: verified.payment_result?.response_message || "",
+        status: mapped.paymentStatus,
+        safeFailureReason: mapped.safeFailureReason,
+        responseStatus: verifiedStatus,
+        responseCode: clean(verified.payment_result?.response_code, 40),
+        responseMessage: clean(verified.payment_result?.response_message, 240),
         amount: expectedDeposit,
-        currency,
+        currency: "EGP",
         verifiedAt: new Date().toISOString(),
       },
     };
@@ -97,7 +122,12 @@ export default async function handler(request: Request) {
     if (!recordResponse.ok) throw new Error(`Payment recording webhook returned ${recordResponse.status}`);
 
     return Response.json(
-      { received: true, reference, paymentStatus: paymentUpdate.payment.status },
+      {
+        received: true,
+        reference: callbackReference,
+        paymentStatus: mapped.paymentStatus,
+        conclusive: mapped.conclusive,
+      },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {

@@ -172,5 +172,7 @@ export default {
       },
     },
   },
+  // Tailwind's documented CommonJS plugin shape is intentional here.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
