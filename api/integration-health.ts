@@ -1,3 +1,5 @@
+import { getInstapayConfig } from "./_lib/payment";
+
 const GATEWAY_HEALTH = "https://dandle-commerce-os-gateway.vercel.app/api/health";
 
 export default async function handler(request: Request) {
@@ -11,12 +13,13 @@ export default async function handler(request: Request) {
   const orderStatusReady = Boolean(
     process.env.TAKEAPP_ORDER_STATUS_URL?.trim() && process.env.TAKEAPP_ORDER_WEBHOOK_TOKEN?.trim(),
   );
-  const payTabsReady = Boolean(
-    process.env.PAYTABS_PROFILE_ID?.trim() &&
-      process.env.PAYTABS_SERVER_KEY?.trim() &&
-      process.env.TAKEAPP_PAYMENT_WEBHOOK_URL?.trim() &&
-      process.env.TAKEAPP_ORDER_WEBHOOK_TOKEN?.trim(),
+  const paymentBridgeReady = Boolean(
+    process.env.TAKEAPP_PAYMENT_WEBHOOK_URL?.trim() && process.env.TAKEAPP_ORDER_WEBHOOK_TOKEN?.trim(),
   );
+  const payTabsReady = Boolean(
+    process.env.PAYTABS_PROFILE_ID?.trim() && process.env.PAYTABS_SERVER_KEY?.trim() && paymentBridgeReady,
+  );
+  const instapayReady = Boolean(getInstapayConfig() && orderStatusReady && paymentBridgeReady);
 
   let gatewayHealth: Record<string, unknown> = {};
   let gatewayReachable = false;
@@ -43,16 +46,20 @@ export default async function handler(request: Request) {
       ...gatewayHealth,
       mode: gatewayReachable ? gatewayHealth.mode || "available" : "gateway-unavailable",
       paymentProvider: "PayTabs",
+      paymentFallback: "InstaPay",
       flags: {
         ...gatewayFlags,
         takeapp_order_enabled: orderWebhookReady,
         order_status_enabled: orderStatusReady,
         paytabs_enabled: payTabsReady,
+        instapay_fallback_enabled: instapayReady,
       },
       localReadiness: {
         takeappOrderWebhook: orderWebhookReady,
         orderStatusBridge: orderStatusReady,
+        paymentRecordingBridge: paymentBridgeReady,
         payTabsPayment: payTabsReady,
+        instapayFallback: instapayReady,
       },
     },
     { headers: { "Cache-Control": "no-store" } },
