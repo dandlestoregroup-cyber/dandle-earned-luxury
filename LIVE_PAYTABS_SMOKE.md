@@ -1,0 +1,1 @@
+One-off production smoke branch. Creates a clearly marked non-fulfillment dummy order through dandle-vie.com, checks integration readiness, and attempts to create a PayTabs payment session only if the dummy order is already in a payable status. This branch must not be merged.
