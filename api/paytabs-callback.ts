@@ -12,7 +12,11 @@ async function readCallback(request: Request): Promise<Record<string, unknown>> 
   const contentType = request.headers.get("content-type") || "";
   if (contentType.includes("application/x-www-form-urlencoded")) {
     const form = await request.formData();
-    return Object.fromEntries(form.entries());
+    const payload: Record<string, unknown> = {};
+    form.forEach((value, key) => {
+      payload[key] = typeof value === "string" ? value : value.name;
+    });
+    return payload;
   }
   const payload = await request.json();
   return payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {};
