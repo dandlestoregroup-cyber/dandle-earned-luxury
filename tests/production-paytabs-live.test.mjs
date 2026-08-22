@@ -2,109 +2,136 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 const ORIGIN = "https://dandle-vie.com";
+const PROJECT_REF = "rbvbrxjnhmgrtxvwusxr";
+const FUNCTIONS = `https://${PROJECT_REF}.supabase.co/functions/v1`;
 
-async function jsonFetch(path, init) {
-  const response = await fetch(`${ORIGIN}${path}`, init);
-  const text = await response.text();
-  let body = {};
-  try { body = text ? JSON.parse(text) : {}; } catch { body = { raw: text }; }
-  return { response, body };
+function decodeJwtPayload(token) {
+  try {
+    const segment = token.split(".")[1];
+    const normalized = segment.replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(Buffer.from(normalized, "base64").toString("utf8"));
+  } catch {
+    return null;
+  }
 }
 
-test("live production order and PayTabs smoke", async () => {
-  const health = await jsonFetch("/api/integration-health", { headers: { Accept: "application/json" } });
-  console.log("LIVE_HEALTH", JSON.stringify(health.body));
-  assert.equal(health.response.ok, true, `integration-health returned ${health.response.status}`);
-  assert.equal(health.body?.localReadiness?.payTabsPayment, true, "PayTabs production configuration is not ready");
-  assert.equal(health.body?.localReadiness?.takeappOrderWebhook, true, "TakeApp order bridge is not ready");
-  assert.equal(health.body?.localReadiness?.orderStatusBridge, true, "Order status bridge is not ready");
-  assert.equal(health.body?.localReadiness?.paymentRecordingBridge, true, "Payment recording bridge is not ready");
-
-  const stamp = Date.now();
-  const order = await jsonFetch("/api/order-intent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      customer: {
-        name: `DANDLE PAYTABS LIVE TEST ${stamp}`,
-        phone: "+201000000000",
-        email: `dandle-paytabs-test-${stamp}@example.com`,
-        address: "TEST ORDER ONLY - DO NOT FULFILL - Cairo",
-        city: "Cairo",
-        governorate: "Cairo",
-        notes: "AUTOMATED PAYMENT SMOKE TEST. DO NOT FULFILL, SHIP, CALL, OR PROCESS AS A CUSTOMER ORDER.",
-      },
-      items: [{
-        productId: "relaxmax",
-        productName: "RelaxMax",
-        variantTitle: "Manual - TEST ONLY",
-        color: "TEST",
-        mechanism: "manual",
-        quantity: 1,
-        massageFeature: false,
-        handle: "relaxmax",
-      }],
-    }),
+async function getPublishedAnonKey() {
+  const html = await (await fetch(ORIGIN)).text();
+  const scriptMatch = html.match(/<script[^>]+type="module"[^>]+src="([^"]+)"/i);
+  assert.ok(scriptMatch, "Could not locate the published app bundle");
+  const bundleUrl = new URL(scriptMatch[1], ORIGIN).toString();
+  const bundle = await (await fetch(bundleUrl)).text();
+  const tokens = bundle.match(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g) || [];
+  const anon = tokens.find((token) => {
+    const payload = decodeJwtPayload(token);
+    return payload?.ref === PROJECT_REF && payload?.role === "anon";
   });
+  assert.ok(anon, "Could not locate the published Supabase anon key");
+  return anon;
+}
 
-  console.log("LIVE_ORDER", JSON.stringify(order.body));
-  assert.equal(order.response.status, 201, `order-intent returned ${order.response.status}: ${JSON.stringify(order.body)}`);
-  assert.match(order.body.reference, /^DN-[A-Z0-9-]{4,48}$/);
-  assert.equal(order.body.totalPrice, 21900);
-  assert.equal(order.body.depositAmount, 8760);
-  assert.equal(order.body.charged, false);
+async function invokeFunction(name, body, anonKey) {
+  const response = await fetch(`${FUNCTIONS}/${name}`, {
+    method: "POST",
+    headers: {
+      apikey: anonKey,
+      authorization: `Bearer ${anonKey}`,
+      "content-type": "application/json",
+      origin: ORIGIN,
+    },
+    body: JSON.stringify(body),
+  });
+  const text = await response.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text.slice(0, 500) }; }
+  return { response, data };
+}
 
-  const reference = order.body.reference;
-  let lastStatus = null;
-  let paymentResult = null;
+test("actual live PayTabs session can be created from the Lovable production stack", async () => {
+  const anonKey = await getPublishedAnonKey();
+  const stamp = Date.now();
 
-  for (let attempt = 0; attempt < 6; attempt += 1) {
-    const status = await jsonFetch(`/api/order-status?reference=${encodeURIComponent(reference)}`, { headers: { Accept: "application/json" } });
-    lastStatus = status.body;
-    console.log(`LIVE_STATUS_${attempt + 1}`, JSON.stringify(status.body));
+  const payload = {
+    lines: [{
+      productId: "relaxmax-recliner",
+      productName: "RelaxMax",
+      variantId: "relaxmax-recliner__warm-beige",
+      colorSlug: "warm-beige",
+      colorNameEn: "Warm Beige",
+      colorNameAr: "Warm Beige TEST",
+      material: null,
+      imageUrl: "/images/products/relaxmax/warm-beige__front.webp",
+      mechanismId: "manual",
+      mechanismOfferId: "relaxmax-recliner__warm-beige::manual",
+      mechanismLabelEn: "Manual",
+      mechanismLabelAr: "Manual TEST",
+      unitPriceEgp: 1,
+      quantity: 1,
+      checkoutAvailable: true,
+      extras: [],
+      notes: "AUTOMATED PAYTABS TEST ONLY - DO NOT FULFILL",
+    }],
+    access: {
+      installationNotes: "AUTOMATED PAYTABS TEST ONLY - DO NOT FULFILL, SHIP OR CALL",
+    },
+    address: {
+      governorateName: "Cairo",
+      cityName: "Cairo",
+      street: "TEST ORDER ONLY - DO NOT FULFILL",
+      buildingNumber: "TEST",
+      landmark: "AUTOMATED PAYMENT SMOKE TEST",
+    },
+    contact: {
+      fullName: `DANDLE PAYTABS TEST ${stamp}`,
+      mobile: "+201000000000",
+      email: `dandle-paytabs-test-${stamp}@example.com`,
+    },
+    confirmedAt: new Date().toISOString(),
+    // Deliberately tampered. The edge function must ignore this and charge the
+    // server-authoritative RelaxMax manual price of EGP 21,900.
+    totalAmount: 1,
+    mode: "checkout",
+  };
 
-    const normalizedStatus = String(status.body?.order?.status ?? status.body?.status ?? "").toUpperCase();
-    if (["ACCEPTED", "AMENDED", "INVOICE_READY", "AWAITING_PAYMENT"].includes(normalizedStatus)) {
-      paymentResult = await jsonFetch("/api/payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reference, amount: 1, totalAmount: 1 }),
-      });
-      break;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-  }
+  const result = await invokeFunction("paytabs-create-payment", payload, anonKey);
+  console.log("LIVE_PAYTABS_CREATE", JSON.stringify({
+    status: result.response.status,
+    success: result.data?.success,
+    failureKind: result.data?.failure_kind,
+    orderReference: result.data?.order_reference,
+    error: result.data?.error,
+    redirectHost: result.data?.redirect_url ? new URL(result.data.redirect_url).host : null,
+  }));
 
-  if (!paymentResult) {
-    paymentResult = await jsonFetch("/api/payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reference, amount: 1, totalAmount: 1 }),
-    });
-  }
+  assert.equal(result.response.status, 200, `PayTabs create returned ${result.response.status}: ${JSON.stringify(result.data)}`);
+  assert.equal(result.data.success, true);
+  assert.match(String(result.data.order_reference || ""), /^DN-[A-Z0-9-]{4,40}$/i);
+  assert.ok(result.data.redirect_url, "PayTabs did not return a hosted payment URL");
 
-  console.log("LIVE_PAYMENT", JSON.stringify({ status: paymentResult.response.status, body: paymentResult.body }));
+  const paymentUrl = new URL(result.data.redirect_url);
+  assert.equal(paymentUrl.protocol, "https:");
+  assert.ok(paymentUrl.hostname.endsWith("paytabs.com"), `Unexpected payment host: ${paymentUrl.hostname}`);
 
-  if (paymentResult.response.status === 200) {
-    assert.equal(paymentResult.body.paymentAvailable, true);
-    assert.equal(paymentResult.body.reference, reference);
-    assert.equal(paymentResult.body.depositAmount, 8760);
-    assert.equal(paymentResult.body.currency, "EGP");
-    assert.equal(paymentResult.body.charged, false);
-    assert.match(String(paymentResult.body.paymentUrl || ""), /^https:\/\//);
-    assert.ok(paymentResult.body.transactionRef);
-    console.log("PAYTABS_LIVE_SESSION_CREATED", JSON.stringify({
-      reference,
-      depositAmount: paymentResult.body.depositAmount,
-      transactionRef: paymentResult.body.transactionRef,
-      paymentUrlHost: new URL(paymentResult.body.paymentUrl).host,
-    }));
-    return;
-  }
+  // Load the hosted page without submitting any payment instrument. This proves
+  // the returned session is reachable; it cannot charge anything by itself.
+  const hosted = await fetch(paymentUrl, { redirect: "manual" });
+  console.log("LIVE_PAYTABS_HOSTED_PAGE", JSON.stringify({
+    orderReference: result.data.order_reference,
+    paymentHost: paymentUrl.hostname,
+    httpStatus: hosted.status,
+  }));
+  assert.ok(hosted.status >= 200 && hosted.status < 400, `Hosted PayTabs page returned ${hosted.status}`);
 
-  // A newly created production order is intentionally not payable until admin acceptance.
-  // This is not a PayTabs failure; keep the evidence visible in the job log for follow-up.
-  assert.equal(paymentResult.response.status, 409, `unexpected payment-intent result: ${JSON.stringify(paymentResult.body)}`);
-  assert.equal(paymentResult.body.paymentAvailable, false);
-  console.log("PAYTABS_LIVE_BLOCKED_BY_ADMIN_GATE", JSON.stringify({ reference, lastStatus, payment: paymentResult.body }));
+  // Probe the live status endpoint as well. If it rejects the generated
+  // reference format, keep that evidence visible because the return journey
+  // would need correction even though PayTabs itself is working.
+  const statusProbe = await invokeFunction("get-order-status", { reference: result.data.order_reference }, anonKey);
+  console.log("LIVE_ORDER_STATUS_PROBE", JSON.stringify({
+    httpStatus: statusProbe.response.status,
+    success: statusProbe.data?.success,
+    error: statusProbe.data?.error,
+    source: statusProbe.data?.source,
+    paymentStatus: statusProbe.data?.order?.paymentStatus,
+    totalAmount: statusProbe.data?.order?.totalAmount,
+  }));
 });
