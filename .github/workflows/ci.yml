@@ -25,11 +25,17 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Payment security tests
+        run: npm test
+
       - name: Typecheck app
         run: npx tsc -p tsconfig.app.json --noEmit
 
       - name: Typecheck Vercel APIs
         run: npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --lib ES2022,DOM --types node api/*.ts api/_lib/*.ts
+
+      - name: Lint
+        run: npm run lint
 
       - name: Build
         run: npm run build
@@ -38,10 +44,14 @@ jobs:
         shell: bash
         run: |
           if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'Paymob|paymob_enabled|egypt\.onboarding\.paymob\.com' api src; then
-            echo "Stale Paymob runtime/reference found. Dandle payment architecture is PayTabs."
+            echo "Stale Paymob runtime/reference found. Dandle payment architecture is PayTabs with an InstaPay fallback."
             exit 1
           fi
           if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'source: "manual-confirmation"|createdAt: new Date\(\)\.toISOString\(\).*totalPrice: "0"' api src/pages/OrderStatus.tsx; then
             echo "Fabricated order fallback detected."
+            exit 1
+          fi
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'INSTAPAY_RECIPIENT_(NAME|ID)' src; then
+            echo "Server-controlled InstaPay recipient configuration leaked into frontend source."
             exit 1
           fi
