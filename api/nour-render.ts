@@ -8,6 +8,13 @@ type RenderRequest = {
   placement?: string;
 };
 
+type ValidationResponse = {
+  output_text?: string;
+  output?: Array<{
+    content?: Array<{ text?: string }>;
+  }>;
+};
+
 export const config = { maxDuration: 300 };
 
 const PRODUCT_REFERENCES: Record<string, string> = {
@@ -106,9 +113,9 @@ async function validateRender(apiKey: string, roomImage: string, productDataUrl:
   });
 
   if (!response.ok) throw new Error(`Validation failed: ${response.status}`);
-  const data = await response.json();
+  const data = await response.json() as ValidationResponse;
   const raw = data.output_text
-    || data.output?.flatMap((item: any) => item.content || []).map((part: any) => part.text || "").join("")
+    || data.output?.flatMap((item) => item.content || []).map((part) => part.text || "").join("")
     || "";
 
   try {
