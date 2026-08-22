@@ -28,6 +28,13 @@ jobs:
       - name: Payment security tests
         run: npm test
 
+      - name: Dependency sanity
+        run: |
+          npm ls react-router-dom
+          node -e "console.log(require.resolve('react-router-dom/package.json'))"
+          node -e "console.log(require('react-router-dom/package.json').version)"
+          test -f node_modules/react-router-dom/dist/index.d.ts
+
       - name: Typecheck app
         run: npx tsc -p tsconfig.app.json --noEmit
 
