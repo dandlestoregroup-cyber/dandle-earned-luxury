@@ -7,13 +7,33 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { useIsArabic } from "@/hooks/useIsArabic";
 import { captureCampaignAttribution, trackCampaign } from "@/lib/campaign";
 
-const ensureMeta = (selector: string, attrs: Record<string, string>) => {
-  let el = document.head.querySelector(selector) as HTMLMetaElement | HTMLLinkElement | null;
-  if (!el) {
-    el = document.createElement(attrs.rel ? "link" : "meta") as HTMLMetaElement | HTMLLinkElement;
-    document.head.appendChild(el);
+const setHeadElement = (
+  selector: string,
+  tagName: "meta" | "link",
+  attrs: Record<string, string>,
+) => {
+  let element = document.head.querySelector(selector);
+  const existed = Boolean(element);
+  if (!element) {
+    element = document.createElement(tagName);
+    document.head.appendChild(element);
   }
-  Object.entries(attrs).forEach(([key, value]) => el?.setAttribute(key, value));
+
+  const previous = new Map<string, string | null>();
+  Object.keys(attrs).forEach((key) => previous.set(key, element?.getAttribute(key) ?? null));
+  Object.entries(attrs).forEach(([key, value]) => element?.setAttribute(key, value));
+
+  return () => {
+    if (!element) return;
+    if (!existed) {
+      element.remove();
+      return;
+    }
+    previous.forEach((value, key) => {
+      if (value === null) element?.removeAttribute(key);
+      else element?.setAttribute(key, value);
+    });
+  };
 };
 
 const NorthCoast = () => {
@@ -25,6 +45,7 @@ const NorthCoast = () => {
   }, []);
 
   useEffect(() => {
+    const previousTitle = document.title;
     const title = isArabic
       ? "دانديل الساحل الشمالي — قماش صيفي مقاوم للماء"
       : "Dandle North Coast — Waterproof Summer Fabric";
@@ -35,17 +56,24 @@ const NorthCoast = () => {
     const socialImage = "https://dandle-vie.com/images/complete-set-coastal-modern.jpg";
 
     document.title = title;
-    ensureMeta('meta[name="description"]', { name: "description", content: description });
-    ensureMeta('link[rel="canonical"]', { rel: "canonical", href: canonical });
-    ensureMeta('meta[property="og:title"]', { property: "og:title", content: title });
-    ensureMeta('meta[property="og:description"]', { property: "og:description", content: description });
-    ensureMeta('meta[property="og:url"]', { property: "og:url", content: canonical });
-    ensureMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
-    ensureMeta('meta[property="og:image"]', { property: "og:image", content: socialImage });
-    ensureMeta('meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
-    ensureMeta('meta[name="twitter:title"]', { name: "twitter:title", content: title });
-    ensureMeta('meta[name="twitter:description"]', { name: "twitter:description", content: description });
-    ensureMeta('meta[name="twitter:image"]', { name: "twitter:image", content: socialImage });
+    const cleanups = [
+      setHeadElement('meta[name="description"]', "meta", { name: "description", content: description }),
+      setHeadElement('link[rel="canonical"]', "link", { rel: "canonical", href: canonical }),
+      setHeadElement('meta[property="og:title"]', "meta", { property: "og:title", content: title }),
+      setHeadElement('meta[property="og:description"]', "meta", { property: "og:description", content: description }),
+      setHeadElement('meta[property="og:url"]', "meta", { property: "og:url", content: canonical }),
+      setHeadElement('meta[property="og:type"]', "meta", { property: "og:type", content: "website" }),
+      setHeadElement('meta[property="og:image"]', "meta", { property: "og:image", content: socialImage }),
+      setHeadElement('meta[name="twitter:card"]', "meta", { name: "twitter:card", content: "summary_large_image" }),
+      setHeadElement('meta[name="twitter:title"]', "meta", { name: "twitter:title", content: title }),
+      setHeadElement('meta[name="twitter:description"]', "meta", { name: "twitter:description", content: description }),
+      setHeadElement('meta[name="twitter:image"]', "meta", { name: "twitter:image", content: socialImage }),
+    ];
+
+    return () => {
+      document.title = previousTitle;
+      cleanups.reverse().forEach((cleanup) => cleanup());
+    };
   }, [isArabic]);
 
   return (
