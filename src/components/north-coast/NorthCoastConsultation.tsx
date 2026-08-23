@@ -104,7 +104,7 @@ const NorthCoastConsultation = ({ surface = "module" }: { surface?: "module" | "
             </p>
             <a
               href={shopHref}
-              onClick={() => trackCampaign("north_coast_product_selected", { surface, selectedColour: selected })}
+              onClick={() => trackCampaign("north_coast_fabric_engaged", { surface, action: "browse_recliners", selectedColour: selected })}
               className="inline-flex rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground transition-opacity hover:opacity-90"
             >
               {isArabic ? "شوف الكراسي" : "Browse recliners"}
@@ -131,7 +131,7 @@ const NorthCoastConsultation = ({ surface = "module" }: { surface?: "module" | "
         <div className="mt-8 flex flex-wrap gap-3">
           <a
             href={shopHref}
-            onClick={() => trackCampaign("north_coast_checkout_started", { surface, selectedColour: selected })}
+            onClick={() => trackCampaign("north_coast_fabric_engaged", { surface, action: "start_choosing", selectedColour: selected })}
             className="rounded-full bg-primary px-6 py-3 text-sm text-primary-foreground"
           >
             {isArabic ? "ابدأ الاختيار" : "Start choosing"}
