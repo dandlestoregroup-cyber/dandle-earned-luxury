@@ -8,6 +8,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
+import NorthCoast from "./pages/NorthCoast";
 import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
@@ -24,40 +25,31 @@ import BackOfficeHub from "./pages/BackOfficeHub";
 
 const queryClient = new QueryClient();
 
-// Redirect component for /product/:handle → /products/:handle
 const ProductRedirect = () => {
   const { handle } = useParams();
   return <Navigate to={`/products/${handle}`} replace />;
 };
 
-// Language direction effect hook
 const LanguageDirectionHandler = () => {
   useEffect(() => {
     const updateDirection = () => {
-      const lang = document.documentElement.lang || 'en';
-      if (lang === 'ar') {
-        document.documentElement.setAttribute('dir', 'rtl');
-        document.documentElement.setAttribute('lang', 'ar');
+      const lang = document.documentElement.lang || "en";
+      if (lang === "ar") {
+        document.documentElement.setAttribute("dir", "rtl");
+        document.documentElement.setAttribute("lang", "ar");
       } else {
-        document.documentElement.setAttribute('dir', 'ltr');
-        document.documentElement.setAttribute('lang', 'en');
+        document.documentElement.setAttribute("dir", "ltr");
+        document.documentElement.setAttribute("lang", "en");
       }
     };
 
-    // Initial check
     updateDirection();
-
-    // Listen for language changes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'lang') {
-          updateDirection();
-        }
+        if (mutation.attributeName === "lang") updateDirection();
       });
     });
-
     observer.observe(document.documentElement, { attributes: true });
-
     return () => observer.disconnect();
   }, []);
 
@@ -74,7 +66,7 @@ const App = () => (
           <LanguageDirectionHandler />
           <Routes>
             <Route path="/" element={<Index />} />
-            {/* Redirect /product/:handle to /products/:handle */}
+            <Route path="/north-coast" element={<NorthCoast />} />
             <Route path="/product/:handle" element={<ProductRedirect />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/nour-chat" element={<NourChat />} />
@@ -90,7 +82,6 @@ const App = () => (
             <Route path="/installation" element={<Installation />} />
             <Route path="/returns" element={<Returns />} />
             <Route path="/contact" element={<Contact />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
