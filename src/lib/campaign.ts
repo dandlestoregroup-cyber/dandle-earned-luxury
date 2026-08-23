@@ -1,9 +1,10 @@
 /**
  * North Coast campaign attribution + tracking.
- * Captures Google/UTM identifiers in-session and forwards events to any
- * analytics surfaces already present on the page. No new analytics vendor.
+ * Captures Google/UTM identifiers in-session and forwards events to analytics
+ * surfaces already present on the page. Tracking must never block shopping.
  */
 const STORAGE_KEY = "dandle_campaign_attribution";
+const NORTH_COAST_SESSION_KEY = "dandle_north_coast_session";
 
 const PARAM_KEYS = [
   "gclid",
@@ -29,6 +30,24 @@ export function readAttribution(): Attribution {
     return raw ? (JSON.parse(raw) as Attribution) : {};
   } catch {
     return {};
+  }
+}
+
+export function markNorthCoastCampaignSession() {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.setItem(NORTH_COAST_SESSION_KEY, "1");
+  } catch {
+    // no-op
+  }
+}
+
+export function isNorthCoastCampaignSession() {
+  if (typeof window === "undefined") return false;
+  try {
+    return sessionStorage.getItem(NORTH_COAST_SESSION_KEY) === "1";
+  } catch {
+    return false;
   }
 }
 
@@ -65,12 +84,20 @@ export function withCampaignParams(path: string): string {
   );
   if (entries.length === 0) return path;
 
-  const [base, existing] = path.split("?");
-  const params = new URLSearchParams(existing || "");
+  const hashIndex = path.indexOf("#");
+  const fragment = hashIndex >= 0 ? path.slice(hashIndex) : "";
+  const pathWithoutFragment = hashIndex >= 0 ? path.slice(0, hashIndex) : path;
+  const queryIndex = pathWithoutFragment.indexOf("?");
+  const base = queryIndex >= 0 ? pathWithoutFragment.slice(0, queryIndex) : pathWithoutFragment;
+  const existing = queryIndex >= 0 ? pathWithoutFragment.slice(queryIndex + 1) : "";
+  const params = new URLSearchParams(existing);
+
   entries.forEach(([key, value]) => {
     if (!params.has(key)) params.set(key, String(value));
   });
-  return `${base}?${params.toString()}`;
+
+  const query = params.toString();
+  return `${base}${query ? `?${query}` : ""}${fragment}`;
 }
 
 export type NorthCoastEvent =
@@ -84,6 +111,7 @@ export type NorthCoastEvent =
 
 export function trackCampaign(event: NorthCoastEvent, payload?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
+  if (event === "north_coast_view") markNorthCoastCampaignSession();
   const props = { campaign: "north_coast_summer_2026", ...readAttribution(), ...payload };
   try {
     const w = window as unknown as {
