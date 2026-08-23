@@ -7,6 +7,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CheckoutForm, { CustomerData } from "@/components/CheckoutForm";
 import { toast } from "sonner";
+import { isNorthCoastCampaignSession, trackCampaign } from "@/lib/campaign";
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
@@ -15,6 +16,16 @@ const Cart = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const formatPrice = (num: number) => `${num.toLocaleString("en-US")} EGP`;
+
+  const handleCheckoutStart = () => {
+    if (isNorthCoastCampaignSession()) {
+      trackCampaign("north_coast_checkout_started", {
+        itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
+        cartValueEgp: getTotalPrice(),
+      });
+    }
+    setShowCheckoutForm(true);
+  };
 
   const handleFormSubmit = async (customerData: CustomerData) => {
     setIsProcessing(true);
@@ -153,7 +164,7 @@ const Cart = () => {
                     </ul>
                   </div>
 
-                  <Button onClick={() => setShowCheckoutForm(true)} variant="luxury" size="lg" className="w-full mb-3">Continue to Order Details</Button>
+                  <Button onClick={handleCheckoutStart} variant="luxury" size="lg" className="w-full mb-3">Continue to Order Details</Button>
                   <Button onClick={clearCart} variant="outline" size="lg" className="w-full">Clear Cart</Button>
                 </div>
               </div>
