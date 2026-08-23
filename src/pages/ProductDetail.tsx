@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { getDandleProduct } from "@/catalog/dandleCatalog";
@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { products } from "@/types/product";
+import { isNorthCoastCampaignSession, trackCampaign } from "@/lib/campaign";
 
 const formatPrice = (price: number) =>
   new Intl.NumberFormat("en-EG", {
@@ -30,6 +31,15 @@ export default function ProductDetail() {
     () => products.find((product) => product.id === handle) || null,
     [handle],
   );
+
+  useEffect(() => {
+    if (!handle || !catalogueProduct || !commercialProduct) return;
+    if (!isNorthCoastCampaignSession()) return;
+    trackCampaign("north_coast_product_selected", {
+      handle,
+      productName: commercialProduct.name,
+    });
+  }, [handle, catalogueProduct, commercialProduct]);
 
   if (!catalogueProduct || !commercialProduct) {
     return (
