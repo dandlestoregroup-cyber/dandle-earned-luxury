@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import HeroNorthCoast from "@/components/hero/HeroNorthCoast";
 import NorthCoastConsultation from "@/components/north-coast/NorthCoastConsultation";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
-import { useLang } from "@/hooks/useBilingualText";
+import { useIsArabic } from "@/hooks/useIsArabic";
 import { captureCampaignAttribution, trackCampaign } from "@/lib/campaign";
 
 const ensureMeta = (selector: string, attrs: Record<string, string>) => {
@@ -17,7 +17,7 @@ const ensureMeta = (selector: string, attrs: Record<string, string>) => {
 };
 
 const NorthCoast = () => {
-  const { isArabic } = useLang();
+  const isArabic = useIsArabic();
 
   useEffect(() => {
     captureCampaignAttribution();
@@ -26,12 +26,13 @@ const NorthCoast = () => {
 
   useEffect(() => {
     const title = isArabic
-      ? "دانديل الساحل الشمالي — أقمشة صيفية مقاومة للماء"
-      : "Dandle North Coast — Waterproof Summer Fabrics";
+      ? "دانديل الساحل الشمالي — قماش صيفي مقاوم للماء"
+      : "Dandle North Coast — Waterproof Summer Fabric";
     const description = isArabic
-      ? "أقمشة صيفية مقاومة للماء لكراسي دانديل مع لوحة ألوان ساحلية مختارة. اختار اتجاه اللون ولاقي الكرسي المناسب."
-      : "Waterproof summer fabrics for Dandle recliners with a curated coastal palette. Choose a colour direction and find your recliner.";
+      ? "قماش صيفي مقاوم للماء لكراسي دانديل. استكشف اتجاهات الألوان، اختار الكرسي، وشوفه في أوضتك مع نور."
+      : "Waterproof summer fabric for Dandle recliners. Explore colour directions, choose a recliner and see it in your room with Nour.";
     const canonical = "https://dandle-vie.com/north-coast";
+    const socialImage = "https://dandle-vie.com/images/complete-set-coastal-modern.jpg";
 
     document.title = title;
     ensureMeta('meta[name="description"]', { name: "description", content: description });
@@ -40,11 +41,11 @@ const NorthCoast = () => {
     ensureMeta('meta[property="og:description"]', { property: "og:description", content: description });
     ensureMeta('meta[property="og:url"]', { property: "og:url", content: canonical });
     ensureMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
-    ensureMeta('meta[property="og:image"]', { property: "og:image", content: "https://dandle-vie.com/images/complete-set-coastal-modern.jpg" });
+    ensureMeta('meta[property="og:image"]', { property: "og:image", content: socialImage });
     ensureMeta('meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
     ensureMeta('meta[name="twitter:title"]', { name: "twitter:title", content: title });
     ensureMeta('meta[name="twitter:description"]', { name: "twitter:description", content: description });
-    ensureMeta('meta[name="twitter:image"]', { name: "twitter:image", content: "https://dandle-vie.com/images/complete-set-coastal-modern.jpg" });
+    ensureMeta('meta[name="twitter:image"]', { name: "twitter:image", content: socialImage });
   }, [isArabic]);
 
   return (
