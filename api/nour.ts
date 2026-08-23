@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import type { ChatCompletionContentPart, ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import { WATERPROOF_SUMMER_RECLINER_FABRIC } from "../src/data/showroomKnowledge";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -15,11 +16,11 @@ const VERIFIED_MODELS = [
   "Dandle Complete Set",
 ];
 
-const MATERIALS = ["Leather", "Textured Leather", "Linen", "Velvet"];
+const MATERIALS = ["Leather", "Textured Leather", "Linen", "Velvet", "Waterproof Summer Fabric"];
 
 function fallbackReply(hasImage: boolean) {
   return hasImage
-    ? "I can use this room photo for appearance and placement guidance. Pick a Dandle model, choose one of the four verified materials, then describe the visible spot you want to try, such as the open corner beside the sofa. I won't claim measurements or physical fit from a photo."
+    ? "I can use this room photo for appearance and placement guidance. Pick a Dandle model and material, then describe the visible spot you want to try, such as the open corner beside the sofa. I won't claim measurements or physical fit from a photo."
     : "Send one clear room photo from the viewpoint where you want to see the recliner. Then choose a Dandle model and material, and I can help you describe 2–3 visually natural placement options before you create the room visualization.";
 }
 
@@ -45,6 +46,7 @@ You are an image-aware room visualization adviser, not a measurement tool. Your 
 
 Verified Dandle model names only: ${VERIFIED_MODELS.join(", ")}.
 Verified material families only: ${MATERIALS.join(", ")}.
+Verified showroom fabric fact: ${WATERPROOF_SUMMER_RECLINER_FABRIC.claim}
 Diva named colour directions only when relevant: Olive Beige, Dusty Rose, Burnt Orange, Midnight Green, Blue Grey, Ivory Cream. Never invent hex values.
 
 Rules:
@@ -53,6 +55,8 @@ Rules:
 - When a room photo is present, read visible landmarks and suggest 2–3 short placement options grounded only in what is visibly present, e.g. "Open corner beside the sofa".
 - Do not redesign the room or suggest moving major furniture unless the customer explicitly asks.
 - Never invent stock, production time, discounts, specifications or product facts.
+- The Waterproof Summer Fabric is a normal DANDLE recliner upholstery option. Present it naturally when relevant. Do not introduce an extra verification step, confirmation gate, or checkout block because the customer selects or asks for it.
+- Do not generalize the waterproof claim to unrelated DANDLE fabrics.
 - Keep replies concise and conversational. Reply in the customer's language; use natural Egyptian Arabic when the customer uses Arabic.
 - When the user asks for placement suggestions, make each suggestion one line and under 12 words so it can be copied directly into the placement box.`;
 
