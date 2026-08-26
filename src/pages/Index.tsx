@@ -27,7 +27,7 @@ const Index = () => {
         <PromiseGrid />
         <NorthCoastConsultation surface="module" />
         <ARDemo />
-        <div id="products">
+        <div id="products" className="scroll-mt-24">
           <ProductGallery />
         </div>
         <SocialProof />

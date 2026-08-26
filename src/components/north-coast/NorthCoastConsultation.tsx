@@ -12,10 +12,10 @@ const NorthCoastConsultation = ({ surface = "module" }: { surface?: "module" | "
   const isArabic = useIsArabic();
   const [selected, setSelected] = useState<string | null>(null);
   const palette = allFabricColors.slice(0, 8);
-  const shopHref = `${withCampaignParams("/")}#products`;
+  const shopHref = withCampaignParams("/#products");
 
   return (
-    <section id="find" className="bg-background py-14 md:py-20" dir={isArabic ? "rtl" : "ltr"}>
+    <section id="find" className="scroll-mt-24 bg-background py-14 md:py-20" dir={isArabic ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-6xl px-5">
         <p className="mb-3 text-[11px] tracking-[0.22em] text-muted-foreground">
           {isArabic ? "الساحل الشمالي · اختيارات صيف ٢٠٢٦" : "NORTH COAST · SUMMER 2026"}
@@ -95,7 +95,7 @@ const NorthCoastConsultation = ({ surface = "module" }: { surface?: "module" | "
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-2xl border border-border p-6">
+          <div id="recliners" className="scroll-mt-24 rounded-2xl border border-border p-6">
             <h3 className="mb-2 font-headline text-xl text-foreground">
               {isArabic ? "اختار الكرسي" : "Find the recliner"}
             </h3>

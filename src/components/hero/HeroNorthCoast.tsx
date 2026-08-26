@@ -22,10 +22,16 @@ const HeroNorthCoast = () => {
               : "Waterproof summer fabric for DANDLE recliners, with colour directions made for coastal homes."}
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link to={withCampaignParams("/north-coast")} className="rounded-full bg-primary px-6 py-3 text-sm text-primary-foreground transition-opacity hover:opacity-90">
+            <Link
+              to={withCampaignParams("/north-coast#find")}
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-6 py-3 text-center text-sm text-primary-foreground transition-opacity hover:opacity-90"
+            >
               {isArabic ? "اكتشف القماش" : "Explore the fabric"}
             </Link>
-            <Link to={withCampaignParams("/north-coast#find")} className="rounded-full border border-border px-6 py-3 text-sm text-foreground transition-colors hover:bg-muted">
+            <Link
+              to={withCampaignParams("/north-coast#recliners")}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-foreground/25 bg-background px-6 py-3 text-center text-sm text-foreground transition-colors hover:border-foreground/40 hover:bg-muted"
+            >
               {isArabic ? "لاقي الكرسي المناسب" : "Find my recliner"}
             </Link>
           </div>

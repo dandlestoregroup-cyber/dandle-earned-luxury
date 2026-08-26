@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
@@ -28,6 +28,44 @@ const queryClient = new QueryClient();
 const ProductRedirect = () => {
   const { handle } = useParams();
   return <Navigate to={`/products/${handle}`} replace />;
+};
+
+/**
+ * React Router does not scroll on navigation, so in-page anchors such as
+ * "/north-coast#find" changed the URL and left the visitor where they stood.
+ * This restores both halves of the expected behaviour: jump to the anchor when
+ * the location carries a hash, otherwise start the new page at the top.
+ */
+const ScrollManager = () => {
+  const { pathname, hash, key } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo({ top: 0, left: 0 });
+      return;
+    }
+
+    const id = decodeURIComponent(hash.slice(1));
+    if (!id) return;
+
+    let frame = 0;
+    let attempts = 0;
+
+    // The target section can mount a few frames after the route change.
+    const scrollToTarget = () => {
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (attempts++ < 60) frame = requestAnimationFrame(scrollToTarget);
+    };
+
+    frame = requestAnimationFrame(scrollToTarget);
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, hash, key]);
+
+  return null;
 };
 
 const LanguageDirectionHandler = () => {
@@ -64,6 +102,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <LanguageDirectionHandler />
+          <ScrollManager />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/north-coast" element={<NorthCoast />} />

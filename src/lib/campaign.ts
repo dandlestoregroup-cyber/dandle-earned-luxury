@@ -65,12 +65,19 @@ export function withCampaignParams(path: string): string {
   );
   if (entries.length === 0) return path;
 
-  const [base, existing] = path.split("?");
+  // The hash has to survive intact: a link such as "/north-coast#find" must
+  // become "/north-coast?gclid=...#find", never "/north-coast#find?gclid=...",
+  // which would swallow the attribution into the fragment and break the anchor.
+  const hashIndex = path.indexOf("#");
+  const hash = hashIndex === -1 ? "" : path.slice(hashIndex);
+  const withoutHash = hashIndex === -1 ? path : path.slice(0, hashIndex);
+
+  const [base, existing] = withoutHash.split("?");
   const params = new URLSearchParams(existing || "");
   entries.forEach(([key, value]) => {
     if (!params.has(key)) params.set(key, String(value));
   });
-  return `${base}?${params.toString()}`;
+  return `${base}?${params.toString()}${hash}`;
 }
 
 export type NorthCoastEvent =
