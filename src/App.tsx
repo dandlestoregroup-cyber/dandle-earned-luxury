@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import { CartProvider } from "@/contexts/CartContext";
 import AppInstallPrompt from "@/components/AppInstallPrompt";
 import AppBottomNav from "@/components/AppBottomNav";
+import AppHome from "./pages/AppHome";
+import AppShop from "./pages/AppShop";
+import AppCompare from "./pages/AppCompare";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
@@ -44,7 +47,6 @@ const LanguageDirectionHandler = () => {
         document.documentElement.setAttribute("lang", "en");
       }
     };
-
     updateDirection();
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -54,7 +56,6 @@ const LanguageDirectionHandler = () => {
     observer.observe(document.documentElement, { attributes: true });
     return () => observer.disconnect();
   }, []);
-
   return null;
 };
 
@@ -67,7 +68,10 @@ const App = () => (
         <BrowserRouter>
           <LanguageDirectionHandler />
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<AppHome />} />
+            <Route path="/shop" element={<AppShop />} />
+            <Route path="/compare" element={<AppCompare />} />
+            <Route path="/website" element={<Index />} />
             <Route path="/north-coast" element={<NorthCoast />} />
             <Route path="/product/:handle" element={<ProductRedirect />} />
             <Route path="/cart" element={<Cart />} />
