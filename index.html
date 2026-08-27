@@ -2,38 +2,43 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Dandle Recliners - The Seat You Keep Coming Back To</title>
     <meta name="description" content="Comfort crafted with intention — practical enough for every day, premium enough to finish the room. Egyptian-crafted luxury recliners." />
     <meta name="author" content="Dandle Store Group" />
+
+    <meta name="theme-color" content="#B85C38" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="DANDLE" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/dandle-app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/dandle-app-icon.svg" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- English Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Arabic Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Legacy Montserrat (fallback) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Instant warm gradient - appears before React hydrates -->
+
     <style>
       html, body {
         margin: 0;
         padding: 0;
         min-height: 100vh;
+        min-height: 100dvh;
         background: linear-gradient(135deg, hsl(36 52% 90%) 0%, hsl(30 100% 98%) 100%);
       }
-      
-      /* Soft pulse animation for loading state */
       @keyframes soft-pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.85; }
       }
-      
-      #root {
-        min-height: 100vh;
+      #root { min-height: 100vh; min-height: 100dvh; }
+      @media (display-mode: standalone) {
+        body { overscroll-behavior-y: none; }
       }
     </style>
 
