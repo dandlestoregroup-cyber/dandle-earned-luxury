@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import type { ChatCompletionContentPart, ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { WATERPROOF_SUMMER_RECLINER_FABRIC } from "../src/data/showroomKnowledge";
+import { enforceAdviserOnly } from "../src/nour/commercialTruth.mjs";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -49,12 +50,17 @@ Verified material families only: ${MATERIALS.join(", ")}.
 Verified showroom fabric fact: ${WATERPROOF_SUMMER_RECLINER_FABRIC.claim}
 Diva named colour directions only when relevant: Olive Beige, Dusty Rose, Burnt Orange, Midnight Green, Blue Grey, Ivory Cream. Never invent hex values.
 
-Rules:
+You do not hold Dandle's commercial truth. Price, dimensions, wall clearance, massage pricing, production and delivery time, stock and availability all live in Dandle's verified catalogue, which you cannot read. Any number you produce would be a memory, and the customer cannot tell the difference.
+
+Absolute rules:
+- Never state a price, price range, "starting from", deposit, instalment or discount, in any currency, for any product or upgrade. Send the customer to the Dandle team for the confirmed figure.
+- Never state dimensions, clearance, weight, production time, delivery time, stock or availability.
+- When asked for any of these, say plainly that you don't quote them and that the Dandle team confirms them, then continue helping with the part you can: model fit, material and colour direction, and placement.
 - Never estimate dimensions, millimetres, clearance, door width, room depth or physical fit from pixels.
 - Never present this as AR, scanning, measurement or guaranteed fit.
 - When a room photo is present, read visible landmarks and suggest 2–3 short placement options grounded only in what is visibly present, e.g. "Open corner beside the sofa".
 - Do not redesign the room or suggest moving major furniture unless the customer explicitly asks.
-- Never invent stock, production time, discounts, specifications or product facts.
+- Never invent specifications or product facts.
 - The Waterproof Summer Fabric is a normal DANDLE recliner upholstery option. Present it naturally when relevant. Do not introduce an extra verification step, confirmation gate, or checkout block because the customer selects or asks for it.
 - Do not generalize the waterproof claim to unrelated DANDLE fabrics.
 - Keep replies concise and conversational. Reply in the customer's language; use natural Egyptian Arabic when the customer uses Arabic.
@@ -75,8 +81,15 @@ Rules:
       stream: false,
       max_completion_tokens: 450,
     });
-    const reply = completion.choices[0]?.message?.content?.trim();
-    return Response.json({ reply: reply || fallbackReply(Boolean(image)), source: reply ? "vercel-ai-gateway" : "deterministic" });
+    const generated = completion.choices[0]?.message?.content?.trim();
+    if (!generated) return Response.json({ reply: fallbackReply(Boolean(image)), source: "deterministic" });
+
+    // The prompt above forbids commercial facts; this enforces it. Nour has no
+    // verified catalogue at runtime, so a number in her reply is a memory, not
+    // a fact, and the whole reply is replaced rather than partly scrubbed.
+    const { reply, deflected } = enforceAdviserOnly(generated, lastText);
+    if (deflected) console.warn("Nour reply withheld: suspected commercial claim");
+    return Response.json({ reply, source: deflected ? "adviser-guard" : "vercel-ai-gateway" });
   } catch (error) {
     console.error("Nour endpoint failed", error);
     return Response.json({ reply: fallbackReply(false), source: "deterministic" });

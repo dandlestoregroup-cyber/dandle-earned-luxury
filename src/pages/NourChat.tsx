@@ -3,7 +3,6 @@ import { Camera, CheckCircle2, Loader2, MessageCircle, Paperclip, Send, Sparkles
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { products } from "@/types/product";
 
 type Message = { id: string; role: "user" | "assistant"; content: string };
 type RenderResult = { image: string; attempts: number; source: string };
@@ -57,13 +56,6 @@ function prepareImage(file: File): Promise<PreparedImage> {
   });
 }
 
-function startingPrice(id: string) {
-  const item = products.find((product) => product.id === id);
-  const values = [item?.price, item?.priceManual, item?.pricePower]
-    .filter((value): value is number => typeof value === "number");
-  return values.length ? Math.min(...values) : null;
-}
-
 export default function NourChat() {
   const [isAr, setIsAr] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -87,7 +79,6 @@ export default function NourChat() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const selectedModel = MODELS.find((model) => model.id === modelId)!;
-  const price = startingPrice(modelId);
 
   useEffect(() => {
     document.documentElement.lang = isAr ? "ar" : "en";
@@ -96,19 +87,21 @@ export default function NourChat() {
 
   const canRender = Boolean(roomImage && selectedModel.ready && material && placement.trim() && !renderLoading);
 
+  // Nour hands the customer to Dandle with the choices she helped make, and
+  // nothing she is not entitled to state. Price and production time are the
+  // team's to confirm.
   const whatsAppUrl = useMemo(() => {
     const body = [
       "Dandle Nour confirmation",
       `Model: ${selectedModel.name}`,
       `Material: ${material}`,
       `Colour: ${colour || "Reference colour"}`,
-      `Price: ${price ? `EGP ${price.toLocaleString("en-US")} starting price shown on website` : "Confirm with Dandle"}`,
-      "Production time: Confirm with Dandle",
       `Placement visualized: ${placement}`,
       "I have a Nour room visualization and would like to continue.",
+      "Please confirm price, production time and availability for this configuration.",
     ].join("\n");
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(body)}`;
-  }, [selectedModel.name, material, colour, price, placement]);
+  }, [selectedModel.name, material, colour, placement]);
 
   const attachImage = async (file?: File) => {
     if (!file || !file.type.startsWith("image/")) return;
@@ -217,6 +210,11 @@ export default function NourChat() {
                 {isAr
                   ? "ارفع صورة واحدة للمكان. نور تعمل تصور واقعي للموديل داخل نفس الغرفة. ده تصور للشكل والإحساس، مش قياس هندسي أو AR."
                   : "Upload one room photo. Nour creates a realistic visualization of the selected Dandle inside that same room. It is an appearance tool, not a measurement or AR fit check."}
+              </p>
+              <p className="mt-2 max-w-2xl text-xs leading-relaxed text-charcoal/60">
+                {isAr
+                  ? "نور بتساعدك في الشكل والمكان بس. الأسعار والمقاسات ومواعيد التسليم بيأكدها فريق دانديل."
+                  : "Nour advises on look and placement only. Prices, measurements and delivery times are confirmed by the Dandle team."}
               </p>
             </div>
             <Button variant="outline" onClick={() => setIsAr((value) => !value)}>{isAr ? "EN" : "عربي"}</Button>
