@@ -1,0 +1,33 @@
+{
+  "name": "DANDLE Earned Luxury",
+  "short_name": "DANDLE",
+  "description": "Premium comfort, recliners and guided chair selection from DANDLE Egypt.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F7F1E8",
+  "theme_color": "#B85C38",
+  "orientation": "portrait-primary",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/dandle-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nour",
+      "short_name": "Nour",
+      "description": "Get help choosing the right DANDLE chair",
+      "url": "/nour-chat"
+    },
+    {
+      "name": "Cart",
+      "short_name": "Cart",
+      "url": "/cart"
+    }
+  ]
+}
