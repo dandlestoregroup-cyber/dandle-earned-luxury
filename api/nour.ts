@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import type { ChatCompletionContentPart, ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { WATERPROOF_SUMMER_RECLINER_FABRIC } from "../src/data/showroomKnowledge";
+import { enforceAdviserOnly } from "./_lib/commercialTruth";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -54,7 +55,8 @@ Rules:
 - Never present this as AR, scanning, measurement or guaranteed fit.
 - When a room photo is present, read visible landmarks and suggest 2–3 short placement options grounded only in what is visibly present, e.g. "Open corner beside the sofa".
 - Do not redesign the room or suggest moving major furniture unless the customer explicitly asks.
-- Never invent stock, production time, discounts, specifications or product facts.
+- Never state prices, instalments, deposits, discounts, stock, production time, delivery time, warranty terms, dimensions or other commercial facts. Those must come from Dandle's verified commercial source.
+- Never invent specifications or product facts.
 - The Waterproof Summer Fabric is a normal DANDLE recliner upholstery option. Present it naturally when relevant. Do not introduce an extra verification step, confirmation gate, or checkout block because the customer selects or asks for it.
 - Do not generalize the waterproof claim to unrelated DANDLE fabrics.
 - Keep replies concise and conversational. Reply in the customer's language; use natural Egyptian Arabic when the customer uses Arabic.
@@ -75,8 +77,11 @@ Rules:
       stream: false,
       max_completion_tokens: 450,
     });
-    const reply = completion.choices[0]?.message?.content?.trim();
-    return Response.json({ reply: reply || fallbackReply(Boolean(image)), source: reply ? "vercel-ai-gateway" : "deterministic" });
+    const generated = completion.choices[0]?.message?.content?.trim();
+    if (!generated) return Response.json({ reply: fallbackReply(Boolean(image)), source: "deterministic" });
+
+    const { reply, deflected } = enforceAdviserOnly(generated, lastText);
+    return Response.json({ reply, source: deflected ? "adviser-guard" : "vercel-ai-gateway" });
   } catch (error) {
     console.error("Nour endpoint failed", error);
     return Response.json({ reply: fallbackReply(false), source: "deterministic" });
