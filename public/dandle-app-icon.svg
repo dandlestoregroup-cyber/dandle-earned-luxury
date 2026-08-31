@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="DANDLE">
+  <rect width="512" height="512" rx="116" fill="#F7F1E8"/>
+  <circle cx="256" cy="256" r="184" fill="#B85C38"/>
+  <text x="256" y="325" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="230" font-weight="700" fill="#FFF9F2">D</text>
+</svg>

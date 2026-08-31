@@ -3,4 +3,12 @@ import App from "./App.tsx";
 import "./index.css";
 import "./i18n/config";
 
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      // App remains fully usable as a normal website if registration fails.
+    });
+  });
+}
+
 createRoot(document.getElementById("root")!).render(<App />);
