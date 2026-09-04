@@ -1,4 +1,4 @@
-import { getVerifiedUnitPrice } from "./_lib/catalog";
+import { getVerifiedUnitPrice } from "./_lib/catalog.js";
 
 type OrderIntentBody = {
   customer?: {
