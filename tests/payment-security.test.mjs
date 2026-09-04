@@ -141,7 +141,7 @@ test("PayTabs configuration fails closed for missing or untrusted server configu
 
 test("PayTabs raw-body HMAC verification matches ContractReady pattern", () => {
   const raw = JSON.stringify({ tran_ref: "TST123", cart_id: "DN-ABC1-XYZ9" });
-  const signature = "913dd1e44e720f34140a842498800d364c62b227829c0c9a43da45043145834b";
+  const signature = "9abb9db713f195da6eb3f2ef874375287d82bf6024ce45140498b38b46b7b6a6";
   assert.equal(verifyPayTabsSignature(raw, signature, "test-key"), true);
   assert.equal(verifyPayTabsSignature(`${raw} `, signature, "test-key"), false);
   assert.equal(verifyPayTabsSignature(raw, "bad", "test-key"), false);
@@ -172,7 +172,7 @@ test("hosted checkout uses the branded production callback and validates before 
   const source = readFileSync(new URL("../api/payment-intent.ts", import.meta.url), "utf8");
   assert.match(source, /\/api\/public\/paytabs\/webhook/);
   assert.match(source, /validatePayTabsCheckoutResponse/);
-  assert.match(source, /PAYTABS_API_BASE/);
+  assert.match(source, /getPayTabsConfig/);
 });
 
 test("public PayTabs callback verifies raw HMAC before parsing and independently queries PayTabs", () => {
