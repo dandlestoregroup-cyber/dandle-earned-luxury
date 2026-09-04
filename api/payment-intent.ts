@@ -13,7 +13,7 @@ import {
   unwrapOrder,
   validatePayTabsCheckoutResponse,
   type PayTabsCheckoutPayload,
-} from "./_lib/payment";
+} from "./_lib/payment.js";
 
 async function recordPaymentState(
   paymentWebhook: string,

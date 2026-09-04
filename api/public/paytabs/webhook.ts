@@ -1,1 +1,1 @@
-export { default } from "../../paytabs-callback";
+export { default } from "../../paytabs-callback.js";

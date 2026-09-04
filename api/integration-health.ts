@@ -1,4 +1,4 @@
-import { getInstapayConfig } from "./_lib/payment";
+import { getInstapayConfig } from "./_lib/payment.js";
 
 const GATEWAY_HEALTH = "https://dandle-commerce-os-gateway.vercel.app/api/health";
 

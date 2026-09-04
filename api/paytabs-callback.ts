@@ -10,7 +10,7 @@ import {
   validateVerifiedPayTabsTransaction,
   verifyPayTabsSignature,
   type VerifiedPayTabsPayload,
-} from "./_lib/payment";
+} from "./_lib/payment.js";
 
 async function recordPaymentState(
   paymentWebhook: string,
