@@ -3,18 +3,17 @@ import {
   clean,
   expectedDepositAmount,
   getInstapayConfig,
+  getPayTabsConfig,
+  getPublicAppOrigin,
   isSettledPayment,
   isUncertainPayment,
   normalizedOrderStatus,
   normalizedPaymentStatus,
   referencePattern,
   unwrapOrder,
+  validatePayTabsCheckoutResponse,
+  type PayTabsCheckoutPayload,
 } from "./_lib/payment";
-
-function getOrigin(request: Request) {
-  const configured = process.env.PUBLIC_SITE_URL?.trim();
-  return (configured || new URL(request.url).origin).replace(/\/$/, "");
-}
 
 async function recordPaymentState(
   paymentWebhook: string,
@@ -34,8 +33,7 @@ export default async function handler(request: Request) {
     return Response.json({ error: "Method not allowed" }, { status: 405 });
   }
 
-  const profileId = process.env.PAYTABS_PROFILE_ID?.trim();
-  const serverKey = process.env.PAYTABS_SERVER_KEY?.trim();
+  const payTabs = getPayTabsConfig();
   const statusUrl = process.env.TAKEAPP_ORDER_STATUS_URL?.trim();
   const statusToken = process.env.TAKEAPP_ORDER_WEBHOOK_TOKEN?.trim();
   const paymentWebhook = process.env.TAKEAPP_PAYMENT_WEBHOOK_URL?.trim();
@@ -104,7 +102,7 @@ export default async function handler(request: Request) {
       return Response.json({ error: "Verified order total is unavailable" }, { status: 422 });
     }
 
-    if (!profileId || !serverKey) {
+    if (!payTabs) {
       return Response.json(
         {
           error: "Card payment is temporarily unavailable",
@@ -120,16 +118,16 @@ export default async function handler(request: Request) {
 
     const customer = (order as Record<string, unknown>).customer;
     const customerRecord = customer && typeof customer === "object" ? (customer as Record<string, unknown>) : {};
-    const origin = getOrigin(request);
+    const origin = getPublicAppOrigin(request.url);
     const paymentRequest: Record<string, unknown> = {
-      profile_id: Number(profileId),
+      profile_id: payTabs.profileId,
       tran_type: "sale",
       tran_class: "ecom",
       cart_id: reference,
       cart_currency: "EGP",
       cart_amount: depositAmount,
       cart_description: `Dandle 40% deposit for ${reference}`,
-      callback: `${origin}/api/paytabs-callback`,
+      callback: `${origin}/api/public/paytabs/webhook`,
       return: `${origin}/order/${encodeURIComponent(reference)}?payment=return`,
     };
 
@@ -146,20 +144,28 @@ export default async function handler(request: Request) {
       };
     }
 
-    const response = await fetch("https://secure-egypt.paytabs.com/payment/request", {
+    const response = await fetch(`${payTabs.apiBase}/payment/request`, {
       method: "POST",
       headers: {
-        authorization: serverKey,
+        Authorization: payTabs.serverKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(paymentRequest),
     });
-    const data = await response.json().catch(() => ({}));
-    const paymentUrl = typeof data?.redirect_url === "string" ? data.redirect_url : "";
-    const transactionRef = typeof data?.tran_ref === "string" ? data.tran_ref : "";
+    const data = (await response.json().catch(() => ({}))) as PayTabsCheckoutPayload;
+    const validation = validatePayTabsCheckoutResponse({
+      httpOk: response.ok,
+      payload: data,
+      expectedReference: reference,
+      expectedAmount: depositAmount,
+      expectedProfileId: payTabs.profileId,
+    });
 
-    if (!response.ok || !paymentUrl || !transactionRef) {
-      console.error("PayTabs payment page creation failed", { status: response.status, trace: data?.trace });
+    if (!validation.ok) {
+      console.error("PayTabs payment page creation rejected", {
+        status: response.status,
+        reason: validation.reason,
+      });
       await recordPaymentState(paymentWebhook, statusToken, {
         type: "PAYMENT_UPDATE",
         reference,
@@ -185,14 +191,15 @@ export default async function handler(request: Request) {
       );
     }
 
-    // Record an active PayTabs attempt before exposing the redirect URL. This
-    // blocks a parallel InstaPay fallback until PayTabs is conclusively unpaid.
     await recordPaymentState(paymentWebhook, statusToken, {
       type: "PAYMENT_UPDATE",
       reference,
+      idempotencyKey: `paytabs:${validation.tranRef}:pending`,
       payment: {
         provider: "PayTabs",
-        transactionRef,
+        transactionRef: validation.tranRef,
+        checkoutUrl: validation.redirectUrl,
+        profileId: payTabs.profileId,
         status: "PAYMENT_PENDING",
         safeFailureReason: null,
         amount: depositAmount,
@@ -204,8 +211,8 @@ export default async function handler(request: Request) {
     return Response.json(
       {
         paymentAvailable: true,
-        paymentUrl,
-        transactionRef,
+        paymentUrl: validation.redirectUrl,
+        transactionRef: validation.tranRef,
         reference,
         depositAmount,
         currency: "EGP",
@@ -215,7 +222,7 @@ export default async function handler(request: Request) {
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
-    console.error("Payment intent failed", error);
+    console.error("Payment intent failed", error instanceof Error ? error.message : "unknown_error");
     return Response.json(
       {
         error: "Payment service is temporarily unavailable",
