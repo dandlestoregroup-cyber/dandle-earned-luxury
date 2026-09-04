@@ -1,190 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <!-- Main Pages -->
-  <url>
-    <loc>https://dandle-comfort.vercel.app/</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
+  <url><loc>https://dandle-vie.com/</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://dandle-vie.com/north-coast</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 
-  <!-- Product Pages -->
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/diva</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/diva-red-front.jpg</image:loc>
-      <image:title>Diva Red Recliner - Front View</image:title>
-    </image:image>
-  </url>
+  <url><loc>https://dandle-vie.com/products/relaxmax</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/relaxmax-hero-offwhite.jpg</image:loc><image:title>RelaxMax Recliner</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/spacesaver</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/spacesaver-red-front.webp</image:loc><image:title>SpaceSaver Recliner</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/easyup-compact</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/easyup-compact-grey-front.webp</image:loc><image:title>EasyUp Compact Lift Recliner</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/worknest</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/worknest-blue-front.webp</image:loc><image:title>WorkNest Recliner</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/easyup</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/easyup-standard-grey-front.webp</image:loc><image:title>EasyUp Lift Recliner</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/comfortplus</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/comfortplus-tan-front.webp</image:loc><image:title>ComfortPlus Recliner</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/cozycompanion</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/cozycompanion-beige-front.jpg</image:loc><image:title>CozyCompanion Loveseat</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/diva</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.9</priority><image:image><image:loc>https://dandle-vie.com/images/diva-red-front.jpg</image:loc><image:title>Diva Recliner</image:title></image:image></url>
+  <url><loc>https://dandle-vie.com/products/complete-set</loc><lastmod>2026-09-04</lastmod><changefreq>weekly</changefreq><priority>0.8</priority><image:image><image:loc>https://dandle-vie.com/images/complete-set-classic.jpg</image:loc><image:title>Dandle Complete Living Room Set</image:title></image:image></url>
 
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/relaxmax</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/relaxmax-hero-offwhite.jpg</image:loc>
-      <image:title>RelaxMax Off-White Hero Shot</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/relaxmax-lifestyle-day.png</image:loc>
-      <image:title>RelaxMax Lifestyle Day Setting</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/relaxmax-lifestyle-night.png</image:loc>
-      <image:title>RelaxMax Lifestyle Night Setting</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/relaxmax-brown-lifestyle.jpg</image:loc>
-      <image:title>RelaxMax Brown Lifestyle</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/cozycompanion</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/cozycompanion-beige-front.jpg</image:loc>
-      <image:title>CozyCompanion Beige Front</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/cozycompanion-yellow-front.jpg</image:loc>
-      <image:title>CozyCompanion Yellow Front</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/cozycompanion-couple-lifestyle.jpg</image:loc>
-      <image:title>CozyCompanion Couple Lifestyle</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/worknest</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/worknest-blue-front.webp</image:loc>
-      <image:title>WorkNest Blue Front</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/spacesaver</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/spacesaver-red-front.webp</image:loc>
-      <image:title>SpaceSaver Red Front</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/spacesaver-offwhite-reclined.jpg</image:loc>
-      <image:title>SpaceSaver Off-White Reclined</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/spacesaver-offwhite-side.jpg</image:loc>
-      <image:title>SpaceSaver Off-White Side View</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/comfortplus</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/comfortplus-tan-front.webp</image:loc>
-      <image:title>ComfortPlus Tan Front</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/easyup-standard</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/easyup-standard-grey-front.webp</image:loc>
-      <image:title>EasyUp Standard Grey Front</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/easyup-beige-front.jpg</image:loc>
-      <image:title>EasyUp Standard Beige Front</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/easyup-beige-lifted.jpg</image:loc>
-      <image:title>EasyUp Standard Beige Lifted</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/easyup-compact</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/easyup-compact-grey-front.webp</image:loc>
-      <image:title>EasyUp Compact Grey Front</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/easyup-compact-charcoal-front.jpg</image:loc>
-      <image:title>EasyUp Compact Charcoal Front</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/easyup-compact-charcoal-reclined.png</image:loc>
-      <image:title>EasyUp Compact Charcoal Reclined</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/easyup-compact-charcoal-side.png</image:loc>
-      <image:title>EasyUp Compact Charcoal Side View</image:title>
-    </image:image>
-  </url>
-
-  <url>
-    <loc>https://dandle-comfort.vercel.app/products/complete-set</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/complete-set-classic.jpg</image:loc>
-      <image:title>Complete Set Classic</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/complete-set-coastal-modern.jpg</image:loc>
-      <image:title>Complete Set Coastal Modern</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/complete-set-family-modern.jpg</image:loc>
-      <image:title>Complete Set Family Modern</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/complete-set-modern-fireplace.jpg</image:loc>
-      <image:title>Complete Set Modern Fireplace</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://dandle-comfort.vercel.app/images/complete-set-sunset-fireplace.jpg</image:loc>
-      <image:title>Complete Set Sunset Fireplace</image:title>
-    </image:image>
-  </url>
-
-  <!-- API Endpoints for Crawlers -->
-  <url>
-    <loc>https://dandle-comfort.vercel.app/images-manifest.json</loc>
-    <lastmod>2025-12-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
+  <url><loc>https://dandle-vie.com/about</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dandle-vie.com/delivery</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dandle-vie.com/payment</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dandle-vie.com/installation</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dandle-vie.com/returns</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dandle-vie.com/warranty</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dandle-vie.com/faq</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dandle-vie.com/contact</loc><lastmod>2026-09-04</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

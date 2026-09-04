@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { getDandleProduct } from "@/catalog/dandleCatalog";
@@ -9,12 +9,34 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { products } from "@/types/product";
 
+const SITE_URL = "https://dandle-vie.com";
+
 const formatPrice = (price: number) =>
   new Intl.NumberFormat("en-EG", {
     style: "currency",
     currency: "EGP",
     maximumFractionDigits: 0,
   }).format(price);
+
+const setMeta = (attribute: "name" | "property", key: string, content: string) => {
+  let element = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
+  if (!element) {
+    element = document.createElement("meta");
+    element.setAttribute(attribute, key);
+    document.head.appendChild(element);
+  }
+  element.content = content;
+};
+
+const setCanonical = (href: string) => {
+  let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "canonical";
+    document.head.appendChild(link);
+  }
+  link.href = href;
+};
 
 export default function ProductDetail() {
   const { handle } = useParams<{ handle: string }>();
@@ -30,6 +52,68 @@ export default function ProductDetail() {
     () => products.find((product) => product.id === handle) || null,
     [handle],
   );
+
+  useEffect(() => {
+    const canonical = `${SITE_URL}/products/${handle || ""}`;
+    setCanonical(canonical);
+
+    if (!handle || !catalogueProduct || !commercialProduct) {
+      document.title = "Product not found | Dandle";
+      setMeta("name", "robots", "noindex,nofollow");
+      return;
+    }
+
+    const title = `${catalogueProduct.title} | Dandle Recliners Egypt`;
+    const description = `${catalogueProduct.subtitle}. ${commercialProduct.tagline}. Explore the ${catalogueProduct.title} from Dandle.`;
+    const image = `${SITE_URL}${catalogueProduct.heroImage.src}`;
+    const startingPrice =
+      commercialProduct.price ??
+      commercialProduct.priceManual ??
+      commercialProduct.pricePower ??
+      0;
+
+    document.title = title;
+    setMeta("name", "description", description);
+    setMeta("name", "robots", "index,follow,max-image-preview:large");
+    setMeta("property", "og:type", "product");
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:description", description);
+    setMeta("property", "og:url", canonical);
+    setMeta("property", "og:image", image);
+    setMeta("name", "twitter:title", title);
+    setMeta("name", "twitter:description", description);
+    setMeta("name", "twitter:image", image);
+
+    const existingSchema = document.getElementById("dandle-product-schema");
+    existingSchema?.remove();
+
+    const schema = document.createElement("script");
+    schema.id = "dandle-product-schema";
+    schema.type = "application/ld+json";
+    schema.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: commercialProduct.name,
+      description,
+      image,
+      url: canonical,
+      brand: {
+        "@type": "Brand",
+        name: "Dandle",
+      },
+      offers: {
+        "@type": "Offer",
+        url: canonical,
+        priceCurrency: "EGP",
+        price: startingPrice,
+      },
+    });
+    document.head.appendChild(schema);
+
+    return () => {
+      schema.remove();
+    };
+  }, [handle, catalogueProduct, commercialProduct]);
 
   if (!catalogueProduct || !commercialProduct) {
     return (
