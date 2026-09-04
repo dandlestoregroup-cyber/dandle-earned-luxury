@@ -128,7 +128,7 @@ export const products: Product[] = [
       "Memory Foam Cushioning",
     ],
     targetAudience: "Wellness enthusiasts seeking therapy",
-    imageUrl: "/images/relaxmax-brown-lifestyle.jpg",
+    imageUrl: "/images/comfortplus-tan-front.webp",
   },
   // PRESTIGE TIER - NO discount (0%)
   {
