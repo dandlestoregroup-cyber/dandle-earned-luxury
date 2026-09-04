@@ -21,38 +21,33 @@ const Cart = () => {
     try {
       const cartItems = items.map((item) => ({
         productId: item.product.id,
-        productName: item.product.name,
-        variantTitle: `${item.selectedColor}, ${item.mechanism}`,
+        model: item.product.name,
         color: item.selectedColor,
         mechanism: item.mechanism,
         quantity: item.quantity,
         massageFeature: Boolean(item.massageFeature),
-        handle: item.product.id.toLowerCase().replace(/\s+/g, "-"),
       }));
 
-      const response = await fetch("/api/order-intent", {
+      const response = await fetch("/api/public/paytabs/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
         body: JSON.stringify({ customer: customerData, items: cartItems }),
       });
       const data = await response.json().catch(() => ({}));
 
-      if (!response.ok || !data?.synced || !data?.reference) {
-        console.error("Order submission failed", data);
-        toast.error("Order was not submitted", {
-          description: "Your cart is still here. Please try again after the order service is available.",
+      if (!response.ok || !data?.order || !data?.redirectUrl) {
+        console.error("Secure checkout creation failed", { status: response.status });
+        toast.error("Secure payment could not be started", {
+          description: "Your cart is still here. Nothing was charged.",
         });
         return;
       }
 
-      clearCart();
-      toast.success("Order submitted for review", {
-        description: `Reference: ${data.reference}. No card was charged.`,
-      });
-      navigate(`/order/${encodeURIComponent(data.reference)}`);
+      window.location.assign(data.redirectUrl);
     } catch (error) {
       console.error("Checkout error", error);
-      toast.error("Order was not submitted", {
+      toast.error("Secure payment could not be started", {
         description: "Your cart is still here. Nothing was charged.",
       });
     } finally {
@@ -143,17 +138,17 @@ const Cart = () => {
                   </div>
 
                   <div className="bg-muted/50 rounded-lg p-4 mb-6 border border-bronze/10">
-                    <h3 className="font-headline text-sm font-semibold mb-3 text-foreground">How the order works</h3>
+                    <h3 className="font-headline text-sm font-semibold mb-3 text-foreground">Secure checkout</h3>
                     <ul className="space-y-2 text-sm text-foreground/80">
-                      <li>✓ Submit your order here on Dandle</li>
-                      <li>✓ Dandle reviews, accepts or amends it</li>
-                      <li>✓ Accepted orders unlock the 40% PayTabs deposit</li>
-                      <li>✓ Remaining 60% is due on delivery</li>
-                      <li>✓ Track the same order reference throughout</li>
+                      <li>✓ Review your Dandle order</li>
+                      <li>✓ Dandle verifies the current price and exact configuration</li>
+                      <li>✓ Pay securely on the PayTabs hosted payment page</li>
+                      <li>✓ Return here while Dandle confirms the payment</li>
+                      <li>✓ Your order is confirmed only after server verification</li>
                     </ul>
                   </div>
 
-                  <Button onClick={() => setShowCheckoutForm(true)} variant="luxury" size="lg" className="w-full mb-3">Continue to Order Details</Button>
+                  <Button onClick={() => setShowCheckoutForm(true)} variant="luxury" size="lg" className="w-full mb-3">Review order & pay</Button>
                   <Button onClick={clearCart} variant="outline" size="lg" className="w-full">Clear Cart</Button>
                 </div>
               </div>

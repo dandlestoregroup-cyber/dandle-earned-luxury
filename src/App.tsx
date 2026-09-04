@@ -12,6 +12,7 @@ import NorthCoast from "./pages/NorthCoast";
 import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
 import OrderStatus from "./pages/OrderStatus";
+import PaymentResult from "./pages/PaymentResult";
 import NotFound from "./pages/NotFound";
 import About from "./pages/trust/About";
 import Warranty from "./pages/trust/Warranty";
@@ -69,6 +70,7 @@ const App = () => (
             <Route path="/north-coast" element={<NorthCoast />} />
             <Route path="/product/:handle" element={<ProductRedirect />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout/payment-result" element={<PaymentResult />} />
             <Route path="/nour-chat" element={<NourChat />} />
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />

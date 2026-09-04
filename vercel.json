@@ -12,5 +12,11 @@
         { "key": "X-Content-Type-Options", "value": "nosniff" }
       ]
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/paytabs-reconcile",
+      "schedule": "*/10 * * * *"
+    }
   ]
 }
