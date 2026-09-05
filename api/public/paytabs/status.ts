@@ -21,6 +21,9 @@ export async function GET(request: Request) {
           imageUrl: line.imageUrl,
           mechanism: line.mechanism,
           quantity: line.quantity,
+          options: line.options,
+          baseUnitPrice: line.baseUnitPrice,
+          optionSurcharge: line.optionSurcharge,
           unitPrice: line.unitPrice,
           lineTotal: line.lineTotal,
         }))
