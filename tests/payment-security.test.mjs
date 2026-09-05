@@ -223,15 +223,22 @@ test("database settlement is atomic, immutable and duplicate-safe", () => {
   assert.match(migration, /checkout snapshot is immutable/i);
 });
 
-test("reconciliation uses only pending PayTabs orders and the atomic settlement RPC", () => {
+test("reconciliation is ten-minute, secretless OIDC-authenticated and uses atomic settlement", () => {
   const reconcile = readFileSync(new URL("../api/cron/paytabs-reconcile.ts", import.meta.url), "utf8");
   const store = readFileSync(new URL("../api/_lib/supabase-orders.ts", import.meta.url), "utf8");
   const scheduler = readFileSync(new URL("../.github/workflows/paytabs-reconcile.yml", import.meta.url), "utf8");
+  const env = readFileSync(new URL("../.env.example", import.meta.url), "utf8");
   assert.match(store, /status:\s*"eq\.pending_payment"/);
   assert.match(reconcile, /settleOrderPaid\(order\.id/);
   assert.match(reconcile, /validateVerifiedPayTabsTransaction/);
+  assert.match(reconcile, /token\.actions\.githubusercontent\.com/);
+  assert.match(reconcile, /workflow_ref === GITHUB_WORKFLOW_REF/);
+  assert.match(reconcile, /claims\.ref === "refs\/heads\/main"/);
   assert.match(scheduler, /cron:\s*["']\*\/10 \* \* \* \*["']/);
-  assert.match(scheduler, /Authorization: Bearer \$\{CRON_SECRET\}/);
+  assert.match(scheduler, /id-token:\s*write/);
+  assert.match(scheduler, /ACTIONS_ID_TOKEN_REQUEST_TOKEN/);
+  assert.doesNotMatch(scheduler, /secrets\.CRON_SECRET/);
+  assert.doesNotMatch(env, /^CRON_SECRET=/m);
 });
 
 test("PayTabs server key never enters browser source or payment request body", () => {
