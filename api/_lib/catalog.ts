@@ -1,4 +1,5 @@
 export type Mechanism = "manual" | "power";
+export type BaseType = "fixed" | "swivel" | "swivel360";
 
 export type CheckoutLineInput = {
   productId?: unknown;
@@ -6,6 +7,7 @@ export type CheckoutLineInput = {
   color?: unknown;
   mechanism?: unknown;
   quantity?: unknown;
+  options?: unknown;
   massageFeature?: unknown;
   sku?: unknown;
 };
@@ -17,6 +19,17 @@ type ProductDefinition = {
   prices: { manual: number; power: number };
   colors: ColorDefinition[];
   massageEligible?: boolean;
+};
+
+export type ResolvedCheckoutOptions = {
+  baseType: BaseType;
+  giftWrap: boolean;
+  engraving: boolean;
+  cupHolder: boolean;
+  usbPort: boolean;
+  sidePocket: boolean;
+  massageFeature: boolean;
+  specialNotes: string;
 };
 
 const COLORS = {
@@ -94,7 +107,6 @@ export const SERVER_CATALOG: Record<string, ProductDefinition> = {
     title: "Dandle Complete Sets",
     imageUrl: "/images/complete-set-classic.jpg",
     prices: { manual: 65_000, power: 95_000 },
-    // The existing Complete Set selector intentionally exposes the full fabric collection.
     colors: ALL_FABRICS,
   },
 };
@@ -103,7 +115,16 @@ export const SERVER_PRICES = Object.fromEntries(
   Object.entries(SERVER_CATALOG).map(([id, product]) => [id, { ...product.prices }]),
 );
 
-const MASSAGE_ADDON_EGP = 9_000;
+export const OPTION_PRICES_EGP = {
+  swivel: 1_200,
+  swivel360: 2_500,
+  giftWrap: 1_500,
+  engraving: 3_000,
+  cupHolder: 450,
+  usbPort: 750,
+  sidePocket: 350,
+  massageFeature: 9_000,
+} as const;
 
 const clean = (value: unknown, max = 200) =>
   typeof value === "string" ? value.trim().slice(0, max) : "";
@@ -131,14 +152,69 @@ function resolveColor(product: ProductDefinition, rawColor: unknown) {
   return canonicalColorLabel(match);
 }
 
+function readOptionsRecord(value: unknown) {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+export function resolveCheckoutOptions(input: CheckoutLineInput, product: ProductDefinition): ResolvedCheckoutOptions {
+  const raw = readOptionsRecord(input.options);
+  const rawBase = clean(raw.baseType, 20).toLowerCase();
+  const baseType: BaseType = rawBase === "swivel" || rawBase === "swivel360" ? rawBase : "fixed";
+  const massageFeature = raw.massageFeature === true || (input.options === undefined && input.massageFeature === true);
+  if (massageFeature && !product.massageEligible) {
+    throw new Error("Massage add-on is not available for selected Dandle model");
+  }
+  return {
+    baseType,
+    giftWrap: raw.giftWrap === true,
+    engraving: raw.engraving === true,
+    cupHolder: raw.cupHolder === true,
+    usbPort: raw.usbPort === true,
+    sidePocket: raw.sidePocket === true,
+    massageFeature,
+    specialNotes: clean(raw.specialNotes, 800),
+  };
+}
+
+export function optionSurcharge(options: ResolvedCheckoutOptions) {
+  let total = 0;
+  if (options.baseType === "swivel") total += OPTION_PRICES_EGP.swivel;
+  if (options.baseType === "swivel360") total += OPTION_PRICES_EGP.swivel360;
+  if (options.giftWrap) total += OPTION_PRICES_EGP.giftWrap;
+  if (options.engraving) total += OPTION_PRICES_EGP.engraving;
+  if (options.cupHolder) total += OPTION_PRICES_EGP.cupHolder;
+  if (options.usbPort) total += OPTION_PRICES_EGP.usbPort;
+  if (options.sidePocket) total += OPTION_PRICES_EGP.sidePocket;
+  if (options.massageFeature) total += OPTION_PRICES_EGP.massageFeature;
+  return roundMoney(total);
+}
+
+function optionSkuSuffix(options: ResolvedCheckoutOptions) {
+  const suffixes: string[] = [];
+  if (options.baseType === "swivel") suffixes.push("SWV");
+  if (options.baseType === "swivel360") suffixes.push("SWV360");
+  if (options.giftWrap) suffixes.push("GW");
+  if (options.engraving) suffixes.push("ENG");
+  if (options.cupHolder) suffixes.push("CUP");
+  if (options.usbPort) suffixes.push("USB");
+  if (options.sidePocket) suffixes.push("PKT");
+  if (options.massageFeature) suffixes.push("MSG");
+  return suffixes.length ? `-${suffixes.join("-")}` : "";
+}
+
 export function buildAuthoritativeSku(
   productId: string,
   color: string,
   mechanism: Mechanism,
-  massageFeature = false,
+  optionsOrMassage: ResolvedCheckoutOptions | boolean = false,
 ) {
   const colorName = color.includes(" (") ? color.slice(0, color.indexOf(" (")) : color;
-  return `DND-${slug(productId)}-${slug(colorName)}-${mechanism.toUpperCase()}${massageFeature ? "-MSG" : ""}`;
+  const options: ResolvedCheckoutOptions = typeof optionsOrMassage === "boolean"
+    ? { ...resolveCheckoutOptions({ options: { massageFeature: optionsOrMassage } }, { title: "", imageUrl: "", prices: { manual: 0, power: 0 }, colors: [], massageEligible: true }) }
+    : optionsOrMassage;
+  return `DND-${slug(productId)}-${slug(colorName)}-${mechanism.toUpperCase()}${optionSkuSuffix(options)}`;
 }
 
 export function getVerifiedUnitPrice(productId: string, mechanism: string, massageFeature: boolean) {
@@ -150,7 +226,7 @@ export function getVerifiedUnitPrice(productId: string, mechanism: string, massa
   if (massageFeature && !product.massageEligible) {
     throw new Error(`Massage add-on is not available for ${productId}`);
   }
-  return roundMoney(product.prices[mechanism] + (massageFeature ? MASSAGE_ADDON_EGP : 0));
+  return roundMoney(product.prices[mechanism] + (massageFeature ? OPTION_PRICES_EGP.massageFeature : 0));
 }
 
 export function resolveAuthoritativeLine(input: CheckoutLineInput) {
@@ -173,13 +249,15 @@ export function resolveAuthoritativeLine(input: CheckoutLineInput) {
     throw new Error("Invalid quantity");
   }
 
-  const massageFeature = input.massageFeature === true;
   const color = resolveColor(product, input.color);
-  const unitPrice = getVerifiedUnitPrice(productId, mechanism, massageFeature);
-  const sku = buildAuthoritativeSku(productId, color, mechanism, massageFeature);
+  const options = resolveCheckoutOptions(input, product);
+  const baseUnitPrice = roundMoney(product.prices[mechanism]);
+  const optionTotal = optionSurcharge(options);
+  const unitPrice = roundMoney(baseUnitPrice + optionTotal);
+  const sku = buildAuthoritativeSku(productId, color, mechanism, options);
   const suppliedSku = clean(input.sku, 160).toUpperCase();
   if (suppliedSku && suppliedSku !== sku) {
-    throw new Error("SKU does not match authoritative Dandle variant");
+    throw new Error("SKU does not match authoritative Dandle configuration");
   }
 
   return {
@@ -190,7 +268,9 @@ export function resolveAuthoritativeLine(input: CheckoutLineInput) {
     imageUrl: product.imageUrl,
     mechanism: mechanism as Mechanism,
     quantity: quantityNumber,
-    massageFeature,
+    options,
+    baseUnitPrice,
+    optionSurcharge: optionTotal,
     unitPrice,
     lineTotal: roundMoney(unitPrice * quantityNumber),
   };
@@ -202,8 +282,6 @@ export function priceAuthoritativeCart(inputs: CheckoutLineInput[]) {
   }
   const lines = inputs.map(resolveAuthoritativeLine);
   const subtotal = roundMoney(lines.reduce((sum, line) => sum + line.lineTotal, 0));
-  // Dandle currently has no separate checkout shipping or discount schedule.
-  // Keep those rules authoritative server-side rather than accepting browser values.
   const shipping = 0;
   const discount = 0;
   const total = roundMoney(subtotal + shipping - discount);
