@@ -6,17 +6,13 @@ import {
   validateVerifiedPayTabsTransaction,
   verifyPayTabsSignature,
   type PayTabsTransaction,
-} from "../../_lib/paytabs";
-import { getOrderById, settleOrderPaid, updateOrder } from "../../_lib/supabase-orders";
+} from "../../_lib/paytabs.js";
+import { getOrderById, settleOrderPaid, updateOrder } from "../../_lib/supabase-orders.js";
 
 const clean = (value: unknown, max = 200) =>
   typeof value === "string" ? value.trim().slice(0, max) : "";
 
-export default async function handler(request: Request) {
-  if (request.method !== "POST") {
-    return Response.json({ error: "Method not allowed" }, { status: 405 });
-  }
-
+export async function POST(request: Request) {
   const payTabs = readPayTabsConfig();
   if (!payTabs) return Response.json({ error: "Payment callback is not configured" }, { status: 503 });
 
