@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto";
+import { createPublicKey, verify as verifySignature } from "node:crypto";
 import {
   mapPayTabsSettlementStatus,
   queryPayTabsTransaction,
@@ -8,17 +8,94 @@ import {
 } from "../_lib/paytabs.js";
 import { listPendingPayTabsOrders, settleOrderPaid, updateOrder } from "../_lib/supabase-orders.js";
 
-function authorized(request: Request) {
-  const expected = process.env.CRON_SECRET?.trim() || "";
-  const supplied = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || "";
-  if (!expected || !supplied) return false;
-  const left = Buffer.from(expected);
-  const right = Buffer.from(supplied);
-  return left.length === right.length && timingSafeEqual(left, right);
+const GITHUB_OIDC_ISSUER = "https://token.actions.githubusercontent.com";
+const GITHUB_OIDC_AUDIENCE = "dandle-paytabs-reconcile";
+const GITHUB_REPOSITORY = "dandlestoregroup-cyber/dandle-earned-luxury";
+const GITHUB_WORKFLOW_REF = `${GITHUB_REPOSITORY}/.github/workflows/paytabs-reconcile.yml@refs/heads/main`;
+const GITHUB_JWKS_URL = "https://token.actions.githubusercontent.com/.well-known/jwks";
+
+type JwtHeader = { alg?: unknown; kid?: unknown };
+type GithubOidcClaims = {
+  iss?: unknown;
+  aud?: unknown;
+  exp?: unknown;
+  nbf?: unknown;
+  repository?: unknown;
+  workflow_ref?: unknown;
+  ref?: unknown;
+  event_name?: unknown;
+};
+
+type Jwk = JsonWebKey & { kid?: string };
+
+function decodeJsonPart<T>(part: string): T | null {
+  try {
+    return JSON.parse(Buffer.from(part, "base64url").toString("utf8")) as T;
+  } catch {
+    return null;
+  }
+}
+
+function audienceMatches(value: unknown) {
+  if (typeof value === "string") return value === GITHUB_OIDC_AUDIENCE;
+  return Array.isArray(value) && value.some((item) => item === GITHUB_OIDC_AUDIENCE);
+}
+
+async function authorizedByGithubOidc(request: Request) {
+  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || "";
+  const parts = token.split(".");
+  if (parts.length !== 3) return false;
+
+  const header = decodeJsonPart<JwtHeader>(parts[0]);
+  if (!header || header.alg !== "RS256" || typeof header.kid !== "string" || !header.kid) return false;
+
+  let jwks: { keys?: Jwk[] };
+  try {
+    const response = await fetch(GITHUB_JWKS_URL, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!response.ok) return false;
+    jwks = (await response.json()) as { keys?: Jwk[] };
+  } catch {
+    return false;
+  }
+
+  const jwk = Array.isArray(jwks.keys) ? jwks.keys.find((key) => key.kid === header.kid) : undefined;
+  if (!jwk) return false;
+
+  try {
+    const publicKey = createPublicKey({ key: jwk, format: "jwk" });
+    const signingInput = Buffer.from(`${parts[0]}.${parts[1]}`, "utf8");
+    const signature = Buffer.from(parts[2], "base64url");
+    if (!verifySignature("RSA-SHA256", signingInput, publicKey, signature)) return false;
+  } catch {
+    return false;
+  }
+
+  const claims = decodeJsonPart<GithubOidcClaims>(parts[1]);
+  if (!claims) return false;
+
+  const now = Math.floor(Date.now() / 1000);
+  const exp = Number(claims.exp);
+  const nbf = claims.nbf === undefined ? null : Number(claims.nbf);
+  if (!Number.isFinite(exp) || exp <= now) return false;
+  if (nbf !== null && (!Number.isFinite(nbf) || nbf > now + 30)) return false;
+
+  return (
+    claims.iss === GITHUB_OIDC_ISSUER &&
+    audienceMatches(claims.aud) &&
+    claims.repository === GITHUB_REPOSITORY &&
+    claims.workflow_ref === GITHUB_WORKFLOW_REF &&
+    claims.ref === "refs/heads/main" &&
+    (claims.event_name === "schedule" || claims.event_name === "workflow_dispatch")
+  );
 }
 
 export async function GET(request: Request) {
-  if (!authorized(request)) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await authorizedByGithubOidc(request))) {
+    return Response.json({ error: "Unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
+  }
 
   const payTabs = readPayTabsConfig();
   if (!payTabs) return Response.json({ error: "PayTabs is not configured" }, { status: 503 });
