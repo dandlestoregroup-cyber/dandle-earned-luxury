@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import type { ChatCompletionContentPart, ChatCompletionMessageParam } from "openai/resources/chat/completions";
-import { WATERPROOF_SUMMER_RECLINER_FABRIC } from "../src/data/showroomKnowledge";
-import { enforceAdviserOnly } from "./_lib/commercialTruth";
+import { WATERPROOF_SUMMER_RECLINER_FABRIC } from "../src/data/showroomKnowledge.js";
+import { enforceAdviserOnly } from "./_lib/commercialTruth.js";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
