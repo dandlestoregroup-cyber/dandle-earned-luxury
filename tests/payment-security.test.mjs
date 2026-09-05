@@ -1,195 +1,162 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import test from "node:test";
-import {
-  canStartInstapayFallback,
-  customerSubmittedInstapayState,
-  expectedDepositAmount,
-  getInstapayConfig,
-  getPayTabsConfig,
-  mapVerifiedPayTabsStatus,
-  validatePayTabsCheckoutResponse,
-  validateVerifiedPayTabsTransaction,
-  verifyPayTabsSignature,
-} from "../api/_lib/payment.ts";
+import { buildAuthoritativeSku, priceAuthoritativeCart, resolveAuthoritativeLine } from "../api/_lib/catalog.ts";
+import { createOrderAccess, verifyOrderAccess } from "../api/_lib/order-access.ts";
 
-test("payable deposit is derived from the verified order total", () => {
-  assert.equal(expectedDepositAmount({ totalPrice: 28_900 }), 11_560);
-  assert.equal(expectedDepositAmount({ total_price: "62,690" }), null);
-  assert.equal(expectedDepositAmount({ total: 62_690 }), 25_076);
+async function loadPayTabsModule() {
+  const sourceUrl = new URL("../api/_lib/paytabs.ts", import.meta.url);
+  const tempUrl = new URL("../api/_lib/.paytabs.test-loader.ts", import.meta.url);
+  const source = readFileSync(sourceUrl, "utf8").replace(
+    'from "./catalog.js";',
+    'from "./catalog.ts";',
+  );
+  writeFileSync(tempUrl, source, "utf8");
+  try {
+    return await import(`${tempUrl.href}?test=${Date.now()}`);
+  } finally {
+    unlinkSync(tempUrl);
+  }
+}
+
+const paytabs = await loadPayTabsModule();
+const validRelaxMax = {
+  productId: "relaxmax",
+  model: "Dandle RelaxMax",
+  color: "Desert Grey (Leather)",
+  mechanism: "power",
+  quantity: 2,
+  massageFeature: false,
+};
+
+test("server pricing ignores browser price and total tampering", () => {
+  const priced = priceAuthoritativeCart([{ ...validRelaxMax, price: 1, unitPrice: 1, total: 1 }]);
+  assert.equal(priced.lines[0].unitPrice, 28_900);
+  assert.equal(priced.total, 57_800);
+  assert.equal(priced.currency, "EGP");
 });
 
-test("InstaPay fallback is allowed only when the first payment is conclusively unpaid", () => {
-  const base = { status: "ACCEPTED", totalPrice: 50_000 };
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "" }), true);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "NOT_PAID" }), true);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "DECLINED" }), true);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "CANCELLED" }), true);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "EXPIRED" }), true);
-
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "PAYMENT_PENDING" }), false);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "INSTAPAY_PENDING" }), false);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "INSTAPAY_VERIFICATION_REQUIRED" }), false);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "DEPOSIT_PAID" }), false);
-  assert.equal(canStartInstapayFallback({ ...base, paymentStatus: "PAID" }), false);
-  assert.equal(canStartInstapayFallback({ ...base, status: "SUBMITTED", paymentStatus: "NOT_PAID" }), false);
+test("model, color, quantity and SKU must match the authoritative variant", () => {
+  const good = resolveAuthoritativeLine(validRelaxMax);
+  assert.equal(good.sku, buildAuthoritativeSku("relaxmax", "Desert Grey (Leather)", "power", false));
+  assert.equal(good.imageUrl, "/images/relaxmax-hero-offwhite.jpg");
+  assert.throws(() => resolveAuthoritativeLine({ ...validRelaxMax, productId: "fake-chair" }), /Unknown Dandle product/);
+  assert.throws(() => resolveAuthoritativeLine({ ...validRelaxMax, model: "Dandle Diva" }), /Model does not match/);
+  assert.throws(() => resolveAuthoritativeLine({ ...validRelaxMax, color: "Oasis Green" }), /Unsupported color/);
+  assert.throws(() => resolveAuthoritativeLine({ ...validRelaxMax, quantity: 0 }), /Invalid quantity/);
+  assert.throws(() => resolveAuthoritativeLine({ ...validRelaxMax, sku: "DND-FAKE" }), /SKU does not match/);
 });
 
-test("verified PayTabs statuses map without trusting caller claims", () => {
-  assert.deepEqual(mapVerifiedPayTabsStatus("A", "Authorised", "000"), {
-    paymentStatus: "DEPOSIT_PAID",
-    safeFailureReason: null,
-    conclusive: true,
+test("ComfortPlus never falls back to a RelaxMax image", () => {
+  const line = resolveAuthoritativeLine({
+    productId: "comfortplus",
+    model: "Dandle ComfortPlus Power",
+    color: "Amber Sand (Nubuck Leather)",
+    mechanism: "power",
+    quantity: 1,
   });
-  assert.equal(mapVerifiedPayTabsStatus("P", "Pending", "").paymentStatus, "PAYMENT_PENDING");
-  assert.equal(mapVerifiedPayTabsStatus("H", "Hold", "").paymentStatus, "PAYMENT_PENDING");
-  assert.equal(mapVerifiedPayTabsStatus("D", "Declined", "05").paymentStatus, "DECLINED");
-  assert.equal(mapVerifiedPayTabsStatus("C", "Cancelled", "").paymentStatus, "CANCELLED");
-  assert.equal(mapVerifiedPayTabsStatus("X", "Expired", "").paymentStatus, "EXPIRED");
-  assert.equal(mapVerifiedPayTabsStatus("?", "Unknown", "").paymentStatus, "PAYMENT_PENDING");
+  assert.equal(line.imageUrl, "/images/comfortplus-tan-front.webp");
+  assert.doesNotMatch(line.imageUrl, /relaxmax/i);
 });
 
-test("PayTabs verification rejects missing transaction, wrong order, wrong currency and wrong amount", () => {
+test("PayTabs payload is full-order EGP with exact callback and return URLs", () => {
+  const orderId = "11111111-1111-4111-8111-111111111111";
+  const payload = paytabs.buildPayTabsPaymentRequest(
+    { profileId: "12345", publicAppUrl: "https://dandle-vie.com" },
+    { id: orderId, total: 57_800 },
+  );
+  assert.equal(payload.profile_id, 12345);
+  assert.equal(payload.cart_id, orderId);
+  assert.equal(payload.cart_currency, "EGP");
+  assert.equal(payload.cart_amount, 57_800);
+  assert.equal(payload.callback, "https://dandle-vie.com/api/public/paytabs/webhook");
+  assert.equal(payload.return, `https://dandle-vie.com/checkout/payment-result?order=${orderId}`);
+});
+
+test("PayTabs checkout requires trusted HTTPS redirect and exact amount/profile/order", () => {
+  const expected = { orderId: "11111111-1111-4111-8111-111111111111", amount: 57_800, currency: "EGP", profileId: "12345" };
   const good = {
-    tran_ref: "TST123",
-    cart_id: "DN-ABC1-XYZ9",
-    cart_currency: "EGP",
-    cart_amount: 10_000,
-    profile_id: 123,
-    payment_result: { response_status: "A" },
+    tran_ref: "TST-1", profile_id: 12345, cart_id: expected.orderId,
+    cart_currency: "EGP", cart_amount: 57_800,
+    redirect_url: "https://secure-egypt.paytabs.com/payment/page/test",
   };
-  assert.equal(validateVerifiedPayTabsTransaction(good, "DN-ABC1-XYZ9", 10_000, 123, "TST123").ok, true);
-
-  assert.deepEqual(
-    validateVerifiedPayTabsTransaction({ ...good, tran_ref: "" }, "DN-ABC1-XYZ9", 10_000, 123),
-    { ok: false, reason: "missing_tran_ref" },
-  );
-  assert.deepEqual(
-    validateVerifiedPayTabsTransaction({ ...good, cart_id: "DN-OTHER-1" }, "DN-ABC1-XYZ9", 10_000, 123),
-    { ok: false, reason: "cart_id_mismatch" },
-  );
-  assert.deepEqual(
-    validateVerifiedPayTabsTransaction({ ...good, cart_currency: "USD" }, "DN-ABC1-XYZ9", 10_000, 123),
-    { ok: false, reason: "currency_mismatch" },
-  );
-  assert.deepEqual(
-    validateVerifiedPayTabsTransaction({ ...good, cart_amount: 1 }, "DN-ABC1-XYZ9", 10_000, 123),
-    { ok: false, reason: "amount_mismatch" },
-  );
-  assert.deepEqual(
-    validateVerifiedPayTabsTransaction({ ...good, profile_id: 999 }, "DN-ABC1-XYZ9", 10_000, 123),
-    { ok: false, reason: "profile_mismatch" },
-  );
+  assert.equal(paytabs.validatePayTabsCreateResponse(good, expected, "https://secure-egypt.paytabs.com").ok, true);
+  assert.equal(paytabs.validatePayTabsCreateResponse({ ...good, redirect_url: "https://evil.example/pay" }, expected, "https://secure-egypt.paytabs.com").ok, false);
+  assert.equal(paytabs.validatePayTabsCreateResponse({ ...good, cart_amount: 1 }, expected, "https://secure-egypt.paytabs.com").reason, "amount_mismatch");
+  assert.equal(paytabs.validatePayTabsCreateResponse({ ...good, profile_id: 999 }, expected, "https://secure-egypt.paytabs.com").reason, "profile_mismatch");
 });
 
-test("PayTabs checkout accepts only an exact matching trusted HTTPS redirect", () => {
-  const good = {
-    tran_ref: "TST123",
-    redirect_url: "https://secure-egypt.paytabs.com/payment/page/123",
-    cart_id: "DN-ABC1-XYZ9",
-    cart_currency: "EGP",
-    cart_amount: 10_000,
-    profile_id: 123,
-  };
-  assert.equal(
-    validatePayTabsCheckoutResponse({
-      httpOk: true,
-      payload: good,
-      expectedReference: "DN-ABC1-XYZ9",
-      expectedAmount: 10_000,
-      expectedProfileId: 123,
-    }).ok,
-    true,
-  );
-  assert.equal(
-    validatePayTabsCheckoutResponse({
-      httpOk: true,
-      payload: { ...good, redirect_url: "https://evil.example/pay" },
-      expectedReference: "DN-ABC1-XYZ9",
-      expectedAmount: 10_000,
-      expectedProfileId: 123,
-    }).ok,
-    false,
-  );
-  assert.equal(
-    validatePayTabsCheckoutResponse({
-      httpOk: true,
-      payload: { ...good, cart_amount: 9_999.99 },
-      expectedReference: "DN-ABC1-XYZ9",
-      expectedAmount: 10_000,
-      expectedProfileId: 123,
-    }).ok,
-    false,
-  );
+test("raw callback HMAC-SHA256 signature is verified", () => {
+  const raw = '{"tran_ref":"TST-1","cart_id":"11111111-1111-4111-8111-111111111111"}';
+  const key = "test-server-key";
+  const signature = paytabs.computePayTabsSignature(raw, key);
+  assert.equal(paytabs.verifyPayTabsSignature(raw, signature, key), true);
+  assert.equal(paytabs.verifyPayTabsSignature(`${raw} `, signature, key), false);
+  assert.equal(paytabs.verifyPayTabsSignature(raw, "00".repeat(32), key), false);
 });
 
-test("PayTabs configuration fails closed for missing or untrusted server configuration", () => {
-  assert.equal(getPayTabsConfig({}), null);
-  assert.equal(
-    getPayTabsConfig({ PAYTABS_PROFILE_ID: "123", PAYTABS_SERVER_KEY: "secret", PAYTABS_API_BASE: "http://secure-egypt.paytabs.com" }),
-    null,
-  );
-  assert.equal(
-    getPayTabsConfig({ PAYTABS_PROFILE_ID: "123", PAYTABS_SERVER_KEY: "secret", PAYTABS_API_BASE: "https://evil.example" }),
-    null,
-  );
-  assert.deepEqual(
-    getPayTabsConfig({ PAYTABS_PROFILE_ID: "123", PAYTABS_SERVER_KEY: "secret", PAYTABS_API_BASE: "https://secure-egypt.paytabs.com" }),
-    { serverKey: "secret", profileId: 123, apiBase: "https://secure-egypt.paytabs.com" },
-  );
+test("verified settlement rejects all identity/value mismatches", () => {
+  const expected = { orderId: "11111111-1111-4111-8111-111111111111", amount: 57_800, currency: "EGP", profileId: "12345", tranRef: "TST-1" };
+  const good = { tran_ref: "TST-1", profile_id: 12345, cart_id: expected.orderId, cart_currency: "EGP", cart_amount: 57_800, payment_result: { response_status: "A" } };
+  assert.equal(paytabs.validateVerifiedPayTabsTransaction(good, expected).ok, true);
+  assert.equal(paytabs.validateVerifiedPayTabsTransaction({ ...good, cart_amount: 57_799 }, expected).reason, "amount_mismatch");
+  assert.equal(paytabs.validateVerifiedPayTabsTransaction({ ...good, cart_currency: "USD" }, expected).reason, "currency_mismatch");
+  assert.equal(paytabs.validateVerifiedPayTabsTransaction({ ...good, profile_id: 8 }, expected).reason, "profile_mismatch");
+  assert.equal(paytabs.validateVerifiedPayTabsTransaction({ ...good, cart_id: "other" }, expected).reason, "cart_id_mismatch");
+  assert.equal(paytabs.validateVerifiedPayTabsTransaction({ ...good, tran_ref: "TST-2" }, expected).reason, "tran_ref_mismatch");
 });
 
-test("PayTabs raw-body HMAC verification matches ContractReady pattern", () => {
-  const raw = JSON.stringify({ tran_ref: "TST123", cart_id: "DN-ABC1-XYZ9" });
-  const signature = "9abb9db713f195da6eb3f2ef874375287d82bf6024ce45140498b38b46b7b6a6";
-  assert.equal(verifyPayTabsSignature(raw, signature, "test-key"), true);
-  assert.equal(verifyPayTabsSignature(`${raw} `, signature, "test-key"), false);
-  assert.equal(verifyPayTabsSignature(raw, "bad", "test-key"), false);
+test("cross-user status isolation requires matching HttpOnly order token", () => {
+  const orderA = "11111111-1111-4111-8111-111111111111";
+  const orderB = "22222222-2222-4222-8222-222222222222";
+  const access = createOrderAccess(orderA);
+  const cookiePair = access.cookie.split(";", 1)[0];
+  assert.equal(verifyOrderAccess(cookiePair, orderA, access.hash), true);
+  assert.equal(verifyOrderAccess(cookiePair, orderB, access.hash), false);
+  assert.equal(verifyOrderAccess(null, orderA, access.hash), false);
 });
 
-test("InstaPay receiving details fail closed when server configuration is incomplete", () => {
-  assert.equal(getInstapayConfig({}), null);
-  assert.equal(getInstapayConfig({ INSTAPAY_RECIPIENT_NAME: "Dandle" }), null);
-  assert.deepEqual(
-    getInstapayConfig({ INSTAPAY_RECIPIENT_NAME: "Dandle", INSTAPAY_RECIPIENT_ID: "verified-id" }),
-    { recipientName: "Dandle", recipientId: "verified-id" },
-  );
-});
-
-test("customer-submitted InstaPay evidence never becomes paid", () => {
-  assert.equal(customerSubmittedInstapayState(), "INSTAPAY_VERIFICATION_REQUIRED");
-  assert.notEqual(customerSubmittedInstapayState(), "PAID");
-  assert.notEqual(customerSubmittedInstapayState(), "DEPOSIT_PAID");
-});
-
-test("payment API does not accept a browser-supplied payable amount", () => {
-  const source = readFileSync(new URL("../api/payment-intent.ts", import.meta.url), "utf8");
-  assert.match(source, /expectedDepositAmount\(order\)/);
-  assert.doesNotMatch(source, /body\?\.(total|totalAmount|depositAmount|amount)/);
-});
-
-test("hosted checkout uses the branded production callback and validates before redirect", () => {
-  const source = readFileSync(new URL("../api/payment-intent.ts", import.meta.url), "utf8");
-  assert.match(source, /\/api\/public\/paytabs\/webhook/);
-  assert.match(source, /validatePayTabsCheckoutResponse/);
-  assert.match(source, /getPayTabsConfig/);
-});
-
-test("public PayTabs callback verifies raw HMAC before parsing and independently queries PayTabs", () => {
-  const source = readFileSync(new URL("../api/paytabs-callback.ts", import.meta.url), "utf8");
-  assert.match(source, /const rawBody = await request\.text\(\)/);
-  assert.match(source, /verifyPayTabsSignature\(rawBody, signature, payTabs\.serverKey\)/);
-  assert.match(source, /JSON\.parse\(rawBody\)/);
-  assert.match(source, /payment\/query/);
+test("webhook verifies raw body before parsing and independently re-queries PayTabs", () => {
+  const source = readFileSync(new URL("../api/public/paytabs/webhook.ts", import.meta.url), "utf8");
+  const rawIndex = source.indexOf("await request.text()");
+  const signatureIndex = source.indexOf("verifyPayTabsSignature(rawBody");
+  const parseIndex = source.indexOf("JSON.parse(rawBody)");
+  assert.ok(rawIndex >= 0 && signatureIndex > rawIndex && parseIndex > signatureIndex);
+  assert.match(source, /queryPayTabsTransaction\(payTabs, tranRef\)/);
   assert.match(source, /validateVerifiedPayTabsTransaction/);
-  assert.doesNotMatch(source, /request\.json\(\)/);
-  assert.doesNotMatch(source, /request\.formData\(\)/);
 });
 
-test("InstaPay submission endpoint cannot mark customer evidence paid", () => {
-  const source = readFileSync(new URL("../api/instapay-submit.ts", import.meta.url), "utf8");
-  assert.match(source, /customerSubmittedInstapayState\(\)/);
-  assert.match(source, /paid: false/);
-  assert.doesNotMatch(source, /status:\s*["']PAID["']/);
-  assert.doesNotMatch(source, /status:\s*["']DEPOSIT_PAID["']/);
+test("database settlement is atomic, immutable and duplicate-safe", () => {
+  const migration = readFileSync(new URL("../supabase/migrations/20260904160000_paytabs_production_orders.sql", import.meta.url), "utf8");
+  assert.match(migration, /for update;/i);
+  assert.match(migration, /if v_order\.status = 'paid'/i);
+  assert.match(migration, /'duplicate', true/i);
+  assert.match(migration, /and status = 'pending_payment'/i);
+  assert.match(migration, /checkout snapshot is immutable/i);
+});
+
+test("reconciliation uses only pending PayTabs orders and the atomic settlement RPC", () => {
+  const reconcile = readFileSync(new URL("../api/cron/paytabs-reconcile.ts", import.meta.url), "utf8");
+  const store = readFileSync(new URL("../api/_lib/supabase-orders.ts", import.meta.url), "utf8");
+  assert.match(store, /status:\s*"eq\.pending_payment"/);
+  assert.match(reconcile, /settleOrderPaid\(order\.id/);
+  assert.match(reconcile, /validateVerifiedPayTabsTransaction/);
+});
+
+test("PayTabs server key never enters browser source or payment request body", () => {
+  const checkout = readFileSync(new URL("../api/public/paytabs/checkout.ts", import.meta.url), "utf8");
+  const cart = readFileSync(new URL("../src/pages/Cart.tsx", import.meta.url), "utf8");
+  const result = readFileSync(new URL("../src/pages/PaymentResult.tsx", import.meta.url), "utf8");
+  const payload = paytabs.buildPayTabsPaymentRequest({ profileId: "12345", publicAppUrl: "https://dandle-vie.com" }, { id: "11111111-1111-4111-8111-111111111111", total: 100 });
+  assert.equal(JSON.stringify(payload).includes("PAYTABS_SERVER_KEY"), false);
+  assert.doesNotMatch(cart, /PAYTABS_SERVER_KEY|serverKey/);
+  assert.doesNotMatch(result, /PAYTABS_SERVER_KEY|serverKey/);
+  assert.match(checkout, /Authorization:\s*payTabs\.serverKey/);
+});
+
+test("legacy deposit and InstaPay payment starters are retired", () => {
+  for (const path of ["payment-intent.ts", "instapay-intent.ts", "instapay-submit.ts"]) {
+    const source = readFileSync(new URL(`../api/${path}`, import.meta.url), "utf8");
+    assert.match(source, /status:\s*410/);
+  }
 });
