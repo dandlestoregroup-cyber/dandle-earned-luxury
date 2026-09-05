@@ -31,8 +31,13 @@ jobs:
       - name: Typecheck app
         run: npx tsc -p tsconfig.app.json --noEmit
 
-      - name: Typecheck Vercel APIs
-        run: npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --lib ES2022,DOM --types node api/*.ts api/_lib/*.ts api/public/paytabs/*.ts
+      - name: Typecheck all Vercel APIs
+        shell: bash
+        run: npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --lib ES2022,DOM --types node $(find api -name '*.ts' -print)
+
+      - name: Typecheck PayTabs runtime ESM
+        shell: bash
+        run: npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck --lib ES2022,DOM --types node api/_lib/catalog.ts api/_lib/order-access.ts api/_lib/paytabs.ts api/_lib/supabase-orders.ts api/public/paytabs/checkout.ts api/public/paytabs/status.ts api/public/paytabs/webhook.ts api/cron/paytabs-reconcile.ts api/integration-health.ts api/order-status.ts
 
       - name: Lint
         run: npm run lint
@@ -43,21 +48,70 @@ jobs:
       - name: Architecture guardrails
         shell: bash
         run: |
-          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'Paymob|paymob_enabled|egypt\.onboarding\.paymob\.com' api src; then
-            echo "Stale Paymob runtime/reference found. Dandle payment architecture is PayTabs with an InstaPay fallback."
+          set -euo pipefail
+          ACTIVE="api/public/paytabs api/cron/paytabs-reconcile.ts src/pages/Cart.tsx src/components/CheckoutForm.tsx src/pages/PaymentResult.tsx src/pages/OrderStatus.tsx"
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'Paymob|paymob_enabled|egypt\.onboarding\.paymob\.com|Stripe|Lemon Squeezy' $ACTIVE; then
+            echo "Non-PayTabs provider found in the active Dandle checkout surface."
             exit 1
           fi
-          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'source: "manual-confirmation"|createdAt: new Date\(\)\.toISOString\(\).*totalPrice: "0"' api src/pages/OrderStatus.tsx; then
-            echo "Fabricated order fallback detected."
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'InstaPay|instapay|40%|Remaining 60%|deposit' $ACTIVE; then
+            echo "Legacy/manual payment flow found in the active Dandle checkout surface."
             exit 1
           fi
-          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'INSTAPAY_RECIPIENT_(NAME|ID)' src; then
-            echo "Server-controlled InstaPay recipient configuration leaked into frontend source."
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'PAYTABS_SERVER_KEY|serverKey' src; then
+            echo "PayTabs server secret reference leaked into frontend source."
+            exit 1
+          fi
+          if ! grep -q 'https://secure-egypt.paytabs.com' api/_lib/paytabs.ts; then
+            echo "Egypt PayTabs API base is not locked."
+            exit 1
+          fi
+          if ! grep -q '/api/public/paytabs/webhook' api/_lib/paytabs.ts; then
+            echo "Production PayTabs callback route is missing."
+            exit 1
+          fi
+          EXTENSIONLESS="$(grep -RhE 'from "\.\.?/[^\"]+";' api/public/paytabs api/cron/paytabs-reconcile.ts api/_lib/paytabs.ts 2>/dev/null | grep -vE '\.(js|ts)";' || true)"
+          if [ -n "$EXTENSIONLESS" ]; then
+            echo "$EXTENSIONLESS"
+            echo "Extensionless runtime import found in PayTabs Vercel path."
+            exit 1
+          fi
+          if grep -Rni -E '^export default async function handler' api/public/paytabs api/cron/paytabs-reconcile.ts api/order-status.ts; then
+            echo "Legacy Vercel handler signature found in payment/status routes."
+            exit 1
+          fi
+          grep -q 'export async function POST' api/public/paytabs/checkout.ts
+          grep -q 'export async function POST' api/public/paytabs/webhook.ts
+          grep -q 'export async function GET' api/public/paytabs/status.ts
+          grep -q 'export async function GET' api/cron/paytabs-reconcile.ts
+          grep -q 'export async function GET' api/order-status.ts
+
+          for retired in api/order-intent.ts api/payment-intent.ts api/instapay-intent.ts api/instapay-submit.ts api/paytabs-callback.ts; do
+            if [ -e "$retired" ]; then
+              echo "Retired payment/order endpoint still deploys: $retired"
+              exit 1
+            fi
+          done
+
+          grep -q 'id-token: write' .github/workflows/paytabs-reconcile.yml
+          grep -q 'ACTIONS_ID_TOKEN_REQUEST_TOKEN' .github/workflows/paytabs-reconcile.yml
+          grep -q 'audience=dandle-paytabs-reconcile' .github/workflows/paytabs-reconcile.yml
+          grep -q 'GITHUB_WORKFLOW_REF' api/cron/paytabs-reconcile.ts
+          grep -q 'verifySignature("RSA-SHA256"' api/cron/paytabs-reconcile.ts
+          if grep -Rni 'CRON_SECRET' .github/workflows/paytabs-reconcile.yml api/cron/paytabs-reconcile.ts api/integration-health.ts; then
+            echo "Reconciliation still depends on a static cron secret."
             exit 1
           fi
 
-      - name: Deploy final live Supabase payment patch
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/live-supabase-final'
+          FUNCTION_COUNT="$(find api -type f -name '*.ts' ! -path 'api/_lib/*' | wc -l | tr -d ' ')"
+          echo "Vercel serverless function count: ${FUNCTION_COUNT}"
+          if [ "$FUNCTION_COUNT" -gt 12 ]; then
+            echo "Vercel Hobby supports at most 12 serverless functions for this project."
+            exit 1
+          fi
+
+      - name: Apply additive PayTabs production migration
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         shell: bash
@@ -67,20 +121,32 @@ jobs:
             echo "SUPABASE_ACCESS_TOKEN is not configured in this repository."
             exit 41
           fi
-          npx --yes supabase@latest functions deploy get-order-status --project-ref rbvbrxjnhmgrtxvwusxr --no-verify-jwt
-          npx --yes supabase@latest functions deploy instapay-intent --project-ref rbvbrxjnhmgrtxvwusxr --no-verify-jwt
+          MIGRATION="supabase/migrations/20260904160000_paytabs_production_orders.sql"
+          jq -Rs '{query:.}' "$MIGRATION" > /tmp/paytabs-migration.json
+          curl --fail-with-body -sS \
+            --request POST \
+            "https://api.supabase.com/v1/projects/rbvbrxjnhmgrtxvwusxr/database/query" \
+            --header "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --data-binary @/tmp/paytabs-migration.json \
+            > /tmp/paytabs-migration-result.json
+          echo "PayTabs migration request succeeded."
 
-      - name: Smoke test live Supabase payment patch
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/live-supabase-final'
+      - name: Verify PayTabs production migration
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
-          BASE="https://rbvbrxjnhmgrtxvwusxr.supabase.co/functions/v1"
-
-          STATUS_JSON="$(curl --fail-with-body -sS "$BASE/get-order-status" -H 'Content-Type: application/json' --data '{"reference":"DN-MT4IDQ65-W805"}')"
-          echo "ORDER_STATUS=$STATUS_JSON"
-          node -e 'const x=JSON.parse(process.argv[1]); if (x.error && /Invalid order reference/.test(x.error)) process.exit(2)' "$STATUS_JSON"
-
-          INSTAPAY_JSON="$(curl --fail-with-body -sS "$BASE/instapay-intent" -H 'Content-Type: application/json' --data '{"probe":true}')"
-          echo "INSTAPAY_PROBE=$INSTAPAY_JSON"
-          node -e 'const x=JSON.parse(process.argv[1]); if (x.available !== true) process.exit(3)' "$INSTAPAY_JSON"
+          QUERY="select to_regclass('public.dandle_orders')::text as table_name, to_regprocedure('public.settle_dandle_paytabs_order(uuid,text,jsonb)')::text as settlement_function;"
+          jq -n --arg query "$QUERY" '{query:$query}' > /tmp/paytabs-verify.json
+          RESULT="$(curl --fail-with-body -sS \
+            --request POST \
+            "https://api.supabase.com/v1/projects/rbvbrxjnhmgrtxvwusxr/database/query" \
+            --header "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --data-binary @/tmp/paytabs-verify.json)"
+          echo "$RESULT" | grep -q 'dandle_orders'
+          echo "$RESULT" | grep -q 'settle_dandle_paytabs_order'
+          echo "PayTabs order table and settlement function verified."
