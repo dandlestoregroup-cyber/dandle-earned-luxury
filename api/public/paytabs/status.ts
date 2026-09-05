@@ -1,11 +1,7 @@
-import { verifyOrderAccess } from "../../_lib/order-access";
-import { getOrderById } from "../../_lib/supabase-orders";
+import { verifyOrderAccess } from "../../_lib/order-access.js";
+import { getOrderById } from "../../_lib/supabase-orders.js";
 
-export default async function handler(request: Request) {
-  if (request.method !== "GET") {
-    return Response.json({ error: "Method not allowed" }, { status: 405 });
-  }
-
+export async function GET(request: Request) {
   const orderId = new URL(request.url).searchParams.get("order")?.trim() || "";
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId)) {
     return Response.json({ error: "Order not found" }, { status: 404 });
