@@ -136,7 +136,7 @@ const OrderStatus = () => {
               {paymentStatus && (
                 <div className="rounded-lg border p-4">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Recorded payment state</p>
-                  <p className="font-medium">{paymentStatus.replaceAll("_", " ")}</p>
+                  <p className="font-medium">{paymentStatus.replace(/_/g, " ")}</p>
                   <p className="text-xs text-muted-foreground mt-2">This legacy page is status-only. New Dandle checkout uses secure card payment via PayTabs.</p>
                 </div>
               )}
