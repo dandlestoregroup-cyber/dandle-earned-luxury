@@ -35,7 +35,7 @@ jobs:
         run: npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --lib ES2022,DOM --types node api/*.ts api/_lib/*.ts api/public/paytabs/*.ts api/cron/*.ts
 
       - name: Typecheck PayTabs runtime ESM
-        run: npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck --lib ES2022,DOM --types node api/_lib/catalog.ts api/_lib/order-access.ts api/_lib/paytabs.ts api/_lib/supabase-orders.ts api/public/paytabs/checkout.ts api/public/paytabs/status.ts api/public/paytabs/webhook.ts api/cron/paytabs-reconcile.ts api/payment-intent.ts api/instapay-intent.ts api/instapay-submit.ts api/paytabs-callback.ts
+        run: npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck --lib ES2022,DOM --types node api/_lib/catalog.ts api/_lib/order-access.ts api/_lib/paytabs.ts api/_lib/supabase-orders.ts api/public/paytabs/checkout.ts api/public/paytabs/status.ts api/public/paytabs/webhook.ts api/cron/paytabs-reconcile.ts
 
       - name: Lint
         run: npm run lint
@@ -58,7 +58,12 @@ jobs:
             echo "Legacy InstaPay recipient configuration leaked into frontend source."
             exit 1
           fi
-          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E '40% PayTabs deposit|Remaining 60%|expectedDepositAmount\(' src api/payment-intent.ts api/public/paytabs; then
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E '40% PayTabs deposit|Remaining 60%|expectedDepositAmount\(' src api/public/paytabs; then
             echo "Legacy deposit checkout detected in the active payment path."
+            exit 1
+          fi
+          FUNCTION_COUNT="$(find api -type f -name '*.ts' ! -path 'api/_lib/*' | wc -l | tr -d ' ')"
+          if [ "$FUNCTION_COUNT" -gt 12 ]; then
+            echo "Vercel Hobby function cap exceeded: $FUNCTION_COUNT serverless functions."
             exit 1
           fi
