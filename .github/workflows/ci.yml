@@ -45,12 +45,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'Paymob|paymob_enabled|egypt\.onboarding\.paymob\.com|Stripe|Lemon Squeezy' api/public api/cron src/pages/Cart.tsx src/components/CheckoutForm.tsx src/pages/PaymentResult.tsx; then
+          ACTIVE="api/public/paytabs api/cron/paytabs-reconcile.ts src/pages/Cart.tsx src/components/CheckoutForm.tsx src/pages/PaymentResult.tsx"
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'Paymob|paymob_enabled|egypt\.onboarding\.paymob\.com|Stripe|Lemon Squeezy' $ACTIVE; then
             echo "Non-PayTabs provider found in the active Dandle checkout surface."
             exit 1
           fi
-          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'InstaPay|instapay' api/public api/cron src/pages/Cart.tsx src/components/CheckoutForm.tsx src/pages/PaymentResult.tsx; then
-            echo "Manual payment fallback found in the active Dandle checkout surface."
+          if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'InstaPay|instapay|40%|deposit' $ACTIVE; then
+            echo "Legacy/manual payment flow found in the active Dandle checkout surface."
             exit 1
           fi
           if grep -Rni --exclude-dir=node_modules --exclude-dir=.git -E 'PAYTABS_SERVER_KEY|serverKey' src; then
@@ -65,9 +66,21 @@ jobs:
             echo "Production PayTabs callback route is missing."
             exit 1
           fi
+          if grep -Rni -E 'from "\.\.?/[^".]+' api/public/paytabs api/cron/paytabs-reconcile.ts api/_lib/paytabs.ts; then
+            echo "Extensionless runtime import found in PayTabs Vercel path."
+            exit 1
+          fi
+          if grep -Rni -E '^export default async function handler' api/public/paytabs api/cron/paytabs-reconcile.ts; then
+            echo "Legacy Vercel handler signature found in active PayTabs route."
+            exit 1
+          fi
+          grep -q 'export async function POST' api/public/paytabs/checkout.ts
+          grep -q 'export async function POST' api/public/paytabs/webhook.ts
+          grep -q 'export async function GET' api/public/paytabs/status.ts
+          grep -q 'export async function GET' api/cron/paytabs-reconcile.ts
 
       - name: Apply additive PayTabs production migration
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/paytabs-production'
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         shell: bash
@@ -89,7 +102,7 @@ jobs:
           echo "PayTabs migration request succeeded."
 
       - name: Verify PayTabs production migration
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/paytabs-production'
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         shell: bash
