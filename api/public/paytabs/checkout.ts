@@ -1,13 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { priceAuthoritativeCart, type CheckoutLineInput } from "../../_lib/catalog";
-import { createOrderAccess } from "../../_lib/order-access";
+import { priceAuthoritativeCart, type CheckoutLineInput } from "../../_lib/catalog.js";
+import { createOrderAccess } from "../../_lib/order-access.js";
 import {
   buildPayTabsPaymentRequest,
   readPayTabsConfig,
   validatePayTabsCreateResponse,
   type PayTabsTransaction,
-} from "../../_lib/paytabs";
-import { createOrder, updateOrder } from "../../_lib/supabase-orders";
+} from "../../_lib/paytabs.js";
+import { createOrder, updateOrder } from "../../_lib/supabase-orders.js";
 
 type CheckoutBody = {
   customer?: Record<string, unknown>;
@@ -33,11 +33,7 @@ function readCustomer(input: Record<string, unknown> | undefined) {
   return customer;
 }
 
-export default async function handler(request: Request) {
-  if (request.method !== "POST") {
-    return Response.json({ error: "Method not allowed" }, { status: 405 });
-  }
-
+export async function POST(request: Request) {
   const payTabs = readPayTabsConfig();
   if (!payTabs) {
     return Response.json({ error: "Secure card payment is not configured" }, { status: 503 });
