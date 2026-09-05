@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: paytabs-reconciliation
@@ -17,16 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Reconcile pending PayTabs orders
-        env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "${CRON_SECRET:-}" ]; then
-            echo "CRON_SECRET is not configured in GitHub Actions."
+          OIDC_RESPONSE="$(curl --fail-with-body --silent --show-error \
+            -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=dandle-paytabs-reconcile")"
+          OIDC_TOKEN="$(printf '%s' "$OIDC_RESPONSE" | jq -r '.value // empty')"
+          if [ -z "$OIDC_TOKEN" ]; then
+            echo "GitHub OIDC token was not issued."
             exit 41
           fi
           curl --fail-with-body --silent --show-error \
             --retry 2 --retry-delay 5 \
-            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "Authorization: Bearer ${OIDC_TOKEN}" \
             https://dandle-vie.com/api/cron/paytabs-reconcile
