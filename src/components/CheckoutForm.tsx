@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/contexts/CartContext";
-import { Loader2 } from "lucide-react";
+import { Loader2, LockKeyhole } from "lucide-react";
 
 interface CheckoutFormProps {
   onSubmit: (data: CustomerData) => void;
@@ -43,9 +43,9 @@ const CheckoutForm = ({ onSubmit, onCancel, isProcessing = false }: CheckoutForm
 
   return (
     <div className="bg-card rounded-lg p-6 shadow-lg animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
-      <h2 className="text-2xl font-bold mb-2">Submit Your Order</h2>
+      <h2 className="text-2xl font-bold mb-2">Review & Pay</h2>
       <p className="text-sm text-muted-foreground mb-6">
-        Your order is submitted for Dandle review first. No card is charged on this step.
+        Secure card payment via PayTabs. Your card details are entered on PayTabs, not stored by Dandle.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -93,23 +93,18 @@ const CheckoutForm = ({ onSubmit, onCancel, isProcessing = false }: CheckoutForm
             <span className="text-lg font-semibold">Order Total:</span>
             <span className="text-2xl font-bold text-accent">{formatPrice(getTotalPrice())}</span>
           </div>
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Deposit after acceptance</span>
-            <span>{formatPrice(Math.round(getTotalPrice() * 0.4))}</span>
-          </div>
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Balance on delivery</span>
-            <span>{formatPrice(Math.round(getTotalPrice() * 0.6))}</span>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            Dandle verifies every model, color, quantity and current price on the server before payment starts.
+          </p>
         </div>
 
         <div className="flex gap-3 pt-4">
           <Button type="button" variant="outline" size="lg" className="flex-1" onClick={onCancel} disabled={isProcessing}>Back to Cart</Button>
           <Button type="submit" variant="luxury" size="lg" className="flex-1" disabled={isProcessing}>
             {isProcessing ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Submitting...</>
+              <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening secure payment...</>
             ) : (
-              "Submit Order"
+              <><LockKeyhole className="w-4 h-4 mr-2" />Pay securely</>
             )}
           </Button>
         </div>
