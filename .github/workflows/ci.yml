@@ -93,25 +93,22 @@ jobs:
             fi
           done
 
+          grep -q 'id-token: write' .github/workflows/paytabs-reconcile.yml
+          grep -q 'ACTIONS_ID_TOKEN_REQUEST_TOKEN' .github/workflows/paytabs-reconcile.yml
+          grep -q 'audience=dandle-paytabs-reconcile' .github/workflows/paytabs-reconcile.yml
+          grep -q 'GITHUB_WORKFLOW_REF' api/cron/paytabs-reconcile.ts
+          grep -q 'verifySignature("RSA-SHA256"' api/cron/paytabs-reconcile.ts
+          if grep -Rni 'CRON_SECRET' .github/workflows/paytabs-reconcile.yml api/cron/paytabs-reconcile.ts api/integration-health.ts; then
+            echo "Reconciliation still depends on a static cron secret."
+            exit 1
+          fi
+
           FUNCTION_COUNT="$(find api -type f -name '*.ts' ! -path 'api/_lib/*' | wc -l | tr -d ' ')"
           echo "Vercel serverless function count: ${FUNCTION_COUNT}"
           if [ "$FUNCTION_COUNT" -gt 12 ]; then
             echo "Vercel Hobby supports at most 12 serverless functions for this project."
             exit 1
           fi
-
-      - name: Verify reconciliation scheduler secret
-        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
-        env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -z "${CRON_SECRET:-}" ]; then
-            echo "CRON_SECRET is not configured in GitHub Actions."
-            exit 41
-          fi
-          echo "Reconciliation scheduler secret is configured."
 
       - name: Apply additive PayTabs production migration
         if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
