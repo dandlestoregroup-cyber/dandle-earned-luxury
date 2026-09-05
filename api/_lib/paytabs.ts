@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { roundMoney } from "./catalog";
+import { roundMoney } from "./catalog.js";
 
 export type PayTabsPaymentResult = {
   response_status?: unknown;
@@ -80,8 +80,12 @@ export function isTrustedPayTabsRedirect(rawUrl: unknown, apiBase: string) {
   if (!value) return false;
   try {
     const redirect = new URL(value);
-    const expectedHost = new URL(apiBase).hostname;
-    return redirect.protocol === "https:" && redirect.hostname === expectedHost;
+    const host = redirect.hostname.toLowerCase();
+    const apiHost = new URL(apiBase).hostname.toLowerCase();
+    return (
+      redirect.protocol === "https:" &&
+      (host === apiHost || host === "paytabs.com" || host.endsWith(".paytabs.com"))
+    );
   } catch {
     return false;
   }
