@@ -35,6 +35,10 @@ jobs:
         shell: bash
         run: npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --skipLibCheck --lib ES2022,DOM --types node $(find api -name '*.ts' -print)
 
+      - name: Typecheck PayTabs runtime ESM
+        shell: bash
+        run: npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck --lib ES2022,DOM --types node api/_lib/catalog.ts api/_lib/order-access.ts api/_lib/paytabs.ts api/_lib/supabase-orders.ts api/public/paytabs/checkout.ts api/public/paytabs/status.ts api/public/paytabs/webhook.ts api/cron/paytabs-reconcile.ts api/integration-health.ts api/payment-intent.ts api/instapay-intent.ts api/instapay-submit.ts
+
       - name: Lint
         run: npm run lint
 
@@ -80,6 +84,27 @@ jobs:
           grep -q 'export async function POST' api/public/paytabs/webhook.ts
           grep -q 'export async function GET' api/public/paytabs/status.ts
           grep -q 'export async function GET' api/cron/paytabs-reconcile.ts
+          test ! -e api/paytabs-callback.ts
+
+          FUNCTION_COUNT="$(find api -type f -name '*.ts' ! -path 'api/_lib/*' | wc -l | tr -d ' ')"
+          echo "Vercel serverless function count: ${FUNCTION_COUNT}"
+          if [ "$FUNCTION_COUNT" -gt 12 ]; then
+            echo "Vercel Hobby supports at most 12 serverless functions for this project."
+            exit 1
+          fi
+
+      - name: Verify reconciliation scheduler secret
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "CRON_SECRET is not configured in GitHub Actions."
+            exit 41
+          fi
+          echo "Reconciliation scheduler secret is configured."
 
       - name: Apply additive PayTabs production migration
         if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'fix/paytabs-production')
