@@ -153,26 +153,55 @@ function resolveColor(product: ProductDefinition, rawColor: unknown) {
 }
 
 function readOptionsRecord(value: unknown) {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
+  if (value === undefined) return {} as Record<string, unknown>;
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("Invalid Dandle configuration options");
+  }
+  return value as Record<string, unknown>;
 }
+
+function readBooleanOption(raw: Record<string, unknown>, key: string) {
+  if (!(key in raw)) return false;
+  if (typeof raw[key] !== "boolean") throw new Error(`Invalid ${key} option`);
+  return raw[key] === true;
+}
+
+const DEFAULT_OPTIONS: ResolvedCheckoutOptions = {
+  baseType: "fixed",
+  giftWrap: false,
+  engraving: false,
+  cupHolder: false,
+  usbPort: false,
+  sidePocket: false,
+  massageFeature: false,
+  specialNotes: "",
+};
 
 export function resolveCheckoutOptions(input: CheckoutLineInput, product: ProductDefinition): ResolvedCheckoutOptions {
   const raw = readOptionsRecord(input.options);
-  const rawBase = clean(raw.baseType, 20).toLowerCase();
-  const baseType: BaseType = rawBase === "swivel" || rawBase === "swivel360" ? rawBase : "fixed";
-  const massageFeature = raw.massageFeature === true || (input.options === undefined && input.massageFeature === true);
+  const rawBase = raw.baseType === undefined ? "fixed" : clean(raw.baseType, 20).toLowerCase();
+  if (rawBase !== "fixed" && rawBase !== "swivel" && rawBase !== "swivel360") {
+    throw new Error("Invalid baseType option");
+  }
+  if (raw.specialNotes !== undefined && typeof raw.specialNotes !== "string") {
+    throw new Error("Invalid specialNotes option");
+  }
+  const massageFeature = input.options === undefined
+    ? input.massageFeature === true
+    : readBooleanOption(raw, "massageFeature");
+  if (input.options === undefined && input.massageFeature !== undefined && typeof input.massageFeature !== "boolean") {
+    throw new Error("Invalid massageFeature option");
+  }
   if (massageFeature && !product.massageEligible) {
     throw new Error("Massage add-on is not available for selected Dandle model");
   }
   return {
-    baseType,
-    giftWrap: raw.giftWrap === true,
-    engraving: raw.engraving === true,
-    cupHolder: raw.cupHolder === true,
-    usbPort: raw.usbPort === true,
-    sidePocket: raw.sidePocket === true,
+    baseType: rawBase,
+    giftWrap: readBooleanOption(raw, "giftWrap"),
+    engraving: readBooleanOption(raw, "engraving"),
+    cupHolder: readBooleanOption(raw, "cupHolder"),
+    usbPort: readBooleanOption(raw, "usbPort"),
+    sidePocket: readBooleanOption(raw, "sidePocket"),
     massageFeature,
     specialNotes: clean(raw.specialNotes, 800),
   };
@@ -211,8 +240,8 @@ export function buildAuthoritativeSku(
   optionsOrMassage: ResolvedCheckoutOptions | boolean = false,
 ) {
   const colorName = color.includes(" (") ? color.slice(0, color.indexOf(" (")) : color;
-  const options: ResolvedCheckoutOptions = typeof optionsOrMassage === "boolean"
-    ? { ...resolveCheckoutOptions({ options: { massageFeature: optionsOrMassage } }, { title: "", imageUrl: "", prices: { manual: 0, power: 0 }, colors: [], massageEligible: true }) }
+  const options = typeof optionsOrMassage === "boolean"
+    ? { ...DEFAULT_OPTIONS, massageFeature: optionsOrMassage }
     : optionsOrMassage;
   return `DND-${slug(productId)}-${slug(colorName)}-${mechanism.toUpperCase()}${optionSkuSuffix(options)}`;
 }
