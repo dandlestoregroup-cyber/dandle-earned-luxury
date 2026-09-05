@@ -26,7 +26,7 @@ type GithubOidcClaims = {
   event_name?: unknown;
 };
 
-type Jwk = JsonWebKey & { kid?: string };
+type Jwk = Record<string, string>;
 
 function decodeJsonPart<T>(part: string): T | null {
   try {
