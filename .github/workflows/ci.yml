@@ -66,7 +66,9 @@ jobs:
             echo "Production PayTabs callback route is missing."
             exit 1
           fi
-          if grep -Rni -E 'from "\.\.?/[^".]+' api/public/paytabs api/cron/paytabs-reconcile.ts api/_lib/paytabs.ts; then
+          EXTENSIONLESS="$(grep -RhE 'from "\.\.?/[^\"]+";' api/public/paytabs api/cron/paytabs-reconcile.ts api/_lib/paytabs.ts 2>/dev/null | grep -vE '\.(js|ts)";' || true)"
+          if [ -n "$EXTENSIONLESS" ]; then
+            echo "$EXTENSIONLESS"
             echo "Extensionless runtime import found in PayTabs Vercel path."
             exit 1
           fi
