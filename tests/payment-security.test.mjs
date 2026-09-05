@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync, unlinkSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import test from "node:test";
 import { buildAuthoritativeSku, priceAuthoritativeCart, resolveAuthoritativeLine } from "../api/_lib/catalog.ts";
 import { createOrderAccess, verifyOrderAccess } from "../api/_lib/order-access.ts";
@@ -138,9 +138,12 @@ test("database settlement is atomic, immutable and duplicate-safe", () => {
 test("reconciliation uses only pending PayTabs orders and the atomic settlement RPC", () => {
   const reconcile = readFileSync(new URL("../api/cron/paytabs-reconcile.ts", import.meta.url), "utf8");
   const store = readFileSync(new URL("../api/_lib/supabase-orders.ts", import.meta.url), "utf8");
+  const scheduler = readFileSync(new URL("../.github/workflows/paytabs-reconcile.yml", import.meta.url), "utf8");
   assert.match(store, /status:\s*"eq\.pending_payment"/);
   assert.match(reconcile, /settleOrderPaid\(order\.id/);
   assert.match(reconcile, /validateVerifiedPayTabsTransaction/);
+  assert.match(scheduler, /cron:\s*["']\*\/10 \* \* \* \*["']/);
+  assert.match(scheduler, /Authorization: Bearer \$\{CRON_SECRET\}/);
 });
 
 test("PayTabs server key never enters browser source or payment request body", () => {
@@ -154,9 +157,15 @@ test("PayTabs server key never enters browser source or payment request body", (
   assert.match(checkout, /Authorization:\s*payTabs\.serverKey/);
 });
 
-test("legacy deposit and InstaPay payment starters are retired", () => {
-  for (const path of ["payment-intent.ts", "instapay-intent.ts", "instapay-submit.ts"]) {
-    const source = readFileSync(new URL(`../api/${path}`, import.meta.url), "utf8");
-    assert.match(source, /status:\s*410/);
+test("legacy TakeApp order, deposit, callback and InstaPay serverless starters are physically removed", () => {
+  for (const path of ["order-intent.ts", "payment-intent.ts", "instapay-intent.ts", "instapay-submit.ts", "paytabs-callback.ts"]) {
+    assert.equal(existsSync(new URL(`../api/${path}`, import.meta.url)), false, `${path} must not deploy`);
   }
+});
+
+test("legacy order page is status-only and cannot initiate the retired payment paths", () => {
+  const source = readFileSync(new URL("../src/pages/OrderStatus.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /\/api\/(payment-intent|instapay-intent|instapay-submit)/);
+  assert.doesNotMatch(source, /40%|Remaining 60%|InstaPay transfer selected/i);
+  assert.match(source, /status-only/i);
 });
