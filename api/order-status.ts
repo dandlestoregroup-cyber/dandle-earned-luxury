@@ -1,10 +1,6 @@
 const referencePattern = /^DN-[A-Z0-9-]{4,48}$/;
 
-export default async function handler(request: Request) {
-  if (request.method !== "GET") {
-    return Response.json({ error: "Method not allowed" }, { status: 405 });
-  }
-
+export async function GET(request: Request) {
   const reference = new URL(request.url).searchParams.get("reference")?.trim() || "";
   if (!referencePattern.test(reference)) {
     return Response.json({ error: "Invalid order reference" }, { status: 400 });
@@ -40,7 +36,7 @@ export default async function handler(request: Request) {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {
-    console.error("TakeApp status bridge failed", error);
+    console.error("TakeApp status bridge failed", error instanceof Error ? error.message : "status_error");
     return Response.json(
       {
         success: false,
