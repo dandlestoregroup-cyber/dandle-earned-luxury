@@ -1,7 +1,4 @@
-export default async function handler(request: Request) {
-  if (request.method !== "POST") {
-    return Response.json({ error: "Method not allowed" }, { status: 405 });
-  }
+export async function POST() {
   return Response.json(
     {
       error: "Legacy deposit checkout is retired. Start secure payment from the Dandle cart.",
