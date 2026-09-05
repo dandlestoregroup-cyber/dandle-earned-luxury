@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
+import { selectedOptionLabels } from "@/lib/cartOptions";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +18,7 @@ const trackBeginCheckout = (value: number, items: Array<Record<string, unknown>>
 };
 
 const Cart = () => {
-  const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
+  const { items, removeItem, updateQuantity, getTotalPrice, getUnitPrice, clearCart } = useCart();
   const navigate = useNavigate();
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -46,7 +47,7 @@ const Cart = () => {
         color: item.selectedColor,
         mechanism: item.mechanism,
         quantity: item.quantity,
-        massageFeature: Boolean(item.massageFeature),
+        options: item.options,
       }));
 
       const response = await fetch("/api/public/paytabs/checkout", {
@@ -109,31 +110,34 @@ const Cart = () => {
             <h1 className="text-5xl font-bold mb-12">Your Cart</h1>
             <div className="grid lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-4">
-                {items.map((item, index) => {
-                  const basePrice = item.mechanism === "power"
-                    ? item.product.pricePower || item.product.price || 0
-                    : item.product.priceManual || item.product.price || 0;
-                  const unitPrice = item.massageFeature ? basePrice + 9000 : basePrice;
+                {items.map((item) => {
+                  const unitPrice = getUnitPrice(item);
+                  const optionLabels = selectedOptionLabels(item.options);
                   return (
-                    <div key={`${item.product.id}-${item.selectedColor}-${item.mechanism}-${index}`} className="bg-card p-6 rounded-lg flex gap-6">
+                    <div key={item.cartKey} className="bg-card p-6 rounded-lg flex gap-6">
                       <img src={item.product.imageUrl} alt={item.product.name} className="w-32 h-32 object-cover rounded-lg" />
                       <div className="flex-1">
                         <h3 className="text-xl font-bold mb-2">{item.product.name}</h3>
                         <p className="text-sm text-muted-foreground mb-2">Color: {item.selectedColor}</p>
                         <p className="text-sm text-muted-foreground mb-2">Mechanism: {item.mechanism}</p>
-                        {item.massageFeature && <p className="text-sm text-accent font-semibold mb-2">Massage feature +9,000 EGP</p>}
-                        <p className="text-lg font-semibold text-accent">{formatPrice(unitPrice)}</p>
+                        {optionLabels.map((label) => (
+                          <p key={label} className="text-sm text-muted-foreground mb-1">{label}</p>
+                        ))}
+                        {item.options.specialNotes && (
+                          <p className="text-sm text-muted-foreground mt-2">Notes: {item.options.specialNotes}</p>
+                        )}
+                        <p className="text-lg font-semibold text-accent mt-3">{formatPrice(unitPrice)}</p>
                       </div>
                       <div className="flex flex-col justify-between items-end">
-                        <Button variant="ghost" size="icon" onClick={() => removeItem(item.product.id, item.selectedColor, item.mechanism)}>
+                        <Button variant="ghost" size="icon" onClick={() => removeItem(item.cartKey)}>
                           <Trash2 className="w-4 h-4" />
                         </Button>
                         <div className="flex items-center gap-3">
-                          <Button variant="outline" size="icon" onClick={() => updateQuantity(item.product.id, item.selectedColor, item.mechanism, item.quantity - 1)}>
+                          <Button variant="outline" size="icon" onClick={() => updateQuantity(item.cartKey, item.quantity - 1)}>
                             <Minus className="w-4 h-4" />
                           </Button>
                           <span className="w-8 text-center font-semibold">{item.quantity}</span>
-                          <Button variant="outline" size="icon" onClick={() => updateQuantity(item.product.id, item.selectedColor, item.mechanism, item.quantity + 1)}>
+                          <Button variant="outline" size="icon" onClick={() => updateQuantity(item.cartKey, item.quantity + 1)}>
                             <Plus className="w-4 h-4" />
                           </Button>
                         </div>
@@ -161,8 +165,8 @@ const Cart = () => {
                   <div className="bg-muted/50 rounded-lg p-4 mb-6 border border-bronze/10">
                     <h3 className="font-headline text-sm font-semibold mb-3 text-foreground">Secure checkout</h3>
                     <ul className="space-y-2 text-sm text-foreground/80">
-                      <li>✓ Review your Dandle order</li>
-                      <li>✓ Dandle verifies the exact model, color and current price</li>
+                      <li>✓ Review your exact Dandle configuration</li>
+                      <li>✓ Dandle recalculates model, color, options and price server-side</li>
                       <li>✓ Secure card payment via PayTabs</li>
                       <li>✓ Dandle confirms payment server-to-server</li>
                     </ul>
