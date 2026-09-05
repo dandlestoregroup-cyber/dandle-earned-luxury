@@ -1,0 +1,32 @@
+name: PayTabs Reconciliation
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: paytabs-reconciliation
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reconcile pending PayTabs orders
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "CRON_SECRET is not configured in GitHub Actions."
+            exit 41
+          fi
+          curl --fail-with-body --silent --show-error \
+            --retry 2 --retry-delay 5 \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            https://dandle-vie.com/api/cron/paytabs-reconcile
