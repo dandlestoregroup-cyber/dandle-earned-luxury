@@ -97,10 +97,7 @@ export default function ProductDetail() {
       description,
       image,
       url: canonical,
-      brand: {
-        "@type": "Brand",
-        name: "Dandle",
-      },
+      brand: { "@type": "Brand", name: "Dandle" },
       offers: {
         "@type": "Offer",
         url: canonical,
@@ -109,10 +106,7 @@ export default function ProductDetail() {
       },
     });
     document.head.appendChild(schema);
-
-    return () => {
-      schema.remove();
-    };
+    return () => schema.remove();
   }, [handle, catalogueProduct, commercialProduct]);
 
   if (!catalogueProduct || !commercialProduct) {
@@ -121,28 +115,22 @@ export default function ProductDetail() {
         <Navigation />
         <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-40 text-center">
           <h1 className="text-4xl">Product not found</h1>
-          <Button className="mt-6" onClick={() => navigate("/")}>
-            Return to the collection
-          </Button>
+          <Button className="mt-6" onClick={() => navigate("/")}>Return to the collection</Button>
         </main>
       </div>
     );
   }
 
-  const gallery =
-    catalogueProduct.gallery.length > 0
-      ? catalogueProduct.gallery
-      : [catalogueProduct.heroImage];
-  const startingPrice =
-    commercialProduct.price ??
-    commercialProduct.priceManual ??
-    commercialProduct.pricePower ??
-    0;
-  const defaultMechanism: "manual" | "power" =
-    commercialProduct.priceManual !== undefined ? "manual" : "power";
-  const defaultColour = commercialProduct.colors[0] || "Confirm with Dandle";
+  const gallery = catalogueProduct.gallery.length > 0 ? catalogueProduct.gallery : [catalogueProduct.heroImage];
+  const startingPrice = commercialProduct.price ?? commercialProduct.priceManual ?? commercialProduct.pricePower ?? 0;
+  const defaultMechanism: "manual" | "power" = commercialProduct.priceManual !== undefined ? "manual" : "power";
+  const listedColour = commercialProduct.colors[0] || "";
+  // "Coordinated Styles" is a collection label, not a sellable color. Use the same visible
+  // first fabric exposed by the complete-set configurator so the server never receives a fake color.
+  const defaultColour = listedColour === "Coordinated Styles" ? "Alexandria Linen" : listedColour;
 
   const handleAddToCart = () => {
+    if (!defaultColour) return;
     for (let item = 0; item < quantity; item += 1) {
       addItem(commercialProduct, defaultColour, defaultMechanism);
     }
@@ -154,73 +142,43 @@ export default function ProductDetail() {
       <Navigation />
       <main className="mx-auto mt-20 max-w-7xl px-4 py-8">
         <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
+          <ArrowLeft className="mr-2 h-4 w-4" />Back
         </Button>
 
         <div className="grid gap-12 md:grid-cols-2">
-          <ProductImageGallery
-            images={gallery}
-            aspectRatio={catalogueProduct.aspectRatio}
-            altPrefix={catalogueProduct.title}
-          />
+          <ProductImageGallery images={gallery} aspectRatio={catalogueProduct.aspectRatio} altPrefix={catalogueProduct.title} />
 
           <div className="space-y-6">
             <div>
-              <h1 className="mb-2 text-4xl md:text-5xl">
-                {catalogueProduct.title}
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                {catalogueProduct.subtitle}
-              </p>
+              <h1 className="mb-2 text-4xl md:text-5xl">{catalogueProduct.title}</h1>
+              <p className="text-xl text-muted-foreground">{catalogueProduct.subtitle}</p>
             </div>
 
             <div className="border-y py-6">
               <p className="text-sm text-muted-foreground">Starting from</p>
               <p className="mt-1 text-3xl">{formatPrice(startingPrice)}</p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Final colour, mechanism, availability, delivery and payment are confirmed by
-                Dandle before order acceptance.
+                Checkout is recalculated from the exact model, fabric, mechanism and selected options by Dandle server-side.
               </p>
             </div>
 
             <div className="space-y-3">
-              <p className="text-sm">
-                Initial selection: {defaultColour} · {defaultMechanism}
-              </p>
+              <p className="text-sm">Initial selection: {defaultColour} · {defaultMechanism}</p>
               <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-                  disabled={quantity <= 1}
-                  aria-label="Reduce quantity"
-                >
-                  −
-                </Button>
+                <Button variant="outline" size="icon" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity <= 1} aria-label="Reduce quantity">−</Button>
                 <span className="w-12 text-center font-semibold">{quantity}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setQuantity((value) => Math.min(10, value + 1))}
-                  disabled={quantity >= 10}
-                  aria-label="Increase quantity"
-                >
-                  +
-                </Button>
+                <Button variant="outline" size="icon" onClick={() => setQuantity((value) => Math.min(10, value + 1))} disabled={quantity >= 10} aria-label="Increase quantity">+</Button>
               </div>
             </div>
 
-            <Button size="lg" className="w-full" onClick={handleAddToCart}>
-              <ShoppingCart className="mr-2 h-5 w-5" />
-              Add to cart
+            <Button size="lg" className="w-full" onClick={handleAddToCart} disabled={!defaultColour}>
+              <ShoppingCart className="mr-2 h-5 w-5" />Add to cart
             </Button>
 
             <div className="border-t pt-6">
               <h2 className="text-xl">About this product</h2>
               <p className="mt-3 leading-relaxed text-muted-foreground">
-                {commercialProduct.tagline}. Review fit with Nour, then Dandle confirms the
-                commercial details before fulfilment.
+                {commercialProduct.tagline}. Review your exact configuration in the cart before secure card payment via PayTabs.
               </p>
             </div>
           </div>
