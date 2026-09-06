@@ -1,42 +1,25 @@
 import { useEffect, useState } from "react";
-import {
-  AlertTriangle,
-  BarChart3,
-  CheckCircle2,
-  CreditCard,
-  ExternalLink,
-  HeartHandshake,
-  MessagesSquare,
-  Package,
-  RefreshCw,
-  ShoppingBag,
-  Store,
-  Users,
-} from "lucide-react";
+import { AlertTriangle, CheckCircle2, CreditCard, RefreshCw, ShieldCheck, ShoppingBag } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
 
-type GatewayHealth = {
-  mode?: string;
+type IntegrationHealth = {
+  ready?: boolean;
   paymentProvider?: string;
-  flags?: Record<string, boolean>;
+  paymentFallback?: string | null;
+  environment?: string;
+  reconciliation?: string;
+  checks?: {
+    payTabs?: boolean;
+    orderStore?: boolean;
+    publicAppUrl?: boolean;
+  };
 };
 
-const TAKE_ADMIN = "https://take.app/admin";
-const TAKE_STORE = "https://dandlestoregroup.com";
-const GATEWAY_HEALTH = "/api/integration-health";
-
-const adminAreas = [
-  { label: "Orders", detail: "Review, accept, amend, reject and fulfil orders", icon: ShoppingBag },
-  { label: "Products", detail: "Commercial names, prices and availability", icon: Package },
-  { label: "Customers", detail: "Customer profiles and order history", icon: Users },
-  { label: "Chats", detail: "Post-order WhatsApp communication", icon: MessagesSquare },
-  { label: "Analytics", detail: "Sales and channel performance", icon: BarChart3 },
-];
+const HEALTH_URL = "/api/integration-health";
 
 export default function BackOfficeHub() {
-  const [health, setHealth] = useState<GatewayHealth | null>(null);
+  const [health, setHealth] = useState<IntegrationHealth | null>(null);
   const [healthError, setHealthError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -44,9 +27,10 @@ export default function BackOfficeHub() {
     setRefreshing(true);
     setHealthError(false);
     try {
-      const response = await fetch(GATEWAY_HEALTH, { cache: "no-store" });
-      if (!response.ok) throw new Error("Health endpoint unavailable");
-      setHealth(await response.json());
+      const response = await fetch(HEALTH_URL, { cache: "no-store" });
+      const payload = (await response.json().catch(() => ({}))) as IntegrationHealth;
+      setHealth(payload);
+      if (!response.ok) setHealthError(true);
     } catch {
       setHealthError(true);
     } finally {
@@ -55,105 +39,83 @@ export default function BackOfficeHub() {
   };
 
   useEffect(() => {
-    loadHealth();
+    void loadHealth();
   }, []);
 
-  const orderReady = Boolean(health?.flags?.takeapp_order_enabled);
-  const statusReady = Boolean(health?.flags?.order_status_enabled);
-  const payTabsReady = Boolean(health?.flags?.paytabs_enabled);
-  const writesEnabled = Boolean(health?.flags?.commerce_os_write_enabled);
+  const orderStoreReady = Boolean(health?.checks?.orderStore);
+  const payTabsReady = Boolean(health?.checks?.payTabs);
+  const publicUrlReady = Boolean(health?.checks?.publicAppUrl);
+  const reconciliationReady = health?.reconciliation === "github-oidc";
+  const fullyReady = Boolean(health?.ready);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
       <main className="flex-1 container mx-auto px-4 pb-20 pt-28">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">Dandle operations</p>
-              <h1 className="mt-3 text-4xl md:text-6xl">One door to the back office.</h1>
-              <p className="mt-4 max-w-2xl text-muted-foreground">
-                Customers submit orders on the Dandle website. TakeApp owns commercial review,
-                acceptance, amendment, fulfilment and customer records. PayTabs is used only when
-                an accepted order is ready for its 40% deposit.
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">DANDLE payment operations</p>
+              <h1 className="mt-3 text-4xl md:text-6xl">One verified order. One verified payment.</h1>
+              <p className="mt-4 max-w-3xl text-muted-foreground">
+                DANDLE creates the order in its server-side order ledger before PayTabs checkout. The full EGP total is verified from the exact model, color, mechanism, options and SKU, then payment is settled only after PayTabs server verification.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button asChild variant="outline">
-                <a href={TAKE_STORE} target="_blank" rel="noreferrer">
-                  <Store className="mr-2 h-4 w-4" /> Open live store
-                </a>
-              </Button>
-              <Button asChild>
-                <a href={TAKE_ADMIN} target="_blank" rel="noreferrer">
-                  Enter TakeApp admin <ExternalLink className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
-            </div>
+            <button onClick={() => void loadHealth()} className="inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted" disabled={refreshing}>
+              <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+              Refresh readiness
+            </button>
           </div>
 
-          <section className="mt-10 grid gap-4 md:grid-cols-3">
-            <StatusCard title="Website order intake" value={orderReady ? "Ready" : "Not connected"} description="Orders are created by the website and sent to TakeApp for review." ok={orderReady} />
-            <StatusCard title="Live order tracking" value={statusReady ? "Ready" : "Not connected"} description="Tracking never invents a status when the TakeApp status bridge is unavailable." ok={statusReady} />
-            <StatusCard title="Online deposit" value={payTabsReady ? "PayTabs ready" : "Not live"} description={payTabsReady ? "Accepted orders can open the verified PayTabs 40% deposit page." : "No card-payment claim is shown until PayTabs and payment recording are configured."} ok={payTabsReady} />
+          <section className="mt-10 grid gap-4 md:grid-cols-4">
+            <StatusCard title="DANDLE order ledger" value={orderStoreReady ? "Ready" : "Pending"} description="Server-side order storage and settlement access." ok={orderStoreReady} />
+            <StatusCard title="PayTabs" value={payTabsReady ? "Configured" : "Pending"} description="Egypt PayTabs profile and server key are available server-side." ok={payTabsReady} />
+            <StatusCard title="Production URL" value={publicUrlReady ? "Correct" : "Pending"} description="Checkout callbacks and returns are anchored to dandle-vie.com." ok={publicUrlReady} />
+            <StatusCard title="Reconciliation" value={reconciliationReady ? "OIDC ready" : "Pending"} description="GitHub Actions can reconcile pending PayTabs orders without a static cron secret." ok={reconciliationReady} />
           </section>
 
-          <section className="mt-10 rounded-2xl border bg-card p-6 md:p-8">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-3xl">TakeApp workspace</h2>
-                <p className="mt-2 text-sm text-muted-foreground">Authentication and sensitive admin actions stay inside TakeApp.</p>
-              </div>
-              <Button asChild size="sm">
-                <a href={TAKE_ADMIN} target="_blank" rel="noreferrer">Sign in <ExternalLink className="ml-2 h-4 w-4" /></a>
-              </Button>
-            </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              {adminAreas.map(({ label, detail, icon: Icon }) => (
-                <a key={label} href={TAKE_ADMIN} target="_blank" rel="noreferrer" className="rounded-xl border bg-background p-4 transition hover:-translate-y-0.5 hover:border-accent/50">
-                  <Icon className="h-5 w-5 text-accent" />
-                  <p className="mt-4 font-semibold">{label}</p>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{detail}</p>
-                </a>
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
+          <section className="mt-10 grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
             <div className="rounded-2xl border bg-card p-6 md:p-8">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Connection readiness</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Release gate</p>
                   <h2 className="mt-2 text-3xl">No false green lights.</h2>
                 </div>
-                <button onClick={loadHealth} className="rounded-full border p-2 text-muted-foreground hover:text-foreground" aria-label="Refresh integration status">
-                  <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
-                </button>
+                {fullyReady ? <CheckCircle2 className="h-7 w-7 text-emerald-600" /> : <AlertTriangle className="h-7 w-7 text-amber-600" />}
               </div>
               <div className="mt-6 space-y-3">
-                <ReadinessRow label="Customer interface on Vercel" ok />
-                <ReadinessRow label="TakeApp order intake configured" ok={orderReady} />
-                <ReadinessRow label="TakeApp order tracking configured" ok={statusReady} />
-                <ReadinessRow label="PayTabs + payment recording configured" ok={payTabsReady} />
-                <ReadinessRow label="Commerce OS protected writes" ok={writesEnabled} />
+                <ReadinessRow label="DANDLE order store service access" ok={orderStoreReady} />
+                <ReadinessRow label="PayTabs production configuration" ok={payTabsReady} />
+                <ReadinessRow label="PUBLIC_APP_URL = https://dandle-vie.com" ok={publicUrlReady} />
+                <ReadinessRow label="Secretless 10-minute reconciliation" ok={reconciliationReady} />
               </div>
-              {healthError && <p className="mt-4 text-sm text-amber-700">Readiness could not be refreshed. No integration is being assumed live.</p>}
+              {healthError && <p className="mt-4 text-sm text-amber-700">Readiness could not be fully verified. No payment integration is being assumed live.</p>}
             </div>
 
-            <div className="rounded-2xl border border-amber-500/30 bg-amber-50 p-6 text-amber-950 md:p-8">
-              <CreditCard className="h-6 w-6" />
+            <div className="rounded-2xl border bg-card p-6 md:p-8">
+              <CreditCard className="h-7 w-7 text-accent" />
               <h2 className="mt-4 text-3xl">Payment rule</h2>
-              <p className="mt-3 text-sm leading-relaxed">
-                Submit → admin review → accept or amend → invoice/payment stage → verified PayTabs
-                40% deposit → remaining 60% on delivery. A redirect is never treated as proof of payment.
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Order created → full EGP total verified → PayTabs hosted checkout → signed callback + independent PayTabs query → atomic paid settlement. A redirect is never proof of payment.
               </p>
+              <div className="mt-5 flex items-start gap-3 rounded-xl border bg-muted/30 p-4 text-sm">
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                <p>No InstaPay fallback, no 40% deposit path, and no browser-controlled payment amount for new checkout.</p>
+              </div>
             </div>
           </section>
 
-          <div className="mt-8 flex items-start gap-3 rounded-xl border bg-card p-4 text-sm text-muted-foreground">
-            <HeartHandshake className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-            <p>WhatsApp is a post-order communication channel, not the order-creation path. Customers keep one website order reference through review, payment, preparation and delivery.</p>
-          </div>
+          <section className="mt-6 rounded-2xl border bg-card p-6 md:p-8">
+            <div className="flex items-start gap-4">
+              <ShoppingBag className="mt-1 h-6 w-6 text-accent" />
+              <div>
+                <h2 className="text-2xl">Order integrity</h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  The order snapshot preserves the exact product configuration and total used for PayTabs. The protected result page reads only DANDLE's verified order state, and reconciliation uses the same settlement rules as the webhook.
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
       <Footer />
