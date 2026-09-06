@@ -3,14 +3,14 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { motion } from "framer-motion";
-import { CreditCard, Smartphone, FileText, Shield, CheckCircle, AlertTriangle } from "lucide-react";
+import { CreditCard, FileText, Shield, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Payment = () => {
   useEffect(() => {
-    document.title = "Payment Information - DANDLE | PayTabs & InstaPay";
+    document.title = "Payment Information - DANDLE | Secure PayTabs Checkout";
     const description =
-      "DANDLE payment: 40% verified deposit after order confirmation. PayTabs is primary; InstaPay is the fallback when card payment cannot complete. 60% balance is due on delivery.";
+      "DANDLE online checkout uses secure PayTabs card payment for the full server-verified order total in EGP. Payment is confirmed only after server-to-server verification.";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) metaDescription.setAttribute("content", description);
     else {
@@ -21,65 +21,53 @@ const Payment = () => {
     }
   }, []);
 
-  const paymentMethods = [
-    {
-      icon: CreditCard,
-      title: "PayTabs — Primary",
-      description:
-        "For accepted or amended orders, Dandle creates a PayTabs hosted payment page using the verified 40% deposit amount. Card details are handled by PayTabs, not stored by Dandle.",
-    },
-    {
-      icon: Smartphone,
-      title: "InstaPay — Fallback",
-      description:
-        "If PayTabs cannot complete and there is no uncertain payment still being verified, the same order can continue through InstaPay using the same reference and server-verified deposit amount.",
-    },
-  ];
-
   const paymentSteps = [
     {
-      step: "40% Deposit",
-      title: "After Dandle Confirms the Order",
+      step: "1",
+      title: "DANDLE Creates the Order",
       description:
-        "The website re-checks the accepted order and calculates the payable deposit from the verified commercial order total before starting payment.",
-      icon: CheckCircle,
+        "Before any PayTabs request is created, DANDLE validates the exact model, color, mechanism, selected options, SKU and current server-side price and stores an internal order UUID.",
     },
     {
-      step: "60% Balance",
-      title: "On Delivery",
+      step: "2",
+      title: "Secure Card Payment via PayTabs",
       description:
-        "The remaining 60% is due on delivery under the current Dandle commercial flow.",
-      icon: CheckCircle,
+        "The full verified order total is sent in EGP to the PayTabs hosted payment page. DANDLE does not collect or store raw card details.",
     },
-  ];
-
-  const invoicingProcess = [
-    "The Dandle order reference remains the same if payment switches from PayTabs to InstaPay.",
-    "PayTabs payment is only treated as paid after server-side verification with PayTabs.",
-    "An InstaPay transfer or transaction reference is evidence only; Dandle verifies receipt before marking the order paid.",
-    "If a PayTabs payment is still pending or uncertain, the customer is told not to make a second payment yet.",
+    {
+      step: "3",
+      title: "Server-to-Server Verification",
+      description:
+        "Returning to DANDLE does not mark an order paid. DANDLE verifies the PayTabs transaction, amount, currency, profile, order ID and transaction reference before settlement.",
+    },
+    {
+      step: "4",
+      title: "Confirmed Once",
+      description:
+        "A verified successful transaction moves the order from pending payment to paid atomically and idempotently, so duplicate callbacks or refreshes cannot create a second settlement.",
+    },
   ];
 
   const securityFeatures = [
     {
-      title: "Server-Verified Amount",
+      title: "Server-Owned Pricing",
       description:
-        "The payment amount comes from the verified order record. A browser cannot lower the amount by changing checkout data.",
+        "Browser totals are never trusted. Product, configuration and option prices are recalculated from DANDLE's server catalogue before checkout.",
+    },
+    {
+      title: "Exact Order Snapshot",
+      description:
+        "The paid order keeps the exact model, color, mechanism, selected options, SKU, quantities and totals used to create the PayTabs request.",
     },
     {
       title: "Verified PayTabs Callback",
       description:
-        "Public callback fields do not decide payment success. Dandle queries PayTabs server-side before recording the payment result.",
+        "The PayTabs callback is signature-checked and the transaction is independently queried before DANDLE records a successful payment.",
     },
     {
-      title: "No Blind Double Payment",
+      title: "Safe Return Page",
       description:
-        "A pending PayTabs transaction blocks InstaPay fallback until the first payment is conclusively unpaid, cancelled, expired or failed.",
-    },
-    {
-      title: "InstaPay Needs Receipt Verification",
-      description:
-        "Clicking a button or entering a transaction reference never marks an InstaPay payment as paid. Dandle must verify receipt.",
+        "The payment result page only reads DANDLE's verified order state. A browser redirect alone can never change an order to paid.",
     },
   ];
 
@@ -89,48 +77,28 @@ const Payment = () => {
       <main className="pt-20">
         <section className="bg-gradient-to-br from-nile-blue/10 via-background to-dandle-orange/5 py-20">
           <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="max-w-4xl mx-auto text-center"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto text-center">
               <CreditCard className="w-16 h-16 mx-auto mb-6 text-dandle-orange" />
-              <h1 className="font-headline text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-nile-blue via-dandle-orange to-bronze bg-clip-text text-transparent">
-                Payment Information
-              </h1>
-              <p className="font-body text-xl md:text-2xl text-foreground/80 leading-relaxed">
-                PayTabs first. InstaPay when PayTabs cannot complete safely.
-              </p>
+              <h1 className="font-headline text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-nile-blue via-dandle-orange to-bronze bg-clip-text text-transparent">Payment Information</h1>
+              <p className="font-body text-xl md:text-2xl text-foreground/80 leading-relaxed">Secure card payment via PayTabs. Full order total. Server verified.</p>
             </motion.div>
           </div>
         </section>
 
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <h2 className="font-headline text-3xl md:text-4xl font-bold mb-12 text-center text-foreground">How Payment Works</h2>
-              <div className="grid md:grid-cols-2 gap-8 mb-10">
+              <div className="grid md:grid-cols-2 gap-8">
                 {paymentSteps.map((step) => (
                   <Card key={step.step} className="h-full border-bronze/20 shadow-elegant">
                     <CardHeader>
-                      <div className="w-16 h-16 rounded-full bg-dandle-orange/10 flex items-center justify-center mb-4">
-                        <step.icon className="w-8 h-8 text-dandle-orange" />
-                      </div>
-                      <div className="text-sm font-body font-semibold text-dandle-orange mb-2">{step.step}</div>
+                      <div className="w-12 h-12 rounded-full bg-dandle-orange/10 flex items-center justify-center mb-4 text-dandle-orange font-bold">{step.step}</div>
                       <CardTitle className="font-headline text-2xl">{step.title}</CardTitle>
                     </CardHeader>
                     <CardContent><p className="font-body text-foreground/70 leading-relaxed">{step.description}</p></CardContent>
                   </Card>
                 ))}
-              </div>
-              <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-5 flex gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <div className="space-y-1 text-sm">
-                  <p className="font-medium">If a payment status is uncertain, do not pay again yet.</p>
-                  <p className="text-muted-foreground">Dandle will keep checking the first payment before offering a second payment method.</p>
-                  <p className="text-muted-foreground" dir="rtl" lang="ar">إذا كانت حالة الدفع غير مؤكدة، لا تدفع مرة أخرى الآن. يتم التحقق من الدفع الأول قبل إتاحة طريقة دفع بديلة.</p>
-                </div>
               </div>
             </div>
           </div>
@@ -139,52 +107,6 @@ const Payment = () => {
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-12 text-center text-foreground">Payment Methods</h2>
-              <div className="grid md:grid-cols-2 gap-8">
-                {paymentMethods.map((method) => (
-                  <Card key={method.title} className="h-full border-bronze/20 shadow-elegant text-center">
-                    <CardHeader>
-                      <method.icon className="w-12 h-12 mx-auto mb-4 text-dandle-orange" />
-                      <CardTitle className="font-headline text-xl">{method.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent><p className="font-body text-foreground/70 leading-relaxed">{method.description}</p></CardContent>
-                  </Card>
-                ))}
-              </div>
-              <p className="text-center text-sm text-muted-foreground mt-8">
-                InstaPay receiving details are shown only from Dandle's server-controlled payment configuration when fallback is available.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-10 text-center text-foreground">Verification & Documentation</h2>
-              <div className="bg-muted/30 rounded-lg p-8 border border-bronze/10">
-                <div className="flex items-start gap-4 mb-6">
-                  <FileText className="w-8 h-8 text-dandle-orange flex-shrink-0" />
-                  <p className="font-body text-foreground/80 leading-relaxed">
-                    Dandle keeps payment state tied to the same order reference throughout the payment journey.
-                  </p>
-                </div>
-                <ul className="space-y-3">
-                  {invoicingProcess.map((item) => (
-                    <li key={item} className="flex items-start gap-3 font-body text-foreground/70">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <Shield className="w-12 h-12 mx-auto mb-4 text-dandle-orange" />
                 <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Payment Safety</h2>
@@ -192,12 +114,24 @@ const Payment = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 {securityFeatures.map((feature) => (
                   <div key={feature.title} className="bg-background rounded-lg p-6 border border-bronze/10 shadow-elegant">
-                    <h3 className="font-headline text-xl font-semibold mb-3 text-foreground flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600" />{feature.title}
-                    </h3>
+                    <h3 className="font-headline text-xl font-semibold mb-3 text-foreground flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-600" />{feature.title}</h3>
                     <p className="font-body text-foreground/70 leading-relaxed">{feature.description}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto rounded-lg border border-bronze/10 bg-muted/30 p-8">
+              <div className="flex items-start gap-4">
+                <FileText className="w-8 h-8 text-dandle-orange flex-shrink-0" />
+                <div>
+                  <h2 className="font-headline text-2xl font-semibold mb-3">Order & Payment Record</h2>
+                  <p className="font-body text-foreground/70 leading-relaxed">Your DANDLE order keeps one internal order ID throughout checkout, PayTabs verification, confirmation and reconciliation. Payment status is never inferred from a browser redirect or customer statement.</p>
+                </div>
               </div>
             </div>
           </div>
