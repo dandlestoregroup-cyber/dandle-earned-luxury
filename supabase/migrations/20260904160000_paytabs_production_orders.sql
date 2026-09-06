@@ -41,7 +41,7 @@ alter table public.dandle_orders enable row level security;
 -- No anon/authenticated table policies are intentional. Browser access goes through
 -- DANDLE server endpoints; service_role remains server-only and bypasses RLS.
 revoke all on table public.dandle_orders from anon, authenticated;
-
+revoke all on table public.dandle_orders from service_role;
 grant select, insert, update on table public.dandle_orders to service_role;
 
 create or replace function public.dandle_orders_preserve_checkout_snapshot()
