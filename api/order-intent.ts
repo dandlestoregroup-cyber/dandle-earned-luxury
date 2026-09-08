@@ -1,4 +1,5 @@
 import { getVerifiedUnitPrice } from "./_lib/catalog.js";
+import { buildOperationsEvent, emitOperationsEvent } from "./_lib/operations.mjs";
 
 type OrderIntentBody = {
   customer?: {
@@ -119,6 +120,25 @@ export default async function handler(request: Request) {
     });
     if (!response.ok) throw new Error(`TakeApp bridge returned ${response.status}`);
 
+    const operationsDelivery = await emitOperationsEvent(
+      buildOperationsEvent({
+        type: "ORDER_SUBMITTED",
+        entityType: "order",
+        entityId: reference,
+        state: "SUBMITTED",
+        nextAction: "SYNC_CRM_AND_QUALIFY",
+        data: {
+          customer,
+          items,
+          totalPrice,
+          depositAmount: intent.depositAmount,
+          balanceOnDelivery: intent.balanceOnDelivery,
+          currency: "EGP",
+          paymentProvider: "PayTabs",
+        },
+      }),
+    );
+
     return Response.json(
       {
         reference,
@@ -126,10 +146,12 @@ export default async function handler(request: Request) {
         status: "SUBMITTED",
         charged: false,
         totalPrice,
-        depositAmount: roundMoney(totalPrice * 0.4),
-        balanceOnDelivery: roundMoney(totalPrice * 0.6),
+        depositAmount: intent.depositAmount,
+        balanceOnDelivery: intent.balanceOnDelivery,
         currency: "EGP",
         next: "ADMIN_REVIEW",
+        operationsConnected: operationsDelivery.configured,
+        operationsDelivered: operationsDelivery.delivered,
       },
       { status: 201, headers: { "Cache-Control": "no-store" } },
     );
