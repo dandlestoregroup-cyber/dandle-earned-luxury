@@ -14,6 +14,7 @@ import {
   validatePayTabsCheckoutResponse,
   type PayTabsCheckoutPayload,
 } from "./_lib/payment.js";
+import { buildOperationsEvent, emitOperationsEvent } from "./_lib/operations.mjs";
 
 async function recordPaymentState(
   paymentWebhook: string,
@@ -178,6 +179,23 @@ export default async function handler(request: Request) {
           verifiedAt: new Date().toISOString(),
         },
       });
+
+      await emitOperationsEvent(
+        buildOperationsEvent({
+          type: "PAYMENT_FAILED",
+          entityType: "order",
+          entityId: reference,
+          state: "NOT_PAID",
+          nextAction: "RECOVER_PAYMENT",
+          data: {
+            provider: "PayTabs",
+            reason: "gateway_error",
+            amount: depositAmount,
+            currency: "EGP",
+          },
+        }),
+      );
+
       return Response.json(
         {
           error: "Card payment could not be started",
@@ -208,6 +226,22 @@ export default async function handler(request: Request) {
       },
     });
 
+    const operationsDelivery = await emitOperationsEvent(
+      buildOperationsEvent({
+        type: "PAYMENT_PENDING",
+        entityType: "order",
+        entityId: reference,
+        state: "PAYMENT_PENDING",
+        nextAction: "WATCH_PAYMENT_AND_ESCALATE_EXCEPTION",
+        data: {
+          provider: "PayTabs",
+          transactionRef: validation.tranRef,
+          amount: depositAmount,
+          currency: "EGP",
+        },
+      }),
+    );
+
     return Response.json(
       {
         paymentAvailable: true,
@@ -218,6 +252,8 @@ export default async function handler(request: Request) {
         currency: "EGP",
         charged: false,
         fallbackAvailable: false,
+        operationsConnected: operationsDelivery.configured,
+        operationsDelivered: operationsDelivery.delivered,
       },
       { headers: { "Cache-Control": "no-store" } },
     );
