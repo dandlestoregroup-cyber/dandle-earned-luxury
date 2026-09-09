@@ -1,3 +1,10 @@
+import {
+  getModelFallbackChain,
+  getRenderPolicy,
+  qualityForModel,
+  shouldTryModelFallback,
+} from "./_lib/nourImagePolicy.mjs";
+
 type RenderRequest = {
   roomImage?: string;
   roomAspect?: number;
@@ -14,6 +21,24 @@ type ValidationResponse = {
     content?: Array<{ text?: string }>;
   }>;
 };
+
+type RenderResult = {
+  image: string;
+  model: string;
+  quality: string;
+};
+
+class ImageEditError extends Error {
+  status: number;
+  detail: string;
+
+  constructor(status: number, detail: string) {
+    super(`OpenAI image edit failed: ${status} ${detail.slice(0, 300)}`);
+    this.name = "ImageEditError";
+    this.status = status;
+    this.detail = detail;
+  }
+}
 
 export const config = { maxDuration: 300 };
 
@@ -77,8 +102,8 @@ Material family requested: ${material || "preserve the reference material"}.
 ${colourLine}
 
 Hard requirements:
-- Preserve the room architecture, camera viewpoint, perspective, walls, floor, windows, doors, lighting direction and every existing piece of furniture as much as possible.
-- Add only the selected Dandle product. Do not redesign, declutter, move, remove or invent other room objects.
+- Treat IMAGE 1 as locked scene truth. Preserve the room architecture, camera viewpoint, perspective, crop, walls, floor, ceiling, windows, doors, lighting direction and every existing piece of furniture as much as possible.
+- Add only the selected Dandle product. Do not redesign, restyle, declutter, move, remove, resize or invent any other room object.
 - Preserve the selected Dandle model's silhouette, proportions, cushions, arms, seams, base and recognizable identity from IMAGE 2.
 - The repository does not yet contain approved material-swatch photography. Preserve the reference product's real surface character and use the requested material only as a conservative visual direction; do not invent a branded texture or claim exact material fidelity.
 - Make scale, perspective, floor contact, shadows and lighting visually plausible, but do not imply or claim measured physical fit.
@@ -140,14 +165,15 @@ async function renderOnce(
   productBlob: Blob,
   prompt: string,
   size: string,
+  model: string,
+  quality: string,
 ) {
   const form = new FormData();
-  form.append("model", "gpt-image-2");
+  form.append("model", model);
   form.append("prompt", prompt);
   form.append("image[]", roomBlob, "room.jpg");
   form.append("image[]", productBlob, "product.jpg");
-  form.append("input_fidelity", "high");
-  form.append("quality", "high");
+  form.append("quality", quality);
   form.append("size", size);
   form.append("output_format", "jpeg");
   // Keep the base64 response comfortably below Vercel's Function response limit.
@@ -161,7 +187,7 @@ async function renderOnce(
 
   if (!response.ok) {
     const detail = await response.text();
-    throw new Error(`OpenAI image edit failed: ${response.status} ${detail.slice(0, 300)}`);
+    throw new ImageEditError(response.status, detail);
   }
 
   const data = await response.json();
@@ -173,6 +199,35 @@ async function renderOnce(
     throw new Error("OpenAI image response exceeded the safe delivery size");
   }
   return result;
+}
+
+async function renderWithFallback(
+  apiKey: string,
+  roomBlob: Blob,
+  productBlob: Blob,
+  prompt: string,
+  size: string,
+  attempt: number,
+): Promise<RenderResult> {
+  const policy = getRenderPolicy(attempt);
+  let lastError: unknown;
+
+  for (const model of getModelFallbackChain(policy.model)) {
+    const quality = qualityForModel(model, policy.quality);
+    try {
+      return {
+        image: await renderOnce(apiKey, roomBlob, productBlob, prompt, size, model, quality),
+        model,
+        quality,
+      };
+    } catch (error) {
+      lastError = error;
+      if (!(error instanceof ImageEditError) || !shouldTryModelFallback(error.status, error.detail)) throw error;
+      console.warn("Nour image model fallback", { model, status: error.status });
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("Nour image model fallback exhausted");
 }
 
 export default async function handler(request: Request) {
@@ -218,19 +273,21 @@ export default async function handler(request: Request) {
     let lastReason = "";
     for (let attempt = 1; attempt <= 3; attempt += 1) {
       const prompt = `${renderPrompt(body)}${correction ? `\n\nPrevious QA failure to correct: ${correction}` : ""}`;
-      const render = await renderOnce(apiKey, roomBlob, productBlob, prompt, size);
-      const validation = await validateRender(apiKey, body.roomImage, productDataUrl, render);
+      const render = await renderWithFallback(apiKey, roomBlob, productBlob, prompt, size, attempt);
+      const validation = await validateRender(apiKey, body.roomImage, productDataUrl, render.image);
 
       if (validation.pass) {
         return Response.json({
-          image: render,
+          image: render.image,
           approved: true,
           attempts: attempt,
           modelId: body.modelId,
           material: body.material,
           colour: body.colour || "Reference colour",
           placement: body.placement || "Natural open placement",
-          source: "openai-gpt-image-2",
+          source: `openai-${render.model}`,
+          imageModel: render.model,
+          imageQuality: render.quality,
         });
       }
 
