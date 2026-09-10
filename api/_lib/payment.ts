@@ -7,6 +7,10 @@ export type PaymentOrder = {
   totalPrice?: unknown;
   total_price?: unknown;
   total?: unknown;
+  // Monotonic revision from the trusted status bridge, incremented atomically
+  // on every payment transition. Never sourced from the browser.
+  paymentVersion?: unknown;
+  payment?: { attemptId?: unknown; amount?: unknown; currency?: unknown; provider?: unknown };
 };
 
 export type VerifiedPayTabsPayload = {
@@ -178,6 +182,12 @@ export function normalizedOrderStatus(order: PaymentOrder) {
 
 export function normalizedPaymentStatus(order: PaymentOrder) {
   return clean(order.paymentStatus ?? order.payment_status, 60).toUpperCase();
+}
+
+export function paymentVersion(order: PaymentOrder): number | null {
+  const value = order.paymentVersion;
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0 && value < Number.MAX_SAFE_INTEGER
+    ? value : null;
 }
 
 export function verifiedOrderTotal(order: PaymentOrder) {

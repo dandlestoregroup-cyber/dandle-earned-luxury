@@ -6,6 +6,7 @@ import {
   isUncertainPayment,
   normalizedOrderStatus,
   normalizedPaymentStatus,
+  paymentVersion,
   referencePattern,
   clean,
   unwrapOrder,
@@ -90,23 +91,22 @@ export async function POST(request: Request) {
       return Response.json({ error: "Verified order total is unavailable" }, { status: 422 });
     }
 
+    const version = paymentVersion(order);
+    if (version === null) {
+      return Response.json(
+        { error: "Payment attempt tracking is unavailable", fallbackAvailable: false },
+        { status: 503 },
+      );
+    }
+    const attemptId = stableOperationsEventId("INSTAPAY_ATTEMPT", reference, version);
     const update = {
       type: "PAYMENT_UPDATE",
       reference,
-      idempotencyKey: `instapay:${reference}:pending`,
-      expectedPriorPaymentStatuses: [
-        "",
-        "NOT_PAID",
-        "FAILED",
-        "PAYMENT_FAILED",
-        "DECLINED",
-        "CARD_DECLINED",
-        "BANK_REJECTED",
-        "GATEWAY_ERROR",
-        "CANCELLED",
-        "EXPIRED",
-      ],
+      idempotencyKey: `instapay:${reference}:${attemptId}:pending`,
+      expectedPaymentVersion: version,
+      expectedPriorPaymentStatuses: [paymentStatus],
       payment: {
+        attemptId,
         provider: "InstaPay",
         status: "INSTAPAY_PENDING",
         safeFailureReason: null,
@@ -123,15 +123,39 @@ export async function POST(request: Request) {
     });
     if (!recordResponse.ok) throw new Error(`Payment recording webhook returned ${recordResponse.status}`);
 
+    // A 2xx can be a deduplicated write. Never expose transfer instructions
+    // unless the trusted store confirms this exact attempt is still pending.
+    const confirmation = await fetch(
+      `${statusUrl}${statusUrl.includes("?") ? "&" : "?"}reference=${encodeURIComponent(reference)}`,
+      { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" },
+    );
+    if (!confirmation.ok) throw new Error("Payment attempt confirmation failed");
+    const confirmed = unwrapOrder(await confirmation.json());
+    if (
+      paymentVersion(confirmed) !== version + 1 ||
+      normalizedPaymentStatus(confirmed) !== "INSTAPAY_PENDING" ||
+      confirmed.payment?.attemptId !== attemptId ||
+      confirmed.payment?.provider !== "InstaPay" ||
+      confirmed.payment?.amount !== depositAmount ||
+      confirmed.payment?.currency !== "EGP" ||
+      expectedDepositAmount(confirmed) !== depositAmount
+    ) {
+      return Response.json(
+        { error: "Payment state changed. Refresh the order before continuing.", fallbackAvailable: false },
+        { status: 409 },
+      );
+    }
+
     const operationsDelivery = await emitOperationsEvent(
       buildOperationsEvent({
-        eventId: stableOperationsEventId("INSTAPAY_PENDING", reference),
+        eventId: stableOperationsEventId("INSTAPAY_PENDING", reference, attemptId),
         type: "INSTAPAY_PENDING",
         entityType: "order",
         entityId: reference,
         state: "INSTAPAY_PENDING",
         nextAction: "AWAIT_TRANSFER_EVIDENCE",
         data: {
+          attemptId,
           provider: "InstaPay",
           amount: depositAmount,
           currency: "EGP",
