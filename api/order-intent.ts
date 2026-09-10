@@ -32,7 +32,7 @@ function makeReference() {
 
 const roundMoney = (value: number) => Math.round(value * 100) / 100;
 
-export default async function handler(request: Request) {
+export async function POST(request: Request) {
   if (request.method !== "POST") {
     return Response.json({ error: "Method not allowed" }, { status: 405 });
   }

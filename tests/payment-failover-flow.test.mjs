@@ -12,16 +12,15 @@ async function loadVercelHandler(sourceName, tempName) {
   writeFileSync(tempUrl, source, "utf8");
   try {
     const module = await import(`${tempUrl.href}?payment-flow-test=${Date.now()}`);
-    return module.default;
+    return module.POST ?? module.default;
   } finally {
     unlinkSync(tempUrl);
   }
 }
 
-// Vercel emits Node ESM server functions, so production source uses explicit
-// .js relative imports. Node's native TypeScript test loader needs .ts instead;
-// create disposable copies that change only that import while preserving the
-// actual handler bodies under test.
+// Production uses Vercel Web handlers and explicit .js relative imports.
+// Node's native TypeScript test loader needs .ts instead; create disposable
+// copies that change only that import while preserving the handler bodies.
 const paymentIntentHandler = await loadVercelHandler("payment-intent", ".payment-intent.test-loader");
 const instapayIntentHandler = await loadVercelHandler("instapay-intent", ".instapay-intent.test-loader");
 

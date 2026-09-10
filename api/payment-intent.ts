@@ -29,7 +29,7 @@ async function recordPaymentState(
   if (!response.ok) throw new Error(`Payment recording webhook returned ${response.status}`);
 }
 
-export default async function handler(request: Request) {
+export async function POST(request: Request) {
   if (request.method !== "POST") {
     return Response.json({ error: "Method not allowed" }, { status: 405 });
   }

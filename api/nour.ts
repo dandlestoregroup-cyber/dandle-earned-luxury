@@ -25,7 +25,7 @@ function fallbackReply(hasImage: boolean) {
     : "Send one clear room photo from the viewpoint where you want to see the recliner. Then choose a Dandle model and material, and I can help you describe 2–3 visually natural placement options before you create the room visualization.";
 }
 
-export default async function handler(request: Request) {
+export async function POST(request: Request) {
   if (request.method !== "POST") return Response.json({ error: "Method not allowed" }, { status: 405 });
 
   try {
