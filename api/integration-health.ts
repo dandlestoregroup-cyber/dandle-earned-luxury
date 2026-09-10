@@ -1,4 +1,5 @@
 import { getInstapayConfig } from "./_lib/payment.js";
+import { fetchGatewayHealth } from "./_lib/integrationHealth.mjs";
 
 const GATEWAY_HEALTH = "https://dandle-commerce-os-gateway.vercel.app/api/health";
 
@@ -28,10 +29,7 @@ export default async function handler(request: Request) {
   let gatewayHealth: Record<string, unknown> = {};
   let gatewayReachable = false;
   try {
-    const response = await fetch(GATEWAY_HEALTH, {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    });
+    const response = await fetchGatewayHealth(GATEWAY_HEALTH);
     if (response.ok) {
       gatewayHealth = await response.json();
       gatewayReachable = true;
