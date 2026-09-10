@@ -1,6 +1,6 @@
 const referencePattern = /^DN-[A-Z0-9-]{4,48}$/;
 
-export default async function handler(request: Request) {
+export async function GET(request: Request) {
   if (request.method !== "GET") {
     return Response.json({ error: "Method not allowed" }, { status: 405 });
   }

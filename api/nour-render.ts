@@ -230,7 +230,7 @@ async function renderWithFallback(
   throw lastError instanceof Error ? lastError : new Error("Nour image model fallback exhausted");
 }
 
-export default async function handler(request: Request) {
+export async function POST(request: Request) {
   if (request.method !== "POST") return Response.json({ error: "Method not allowed" }, { status: 405 });
 
   try {

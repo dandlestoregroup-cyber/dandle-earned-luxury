@@ -3,7 +3,7 @@ import { fetchGatewayHealth } from "./_lib/integrationHealth.mjs";
 
 const GATEWAY_HEALTH = "https://dandle-commerce-os-gateway.vercel.app/api/health";
 
-export default async function handler(request: Request) {
+export async function GET(request: Request) {
   if (request.method !== "GET") {
     return Response.json({ error: "Method not allowed" }, { status: 405 });
   }
