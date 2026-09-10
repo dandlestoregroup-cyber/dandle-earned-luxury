@@ -184,6 +184,8 @@ test("public PayTabs callback verifies raw HMAC before parsing and independently
   assert.match(source, /validateVerifiedPayTabsTransaction/);
   assert.doesNotMatch(source, /request\.json\(\)/);
   assert.doesNotMatch(source, /request\.formData\(\)/);
+  assert.match(source, /PAYMENT_VERIFIED/);
+  assert.match(source, /RELEASE_TO_FULFILMENT/);
 });
 
 test("InstaPay submission endpoint cannot mark customer evidence paid", () => {
@@ -192,4 +194,27 @@ test("InstaPay submission endpoint cannot mark customer evidence paid", () => {
   assert.match(source, /paid: false/);
   assert.doesNotMatch(source, /status:\s*["']PAID["']/);
   assert.doesNotMatch(source, /status:\s*["']DEPOSIT_PAID["']/);
+  assert.match(source, /expectedPriorPaymentStatuses/);
+  assert.match(source, /VERIFY_INSTAPAY_EVIDENCE/);
+});
+
+test("Vercel Node handlers use runtime-safe explicit relative import extensions", () => {
+  const handlers = [
+    "instapay-intent.ts",
+    "instapay-submit.ts",
+    "integration-health.ts",
+    "nour-render.ts",
+    "nour.ts",
+    "order-intent.ts",
+    "payment-intent.ts",
+    "paytabs-callback.ts",
+  ];
+
+  for (const handler of handlers) {
+    const source = readFileSync(new URL(`../api/${handler}`, import.meta.url), "utf8");
+    const relativeImports = [...source.matchAll(/from\s+["'](\.{1,2}\/[^"']+)["']/g)];
+    for (const match of relativeImports) {
+      assert.match(match[1], /\.(?:js|mjs|json)$/i, `${handler}: ${match[1]}`);
+    }
+  }
 });

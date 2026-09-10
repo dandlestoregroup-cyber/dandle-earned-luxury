@@ -5,7 +5,8 @@ import {
   normalizedPaymentStatus,
   referencePattern,
   unwrapOrder,
-} from "./_lib/payment";
+} from "./_lib/payment.js";
+import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
 
 export default async function handler(request: Request) {
   if (request.method !== "POST") {
@@ -71,6 +72,11 @@ export default async function handler(request: Request) {
     const update = {
       type: "PAYMENT_UPDATE",
       reference,
+      idempotencyKey: `instapay:${reference}:evidence:${stableOperationsEventId(
+        reference,
+        transactionReference || "unspecified",
+      )}`,
+      expectedPriorPaymentStatuses: ["INSTAPAY_PENDING", "INSTAPAY_VERIFICATION_REQUIRED"],
       payment: {
         provider: "InstaPay",
         transactionRef: transactionReference || null,
@@ -89,12 +95,35 @@ export default async function handler(request: Request) {
     });
     if (!recordResponse.ok) throw new Error(`Payment recording webhook returned ${recordResponse.status}`);
 
+    const operationsDelivery = await emitOperationsEvent(
+      buildOperationsEvent({
+        eventId: stableOperationsEventId(
+          "INSTAPAY_EVIDENCE_RECEIVED",
+          reference,
+          transactionReference || "unspecified",
+        ),
+        type: "INSTAPAY_EVIDENCE_RECEIVED",
+        entityType: "order",
+        entityId: reference,
+        state: nextStatus,
+        nextAction: "VERIFY_INSTAPAY_EVIDENCE",
+        data: {
+          provider: "InstaPay",
+          transactionReference: transactionReference || null,
+          amount,
+          currency: "EGP",
+        },
+      }),
+    );
+
     return Response.json(
       {
         received: true,
         reference,
         paymentStatus: nextStatus,
         paid: false,
+        operationsConnected: operationsDelivery.configured,
+        operationsDelivered: operationsDelivery.delivered,
         message: "Transfer evidence received. Dandle must verify receipt before payment is marked paid.",
       },
       { headers: { "Cache-Control": "no-store" } },

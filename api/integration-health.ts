@@ -20,6 +20,10 @@ export default async function handler(request: Request) {
     process.env.PAYTABS_PROFILE_ID?.trim() && process.env.PAYTABS_SERVER_KEY?.trim() && paymentBridgeReady,
   );
   const instapayReady = Boolean(getInstapayConfig() && orderStatusReady && paymentBridgeReady);
+  const operationsReady = Boolean(
+    process.env.DANDLE_OPERATIONS_WEBHOOK_URL?.trim() &&
+      process.env.DANDLE_OPERATIONS_WEBHOOK_TOKEN?.trim(),
+  );
 
   let gatewayHealth: Record<string, unknown> = {};
   let gatewayReachable = false;
@@ -53,6 +57,7 @@ export default async function handler(request: Request) {
         order_status_enabled: orderStatusReady,
         paytabs_enabled: payTabsReady,
         instapay_fallback_enabled: instapayReady,
+        operations_event_intake_enabled: operationsReady,
       },
       localReadiness: {
         takeappOrderWebhook: orderWebhookReady,
@@ -60,7 +65,9 @@ export default async function handler(request: Request) {
         paymentRecordingBridge: paymentBridgeReady,
         payTabsPayment: payTabsReady,
         instapayFallback: instapayReady,
+        operationsEventIntake: operationsReady,
       },
+      revision: process.env.VERCEL_GIT_COMMIT_SHA?.trim() || null,
     },
     { headers: { "Cache-Control": "no-store" } },
   );

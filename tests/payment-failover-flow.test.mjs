@@ -120,6 +120,8 @@ test("controlled PayTabs creation failure falls over to InstaPay with the same r
     assert.equal(instaPayBody.recipient.id, "dandle-test@instapay");
     assert.equal(recordedUpdates[1].payment.status, "INSTAPAY_PENDING");
     assert.equal(recordedUpdates[1].payment.amount, 40_000);
+    assert.equal(recordedUpdates[1].idempotencyKey, `instapay:${payableOrder.reference}:pending`);
+    assert.ok(recordedUpdates[1].expectedPriorPaymentStatuses.includes("NOT_PAID"));
   } finally {
     globalThis.fetch = originalFetch;
     restoreEnv();

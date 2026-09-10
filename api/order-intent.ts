@@ -1,5 +1,5 @@
 import { getVerifiedUnitPrice } from "./_lib/catalog.js";
-import { buildOperationsEvent, emitOperationsEvent } from "./_lib/operations.mjs";
+import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
 
 type OrderIntentBody = {
   customer?: {
@@ -122,6 +122,7 @@ export default async function handler(request: Request) {
 
     const operationsDelivery = await emitOperationsEvent(
       buildOperationsEvent({
+        eventId: stableOperationsEventId("ORDER_SUBMITTED", reference),
         type: "ORDER_SUBMITTED",
         entityType: "order",
         entityId: reference,
