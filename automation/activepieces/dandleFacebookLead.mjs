@@ -37,6 +37,9 @@ export function normalizeFacebookLead(input, options = {}) {
   };
 
   const leadId = clean(lead.id ?? lead.leadgen_id ?? root.leadgen_id, 120);
+  // Persist this normalized result before ledger retries. Distinct malformed
+  // arrivals must never share a deduplication key, even for identical payloads.
+  const recoveryId = leadId ? "" : `RECOVERY:${globalThis.crypto.randomUUID()}`;
   const pageId = clean(lead.page_id ?? lead.pageId ?? root.page_id ?? options.expectedPageId, 120);
   const formId = clean(lead.form_id ?? lead.formId ?? root.form_id, 120);
   const email = pick("email", "email_address").toLowerCase();
@@ -103,6 +106,7 @@ export function normalizeFacebookLead(input, options = {}) {
   const normalized = {
     version: LEAD_PIPELINE_VERSION,
     leadId,
+    ...(recoveryId ? { recoveryId } : {}),
     pageId,
     formId,
     firstName,
@@ -120,7 +124,7 @@ export function normalizeFacebookLead(input, options = {}) {
     attribution,
   };
   const record = {
-    "Lead ID": leadId || "MISSING",
+    "Lead ID": leadId || recoveryId,
     "Page ID": pageId,
     "Form ID": formId,
     Name: normalized.fullName,

@@ -55,6 +55,22 @@ Operations delivery uses stable transition IDs and bounded retries; the Activepi
 
 Facebook Lead Ads enter through a separate disabled-until-connected Activepieces flow. It normalizes and de-duplicates the Facebook lead ID, preserves attribution and consent state, routes email-backed records to an idempotent HubSpot upsert, holds unknown-consent leads from outreach, and retains invalid or phone-only records in the DANDLE Lead Queue for recovery.
 
+Missing-ID arrivals receive distinct `RECOVERY:<uuid>` ledger keys, while the original Facebook ID remains empty and the error remains `LEAD_ID_MISSING`. Persist the normalizer's output and reuse it for lookup/insert retries; re-normalizing a new arrival intentionally allocates a new recovery key. Existing valid-ID serialization and deduplication are unchanged.
+
+## InstaPay bridge contract and rollout gate
+
+The TakeApp payment/status bridge is external to this repository. Before deploying the restart fix, its owner must implement and verify this contract:
+
+- Status responses include a nonnegative integer `order.paymentVersion` and the persisted `order.payment` object (`attemptId`, `provider`, `amount`, `currency`). Backfill a version for existing orders; increment it on **every** payment transition, including failures, expiry, evidence, and verified PayTabs callbacks. Never reset or reuse revisions.
+- Within one transaction, the payment webhook deduplicates `idempotencyKey`, compares `expectedPaymentVersion` and `expectedPriorPaymentStatuses` when supplied, checks the order is still payable, persists the payment, increments the version, and records the idempotency key. A mismatch returns 409 without mutating anything. These checks must share the same lock/transaction as PayTabs updates so fallback cannot overwrite a concurrent settlement. A status-only check is insufficient when a failed status recurs.
+- Replays of an applied key perform no write and do not increment the version. Status reads must expose committed payment state. The API derives the attempt ID from the trusted reference and revision, reuses it for retries, and derives a different ID after a later terminal failure. Customer-supplied attempts, versions, and amounts are ignored.
+- Before returning transfer instructions or acknowledging new evidence, the API reads back the expected persisted attempt and state. Missing version/attempt support, a stale read, or a deduplicated write that left the order failed blocks completion. A legacy bridge returning only HTTP 200 is not sufficient.
+- Preserve active legacy attempts during migration; do not reset pending or settled orders to unpaid. Backfill an attempt ID for active InstaPay records before allowing evidence submission.
+
+The regression suite models this transactional contract with a synthetic bridge; it does **not** prove the live bridge implements it. Verify two successive failure/restart/evidence cycles and a concurrent PayTabs settlement against a non-production bridge before merge/deployment. Environment presence in integration-health is not proof of transactional support. PayTabs HMAC verification, independent transaction queries, and the trusted 40% deposit calculation are unchanged; customer InstaPay evidence remains unpaid and cannot release fulfilment.
+
+Commercial certainty now accepts only finite positive decimal prices and compares equivalent numeric/string representations consistently. Conflicting or invalid values block recommendations. Date-only delivery promises remain valid through the promised day in Africa/Cairo; timestamps require an explicit offset and expire at their stated instant.
+
 ## Local development
 
 ```sh
