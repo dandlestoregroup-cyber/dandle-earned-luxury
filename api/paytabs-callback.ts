@@ -11,6 +11,7 @@ import {
   verifyPayTabsSignature,
   type VerifiedPayTabsPayload,
 } from "./_lib/payment.js";
+import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
 
 async function recordPaymentState(
   paymentWebhook: string,
@@ -162,6 +163,34 @@ export default async function handler(request: Request) {
         verifiedAt: new Date().toISOString(),
       },
     });
+
+    const operationsType = mapped.paymentStatus === "DEPOSIT_PAID"
+      ? "PAYMENT_VERIFIED"
+      : mapped.conclusive
+        ? "PAYMENT_FAILED"
+        : "PAYMENT_PENDING";
+    const operationsNextAction = mapped.paymentStatus === "DEPOSIT_PAID"
+      ? "RELEASE_TO_FULFILMENT"
+      : mapped.conclusive
+        ? "RECOVER_PAYMENT"
+        : "WATCH_PAYMENT_AND_ESCALATE_EXCEPTION";
+    await emitOperationsEvent(
+      buildOperationsEvent({
+        eventId: stableOperationsEventId(operationsType, callbackReference, tranRef, mapped.paymentStatus),
+        type: operationsType,
+        entityType: "order",
+        entityId: callbackReference,
+        state: mapped.paymentStatus,
+        nextAction: operationsNextAction,
+        data: {
+          provider: "PayTabs",
+          transactionRef: tranRef,
+          amount: expectedDeposit,
+          currency: "EGP",
+          conclusive: mapped.conclusive,
+        },
+      }),
+    );
 
     return Response.json(
       {

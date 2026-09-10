@@ -9,7 +9,8 @@ import {
   referencePattern,
   clean,
   unwrapOrder,
-} from "./_lib/payment";
+} from "./_lib/payment.js";
+import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
 
 export default async function handler(request: Request) {
   if (request.method !== "POST") {
@@ -92,6 +93,19 @@ export default async function handler(request: Request) {
     const update = {
       type: "PAYMENT_UPDATE",
       reference,
+      idempotencyKey: `instapay:${reference}:pending`,
+      expectedPriorPaymentStatuses: [
+        "",
+        "NOT_PAID",
+        "FAILED",
+        "PAYMENT_FAILED",
+        "DECLINED",
+        "CARD_DECLINED",
+        "BANK_REJECTED",
+        "GATEWAY_ERROR",
+        "CANCELLED",
+        "EXPIRED",
+      ],
       payment: {
         provider: "InstaPay",
         status: "INSTAPAY_PENDING",
@@ -109,6 +123,22 @@ export default async function handler(request: Request) {
     });
     if (!recordResponse.ok) throw new Error(`Payment recording webhook returned ${recordResponse.status}`);
 
+    const operationsDelivery = await emitOperationsEvent(
+      buildOperationsEvent({
+        eventId: stableOperationsEventId("INSTAPAY_PENDING", reference),
+        type: "INSTAPAY_PENDING",
+        entityType: "order",
+        entityId: reference,
+        state: "INSTAPAY_PENDING",
+        nextAction: "AWAIT_TRANSFER_EVIDENCE",
+        data: {
+          provider: "InstaPay",
+          amount: depositAmount,
+          currency: "EGP",
+        },
+      }),
+    );
+
     return Response.json(
       {
         fallbackAvailable: true,
@@ -121,6 +151,8 @@ export default async function handler(request: Request) {
           id: instapay.recipientId,
         },
         paymentStatus: "INSTAPAY_PENDING",
+        operationsConnected: operationsDelivery.configured,
+        operationsDelivered: operationsDelivery.delivered,
         instructions: {
           en: `Transfer exactly EGP ${depositAmount.toLocaleString("en-US")} to the verified Dandle InstaPay recipient and keep reference ${reference} with your transfer record. The order is not paid until Dandle verifies receipt.`,
           ar: `حوّل بالضبط ${depositAmount.toLocaleString("en-US")} جنيه إلى مستلم InstaPay المعتمد لدى داندل، واحتفظ بمرجع الطلب ${reference} مع بيانات التحويل. لا يُعتبر الطلب مدفوعًا إلا بعد تحقق داندل من استلام المبلغ.`,

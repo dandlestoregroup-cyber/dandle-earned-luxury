@@ -38,6 +38,8 @@ TAKEAPP_ORDER_WEBHOOK_TOKEN=
 PAYTABS_PROFILE_ID=
 PAYTABS_SERVER_KEY=
 PUBLIC_SITE_URL=https://<production-domain>
+DANDLE_OPERATIONS_WEBHOOK_URL=
+DANDLE_OPERATIONS_WEBHOOK_TOKEN=
 ```
 
 For InstaPay fallback, also configure these **server-side only** values in Vercel:
@@ -49,7 +51,9 @@ INSTAPAY_RECIPIENT_ID=
 
 `INSTAPAY_RECIPIENT_ID` is the verified recipient identifier that Dandle wants customers to use in InstaPay. Do not put these values in `VITE_*` variables or frontend source. If either value is missing, `/api/instapay-intent` fails closed and `/api/integration-health` reports `instapay_fallback_enabled: false`.
 
-Nour uses Vercel OIDC in hosted environments, with optional `AI_GATEWAY_API_KEY` for compatible local/server setups.
+Operations delivery uses stable transition IDs and bounded retries; the Activepieces intake remains the idempotent audit boundary. Nour uses Vercel OIDC in hosted environments, with optional `AI_GATEWAY_API_KEY` for compatible local/server setups.
+
+Facebook Lead Ads enter through a separate disabled-until-connected Activepieces flow. It normalizes and de-duplicates the Facebook lead ID, preserves attribution and consent state, routes email-backed records to an idempotent HubSpot upsert, holds unknown-consent leads from outreach, and retains invalid or phone-only records in the DANDLE Lead Queue for recovery.
 
 ## Local development
 

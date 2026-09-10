@@ -14,7 +14,7 @@ import {
   validatePayTabsCheckoutResponse,
   type PayTabsCheckoutPayload,
 } from "./_lib/payment.js";
-import { buildOperationsEvent, emitOperationsEvent } from "./_lib/operations.mjs";
+import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
 
 async function recordPaymentState(
   paymentWebhook: string,
@@ -182,6 +182,7 @@ export default async function handler(request: Request) {
 
       await emitOperationsEvent(
         buildOperationsEvent({
+          eventId: stableOperationsEventId("PAYMENT_FAILED", reference, "gateway_error"),
           type: "PAYMENT_FAILED",
           entityType: "order",
           entityId: reference,
@@ -228,6 +229,7 @@ export default async function handler(request: Request) {
 
     const operationsDelivery = await emitOperationsEvent(
       buildOperationsEvent({
+        eventId: stableOperationsEventId("PAYMENT_PENDING", reference, validation.tranRef),
         type: "PAYMENT_PENDING",
         entityType: "order",
         entityId: reference,
