@@ -14,3 +14,12 @@ verify_jwt = false
 
 [functions.get-order-status]
 verify_jwt = false
+
+# PayTabs callback is public; identity/amount/currency are verified with PayTabs.
+[functions.paytabs-callback]
+verify_jwt = false
+
+# Normal checkout is public. The 50 EGP test branch authenticates the service
+# role server-side before any database or payment action.
+[functions.paytabs-create-payment]
+verify_jwt = false
