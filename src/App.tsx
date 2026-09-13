@@ -9,6 +9,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
+import NourStore from "./pages/NourStore";
 import NorthCoast from "./pages/NorthCoast";
 import CompleteSet from "./pages/CompleteSet";
 import ProductDetail from "./pages/ProductDetail";
@@ -72,6 +73,7 @@ const App = () => (
             <Route path="/product/:handle" element={<ProductRedirect />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/nour-chat" element={<NourChat />} />
+            <Route path="/try-nour" element={<NourStore />} />
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
