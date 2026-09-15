@@ -33,3 +33,9 @@ test("Vercel Web handlers use named HTTP method exports", () => {
   );
   assert.match(webhook, /export \{ POST \} from "\.\.\/\.\.\/paytabs-callback\.js"/);
 });
+
+test("NOUR loads its ESM catalogue through a runtime-safe dynamic import", () => {
+  const source = readFileSync(new URL("../api/nour/v1.ts", import.meta.url), "utf8");
+  assert.match(source, /await import\("\.\.\/_lib\/nourJourney\.mjs"\)/);
+  assert.doesNotMatch(source, /^import \{ createNourReply \}/m);
+});
