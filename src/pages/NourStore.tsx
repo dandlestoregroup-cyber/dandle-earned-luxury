@@ -57,7 +57,12 @@ export default function NourStore() {
     <main className="mx-auto max-w-7xl px-4 pb-24 pt-24 md:px-8">
       <section className="mb-8 grid gap-5 lg:grid-cols-[1.05fr_.95fr] lg:items-end">
         <div><p className="mb-3 text-xs font-bold uppercase tracking-[.24em] text-dandle-orange">NOUR × DANDLE · Live test store</p><h1 className="max-w-3xl font-headline text-4xl leading-[1.05] md:text-6xl">Don’t browse furniture. Find the comfort that fits your life.</h1></div>
-        <p className="max-w-xl text-base leading-7 text-charcoal/70">Tell NOUR the outcome you want. She narrows the actual Dandle catalogue, explains why, remembers the journey, and hands you to the product or WhatsApp at the right moment.</p>
+        <div>
+          <p className="max-w-xl text-base leading-7 text-charcoal/70">Tell NOUR the outcome you want. She narrows the actual Dandle catalogue, explains why, remembers the journey, and hands you to the product or WhatsApp at the right moment.</p>
+          <Link to="/nour-chat" className="mt-4 inline-flex items-center gap-2 rounded-full border border-charcoal/15 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <Sparkles className="h-4 w-4 text-dandle-orange" /> Test NOUR with a room photo <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[420px_1fr]">
