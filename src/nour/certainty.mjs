@@ -24,15 +24,41 @@ function normalizeBoolean(value) {
   return value === true || value === "true";
 }
 
+function positivePrice(value) {
+  if (typeof value === "string") {
+    if (!/^\d+(?:\.\d+)?$/.test(value.trim())) return null;
+    value = Number(value.trim());
+  }
+  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : null;
+}
+
+// A date-only promise remains actionable throughout that day in DANDLE's market.
+const cairoDate = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Africa/Cairo", year: "numeric", month: "2-digit", day: "2-digit",
+});
+
+function deliveryDeadline(value, now) {
+  if (typeof value !== "string") return { valid: false, expired: false };
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const date = parseDate(value);
+    const valid = Boolean(date && date.toISOString().slice(0, 10) === value);
+    return { valid, expired: valid && value < cairoDate.format(now) };
+  }
+  // Timestamp promises need an explicit offset, independent of server timezone.
+  const date = /T.*(?:Z|[+-]\d{2}:\d{2})$/.test(value) ? parseDate(value) : null;
+  return { valid: Boolean(date), expired: Boolean(date && date.getTime() <= now.getTime()) };
+}
+
 export function auditCommercialTruth(record, now = new Date()) {
   const issues = [];
   const checks = {};
 
-  const priceValues = Array.isArray(record?.priceValues) ? record.priceValues.filter(present) : [];
-  const uniquePrices = [...new Set(priceValues.map((value) => String(value).trim()))];
-  checks.price = uniquePrices.length === 1;
-  if (uniquePrices.length === 0) issues.push({ code: "PRICE_UNVERIFIED", severity: "block" });
-  if (uniquePrices.length > 1) issues.push({ code: "PRICE_CONFLICT", severity: "block", values: uniquePrices });
+  const priceValues = Array.isArray(record?.priceValues) ? record.priceValues.map(positivePrice) : [];
+  const uniquePrices = [...new Set(priceValues.filter((value) => value !== null))];
+  const invalidPrice = priceValues.length === 0 || priceValues.includes(null);
+  checks.price = !invalidPrice && uniquePrices.length === 1;
+  if (invalidPrice) issues.push({ code: "PRICE_UNVERIFIED", severity: "block" });
+  if (uniquePrices.length > 1) issues.push({ code: "PRICE_CONFLICT", severity: "block", values: uniquePrices.map(String) });
 
   const promoActive = normalizeBoolean(record?.promotion?.active);
   const promoEndsAt = parseDate(record?.promotion?.endsAt);
@@ -44,9 +70,11 @@ export function auditCommercialTruth(record, now = new Date()) {
   checks.stock = record?.stock?.status === "verified_in_stock" && present(record?.stock?.verifiedAt);
   if (!checks.stock) issues.push({ code: "STOCK_UNVERIFIED", severity: "block" });
 
-  const deliveryDate = parseDate(record?.delivery?.fixedDate);
-  checks.delivery = Boolean(deliveryDate && present(record?.delivery?.verifiedAt));
-  if (!checks.delivery) issues.push({ code: "DELIVERY_DATE_UNVERIFIED", severity: "block" });
+  const delivery = deliveryDeadline(record?.delivery?.fixedDate, now);
+  const deliveryVerified = delivery.valid && present(record?.delivery?.verifiedAt);
+  checks.delivery = Boolean(deliveryVerified && !delivery.expired);
+  if (!deliveryVerified) issues.push({ code: "DELIVERY_DATE_UNVERIFIED", severity: "block" });
+  if (delivery.expired) issues.push({ code: "DELIVERY_DATE_EXPIRED", severity: "block" });
   if (Array.isArray(record?.delivery?.promises) && new Set(record.delivery.promises.filter(present)).size > 1) {
     checks.delivery = false;
     issues.push({ code: "DELIVERY_PROMISE_CONFLICT", severity: "block" });

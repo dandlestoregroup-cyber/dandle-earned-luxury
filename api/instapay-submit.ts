@@ -3,6 +3,7 @@ import {
   customerSubmittedInstapayState,
   expectedDepositAmount,
   normalizedPaymentStatus,
+  paymentVersion,
   referencePattern,
   unwrapOrder,
 } from "./_lib/payment.js";
@@ -66,6 +67,12 @@ export async function POST(request: Request) {
       return Response.json({ error: "Verified order total is unavailable", paid: false }, { status: 422 });
     }
 
+    const version = paymentVersion(order);
+    const attemptId = clean(order.payment?.attemptId, 120);
+    if (version === null || !attemptId) {
+      return Response.json({ error: "Payment attempt tracking is unavailable", paid: false }, { status: 503 });
+    }
+
     // Customer evidence is never proof of payment. It only moves the order to
     // a manual verification queue in the trusted commercial back office.
     const nextStatus = customerSubmittedInstapayState();
@@ -74,10 +81,13 @@ export async function POST(request: Request) {
       reference,
       idempotencyKey: `instapay:${reference}:evidence:${stableOperationsEventId(
         reference,
+        attemptId,
         transactionReference || "unspecified",
       )}`,
-      expectedPriorPaymentStatuses: ["INSTAPAY_PENDING", "INSTAPAY_VERIFICATION_REQUIRED"],
+      expectedPaymentVersion: version,
+      expectedPriorPaymentStatuses: ["INSTAPAY_PENDING"],
       payment: {
+        attemptId,
         provider: "InstaPay",
         transactionRef: transactionReference || null,
         status: nextStatus,
@@ -95,11 +105,26 @@ export async function POST(request: Request) {
     });
     if (!recordResponse.ok) throw new Error(`Payment recording webhook returned ${recordResponse.status}`);
 
+    const confirmation = await fetch(
+      `${statusUrl}${statusUrl.includes("?") ? "&" : "?"}reference=${encodeURIComponent(reference)}`,
+      { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" },
+    );
+    if (!confirmation.ok) throw new Error("Payment evidence confirmation failed");
+    const confirmed = unwrapOrder(await confirmation.json());
+    if (
+      paymentVersion(confirmed) !== version + 1 ||
+      normalizedPaymentStatus(confirmed) !== nextStatus ||
+      confirmed.payment?.attemptId !== attemptId
+    ) {
+      return Response.json({ error: "Payment state changed. Refresh the order before continuing.", paid: false }, { status: 409 });
+    }
+
     const operationsDelivery = await emitOperationsEvent(
       buildOperationsEvent({
         eventId: stableOperationsEventId(
           "INSTAPAY_EVIDENCE_RECEIVED",
           reference,
+          attemptId,
           transactionReference || "unspecified",
         ),
         type: "INSTAPAY_EVIDENCE_RECEIVED",
@@ -108,6 +133,7 @@ export async function POST(request: Request) {
         state: nextStatus,
         nextAction: "VERIFY_INSTAPAY_EVIDENCE",
         data: {
+          attemptId,
           provider: "InstaPay",
           transactionReference: transactionReference || null,
           amount,
