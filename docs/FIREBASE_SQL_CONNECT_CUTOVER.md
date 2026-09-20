@@ -15,8 +15,8 @@ remains on the single backend recorded in `config/data-backend-cutover.json`.
   controlled cutover only after counts/checksums, auth, processor-authoritative
   payment behavior and rollback have passed.
 - Public access is catalogue-read-only. Customer records require Firebase Auth
-  and order reads are filtered by `auth.uid`. Commerce, payment, migration and
-  operations writes are Admin-SDK-only (`NO_ACCESS`).
+  and order reads are filtered by `auth.uid`. Lead payloads, commerce, payment,
+  migration and operations writes are Admin-SDK-only (`NO_ACCESS`).
 - Do not store PAN, CVV, provider secrets or raw credentials. Persist only
   sanitized processor evidence needed for idempotency and reconciliation.
 

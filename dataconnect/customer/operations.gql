@@ -49,18 +49,3 @@ mutation UpsertMyCustomer(
     updatedAt_expr: "request.time"
   })
 }
-
-mutation CaptureMyLead(
-  $source: String!
-  $consentCaptured: Boolean!
-  $details: Any!
-) @auth(level: USER_ANON) @transaction {
-  lead_insert(data: {
-    leadId_expr: "uuidV4()"
-    customerAuthUid_expr: "auth.uid"
-    source: $source
-    consentCaptured: $consentCaptured
-    details: $details
-    status: "captured"
-  })
-}

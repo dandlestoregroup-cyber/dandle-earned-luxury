@@ -55,6 +55,19 @@ test("rejects order status without an auth.uid ownership filter", () => {
   assert.ok(result.errors.some((error) => error.includes("authenticated Firebase UID")));
 });
 
+test("rejects unbounded client lead payloads", () => {
+  const result = validateSqlConnectSources({
+    schema: requiredSchema(),
+    customer: `${requiredCustomerOperations()} mutation CaptureMyLead($details: Any!) @auth(level: USER_ANON) @transaction { lead_insert(data: {customerAuthUid_expr: "auth.uid", details: $details}) }`,
+    server: requiredServerMutations(),
+    manifest: safeManifest(),
+    firebaseJson: '{"dataconnect":{"source":"dataconnect"}}',
+    serviceConfig: "schemaValidation: COMPATIBLE",
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes("unbounded Any payloads")));
+});
+
 test("rejects server commerce mutation exposed outside Admin SDK", () => {
   const server = requiredServerMutations().replace(
     "mutation CreateCommerceOrder @auth(level: NO_ACCESS)",
@@ -104,6 +117,23 @@ test("production deployment guard fails closed without spend approval", async ()
   assert.match(result.output, /explicit owner spend\/provisioning approval is absent/);
 });
 
+test("production deployment guard still fails with approval while evidence gates are incomplete", async () => {
+  const result = await new Promise((resolve) => {
+    const child = spawn(process.execPath, ["scripts/guard-firebase-sql-connect-deploy.mjs"], {
+      cwd: new URL("../", import.meta.url),
+      env: { ...process.env, DANDLE_FIREBASE_DEPLOY_APPROVED: "true" },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let output = "";
+    child.stdout.on("data", (chunk) => { output += chunk; });
+    child.stderr.on("data", (chunk) => { output += chunk; });
+    child.on("close", (code) => resolve({ code, output }));
+  });
+
+  assert.notEqual(result.code, 0);
+  assert.match(result.output, /deployment is blocked: .*billingApproval\.verified/);
+});
+
 function requiredSchema() {
   return [
     "Product", "ProductVariant", "Customer", "Order", "PaymentAttempt",
@@ -113,7 +143,10 @@ function requiredSchema() {
 
 function requiredCustomerOperations() {
   return `
-    query ListActiveCatalog @auth(level: PUBLIC) { products(where: {active: {eq: true}}) { id } }
+    query ListActiveCatalog @auth(level: PUBLIC) {
+      products(where: {active: {eq: true}}) { id }
+      productVariants(where: {active: {eq: true}}) { id }
+    }
     query MyOrderStatus @auth(level: USER_ANON) { orders(where: {customerAuthUid: {eq_expr: "auth.uid"}}) { reference } }
   `;
 }
@@ -121,11 +154,16 @@ function requiredCustomerOperations() {
 function requiredServerMutations() {
   return `
     mutation CreateCommerceOrder @auth(level: NO_ACCESS) @transaction { order_insert(data: {}) }
-    mutation RecordPaymentAttempt @auth(level: NO_ACCESS) @transaction { paymentAttempt_insert(data: {}) }
-    mutation RecordVerifiedPayment @auth(level: NO_ACCESS) @transaction {
-      paymentEvent_insert(data: {})
-      order_update(reference: "x", data: {}) @check(expr: "this != null")
+    mutation RecordPaymentAttempt($amountMinor: Int64!, $currency: String!) @auth(level: NO_ACCESS) @transaction {
+      query @check(expr: "true") { orders(where: {totalAmountMinor: {eq: $amountMinor}, currency: {eq: $currency}}) { reference } }
+      paymentAttempt_insert(data: {})
     }
+    mutation RecordVerifiedPayment @auth(level: NO_ACCESS) @transaction {
+      query @check(expr: "true") { orders(where: {totalAmountMinor: {eq: $amountMinor}, currency: {eq: $currency}}) { reference } }
+      paymentEvent_insert(data: {provider: "paytabs"})
+      order_update(reference: "x", data: {paymentStatus: "paid"}) @check(expr: "this != null")
+    }
+    mutation CaptureLead @auth(level: NO_ACCESS) @transaction { lead_insert(data: {}) }
     mutation QueueOperationsEvent @auth(level: NO_ACCESS) @transaction { operationsEvent_insert(data: {}) }
     mutation RecordMigrationCheckpoint @auth(level: NO_ACCESS) @transaction { migrationCheckpoint_upsert(data: {}) }
   `;

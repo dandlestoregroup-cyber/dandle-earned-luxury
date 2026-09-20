@@ -16,6 +16,7 @@ const REQUIRED_SERVER_MUTATIONS = [
   "CreateCommerceOrder",
   "RecordPaymentAttempt",
   "RecordVerifiedPayment",
+  "CaptureLead",
   "QueueOperationsEvent",
   "RecordMigrationCheckpoint",
 ];
@@ -69,9 +70,16 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
     if (operation.kind === "mutation" && /@auth\s*\(\s*level:\s*PUBLIC\b/.test(operation.source)) {
       errors.push(`customer mutation ${operation.name} must not be PUBLIC`);
     }
+    if (operation.kind === "mutation" && !/auth\.uid/.test(operation.source)) {
+      errors.push(`customer mutation ${operation.name} must bind writes to auth.uid`);
+    }
+    if (operation.kind === "mutation" && /\bAny!?\b/.test(operation.source)) {
+      errors.push(`customer mutation ${operation.name} must not accept unbounded Any payloads`);
+    }
   }
   const catalog = operations.find((operation) => operation.name === "ListActiveCatalog");
-  if (!catalog || !/@auth\s*\(\s*level:\s*PUBLIC\b/.test(catalog.source) || !/active:\s*\{\s*eq:\s*true\s*\}/.test(catalog.source)) {
+  const activeFilters = catalog?.source.match(/active:\s*\{\s*eq:\s*true\s*\}/g) ?? [];
+  if (!catalog || !/@auth\s*\(\s*level:\s*PUBLIC\b/.test(catalog.source) || activeFilters.length < 2) {
     errors.push("public catalogue query must expose active records only");
   }
   const myOrder = operations.find((operation) => operation.name === "MyOrderStatus");
@@ -89,8 +97,22 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
     }
   }
   const verifiedPayment = operations.find((operation) => operation.name === "RecordVerifiedPayment");
-  if (!verifiedPayment || !/paymentEvent_insert\b/.test(verifiedPayment.source) || !/order_update\b/.test(verifiedPayment.source) || !/@check\b/.test(verifiedPayment.source)) {
-    errors.push("verified payment mutation must atomically persist evidence and update an existing order");
+  if (!verifiedPayment ||
+      !/paymentEvent_insert\b/.test(verifiedPayment.source) ||
+      !/order_update\b/.test(verifiedPayment.source) ||
+      !/totalAmountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(verifiedPayment.source) ||
+      !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(verifiedPayment.source) ||
+      !/provider:\s*"paytabs"/.test(verifiedPayment.source) ||
+      !/paymentStatus:\s*"paid"/.test(verifiedPayment.source) ||
+      !/@check\b/.test(verifiedPayment.source)) {
+    errors.push("verified PayTabs mutation must match order value, persist evidence, and atomically set paid");
+  }
+  const paymentAttempt = operations.find((operation) => operation.name === "RecordPaymentAttempt");
+  if (!paymentAttempt ||
+      !/totalAmountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(paymentAttempt.source) ||
+      !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(paymentAttempt.source) ||
+      !/@check\b/.test(paymentAttempt.source)) {
+    errors.push("payment attempts must match an existing order amount and currency");
   }
 
   const parsedManifest = JSON.parse(manifest);

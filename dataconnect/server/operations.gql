@@ -35,6 +35,17 @@ mutation RecordPaymentAttempt(
   $currency: String!
   $status: String!
 ) @auth(level: NO_ACCESS) @transaction {
+  query
+  @redact
+  @check(expr: "response.query.orders.size() == 1", message: "Payment attempt does not match exactly one order") {
+    orders(where: {
+      reference: { eq: $orderReference }
+      totalAmountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      reference
+    }
+  }
   paymentAttempt_insert(data: {
     orderReference: $orderReference
     provider: $provider
@@ -49,30 +60,54 @@ mutation RecordPaymentAttempt(
 
 mutation RecordVerifiedPayment(
   $eventId: String!
-  $provider: String!
   $orderReference: String!
   $providerTransactionReference: String!
-  $eventType: String!
-  $authoritativeStatus: String!
   $amountMinor: Int64!
   $currency: String!
   $processorSnapshot: Any!
 ) @auth(level: NO_ACCESS) @transaction {
+  query
+  @redact
+  @check(expr: "response.query.orders.size() == 1", message: "Verified payment does not match exactly one order") {
+    orders(where: {
+      reference: { eq: $orderReference }
+      totalAmountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      reference
+    }
+  }
   paymentEvent_insert(data: {
     eventId: $eventId
-    provider: $provider
+    provider: "paytabs"
     orderReference: $orderReference
     providerTransactionReference: $providerTransactionReference
-    eventType: $eventType
-    authoritativeStatus: $authoritativeStatus
+    eventType: "authoritative-verification"
+    authoritativeStatus: "paid"
     amountMinor: $amountMinor
     currency: $currency
     processorSnapshot: $processorSnapshot
   })
   order_update(reference: $orderReference, data: {
-    paymentStatus: $authoritativeStatus
+    paymentStatus: "paid"
     updatedAt_expr: "request.time"
   }) @check(expr: "this != null", message: "Order not found")
+}
+
+mutation CaptureLead(
+  $customerAuthUid: String!
+  $source: String!
+  $consentCaptured: Boolean!
+  $details: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  lead_insert(data: {
+    leadId_expr: "uuidV4()"
+    customerAuthUid: $customerAuthUid
+    source: $source
+    consentCaptured: $consentCaptured
+    details: $details
+    status: "captured"
+  })
 }
 
 mutation QueueOperationsEvent(
