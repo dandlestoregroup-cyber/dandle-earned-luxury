@@ -1,0 +1,66 @@
+# Public catalogue access is intentionally limited to active products and
+# variants. No customer mutation is public.
+
+query ListActiveCatalog @auth(level: PUBLIC, insecureReason: "Only active catalogue fields and prices are public.") {
+  products(where: { active: { eq: true } }) {
+    id
+    handle
+    displayName
+    description
+    sourceUpdatedAt
+  }
+  productVariants(where: { active: { eq: true } }) {
+    id
+    productId
+    sku
+    mechanism
+    massageFeature
+    unitAmountMinor
+    currency
+    sourceUpdatedAt
+  }
+}
+
+query MyOrderStatus($reference: String!) @auth(level: USER_ANON) {
+  orders(where: {
+    reference: { eq: $reference }
+    customerAuthUid: { eq_expr: "auth.uid" }
+  }, limit: 1) {
+    reference
+    status
+    paymentStatus
+    currency
+    totalAmountMinor
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpsertMyCustomer(
+  $displayName: String
+  $email: String
+  $phoneE164: String
+) @auth(level: USER_ANON) @transaction {
+  customer_upsert(data: {
+    authUid_expr: "auth.uid"
+    displayName: $displayName
+    email: $email
+    phoneE164: $phoneE164
+    updatedAt_expr: "request.time"
+  })
+}
+
+mutation CaptureMyLead(
+  $source: String!
+  $consentCaptured: Boolean!
+  $details: Any!
+) @auth(level: USER_ANON) @transaction {
+  lead_insert(data: {
+    leadId_expr: "uuidV4()"
+    customerAuthUid_expr: "auth.uid"
+    source: $source
+    consentCaptured: $consentCaptured
+    details: $details
+    status: "captured"
+  })
+}

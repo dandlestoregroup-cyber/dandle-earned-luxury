@@ -1,0 +1,110 @@
+# Commerce writes are Admin-SDK-only. PayTabs/Take App verification remains in
+# trusted server handlers; client state can never declare an order paid.
+
+mutation CreateCommerceOrder(
+  $reference: String!
+  $customerAuthUid: String!
+  $idempotencyKey: String!
+  $sourceChannel: String!
+  $currency: String!
+  $totalAmountMinor: Int64!
+  $cartSnapshot: Any!
+  $contactSnapshot: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  order_insert(data: {
+    reference: $reference
+    customerAuthUid: $customerAuthUid
+    idempotencyKey: $idempotencyKey
+    sourceChannel: $sourceChannel
+    status: "pending"
+    paymentStatus: "unpaid"
+    currency: $currency
+    totalAmountMinor: $totalAmountMinor
+    cartSnapshot: $cartSnapshot
+    contactSnapshot: $contactSnapshot
+  })
+}
+
+mutation RecordPaymentAttempt(
+  $orderReference: String!
+  $provider: String!
+  $providerProfileId: String
+  $providerTransactionReference: String
+  $idempotencyKey: String!
+  $amountMinor: Int64!
+  $currency: String!
+  $status: String!
+) @auth(level: NO_ACCESS) @transaction {
+  paymentAttempt_insert(data: {
+    orderReference: $orderReference
+    provider: $provider
+    providerProfileId: $providerProfileId
+    providerTransactionReference: $providerTransactionReference
+    idempotencyKey: $idempotencyKey
+    amountMinor: $amountMinor
+    currency: $currency
+    status: $status
+  })
+}
+
+mutation RecordVerifiedPayment(
+  $eventId: String!
+  $provider: String!
+  $orderReference: String!
+  $providerTransactionReference: String!
+  $eventType: String!
+  $authoritativeStatus: String!
+  $amountMinor: Int64!
+  $currency: String!
+  $processorSnapshot: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  paymentEvent_insert(data: {
+    eventId: $eventId
+    provider: $provider
+    orderReference: $orderReference
+    providerTransactionReference: $providerTransactionReference
+    eventType: $eventType
+    authoritativeStatus: $authoritativeStatus
+    amountMinor: $amountMinor
+    currency: $currency
+    processorSnapshot: $processorSnapshot
+  })
+  order_update(reference: $orderReference, data: {
+    paymentStatus: $authoritativeStatus
+    updatedAt_expr: "request.time"
+  }) @check(expr: "this != null", message: "Order not found")
+}
+
+mutation QueueOperationsEvent(
+  $eventId: String!
+  $orderReference: String
+  $eventType: String!
+  $payload: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  operationsEvent_insert(data: {
+    eventId: $eventId
+    orderReference: $orderReference
+    eventType: $eventType
+    payload: $payload
+    deliveryStatus: "pending"
+  })
+}
+
+mutation RecordMigrationCheckpoint(
+  $sourceSystem: String!
+  $cursor: String
+  $sourceCount: Int64!
+  $targetCount: Int64!
+  $checksum: String!
+  $completedAt: Timestamp
+) @auth(level: NO_ACCESS) @transaction {
+  migrationCheckpoint_upsert(data: {
+    sourceSystem: $sourceSystem
+    cursor: $cursor
+    sourceCount: $sourceCount
+    targetCount: $targetCount
+    checksum: $checksum
+    completedAt: $completedAt
+    updatedAt_expr: "request.time"
+  })
+}

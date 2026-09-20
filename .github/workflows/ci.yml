@@ -28,6 +28,11 @@ jobs:
       - name: Payment security tests
         run: npm test
 
+      - name: Data authority and Firebase SQL Connect source guards
+        run: |
+          npm run verify:data-backend
+          npm run verify:firebase-sql-connect
+
       - name: Typecheck app
         run: npx tsc -p tsconfig.app.json --noEmit
 
