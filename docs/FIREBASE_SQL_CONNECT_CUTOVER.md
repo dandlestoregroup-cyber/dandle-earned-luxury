@@ -37,6 +37,16 @@ remains on the single backend recorded in `config/data-backend-cutover.json`.
    may switch both production reads and writes together; split authority and
    dual writes remain forbidden.
 
-Run local source guards with `npm run verify:firebase-sql-connect`. The deploy
-guard intentionally fails until explicit approval and every manifest gate are
-present. It never deploys resources itself.
+Run local source guards with `npm run verify:firebase-sql-connect`. Compile the
+schema and connectors without a real Firebase project or billable resource:
+
+```sh
+npx --yes firebase-tools@15.30.2 dataconnect:sdk:generate --project demo-dandle-sql-connect --non-interactive
+npm run verify:firebase-sql-connect:generated
+```
+
+The generated customer and Admin packages are build artifacts and are ignored
+by Git. CI regenerates them, proves the customer/Admin operation boundary, and
+fails on unsupported GraphQL. The deploy guard intentionally fails until
+explicit approval and every manifest gate are present. It never deploys
+resources itself.

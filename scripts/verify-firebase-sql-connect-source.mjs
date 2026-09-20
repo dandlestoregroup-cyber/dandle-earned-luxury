@@ -104,6 +104,7 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
       !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(verifiedPayment.source) ||
       !/provider:\s*"paytabs"/.test(verifiedPayment.source) ||
       !/paymentStatus:\s*"paid"/.test(verifiedPayment.source) ||
+      !/order_update\s*\(\s*key:\s*\{\s*reference:\s*\$orderReference\s*\}/.test(verifiedPayment.source) ||
       !/@check\b/.test(verifiedPayment.source)) {
     errors.push("verified PayTabs mutation must match order value, persist evidence, and atomically set paid");
   }

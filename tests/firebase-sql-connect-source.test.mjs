@@ -85,6 +85,23 @@ test("rejects server commerce mutation exposed outside Admin SDK", () => {
   assert.ok(result.errors.some((error) => error.includes("CreateCommerceOrder must be Admin-SDK-only")));
 });
 
+test("rejects the invalid direct custom-key update syntax", () => {
+  const server = requiredServerMutations().replace(
+    'order_update(key: {reference: "x"}, data:',
+    'order_update(reference: "x", data:',
+  );
+  const result = validateSqlConnectSources({
+    schema: requiredSchema(),
+    customer: requiredCustomerOperations(),
+    server,
+    manifest: safeManifest(),
+    firebaseJson: '{"dataconnect":{"source":"dataconnect"}}',
+    serviceConfig: "schemaValidation: COMPATIBLE",
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes("verified PayTabs mutation")));
+});
+
 test("rejects source-only work that marks a production cutover gate verified", () => {
   const manifest = JSON.parse(safeManifest());
   manifest.firebaseSqlConnect.billingApproval.verified = true;
@@ -161,7 +178,7 @@ function requiredServerMutations() {
     mutation RecordVerifiedPayment @auth(level: NO_ACCESS) @transaction {
       query @check(expr: "true") { orders(where: {totalAmountMinor: {eq: $amountMinor}, currency: {eq: $currency}}) { reference } }
       paymentEvent_insert(data: {provider: "paytabs"})
-      order_update(reference: "x", data: {paymentStatus: "paid"}) @check(expr: "this != null")
+      order_update(key: {reference: "x"}, data: {paymentStatus: "paid"}) @check(expr: "this != null")
     }
     mutation CaptureLead @auth(level: NO_ACCESS) @transaction { lead_insert(data: {}) }
     mutation QueueOperationsEvent @auth(level: NO_ACCESS) @transaction { operationsEvent_insert(data: {}) }

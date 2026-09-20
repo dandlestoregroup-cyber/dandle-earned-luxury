@@ -88,7 +88,7 @@ mutation RecordVerifiedPayment(
     currency: $currency
     processorSnapshot: $processorSnapshot
   })
-  order_update(reference: $orderReference, data: {
+  order_update(key: { reference: $orderReference }, data: {
     paymentStatus: "paid"
     updatedAt_expr: "request.time"
   }) @check(expr: "this != null", message: "Order not found")

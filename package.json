@@ -11,6 +11,7 @@
     "test": "node --test tests/*.test.mjs",
     "verify:data-backend": "node scripts/verify-data-backend-cutover.mjs",
     "verify:firebase-sql-connect": "node scripts/verify-firebase-sql-connect-source.mjs",
+    "verify:firebase-sql-connect:generated": "node scripts/verify-firebase-sql-connect-generated.mjs",
     "guard:firebase-sql-connect-deploy": "node scripts/guard-firebase-sql-connect-deploy.mjs",
     "preview": "vite preview"
   },
