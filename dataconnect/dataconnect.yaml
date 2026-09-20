@@ -1,0 +1,14 @@
+specVersion: "v1beta"
+serviceId: dandle-commerce
+location: europe-west1
+schema:
+  source: ./schema
+  datasource:
+    postgresql:
+      database: dandle
+      cloudSql:
+        instanceId: dandle-commerce-primary
+        schemaValidation: COMPATIBLE
+connectorDirs:
+  - ./customer
+  - ./server

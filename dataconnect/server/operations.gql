@@ -1,0 +1,145 @@
+# Commerce writes are Admin-SDK-only. PayTabs/Take App verification remains in
+# trusted server handlers; client state can never declare an order paid.
+
+mutation CreateCommerceOrder(
+  $reference: String!
+  $customerAuthUid: String!
+  $idempotencyKey: String!
+  $sourceChannel: String!
+  $currency: String!
+  $totalAmountMinor: Int64!
+  $cartSnapshot: Any!
+  $contactSnapshot: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  order_insert(data: {
+    reference: $reference
+    customerAuthUid: $customerAuthUid
+    idempotencyKey: $idempotencyKey
+    sourceChannel: $sourceChannel
+    status: "pending"
+    paymentStatus: "unpaid"
+    currency: $currency
+    totalAmountMinor: $totalAmountMinor
+    cartSnapshot: $cartSnapshot
+    contactSnapshot: $contactSnapshot
+  })
+}
+
+mutation RecordPaymentAttempt(
+  $orderReference: String!
+  $provider: String!
+  $providerProfileId: String
+  $providerTransactionReference: String
+  $idempotencyKey: String!
+  $amountMinor: Int64!
+  $currency: String!
+  $status: String!
+) @auth(level: NO_ACCESS) @transaction {
+  query
+  @redact
+  @check(expr: "response.query.orders.size() == 1", message: "Payment attempt does not match exactly one order") {
+    orders(where: {
+      reference: { eq: $orderReference }
+      totalAmountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      reference
+    }
+  }
+  paymentAttempt_insert(data: {
+    orderReference: $orderReference
+    provider: $provider
+    providerProfileId: $providerProfileId
+    providerTransactionReference: $providerTransactionReference
+    idempotencyKey: $idempotencyKey
+    amountMinor: $amountMinor
+    currency: $currency
+    status: $status
+  })
+}
+
+mutation RecordVerifiedPayment(
+  $eventId: String!
+  $orderReference: String!
+  $providerTransactionReference: String!
+  $amountMinor: Int64!
+  $currency: String!
+  $processorSnapshot: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  query
+  @redact
+  @check(expr: "response.query.orders.size() == 1", message: "Verified payment does not match exactly one order") {
+    orders(where: {
+      reference: { eq: $orderReference }
+      totalAmountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      reference
+    }
+  }
+  paymentEvent_insert(data: {
+    eventId: $eventId
+    provider: "paytabs"
+    orderReference: $orderReference
+    providerTransactionReference: $providerTransactionReference
+    eventType: "authoritative-verification"
+    authoritativeStatus: "paid"
+    amountMinor: $amountMinor
+    currency: $currency
+    processorSnapshot: $processorSnapshot
+  })
+  order_update(key: { reference: $orderReference }, data: {
+    paymentStatus: "paid"
+    updatedAt_expr: "request.time"
+  }) @check(expr: "this != null", message: "Order not found")
+}
+
+mutation CaptureLead(
+  $customerAuthUid: String!
+  $source: String!
+  $consentCaptured: Boolean!
+  $details: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  lead_insert(data: {
+    leadId_expr: "uuidV4()"
+    customerAuthUid: $customerAuthUid
+    source: $source
+    consentCaptured: $consentCaptured
+    details: $details
+    status: "captured"
+  })
+}
+
+mutation QueueOperationsEvent(
+  $eventId: String!
+  $orderReference: String
+  $eventType: String!
+  $payload: Any!
+) @auth(level: NO_ACCESS) @transaction {
+  operationsEvent_insert(data: {
+    eventId: $eventId
+    orderReference: $orderReference
+    eventType: $eventType
+    payload: $payload
+    deliveryStatus: "pending"
+  })
+}
+
+mutation RecordMigrationCheckpoint(
+  $sourceSystem: String!
+  $cursor: String
+  $sourceCount: Int64!
+  $targetCount: Int64!
+  $checksum: String!
+  $completedAt: Timestamp
+) @auth(level: NO_ACCESS) @transaction {
+  migrationCheckpoint_upsert(data: {
+    sourceSystem: $sourceSystem
+    cursor: $cursor
+    sourceCount: $sourceCount
+    targetCount: $targetCount
+    checksum: $checksum
+    completedAt: $completedAt
+    updatedAt_expr: "request.time"
+  })
+}

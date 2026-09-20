@@ -18,6 +18,8 @@ dist-ssr
 .idea
 .DS_Store
 .vercel
+dataconnect-generated/
+dataconnect/.dataconnect/
 *.suo
 *.ntvs*
 *.njsproj

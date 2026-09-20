@@ -1,0 +1,5 @@
+connectorId: customer
+generate:
+  javascriptSdk:
+    outputDir: ../../dataconnect-generated/customer
+    package: "@dandle/sql-connect-customer"

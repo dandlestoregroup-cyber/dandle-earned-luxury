@@ -1,0 +1,117 @@
+# Planned DANDLE/NOUR Firebase SQL Connect schema.
+#
+# This source is intentionally NOT deployed. config/data-backend-cutover.json
+# keeps Supabase authoritative until every migration and production gate has
+# independently verified evidence. Monetary values are stored in minor units.
+
+type Product @table(key: "id") {
+  id: String! @col(dataType: "varchar(80)")
+  handle: String! @unique @col(dataType: "varchar(120)")
+  displayName: String! @col(dataType: "varchar(200)")
+  description: String
+  active: Boolean! @default(value: true)
+  sourceSystem: String! @col(dataType: "varchar(40)")
+  sourceUpdatedAt: Timestamp!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type ProductVariant @table(key: "id") {
+  id: String! @col(dataType: "varchar(100)")
+  productId: String! @col(dataType: "varchar(80)")
+  sku: String! @unique @col(dataType: "varchar(100)")
+  mechanism: String! @col(dataType: "varchar(40)")
+  massageFeature: Boolean! @default(value: false)
+  unitAmountMinor: Int64!
+  currency: String! @col(dataType: "varchar(3)")
+  active: Boolean! @default(value: true)
+  sourceUpdatedAt: Timestamp!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Customer @table(key: "authUid") {
+  authUid: String! @col(dataType: "varchar(128)")
+  displayName: String @col(dataType: "varchar(200)")
+  email: String @col(dataType: "varchar(320)")
+  phoneE164: String @col(dataType: "varchar(32)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Order @table(key: "reference") {
+  reference: String! @col(dataType: "varchar(80)")
+  customerAuthUid: String! @col(dataType: "varchar(128)")
+  idempotencyKey: String! @unique @col(dataType: "varchar(160)")
+  sourceChannel: String! @col(dataType: "varchar(40)")
+  status: String! @col(dataType: "varchar(40)")
+  paymentStatus: String! @col(dataType: "varchar(40)")
+  currency: String! @col(dataType: "varchar(3)")
+  totalAmountMinor: Int64!
+  cartSnapshot: Any!
+  contactSnapshot: Any!
+  takeAppOrderId: String @unique @col(dataType: "varchar(160)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type PaymentAttempt @table(key: "attemptId") {
+  attemptId: UUID! @default(expr: "uuidV4()")
+  orderReference: String! @col(dataType: "varchar(80)")
+  provider: String! @col(dataType: "varchar(40)")
+  providerProfileId: String @col(dataType: "varchar(120)")
+  providerTransactionReference: String @unique @col(dataType: "varchar(160)")
+  idempotencyKey: String! @unique @col(dataType: "varchar(160)")
+  amountMinor: Int64!
+  currency: String! @col(dataType: "varchar(3)")
+  status: String! @col(dataType: "varchar(40)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type PaymentEvent @table(key: "eventId") {
+  eventId: String! @col(dataType: "varchar(200)")
+  provider: String! @col(dataType: "varchar(40)")
+  orderReference: String! @col(dataType: "varchar(80)")
+  providerTransactionReference: String! @col(dataType: "varchar(160)")
+  eventType: String! @col(dataType: "varchar(80)")
+  authoritativeStatus: String! @col(dataType: "varchar(40)")
+  amountMinor: Int64!
+  currency: String! @col(dataType: "varchar(3)")
+  processorSnapshot: Any!
+  receivedAt: Timestamp! @default(expr: "request.time")
+}
+
+type OperationsEvent @table(key: "eventId") {
+  eventId: String! @col(dataType: "varchar(200)")
+  orderReference: String @col(dataType: "varchar(80)")
+  eventType: String! @col(dataType: "varchar(80)")
+  payload: Any!
+  deliveryStatus: String! @col(dataType: "varchar(40)")
+  attemptCount: Int! @default(value: 0)
+  nextAttemptAt: Timestamp
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Lead @table(key: "leadId") {
+  leadId: UUID! @default(expr: "uuidV4()")
+  customerAuthUid: String! @col(dataType: "varchar(128)")
+  source: String! @col(dataType: "varchar(80)")
+  consentCaptured: Boolean! @default(value: false)
+  details: Any!
+  status: String! @col(dataType: "varchar(40)")
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type MigrationCheckpoint @table(key: "sourceSystem") {
+  sourceSystem: String! @col(dataType: "varchar(80)")
+  cursor: String
+  sourceCount: Int64!
+  targetCount: Int64!
+  checksum: String! @col(dataType: "varchar(128)")
+  completedAt: Timestamp
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}

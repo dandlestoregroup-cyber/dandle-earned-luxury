@@ -28,6 +28,16 @@ jobs:
       - name: Payment security tests
         run: npm test
 
+      - name: Data authority and Firebase SQL Connect source guards
+        run: |
+          npm run verify:data-backend
+          npm run verify:firebase-sql-connect
+
+      - name: Compile Firebase SQL Connect schema and generated SDK boundary
+        run: |
+          npx --yes firebase-tools@15.30.2 dataconnect:sdk:generate --project demo-dandle-sql-connect --non-interactive
+          npm run verify:firebase-sql-connect:generated
+
       - name: Typecheck app
         run: npx tsc -p tsconfig.app.json --noEmit
 
