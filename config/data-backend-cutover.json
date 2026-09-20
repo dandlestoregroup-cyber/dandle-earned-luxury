@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "production": {
+    "readBackend": "supabase",
+    "writeBackend": "supabase",
+    "dualWriteEnabled": false
+  },
+  "firebaseSqlConnect": {
+    "billingApproval": {
+      "verified": false,
+      "evidence": null
+    },
+    "projectIdentity": {
+      "verified": false,
+      "projectId": null,
+      "evidence": null
+    },
+    "sqlConnectService": {
+      "verified": false,
+      "serviceId": null,
+      "evidence": null
+    },
+    "cloudSqlInstance": {
+      "verified": false,
+      "instanceId": null,
+      "evidence": null
+    },
+    "schemaAndConnectors": {
+      "verified": false,
+      "evidence": null
+    },
+    "firebaseAuth": {
+      "verified": false,
+      "evidence": null
+    },
+    "migration": {
+      "verified": false,
+      "evidence": null
+    },
+    "persistence": {
+      "verified": false,
+      "evidence": null
+    },
+    "paymentCommerce": {
+      "verified": false,
+      "evidence": null
+    },
+    "endToEndReadWrite": {
+      "verified": false,
+      "evidence": null
+    },
+    "rollback": {
+      "verified": false,
+      "evidence": null
+    }
+  }
+}
