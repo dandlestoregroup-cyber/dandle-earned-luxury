@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
-import NourChat from "./pages/NourChat";
 import NourStore from "./pages/NourStore";
 import NorthCoast from "./pages/NorthCoast";
 import CompleteSet from "./pages/CompleteSet";
@@ -26,6 +25,7 @@ import Contact from "./pages/trust/Contact";
 import BackOfficeHub from "./pages/BackOfficeHub";
 
 const queryClient = new QueryClient();
+const nourTestStoreEnabled = import.meta.env.VITE_NOUR_TEST_STORE_ENABLED === "true";
 
 const ProductRedirect = () => {
   const { handle } = useParams();
@@ -72,8 +72,8 @@ const App = () => (
             <Route path="/north-coast" element={<NorthCoast />} />
             <Route path="/product/:handle" element={<ProductRedirect />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/nour-chat" element={<NourChat />} />
-            <Route path="/try-nour" element={<NourStore />} />
+            <Route path="/nour-chat" element={<Navigate to="/" replace />} />
+            <Route path="/try-nour" element={nourTestStoreEnabled ? <NourStore /> : <Navigate to="/" replace />} />
             <Route path="/complete-set" element={<CompleteSet />} />
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
