@@ -27,7 +27,6 @@ const Navigation = () => {
     { label: "AR View", href: "#ar-demo" },
     { label: "About", href: "#story" },
     { label: "Contact", href: "#contact" },
-    { label: "Ask Nour", href: "/nour-chat", isRoute: true },
   ];
 
   return (
