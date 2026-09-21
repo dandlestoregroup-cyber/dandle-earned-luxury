@@ -184,6 +184,23 @@ test("rejects replay that can overwrite a conflicting receipt", () => {
   assert.ok(result.errors.some((error) => error.includes("exact attempt/profile/transaction")));
 });
 
+test("rejects replay that can rewrite the persisted payment event type", () => {
+  const server = requiredServerMutations().replace(
+    'eventType: {eq: "authoritative-verification"}',
+    'eventType: {eq: "other"}',
+  );
+  const result = validateSqlConnectSources({
+    schema: requiredSchema(),
+    customer: requiredCustomerOperations(),
+    server,
+    manifest: safeManifest(),
+    firebaseJson: '{"dataconnect":{"source":"dataconnect"}}',
+    serviceConfig: "schemaValidation: COMPATIBLE",
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes("exact attempt/profile/transaction")));
+});
+
 test("rejects mutable raw processor snapshots in the settlement receipt", () => {
   const server = requiredServerMutations().replace(
     'paymentEvent_upsert(data: {provider: "paytabs", providerProfileId: $providerProfileId})',
@@ -296,7 +313,7 @@ function requiredServerMutations() {
         existingPaymentEvents: paymentEvents(where: {providerTransactionReference: {eq: $providerTransactionReference}}) { providerTransactionReference }
         matchingPaymentEvents: paymentEvents(where: {
           provider: {eq: "paytabs"}, providerProfileId: {eq: $providerProfileId}, orderReference: {eq: $orderReference},
-          providerTransactionReference: {eq: $providerTransactionReference}, authoritativeStatus: {eq: "paid"},
+          providerTransactionReference: {eq: $providerTransactionReference}, eventType: {eq: "authoritative-verification"}, authoritativeStatus: {eq: "paid"},
           amountMinor: {eq: $amountMinor}, currency: {eq: $currency}
         }) { providerTransactionReference }
       }

@@ -105,6 +105,7 @@ mutation RecordVerifiedPayment(
       providerProfileId: { eq: $providerProfileId }
       orderReference: { eq: $orderReference }
       providerTransactionReference: { eq: $providerTransactionReference }
+      eventType: { eq: "authoritative-verification" }
       authoritativeStatus: { eq: "paid" }
       amountMinor: { eq: $amountMinor }
       currency: { eq: $currency }

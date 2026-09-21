@@ -118,6 +118,7 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
       !/providerProfileId:\s*\{\s*eq:\s*\$providerProfileId\s*\}/.test(matchingReceipt) ||
       !/orderReference:\s*\{\s*eq:\s*\$orderReference\s*\}/.test(matchingReceipt) ||
       !/providerTransactionReference:\s*\{\s*eq:\s*\$providerTransactionReference\s*\}/.test(matchingReceipt) ||
+      !/eventType:\s*\{\s*eq:\s*"authoritative-verification"\s*\}/.test(matchingReceipt) ||
       !/authoritativeStatus:\s*\{\s*eq:\s*"paid"\s*\}/.test(matchingReceipt) ||
       !/amountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(matchingReceipt) ||
       !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(matchingReceipt) ||
