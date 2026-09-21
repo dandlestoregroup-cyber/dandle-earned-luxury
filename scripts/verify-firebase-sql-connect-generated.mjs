@@ -55,6 +55,12 @@ if (!/customerAuthUid:\s*string/.test(serverTypes) || !/totalAmountMinor:\s*Int6
 if (!/amountMinor:\s*Int64String/.test(serverTypes) || !/currency:\s*string/.test(serverTypes)) {
   errors.push("generated payment SDK types must preserve amount and currency inputs");
 }
+if (!/RecordVerifiedPaymentVariables\s*\{[\s\S]*?attemptId:\s*UUIDString;[\s\S]*?providerProfileId:\s*string;[\s\S]*?providerTransactionReference:\s*string;/.test(serverTypes)) {
+  errors.push("verified payment SDK must bind the exact attempt, profile, and transaction");
+}
+if (!/RecordVerifiedPaymentData\s*\{[\s\S]*?paymentAttempt_update\?:\s*PaymentAttempt_Key\s*\|\s*null;/.test(serverTypes)) {
+  errors.push("verified payment SDK must atomically update the matched attempt");
+}
 
 if (errors.length > 0) {
   throw new Error(errors.join("\n"));

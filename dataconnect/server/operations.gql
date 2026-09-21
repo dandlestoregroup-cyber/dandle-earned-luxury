@@ -60,7 +60,9 @@ mutation RecordPaymentAttempt(
 
 mutation RecordVerifiedPayment(
   $eventId: String!
+  $attemptId: UUID!
   $orderReference: String!
+  $providerProfileId: String!
   $providerTransactionReference: String!
   $amountMinor: Int64!
   $currency: String!
@@ -76,10 +78,22 @@ mutation RecordVerifiedPayment(
     }, limit: 1) {
       reference
     }
+    paymentAttempts(where: {
+      attemptId: { eq: $attemptId }
+      orderReference: { eq: $orderReference }
+      provider: { eq: "paytabs" }
+      providerProfileId: { eq: $providerProfileId }
+      providerTransactionReference: { eq: $providerTransactionReference }
+      amountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      attemptId
+    }
   }
   paymentEvent_insert(data: {
     eventId: $eventId
     provider: "paytabs"
+    providerProfileId: $providerProfileId
     orderReference: $orderReference
     providerTransactionReference: $providerTransactionReference
     eventType: "authoritative-verification"
@@ -88,6 +102,10 @@ mutation RecordVerifiedPayment(
     currency: $currency
     processorSnapshot: $processorSnapshot
   })
+  paymentAttempt_update(key: { attemptId: $attemptId }, data: {
+    status: "paid"
+    updatedAt_expr: "request.time"
+  }) @check(expr: "this != null", message: "Payment attempt not found")
   order_update(key: { reference: $orderReference }, data: {
     paymentStatus: "paid"
     updatedAt_expr: "request.time"

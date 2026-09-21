@@ -72,8 +72,9 @@ type PaymentAttempt @table(key: "attemptId") {
 type PaymentEvent @table(key: "eventId") {
   eventId: String! @col(dataType: "varchar(200)")
   provider: String! @col(dataType: "varchar(40)")
+  providerProfileId: String! @col(dataType: "varchar(120)")
   orderReference: String! @col(dataType: "varchar(80)")
-  providerTransactionReference: String! @col(dataType: "varchar(160)")
+  providerTransactionReference: String! @unique @col(dataType: "varchar(160)")
   eventType: String! @col(dataType: "varchar(80)")
   authoritativeStatus: String! @col(dataType: "varchar(40)")
   amountMinor: Int64!

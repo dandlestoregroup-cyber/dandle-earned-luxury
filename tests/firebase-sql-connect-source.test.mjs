@@ -102,6 +102,23 @@ test("rejects the invalid direct custom-key update syntax", () => {
   assert.ok(result.errors.some((error) => error.includes("verified PayTabs mutation")));
 });
 
+test("rejects verified payment that is not bound to the exact processor attempt", () => {
+  const server = requiredServerMutations().replace(
+    "providerProfileId: {eq: $providerProfileId}",
+    "providerProfileId: {eq: \"untrusted-profile\"}",
+  );
+  const result = validateSqlConnectSources({
+    schema: requiredSchema(),
+    customer: requiredCustomerOperations(),
+    server,
+    manifest: safeManifest(),
+    firebaseJson: '{"dataconnect":{"source":"dataconnect"}}',
+    serviceConfig: "schemaValidation: COMPATIBLE",
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes("exact attempt/profile/transaction")));
+});
+
 test("rejects source-only work that marks a production cutover gate verified", () => {
   const manifest = JSON.parse(safeManifest());
   manifest.firebaseSqlConnect.billingApproval.verified = true;
@@ -175,9 +192,13 @@ function requiredServerMutations() {
       query @check(expr: "true") { orders(where: {totalAmountMinor: {eq: $amountMinor}, currency: {eq: $currency}}) { reference } }
       paymentAttempt_insert(data: {})
     }
-    mutation RecordVerifiedPayment @auth(level: NO_ACCESS) @transaction {
-      query @check(expr: "true") { orders(where: {totalAmountMinor: {eq: $amountMinor}, currency: {eq: $currency}}) { reference } }
-      paymentEvent_insert(data: {provider: "paytabs"})
+    mutation RecordVerifiedPayment($attemptId: UUID!, $providerProfileId: String!, $providerTransactionReference: String!) @auth(level: NO_ACCESS) @transaction {
+      query @check(expr: "true") {
+        orders(where: {totalAmountMinor: {eq: $amountMinor}, currency: {eq: $currency}}) { reference }
+        paymentAttempts(where: {attemptId: {eq: $attemptId}, providerProfileId: {eq: $providerProfileId}, providerTransactionReference: {eq: $providerTransactionReference}}) { attemptId }
+      }
+      paymentEvent_insert(data: {provider: "paytabs", providerProfileId: $providerProfileId})
+      paymentAttempt_update(key: {attemptId: $attemptId}, data: {status: "paid"}) @check(expr: "this != null")
       order_update(key: {reference: "x"}, data: {paymentStatus: "paid"}) @check(expr: "this != null")
     }
     mutation CaptureLead @auth(level: NO_ACCESS) @transaction { lead_insert(data: {}) }
