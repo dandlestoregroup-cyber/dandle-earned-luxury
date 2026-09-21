@@ -167,6 +167,40 @@ test("rejects non-idempotent verified payment event insertion", () => {
   assert.ok(result.errors.some((error) => error.includes("exact attempt/profile/transaction")));
 });
 
+test("rejects replay that can overwrite a conflicting receipt", () => {
+  const server = requiredServerMutations().replace(
+    "response.query.existingPaymentEvents.size() == response.query.matchingPaymentEvents.size()",
+    "response.query.existingPaymentEvents.size() >= 0",
+  );
+  const result = validateSqlConnectSources({
+    schema: requiredSchema(),
+    customer: requiredCustomerOperations(),
+    server,
+    manifest: safeManifest(),
+    firebaseJson: '{"dataconnect":{"source":"dataconnect"}}',
+    serviceConfig: "schemaValidation: COMPATIBLE",
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes("exact attempt/profile/transaction")));
+});
+
+test("rejects mutable raw processor snapshots in the settlement receipt", () => {
+  const server = requiredServerMutations().replace(
+    'paymentEvent_upsert(data: {provider: "paytabs", providerProfileId: $providerProfileId})',
+    'paymentEvent_upsert(data: {provider: "paytabs", providerProfileId: $providerProfileId, processorSnapshot: $processorSnapshot})',
+  );
+  const result = validateSqlConnectSources({
+    schema: requiredSchema(),
+    customer: requiredCustomerOperations(),
+    server,
+    manifest: safeManifest(),
+    firebaseJson: '{"dataconnect":{"source":"dataconnect"}}',
+    serviceConfig: "schemaValidation: COMPATIBLE",
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes("exact attempt/profile/transaction")));
+});
+
 test("rejects creation of a new payment attempt for an already-paid order", () => {
   const server = requiredServerMutations().replace('paymentStatus: {eq: "unpaid"}', 'paymentStatus: {eq: "paid"}');
   const result = validateSqlConnectSources({
@@ -256,9 +290,15 @@ function requiredServerMutations() {
       order_update(key: {reference: "x"}, data: {currentPaymentAttemptId: $attemptId}) @check(expr: "this != null")
     }
     mutation RecordVerifiedPayment($attemptId: UUID!, $providerProfileId: String!, $providerTransactionReference: String!) @auth(level: NO_ACCESS) @transaction {
-      query @check(expr: "response.query.orders.size() == 1 && response.query.paymentAttempts.size() == 1") {
+      query @check(expr: "response.query.orders.size() == 1 && response.query.paymentAttempts.size() == 1 && response.query.existingPaymentEvents.size() == response.query.matchingPaymentEvents.size()") {
         orders(where: {currentPaymentAttemptId: {eq: $attemptId}, totalAmountMinor: {eq: $amountMinor}, currency: {eq: $currency}}) { reference }
         paymentAttempts(where: {attemptId: {eq: $attemptId}, providerProfileId: {eq: $providerProfileId}, providerTransactionReference: {eq: $providerTransactionReference}}) { attemptId }
+        existingPaymentEvents: paymentEvents(where: {providerTransactionReference: {eq: $providerTransactionReference}}) { providerTransactionReference }
+        matchingPaymentEvents: paymentEvents(where: {
+          provider: {eq: "paytabs"}, providerProfileId: {eq: $providerProfileId}, orderReference: {eq: $orderReference},
+          providerTransactionReference: {eq: $providerTransactionReference}, authoritativeStatus: {eq: "paid"},
+          amountMinor: {eq: $amountMinor}, currency: {eq: $currency}
+        }) { providerTransactionReference }
       }
       paymentEvent_upsert(data: {provider: "paytabs", providerProfileId: $providerProfileId})
       paymentAttempt_update(key: {attemptId: $attemptId}, data: {status: "paid"}) @check(expr: "this != null")

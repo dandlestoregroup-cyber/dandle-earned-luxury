@@ -72,11 +72,10 @@ mutation RecordVerifiedPayment(
   $providerTransactionReference: String!
   $amountMinor: Int64!
   $currency: String!
-  $processorSnapshot: Any!
 ) @auth(level: NO_ACCESS) @transaction {
   query
   @redact
-  @check(expr: "response.query.orders.size() == 1 && response.query.paymentAttempts.size() == 1", message: "Verified payment does not match the current order attempt") {
+  @check(expr: "response.query.orders.size() == 1 && response.query.paymentAttempts.size() == 1 && response.query.existingPaymentEvents.size() == response.query.matchingPaymentEvents.size()", message: "Verified payment does not match the current order attempt or immutable receipt") {
     orders(where: {
       reference: { eq: $orderReference }
       currentPaymentAttemptId: { eq: $attemptId }
@@ -96,6 +95,22 @@ mutation RecordVerifiedPayment(
     }, limit: 1) {
       attemptId
     }
+    existingPaymentEvents: paymentEvents(where: {
+      providerTransactionReference: { eq: $providerTransactionReference }
+    }, limit: 1) {
+      providerTransactionReference
+    }
+    matchingPaymentEvents: paymentEvents(where: {
+      provider: { eq: "paytabs" }
+      providerProfileId: { eq: $providerProfileId }
+      orderReference: { eq: $orderReference }
+      providerTransactionReference: { eq: $providerTransactionReference }
+      authoritativeStatus: { eq: "paid" }
+      amountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      providerTransactionReference
+    }
   }
   paymentEvent_upsert(data: {
     provider: "paytabs"
@@ -106,7 +121,6 @@ mutation RecordVerifiedPayment(
     authoritativeStatus: "paid"
     amountMinor: $amountMinor
     currency: $currency
-    processorSnapshot: $processorSnapshot
   })
   paymentAttempt_update(key: { attemptId: $attemptId }, data: {
     status: "paid"

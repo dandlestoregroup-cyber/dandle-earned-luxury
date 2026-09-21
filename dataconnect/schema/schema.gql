@@ -79,8 +79,7 @@ type PaymentEvent @table(key: "providerTransactionReference") {
   authoritativeStatus: String! @col(dataType: "varchar(40)")
   amountMinor: Int64!
   currency: String! @col(dataType: "varchar(3)")
-  processorSnapshot: Any!
-  receivedAt: Timestamp! @default(expr: "request.time")
+  verifiedAt: Timestamp! @default(expr: "request.time")
 }
 
 type OperationsEvent @table(key: "eventId") {
