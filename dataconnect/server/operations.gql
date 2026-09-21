@@ -26,6 +26,7 @@ mutation CreateCommerceOrder(
 }
 
 mutation RecordPaymentAttempt(
+  $attemptId: UUID!
   $orderReference: String!
   $provider: String!
   $providerProfileId: String
@@ -42,11 +43,13 @@ mutation RecordPaymentAttempt(
       reference: { eq: $orderReference }
       totalAmountMinor: { eq: $amountMinor }
       currency: { eq: $currency }
+      paymentStatus: { eq: "unpaid" }
     }, limit: 1) {
       reference
     }
   }
   paymentAttempt_insert(data: {
+    attemptId: $attemptId
     orderReference: $orderReference
     provider: $provider
     providerProfileId: $providerProfileId
@@ -56,38 +59,74 @@ mutation RecordPaymentAttempt(
     currency: $currency
     status: $status
   })
+  order_update(key: { reference: $orderReference }, data: {
+    currentPaymentAttemptId: $attemptId
+    updatedAt_expr: "request.time"
+  }) @check(expr: "this != null", message: "Order not found")
 }
 
 mutation RecordVerifiedPayment(
-  $eventId: String!
+  $attemptId: UUID!
   $orderReference: String!
+  $providerProfileId: String!
   $providerTransactionReference: String!
   $amountMinor: Int64!
   $currency: String!
-  $processorSnapshot: Any!
 ) @auth(level: NO_ACCESS) @transaction {
   query
   @redact
-  @check(expr: "response.query.orders.size() == 1", message: "Verified payment does not match exactly one order") {
+  @check(expr: "response.query.orders.size() == 1 && response.query.paymentAttempts.size() == 1 && response.query.existingPaymentEvents.size() == response.query.matchingPaymentEvents.size()", message: "Verified payment does not match the current order attempt or immutable receipt") {
     orders(where: {
       reference: { eq: $orderReference }
+      currentPaymentAttemptId: { eq: $attemptId }
       totalAmountMinor: { eq: $amountMinor }
       currency: { eq: $currency }
     }, limit: 1) {
       reference
     }
+    paymentAttempts(where: {
+      attemptId: { eq: $attemptId }
+      orderReference: { eq: $orderReference }
+      provider: { eq: "paytabs" }
+      providerProfileId: { eq: $providerProfileId }
+      providerTransactionReference: { eq: $providerTransactionReference }
+      amountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      attemptId
+    }
+    existingPaymentEvents: paymentEvents(where: {
+      providerTransactionReference: { eq: $providerTransactionReference }
+    }, limit: 1) {
+      providerTransactionReference
+    }
+    matchingPaymentEvents: paymentEvents(where: {
+      provider: { eq: "paytabs" }
+      providerProfileId: { eq: $providerProfileId }
+      orderReference: { eq: $orderReference }
+      providerTransactionReference: { eq: $providerTransactionReference }
+      eventType: { eq: "authoritative-verification" }
+      authoritativeStatus: { eq: "paid" }
+      amountMinor: { eq: $amountMinor }
+      currency: { eq: $currency }
+    }, limit: 1) {
+      providerTransactionReference
+    }
   }
-  paymentEvent_insert(data: {
-    eventId: $eventId
+  paymentEvent_upsert(data: {
     provider: "paytabs"
+    providerProfileId: $providerProfileId
     orderReference: $orderReference
     providerTransactionReference: $providerTransactionReference
     eventType: "authoritative-verification"
     authoritativeStatus: "paid"
     amountMinor: $amountMinor
     currency: $currency
-    processorSnapshot: $processorSnapshot
   })
+  paymentAttempt_update(key: { attemptId: $attemptId }, data: {
+    status: "paid"
+    updatedAt_expr: "request.time"
+  }) @check(expr: "this != null", message: "Payment attempt not found")
   order_update(key: { reference: $orderReference }, data: {
     paymentStatus: "paid"
     updatedAt_expr: "request.time"

@@ -97,21 +97,45 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
     }
   }
   const verifiedPayment = operations.find((operation) => operation.name === "RecordVerifiedPayment");
+  const matchingReceipt = verifiedPayment?.source.match(
+    /matchingPaymentEvents:\s*paymentEvents[\s\S]*?(?=\n\s*}\s*\n\s*paymentEvent_upsert)/,
+  )?.[0] ?? "";
   if (!verifiedPayment ||
-      !/paymentEvent_insert\b/.test(verifiedPayment.source) ||
+      !/paymentEvent_upsert\b/.test(verifiedPayment.source) ||
       !/order_update\b/.test(verifiedPayment.source) ||
       !/totalAmountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(verifiedPayment.source) ||
       !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(verifiedPayment.source) ||
       !/provider:\s*"paytabs"/.test(verifiedPayment.source) ||
+      !/providerProfileId:\s*\{\s*eq:\s*\$providerProfileId\s*\}/.test(verifiedPayment.source) ||
+      !/providerTransactionReference:\s*\{\s*eq:\s*\$providerTransactionReference\s*\}/.test(verifiedPayment.source) ||
+      !/attemptId:\s*\{\s*eq:\s*\$attemptId\s*\}/.test(verifiedPayment.source) ||
+      !/currentPaymentAttemptId:\s*\{\s*eq:\s*\$attemptId\s*\}/.test(verifiedPayment.source) ||
+      !/response\.query\.orders\.size\(\)\s*==\s*1\s*&&\s*response\.query\.paymentAttempts\.size\(\)\s*==\s*1/.test(verifiedPayment.source) ||
+      !/response\.query\.existingPaymentEvents\.size\(\)\s*==\s*response\.query\.matchingPaymentEvents\.size\(\)/.test(verifiedPayment.source) ||
+      !/existingPaymentEvents:\s*paymentEvents\b/.test(verifiedPayment.source) ||
+      !/matchingPaymentEvents:\s*paymentEvents\b/.test(verifiedPayment.source) ||
+      !/provider:\s*\{\s*eq:\s*"paytabs"\s*\}/.test(matchingReceipt) ||
+      !/providerProfileId:\s*\{\s*eq:\s*\$providerProfileId\s*\}/.test(matchingReceipt) ||
+      !/orderReference:\s*\{\s*eq:\s*\$orderReference\s*\}/.test(matchingReceipt) ||
+      !/providerTransactionReference:\s*\{\s*eq:\s*\$providerTransactionReference\s*\}/.test(matchingReceipt) ||
+      !/eventType:\s*\{\s*eq:\s*"authoritative-verification"\s*\}/.test(matchingReceipt) ||
+      !/authoritativeStatus:\s*\{\s*eq:\s*"paid"\s*\}/.test(matchingReceipt) ||
+      !/amountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(matchingReceipt) ||
+      !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(matchingReceipt) ||
+      /processorSnapshot\b/.test(verifiedPayment.source) ||
+      !/paymentAttempt_update\s*\(\s*key:\s*\{\s*attemptId:\s*\$attemptId\s*\}/.test(verifiedPayment.source) ||
       !/paymentStatus:\s*"paid"/.test(verifiedPayment.source) ||
       !/order_update\s*\(\s*key:\s*\{\s*reference:\s*\$orderReference\s*\}/.test(verifiedPayment.source) ||
       !/@check\b/.test(verifiedPayment.source)) {
-    errors.push("verified PayTabs mutation must match order value, persist evidence, and atomically set paid");
+    errors.push("verified PayTabs mutation must bind the exact attempt/profile/transaction and atomically persist paid evidence");
   }
   const paymentAttempt = operations.find((operation) => operation.name === "RecordPaymentAttempt");
   if (!paymentAttempt ||
+      !/attemptId:\s*\$attemptId\b/.test(paymentAttempt.source) ||
+      !/currentPaymentAttemptId:\s*\$attemptId\b/.test(paymentAttempt.source) ||
       !/totalAmountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(paymentAttempt.source) ||
       !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(paymentAttempt.source) ||
+      !/paymentStatus:\s*\{\s*eq:\s*"unpaid"\s*\}/.test(paymentAttempt.source) ||
       !/@check\b/.test(paymentAttempt.source)) {
     errors.push("payment attempts must match an existing order amount and currency");
   }

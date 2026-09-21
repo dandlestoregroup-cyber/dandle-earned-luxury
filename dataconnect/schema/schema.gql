@@ -46,6 +46,7 @@ type Order @table(key: "reference") {
   sourceChannel: String! @col(dataType: "varchar(40)")
   status: String! @col(dataType: "varchar(40)")
   paymentStatus: String! @col(dataType: "varchar(40)")
+  currentPaymentAttemptId: UUID
   currency: String! @col(dataType: "varchar(3)")
   totalAmountMinor: Int64!
   cartSnapshot: Any!
@@ -69,17 +70,16 @@ type PaymentAttempt @table(key: "attemptId") {
   updatedAt: Timestamp! @default(expr: "request.time")
 }
 
-type PaymentEvent @table(key: "eventId") {
-  eventId: String! @col(dataType: "varchar(200)")
+type PaymentEvent @table(key: "providerTransactionReference") {
   provider: String! @col(dataType: "varchar(40)")
+  providerProfileId: String! @col(dataType: "varchar(120)")
   orderReference: String! @col(dataType: "varchar(80)")
   providerTransactionReference: String! @col(dataType: "varchar(160)")
   eventType: String! @col(dataType: "varchar(80)")
   authoritativeStatus: String! @col(dataType: "varchar(40)")
   amountMinor: Int64!
   currency: String! @col(dataType: "varchar(3)")
-  processorSnapshot: Any!
-  receivedAt: Timestamp! @default(expr: "request.time")
+  verifiedAt: Timestamp! @default(expr: "request.time")
 }
 
 type OperationsEvent @table(key: "eventId") {
