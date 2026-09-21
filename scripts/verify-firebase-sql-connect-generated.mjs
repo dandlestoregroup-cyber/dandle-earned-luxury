@@ -61,6 +61,10 @@ if (!/RecordVerifiedPaymentVariables\s*\{[\s\S]*?attemptId:\s*UUIDString;[\s\S]*
 if (!/RecordVerifiedPaymentData\s*\{[\s\S]*?paymentAttempt_update\?:\s*PaymentAttempt_Key\s*\|\s*null;/.test(serverTypes)) {
   errors.push("verified payment SDK must atomically update the matched attempt");
 }
+if (!/RecordPaymentAttemptVariables\s*\{[\s\S]*?attemptId:\s*UUIDString;/.test(serverTypes) ||
+    !/RecordPaymentAttemptData\s*\{[\s\S]*?order_update\?:\s*Order_Key\s*\|\s*null;/.test(serverTypes)) {
+  errors.push("payment-attempt SDK must atomically designate the order's current attempt");
+}
 
 if (errors.length > 0) {
   throw new Error(errors.join("\n"));

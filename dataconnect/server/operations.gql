@@ -26,6 +26,7 @@ mutation CreateCommerceOrder(
 }
 
 mutation RecordPaymentAttempt(
+  $attemptId: UUID!
   $orderReference: String!
   $provider: String!
   $providerProfileId: String
@@ -42,11 +43,13 @@ mutation RecordPaymentAttempt(
       reference: { eq: $orderReference }
       totalAmountMinor: { eq: $amountMinor }
       currency: { eq: $currency }
+      paymentStatus: { eq: "unpaid" }
     }, limit: 1) {
       reference
     }
   }
   paymentAttempt_insert(data: {
+    attemptId: $attemptId
     orderReference: $orderReference
     provider: $provider
     providerProfileId: $providerProfileId
@@ -56,10 +59,13 @@ mutation RecordPaymentAttempt(
     currency: $currency
     status: $status
   })
+  order_update(key: { reference: $orderReference }, data: {
+    currentPaymentAttemptId: $attemptId
+    updatedAt_expr: "request.time"
+  }) @check(expr: "this != null", message: "Order not found")
 }
 
 mutation RecordVerifiedPayment(
-  $eventId: String!
   $attemptId: UUID!
   $orderReference: String!
   $providerProfileId: String!
@@ -70,9 +76,10 @@ mutation RecordVerifiedPayment(
 ) @auth(level: NO_ACCESS) @transaction {
   query
   @redact
-  @check(expr: "response.query.orders.size() == 1", message: "Verified payment does not match exactly one order") {
+  @check(expr: "response.query.orders.size() == 1 && response.query.paymentAttempts.size() == 1", message: "Verified payment does not match the current order attempt") {
     orders(where: {
       reference: { eq: $orderReference }
+      currentPaymentAttemptId: { eq: $attemptId }
       totalAmountMinor: { eq: $amountMinor }
       currency: { eq: $currency }
     }, limit: 1) {
@@ -90,8 +97,7 @@ mutation RecordVerifiedPayment(
       attemptId
     }
   }
-  paymentEvent_insert(data: {
-    eventId: $eventId
+  paymentEvent_upsert(data: {
     provider: "paytabs"
     providerProfileId: $providerProfileId
     orderReference: $orderReference

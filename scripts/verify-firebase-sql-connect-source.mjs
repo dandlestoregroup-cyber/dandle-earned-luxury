@@ -98,7 +98,7 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
   }
   const verifiedPayment = operations.find((operation) => operation.name === "RecordVerifiedPayment");
   if (!verifiedPayment ||
-      !/paymentEvent_insert\b/.test(verifiedPayment.source) ||
+      !/paymentEvent_upsert\b/.test(verifiedPayment.source) ||
       !/order_update\b/.test(verifiedPayment.source) ||
       !/totalAmountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(verifiedPayment.source) ||
       !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(verifiedPayment.source) ||
@@ -106,6 +106,8 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
       !/providerProfileId:\s*\{\s*eq:\s*\$providerProfileId\s*\}/.test(verifiedPayment.source) ||
       !/providerTransactionReference:\s*\{\s*eq:\s*\$providerTransactionReference\s*\}/.test(verifiedPayment.source) ||
       !/attemptId:\s*\{\s*eq:\s*\$attemptId\s*\}/.test(verifiedPayment.source) ||
+      !/currentPaymentAttemptId:\s*\{\s*eq:\s*\$attemptId\s*\}/.test(verifiedPayment.source) ||
+      !/response\.query\.orders\.size\(\)\s*==\s*1\s*&&\s*response\.query\.paymentAttempts\.size\(\)\s*==\s*1/.test(verifiedPayment.source) ||
       !/paymentAttempt_update\s*\(\s*key:\s*\{\s*attemptId:\s*\$attemptId\s*\}/.test(verifiedPayment.source) ||
       !/paymentStatus:\s*"paid"/.test(verifiedPayment.source) ||
       !/order_update\s*\(\s*key:\s*\{\s*reference:\s*\$orderReference\s*\}/.test(verifiedPayment.source) ||
@@ -114,8 +116,11 @@ export function validateSqlConnectSources({ schema, customer, server, manifest, 
   }
   const paymentAttempt = operations.find((operation) => operation.name === "RecordPaymentAttempt");
   if (!paymentAttempt ||
+      !/attemptId:\s*\$attemptId\b/.test(paymentAttempt.source) ||
+      !/currentPaymentAttemptId:\s*\$attemptId\b/.test(paymentAttempt.source) ||
       !/totalAmountMinor:\s*\{\s*eq:\s*\$amountMinor\s*\}/.test(paymentAttempt.source) ||
       !/currency:\s*\{\s*eq:\s*\$currency\s*\}/.test(paymentAttempt.source) ||
+      !/paymentStatus:\s*\{\s*eq:\s*"unpaid"\s*\}/.test(paymentAttempt.source) ||
       !/@check\b/.test(paymentAttempt.source)) {
     errors.push("payment attempts must match an existing order amount and currency");
   }
