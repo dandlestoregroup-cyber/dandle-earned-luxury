@@ -39,3 +39,15 @@ test("NOUR loads its ESM catalogue through a runtime-safe dynamic import", () =>
   assert.match(source, /await import\("\.\.\/_lib\/nourJourney\.mjs"\)/);
   assert.doesNotMatch(source, /^import \{ createNourReply \}/m);
 });
+
+test("NOUR can be called cross-origin only from approved DANDLE surfaces", () => {
+  const source = readFileSync(new URL("../api/nour/v1.ts", import.meta.url), "utf8");
+  assert.match(source, /export async function OPTIONS\(request: Request\)/);
+  assert.match(source, /https:\/\/dandle-vie\.com/);
+  assert.match(source, /https:\/\/www\.dandle-vie\.com/);
+  assert.match(source, /https:\/\/dandle-earned-luxury\.lovable\.app/);
+  assert.match(source, /Access-Control-Allow-Origin/);
+  assert.match(source, /Access-Control-Allow-Methods/);
+  assert.match(source, /Origin not allowed/);
+  assert.doesNotMatch(source, /Access-Control-Allow-Origin["']?\s*[:,]\s*["']\*["']/);
+});
