@@ -143,6 +143,29 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               <p className="text-sm text-muted-foreground">Target: High-performing professionals</p>
             </div>
 
+            {product.dimensionsCm && (
+              <div className="grid grid-cols-2 gap-3 rounded-lg border bg-card p-4 text-center">
+                {product.dimensionsCm.width && (
+                  <div>
+                    <p className="text-xs text-muted-foreground">Width</p>
+                    <p className="text-lg font-bold">{product.dimensionsCm.width} cm</p>
+                  </div>
+                )}
+                {product.dimensionsCm.height && (
+                  <div>
+                    <p className="text-xs text-muted-foreground">Height</p>
+                    <p className="text-lg font-bold">{product.dimensionsCm.height} cm</p>
+                  </div>
+                )}
+                {product.dimensionsCm.depth && (
+                  <div>
+                    <p className="text-xs text-muted-foreground">Depth</p>
+                    <p className="text-lg font-bold">{product.dimensionsCm.depth} cm</p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Mechanism Type - First */}
             <div className="space-y-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-700 delay-100">
               <h3 className="text-base md:text-lg font-bold">Mechanism Type</h3>
