@@ -40,6 +40,32 @@ export const dandleCatalog: DandleProduct[] = [
     ]
   },
   {
+    productHandle: "grand-relaxmax",
+    title: "Grand RelaxMax Recliner",
+    subtitle: "Grand Earned Luxury Comfort",
+    aspectRatio: 1.79,
+    heroImage: {
+      src: "/images/relaxmax-brown-lifestyle.jpg",
+      width: 2752,
+      height: 1536,
+      alt: "Grand RelaxMax Recliner - Grand Earned Luxury"
+    },
+    gallery: [
+      {
+        src: "/images/relaxmax-hero-offwhite.jpg",
+        width: 2752,
+        height: 1536,
+        alt: "Grand RelaxMax Recliner - Front View"
+      },
+      {
+        src: "/images/relaxmax-lifestyle-day.png",
+        width: 2752,
+        height: 1536,
+        alt: "Grand RelaxMax Recliner - Lifestyle View"
+      }
+    ]
+  },
+  {
     productHandle: "relaxmax",
     title: "RelaxMax Recliner",
     subtitle: "Ultimate Comfort Engineering",
