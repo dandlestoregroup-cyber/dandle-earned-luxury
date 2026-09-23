@@ -13,9 +13,47 @@ export interface Product {
   targetAudience: string;
   imageUrl: string;
   comingSoon?: boolean;
+  dimensionsCm?: {
+    width?: number;
+    height?: number;
+    depth?: number;
+  };
 }
 
 export const products: Product[] = [
+  // GRAND / EARNED LUXURY
+  {
+    id: "grand-relaxmax",
+    name: "Dandle Grand RelaxMax",
+    tagline: "More Space. More Support. More Comfort.",
+    threeWordTruth: "GRAND EARNED LUXURY",
+    tier: 'prestige',
+    price: 32100,
+    maxDiscount: 0,
+    colors: [
+      "Olive Linen",
+      "Alexandria Linen",
+      "Desert Sage",
+      "Sandstorm Ochre",
+      "Coastal Fog Grey",
+      "Desert Grey",
+      "Amber Sand"
+    ],
+    features: [
+      "Extra-Wide Supportive Seat",
+      "Smooth Reclining Motion",
+      "Built-in Cup Holders",
+      "Side Storage Pocket",
+      "Premium Fabric or Leather Upholstery",
+      "Crafted in Egypt"
+    ],
+    targetAudience: "Customers seeking a larger-format premium recliner",
+    imageUrl: "/images/relaxmax-brown-lifestyle.jpg",
+    dimensionsCm: {
+      width: 102,
+      height: 109
+    },
+  },
   // GATEWAY TIER - Max 15% discount
   {
     id: "relaxmax",
