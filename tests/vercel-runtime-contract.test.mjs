@@ -34,10 +34,15 @@ test("Vercel Web handlers use named HTTP method exports", () => {
   assert.match(webhook, /export \{ POST \} from "\.\.\/\.\.\/paytabs-callback\.js"/);
 });
 
-test("NOUR loads its ESM catalogue through a runtime-safe dynamic import", () => {
+test("NOUR compatibility route delegates to the canonical Supabase runtime", () => {
   const source = readFileSync(new URL("../api/nour/v1.ts", import.meta.url), "utf8");
-  assert.match(source, /await import\("\.\.\/_lib\/nourJourney\.mjs"\)/);
-  assert.doesNotMatch(source, /^import \{ createNourReply \}/m);
+  assert.match(
+    source,
+    /https:\/\/otjucmwadqqkvpgefafm\.supabase\.co\/functions\/v1\/nour-api/,
+  );
+  assert.match(source, /await fetch\(CANONICAL_NOUR_API/);
+  assert.doesNotMatch(source, /nourJourney\.mjs/);
+  assert.doesNotMatch(source, /createNourReply/);
 });
 
 test("NOUR can be called cross-origin only from approved DANDLE surfaces", () => {
