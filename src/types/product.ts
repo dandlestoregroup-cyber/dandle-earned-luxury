@@ -80,8 +80,8 @@ export const products: Product[] = [
     tagline: "Big Comfort, Small Footprint",
     threeWordTruth: "SMART SPACE COMFORT",
     tier: 'gateway',
-    priceManual: 24000,
-    pricePower: 29000,
+    priceManual: 24900,
+    pricePower: 29900,
     maxDiscount: 15,
     colors: ["Desert Grey", "Blue Nile Denim", "Oasis Green", "Alexandria Linen"],
     features: [
@@ -99,7 +99,7 @@ export const products: Product[] = [
     tagline: "Gentle Lift, Compact Design",
     threeWordTruth: "DIGNITY IN SMALL SPACES",
     tier: 'gateway',
-    price: 28000,
+    price: 46900,
     maxDiscount: 15,
     colors: ["Desert Grey", "Coastal Fog Grey", "Mocha Taupe"],
     features: [
@@ -118,8 +118,8 @@ export const products: Product[] = [
     tagline: "Work Better, Feel Better",
     threeWordTruth: "PRACTICAL DAILY COMFORT",
     tier: 'core',
-    priceManual: 32000,
-    pricePower: 38000,
+    priceManual: 26900,
+    pricePower: 33900,
     maxDiscount: 10,
     colors: ["Coastal Fog Grey", "Mocha Taupe", "Desert Sage", "Blue Nile Denim"],
     features: [
@@ -137,7 +137,7 @@ export const products: Product[] = [
     tagline: "Sit Easy, Stand Easier",
     threeWordTruth: "DIGNIFIED EFFORTLESS RISE",
     tier: 'core',
-    price: 35000,
+    price: 42900,
     maxDiscount: 10,
     colors: ["Alexandria Linen", "Desert Grey", "Sandstorm Ochre", "Amber Sand"],
     features: [
@@ -155,8 +155,8 @@ export const products: Product[] = [
     tagline: "Feel Better Every Day",
     threeWordTruth: "INDULGENT DEEP RELAXATION",
     tier: 'core',
-    priceManual: 32000,
-    pricePower: 38000,
+    priceManual: 29900,
+    pricePower: 36900,
     maxDiscount: 10,
     colors: ["Nile Mist Terracotta", "Amber Sand", "Mocha Taupe", "Clay Pottery"],
     features: [
@@ -176,7 +176,7 @@ export const products: Product[] = [
     threeWordTruth: "GRAVITATIONAL HOME ANCHOR",
     tier: 'prestige',
     priceManual: 42000,
-    pricePower: 48000,
+    pricePower: 54000,
     maxDiscount: 0,
     colors: ["Nile Sapphire Blue", "Mocha Taupe", "Blue Nile Denim", "Coastal Fog Grey"],
     features: [
@@ -194,8 +194,8 @@ export const products: Product[] = [
     tagline: "Where Style Meets Comfort",
     threeWordTruth: "EXPRESSIVE HIGH-TOUCH COMFORT",
     tier: 'prestige',
-    priceManual: 48000,
-    pricePower: 54000,
+    priceManual: 23900,
+    pricePower: 30900,
     maxDiscount: 0,
     colors: ["Nile Mist Terracotta", "Papyrus Stripe", "Giza Gold Weave", "Oasis Green", "Clay Pottery"],
     features: [
@@ -213,8 +213,8 @@ export const products: Product[] = [
     tagline: "Comfort for the Whole Family",
     threeWordTruth: "WHOLE-ROOM COMFORT SYSTEM",
     tier: 'prestige',
-    priceManual: 65000,
-    pricePower: 95000,
+    priceManual: 62900,
+    pricePower: 90900,
     maxDiscount: 0,
     colors: ["Coordinated Styles"],
     features: [
