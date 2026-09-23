@@ -1,15 +1,19 @@
 type ProductPrice = { manual?: number; power?: number; fixed?: number };
 
+// Compatibility pricing for the legacy /api/order-intent path.
+// Keep this mirror aligned with the canonical NOUR catalogue and the
+// server-controlled commerce offer prices; never trust browser-supplied prices.
 export const SERVER_PRICES: Record<string, ProductPrice> = {
+  "grand-relaxmax": { fixed: 32100 },
   relaxmax: { manual: 21900, power: 28900 },
-  spacesaver: { manual: 24000, power: 29000 },
-  "easyup-compact": { fixed: 28000 },
-  worknest: { manual: 32000, power: 38000 },
-  easyup: { fixed: 35000 },
-  comfortplus: { manual: 32000, power: 38000 },
-  cozycompanion: { manual: 42000, power: 48000 },
-  diva: { manual: 48000, power: 54000 },
-  "complete-set": { manual: 65000, power: 95000 },
+  spacesaver: { manual: 24900, power: 29900 },
+  "easyup-compact": { fixed: 46900 },
+  worknest: { manual: 26900, power: 33900 },
+  easyup: { fixed: 42900 },
+  comfortplus: { manual: 29900, power: 36900 },
+  cozycompanion: { manual: 42000, power: 54000 },
+  diva: { manual: 23900, power: 30900 },
+  "complete-set": { manual: 62900, power: 90900 },
 };
 
 const MASSAGE_ADDON_EGP = 9000;
