@@ -216,6 +216,23 @@ export default function ProductDetail() {
               Add to cart
             </Button>
 
+            {commercialProduct.dimensionsCm && (
+              <div className="border-t pt-6">
+                <h2 className="text-xl">Dimensions</h2>
+                <div className="mt-3 flex flex-wrap gap-x-8 gap-y-2 text-sm text-muted-foreground">
+                  {commercialProduct.dimensionsCm.width && (
+                    <span>Width: <strong className="text-foreground">{commercialProduct.dimensionsCm.width} cm</strong></span>
+                  )}
+                  {commercialProduct.dimensionsCm.height && (
+                    <span>Height: <strong className="text-foreground">{commercialProduct.dimensionsCm.height} cm</strong></span>
+                  )}
+                  {commercialProduct.dimensionsCm.depth && (
+                    <span>Depth: <strong className="text-foreground">{commercialProduct.dimensionsCm.depth} cm</strong></span>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="border-t pt-6">
               <h2 className="text-xl">About this product</h2>
               <p className="mt-3 leading-relaxed text-muted-foreground">
