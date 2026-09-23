@@ -21,6 +21,16 @@ export interface FabricCollection {
 // Core Collection - Timeless Sophistication
 export const coreCollection: FabricColor[] = [
   {
+    id: 'olive-linen',
+    name: 'Olive Linen',
+    fabric: 'Linen Blend',
+    collection: 'core',
+    hexColor: '#A8A27A',
+    gradientColors: ['#B8B28A', '#A8A27A', '#98926A'],
+    pattern: 'woven',
+    premium: true,
+  },
+  {
     id: 'nile-sapphire-blue',
     name: 'Nile Sapphire Blue',
     fabric: 'Velvet',
@@ -204,6 +214,7 @@ export const colorNameToFabricId: Record<string, string> = {
   'Stone Grey': 'desert-grey',
   'Navy Blue': 'blue-nile-denim',
   // Additional direct mappings using fabric names
+  'Olive Linen': 'olive-linen',
   'Nile Sapphire Blue': 'nile-sapphire-blue',
   'Alexandria Linen': 'alexandria-linen',
   'Desert Sage': 'desert-sage',
