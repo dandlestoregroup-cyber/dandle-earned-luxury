@@ -3,12 +3,57 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { mapPaytabsStatus, verifyPaidAcceptance } from "../_shared/paymentPolicy.ts";
 import { verifyPaytabsTransactionIdentity } from "../_shared/paytabsIdentity.ts";
+import { reportOpenAiOrderCreated } from "../_shared/openAiConversions.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+function isPaymentTestOrder(items: unknown): boolean {
+  return !!items && typeof items === "object" && !Array.isArray(items) &&
+    (items as Record<string, unknown>).payment_test === true;
+}
+
+function openAiOpprefFromItems(items: unknown): string | null {
+  if (!items || typeof items !== "object" || Array.isArray(items)) return null;
+  const guided = (items as Record<string, unknown>).guided;
+  if (!guided || typeof guided !== "object" || Array.isArray(guided)) return null;
+  const record = guided as Record<string, unknown>;
+  if (typeof record.oppref === "string" && record.oppref.trim()) return record.oppref.trim();
+  const attribution = record.attribution;
+  if (!attribution || typeof attribution !== "object" || Array.isArray(attribution)) return null;
+  const oppref = (attribution as Record<string, unknown>).oppref;
+  return typeof oppref === "string" && oppref.trim() ? oppref.trim() : null;
+}
+
+async function reportPaidConversion(
+  orderReference: string,
+  transactionRef: string,
+  amountEgp: number,
+  items: unknown,
+) {
+  if (isPaymentTestOrder(items)) {
+    console.log("Skipping marketing conversion for isolated payment test", { orderReference });
+    return;
+  }
+
+  const delivery = await reportOpenAiOrderCreated({
+    orderReference,
+    transactionRef,
+    amountEgp,
+    sourceUrl: "https://dandle-vie.com/",
+    oppref: openAiOpprefFromItems(items),
+  });
+  if (delivery.configured && !delivery.sent) {
+    console.warn("Verified payment retained despite OpenAI conversion delivery failure", {
+      orderReference,
+      eventId: delivery.eventId,
+      status: delivery.status ?? null,
+    });
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -108,30 +153,13 @@ serve(async (req) => {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data: existing, error: lookupError } = await supabase
       .from("orders")
-      .select("total_amount,payment_status,paytabs_tran_ref")
+      .select("total_amount,payment_status,paytabs_tran_ref,items")
       .eq("order_reference", cartId)
       .maybeSingle();
 
     if (lookupError || !existing) {
       console.error("PayTabs callback for unknown order reference", { cartId, tranRef });
       return json({ error: "Unknown order reference" }, 404);
-    }
-
-    // Paid is absorbing. A delayed decline/cancel callback from any attempt can
-    // never append a contradictory event or move the order away from paid.
-    if (existing.payment_status === "paid") {
-      return json({ success: true, note: "already_paid" });
-    }
-
-    // paytabs-create-payment pins every successful hosted-page creation to its
-    // current tran_ref. Once pinned, an older delayed callback is stale even if
-    // PayTabs can still verify that old transaction independently.
-    if (!existing.paytabs_tran_ref) {
-      return json({ error: "Payment session is not yet attached to this order" }, 503);
-    }
-    if (existing.paytabs_tran_ref !== tranRef) {
-      console.warn("Ignoring stale PayTabs callback", { cartId, tranRef });
-      return json({ error: "This payment attempt is no longer current" }, 409);
     }
 
     const { payment_status, safe_failure_reason } = mapPaytabsStatus(
@@ -162,6 +190,27 @@ serve(async (req) => {
       }
     }
 
+    // Paid is absorbing. A repeated callback for the current verified paid
+    // transaction may safely retry marketing telemetry with the same event id.
+    // A stale callback never creates a conversion.
+    if (existing.payment_status === "paid") {
+      if (existing.paytabs_tran_ref === tranRef && payment_status === "paid") {
+        await reportPaidConversion(cartId, tranRef, Number(existing.total_amount), existing.items);
+      }
+      return json({ success: true, note: "already_paid" });
+    }
+
+    // paytabs-create-payment pins every successful hosted-page creation to its
+    // current tran_ref. Once pinned, an older delayed callback is stale even if
+    // PayTabs can still verify that old transaction independently.
+    if (!existing.paytabs_tran_ref) {
+      return json({ error: "Payment session is not yet attached to this order" }, 503);
+    }
+    if (existing.paytabs_tran_ref !== tranRef) {
+      console.warn("Ignoring stale PayTabs callback", { cartId, tranRef });
+      return json({ error: "This payment attempt is no longer current" }, 409);
+    }
+
     const { data: updated, error: updateError } = await supabase
       .from("orders")
       .update({
@@ -187,10 +236,13 @@ serve(async (req) => {
       // Another verified callback may have settled it between our read/update.
       const { data: afterRace } = await supabase
         .from("orders")
-        .select("payment_status")
+        .select("payment_status,paytabs_tran_ref,total_amount,items")
         .eq("order_reference", cartId)
         .maybeSingle();
       if (afterRace?.payment_status === "paid") {
+        if (afterRace.paytabs_tran_ref === tranRef && payment_status === "paid") {
+          await reportPaidConversion(cartId, tranRef, Number(afterRace.total_amount), afterRace.items);
+        }
         return json({ success: true, note: "already_paid" });
       }
       return json({ error: "Order payment state changed during verification" }, 409);
@@ -211,6 +263,10 @@ serve(async (req) => {
         cartId,
         error: eventError.message,
       });
+    }
+
+    if (payment_status === "paid") {
+      await reportPaidConversion(cartId, tranRef, Number(existing.total_amount), existing.items);
     }
 
     console.log("Verified PayTabs payment state applied", {
