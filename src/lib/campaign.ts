@@ -1,11 +1,12 @@
 /**
  * North Coast campaign attribution + tracking.
- * Captures Google/UTM identifiers in-session and forwards events to any
+ * Captures Google/UTM/OpenAI identifiers in-session and forwards events to any
  * analytics surfaces already present on the page. No new analytics vendor.
  */
 const STORAGE_KEY = "dandle_campaign_attribution";
 
 const PARAM_KEYS = [
+  "oppref",
   "gclid",
   "wbraid",
   "gbraid",
@@ -39,7 +40,7 @@ export function captureCampaignAttribution(): Attribution {
     const fresh: Attribution = {};
     PARAM_KEYS.forEach((key) => {
       const value = params.get(key);
-      if (value) fresh[key] = value.slice(0, 200);
+      if (value) fresh[key] = value.slice(0, 500);
     });
 
     const stored = readAttribution();
