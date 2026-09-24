@@ -2,6 +2,10 @@ name: Deploy live PayTabs repair
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/paytabs-live.yml
 
 concurrency:
   group: paytabs-live-${{ github.ref }}
@@ -12,7 +16,7 @@ permissions:
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-paytabs-live]'))
     runs-on: ubuntu-latest
     steps:
       - name: Check deployment access before allocating setup work
