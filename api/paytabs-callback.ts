@@ -33,27 +33,30 @@ function recordValue(value: unknown): Record<string, unknown> {
     : {};
 }
 
-function isPaymentTestOrder(order: Record<string, unknown>) {
-  if (order.payment_test === true) return true;
-  return recordValue(order.metadata).payment_test === true;
+function isPaymentTestOrder(order: unknown) {
+  const source = recordValue(order);
+  if (source.payment_test === true) return true;
+  return recordValue(source.metadata).payment_test === true;
 }
 
-function orderOppref(order: Record<string, unknown>) {
-  const direct = clean(recordValue(order.attribution).oppref, 500);
+function orderOppref(order: unknown) {
+  const source = recordValue(order);
+  const direct = clean(recordValue(source.attribution).oppref, 500);
   if (direct) return direct;
-  return clean(recordValue(recordValue(order.metadata).attribution).oppref, 500) || null;
+  return clean(recordValue(recordValue(source.metadata).attribution).oppref, 500) || null;
 }
 
-function currentPaymentTransactionRef(order: Record<string, unknown>) {
-  const payment = recordValue(order.payment);
+function currentPaymentTransactionRef(order: unknown) {
+  const source = recordValue(order);
+  const payment = recordValue(source.payment);
   return clean(
-    payment.transactionRef ?? payment.transaction_ref ?? order.paytabs_tran_ref ?? order.transactionRef,
+    payment.transactionRef ?? payment.transaction_ref ?? source.paytabs_tran_ref ?? source.transactionRef,
     120,
   );
 }
 
 async function reportPaidConversion(
-  order: Record<string, unknown>,
+  order: unknown,
   reference: string,
   transactionRef: string,
   amountEgp: number,
