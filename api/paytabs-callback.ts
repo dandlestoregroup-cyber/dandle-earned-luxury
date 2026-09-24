@@ -12,6 +12,7 @@ import {
   type VerifiedPayTabsPayload,
 } from "./_lib/payment.js";
 import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
+import { reportOpenAiOrderCreated } from "./_lib/openAiConversions.js";
 
 async function recordPaymentState(
   paymentWebhook: string,
@@ -24,6 +25,59 @@ async function recordPaymentState(
     body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error(`Payment recording webhook returned ${response.status}`);
+}
+
+function recordValue(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {};
+}
+
+function isPaymentTestOrder(order: Record<string, unknown>) {
+  if (order.payment_test === true) return true;
+  return recordValue(order.metadata).payment_test === true;
+}
+
+function orderOppref(order: Record<string, unknown>) {
+  const direct = clean(recordValue(order.attribution).oppref, 500);
+  if (direct) return direct;
+  return clean(recordValue(recordValue(order.metadata).attribution).oppref, 500) || null;
+}
+
+function currentPaymentTransactionRef(order: Record<string, unknown>) {
+  const payment = recordValue(order.payment);
+  return clean(
+    payment.transactionRef ?? payment.transaction_ref ?? order.paytabs_tran_ref ?? order.transactionRef,
+    120,
+  );
+}
+
+async function reportPaidConversion(
+  order: Record<string, unknown>,
+  reference: string,
+  transactionRef: string,
+  amountEgp: number,
+) {
+  if (isPaymentTestOrder(order)) {
+    console.log("Skipping marketing conversion for isolated payment test", { reference });
+    return;
+  }
+
+  const delivery = await reportOpenAiOrderCreated({
+    orderReference: reference,
+    transactionRef,
+    amountEgp,
+    sourceUrl: `https://dandle-vie.com/order/${encodeURIComponent(reference)}`,
+    oppref: orderOppref(order),
+  });
+  if (delivery.configured && !delivery.sent) {
+    console.warn("Verified payment retained despite OpenAI conversion delivery failure", {
+      reference,
+      eventId: delivery.eventId,
+      status: delivery.status,
+      attempts: delivery.attempts,
+    });
+  }
 }
 
 export async function POST(request: Request) {
@@ -123,6 +177,9 @@ export async function POST(request: Request) {
 
     const currentPaymentStatus = normalizedPaymentStatus(order);
     if (isSettledPayment(currentPaymentStatus)) {
+      if (currentPaymentTransactionRef(order) === tranRef && mapped.paymentStatus === "DEPOSIT_PAID") {
+        await reportPaidConversion(order, callbackReference, tranRef, expectedDeposit);
+      }
       return Response.json(
         {
           received: true,
@@ -191,6 +248,10 @@ export async function POST(request: Request) {
         },
       }),
     );
+
+    if (mapped.paymentStatus === "DEPOSIT_PAID") {
+      await reportPaidConversion(order, callbackReference, tranRef, expectedDeposit);
+    }
 
     return Response.json(
       {
