@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CheckoutForm, { CustomerData } from "@/components/CheckoutForm";
+import { readAttribution } from "@/lib/campaign";
 import { toast } from "sonner";
 
 const trackBeginCheckout = (value: number, items: Array<Record<string, unknown>>) => {
@@ -62,7 +63,11 @@ const Cart = () => {
       const response = await fetch("/api/order-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer: customerData, items: cartItems }),
+        body: JSON.stringify({
+          customer: customerData,
+          items: cartItems,
+          attribution: readAttribution(),
+        }),
       });
       const data = await response.json().catch(() => ({}));
 
@@ -101,7 +106,6 @@ const Cart = () => {
             <Button onClick={() => navigate("/")} variant="luxury" size="lg">Explore Collection</Button>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
