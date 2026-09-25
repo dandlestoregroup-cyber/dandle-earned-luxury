@@ -21,10 +21,37 @@ type OrderIntentBody = {
     massageFeature?: boolean;
     handle?: string;
   }>;
+  attribution?: Record<string, unknown>;
 };
 
 const clean = (value: unknown, max = 300) =>
   typeof value === "string" ? value.trim().slice(0, max) : "";
+
+const ATTRIBUTION_KEYS = [
+  "oppref",
+  "gclid",
+  "wbraid",
+  "gbraid",
+  "fbclid",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+  "landing_path",
+  "captured_at",
+] as const;
+
+function sanitizeAttribution(input: unknown) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return {};
+  const source = input as Record<string, unknown>;
+  const attribution: Record<string, string> = {};
+  for (const key of ATTRIBUTION_KEYS) {
+    const value = clean(source[key], key === "oppref" ? 500 : 300);
+    if (value) attribution[key] = value;
+  }
+  return attribution;
+}
 
 function makeReference() {
   return `DN-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
@@ -48,6 +75,7 @@ export async function POST(request: Request) {
       governorate: clean(body.customer?.governorate, 100),
       notes: clean(body.customer?.notes, 800),
     };
+    const attribution = sanitizeAttribution(body.attribution);
 
     if (!customer.name || !customer.phone || !customer.address || !customer.city || !customer.governorate) {
       return Response.json({ error: "Missing required order details", charged: false }, { status: 400 });
@@ -91,6 +119,7 @@ export async function POST(request: Request) {
       reference,
       customer,
       items,
+      attribution,
       totalPrice,
       depositAmount: roundMoney(totalPrice * 0.4),
       balanceOnDelivery: roundMoney(totalPrice * 0.6),
@@ -131,6 +160,7 @@ export async function POST(request: Request) {
         data: {
           customer,
           items,
+          attribution,
           totalPrice,
           depositAmount: intent.depositAmount,
           balanceOnDelivery: intent.balanceOnDelivery,
