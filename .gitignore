@@ -25,3 +25,7 @@ dataconnect/.dataconnect/
 *.njsproj
 *.sln
 *.sw?
+# Secrets / local environment files
+.env
+.env.*
+!.env.example
