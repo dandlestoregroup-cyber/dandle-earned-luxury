@@ -86,3 +86,26 @@ test("same Facebook lead is suppressed and conflicting reuse is rejected", () =>
   ]));
   assert.throws(() => routeNewFacebookLead(conflict, existing), /DANDLE_FACEBOOK_LEAD_ID_CONFLICT/);
 });
+
+test("malformed arrivals have distinct recovery keys and persist independently", () => {
+  const ledger = new Map();
+  for (const payload of [{}, {}, lead([], { id: undefined }), lead([], { id: undefined })]) {
+    const normalized = normalizeFacebookLead(payload);
+    assert.match(normalized.leadId, /^RECOVERY:[0-9a-f-]{36}$/);
+    assert.equal(normalized.record["Error Code"], "LEAD_ID_MISSING");
+    assert.equal(normalized.qualification, "FAILED");
+    assert.equal(normalized.nextAction, "RECOVER_FACEBOOK_LEAD");
+    assert.equal(normalized.crm.length, 0);
+    const routed = routeNewFacebookLead(normalized, ledger.get(normalized.leadId) || []);
+    assert.equal(routed.records.length, 1);
+    ledger.set(normalized.leadId, [{ cells: {
+      normalized: { fieldName: "Normalized JSON", value: normalized.record["Normalized JSON"] },
+    } }]);
+    assert.equal(routeNewFacebookLead(normalized, ledger.get(normalized.leadId)).duplicate, true);
+    const stored = JSON.parse(normalized.record["Normalized JSON"]);
+    assert.equal(stored.leadId, "");
+    assert.equal(stored.recoveryId, normalized.leadId);
+    assert.equal(stored.attribution.facebookLeadId, "");
+  }
+  assert.equal(ledger.size, 4);
+});

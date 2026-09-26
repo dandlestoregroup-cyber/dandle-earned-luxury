@@ -50,3 +50,37 @@ test("unstable delivery promises block recommendation", () => {
   assert.equal(result.recommendable, false);
   assert.ok(result.issues.some((issue) => issue.code === "DELIVERY_PROMISE_CONFLICT"));
 });
+
+test("only finite positive decimal prices pass, including equivalent representations", () => {
+  for (const priceValues of [[], ["unknown"], [" "], [""], [-100], [0], ["0"], [Infinity],
+    [NaN], [null], [true], [{}], ["0x10"], ["28900 EGP"], [28900, "unknown"], [28900, 0]]) {
+    const result = recommendationGuard(dependable({ priceValues }), NOW);
+    assert.equal(result.checks.price, false, JSON.stringify(priceValues));
+    assert.equal(result.recommendable, false);
+    assert.equal(result.action, "verify_or_handoff");
+    assert.ok(result.issues.some((issue) => issue.code === "PRICE_UNVERIFIED"));
+  }
+  const equivalent = auditCommercialTruth(dependable({ priceValues: [28900, "28900", " 28900.00 "] }), NOW);
+  assert.equal(equivalent.recommendable, true);
+  assert.equal(equivalent.score, 100);
+});
+
+test("expired delivery dates block recommendation, while date-only promises last through the Cairo day", () => {
+  const audit = (fixedDate, now = NOW) => auditCommercialTruth(dependable({
+    delivery: { fixedDate, verifiedAt: "2026-08-31T08:00:00Z" },
+  }), now);
+  for (const expired of ["2020-01-01", "2026-08-30", "2026-08-31T09:59:59Z", NOW.toISOString()]) {
+    const result = audit(expired);
+    assert.equal(result.recommendable, false, expired);
+    assert.ok(result.issues.some((issue) => issue.code === "DELIVERY_DATE_EXPIRED"));
+  }
+  assert.equal(audit("2026-08-31").recommendable, true);
+  assert.equal(audit("2026-08-31", new Date("2026-08-31T20:59:59Z")).recommendable, true);
+  assert.equal(audit("2026-08-31", new Date("2026-08-31T21:00:00Z")).recommendable, false);
+  assert.equal(audit("2026-08-31T13:01:00+03:00").recommendable, true);
+  for (const invalid of ["not-a-date", "2026-02-30", "2026-09-01T10:00:00", ""]) {
+    const result = audit(invalid);
+    assert.equal(result.recommendable, false, invalid);
+    assert.ok(result.issues.some((issue) => issue.code === "DELIVERY_DATE_UNVERIFIED"));
+  }
+});
