@@ -24,6 +24,7 @@ import Installation from "./pages/trust/Installation";
 import Returns from "./pages/trust/Returns";
 import Contact from "./pages/trust/Contact";
 import BackOfficeHub from "./pages/BackOfficeHub";
+import BuildYourCorner from "./pages/BuildYourCorner";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,7 @@ const App = () => (
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
             <Route path="/backoffice" element={<BackOfficeHub />} />
+            <Route path="/build-your-corner" element={<BuildYourCorner />} />
             <Route path="/about" element={<About />} />
             <Route path="/warranty" element={<Warranty />} />
             <Route path="/delivery" element={<Delivery />} />
