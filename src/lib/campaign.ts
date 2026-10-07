@@ -40,7 +40,7 @@ export function captureCampaignAttribution(): Attribution {
     const fresh: Attribution = {};
     PARAM_KEYS.forEach((key) => {
       const value = params.get(key);
-      if (value) fresh[key] = value.slice(0, 500);
+      if (value) fresh[key] = value.slice(0, key === "oppref" ? 500 : 200);
     });
 
     const stored = readAttribution();

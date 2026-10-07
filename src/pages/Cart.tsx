@@ -106,6 +106,7 @@ const Cart = () => {
             <Button onClick={() => navigate("/")} variant="luxury" size="lg">Explore Collection</Button>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }

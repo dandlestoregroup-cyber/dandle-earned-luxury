@@ -3,9 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import RouteMetadata from "@/components/RouteMetadata";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { CartProvider } from "@/contexts/CartContext";
+import { captureCampaignAttribution } from "@/lib/campaign";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import NourChat from "./pages/NourChat";
@@ -24,12 +25,22 @@ import Installation from "./pages/trust/Installation";
 import Returns from "./pages/trust/Returns";
 import Contact from "./pages/trust/Contact";
 import BackOfficeHub from "./pages/BackOfficeHub";
+import BuildYourCorner from "./pages/BuildYourCorner";
 
 const queryClient = new QueryClient();
 
 const ProductRedirect = () => {
   const { handle } = useParams();
   return <Navigate to={`/products/${handle}`} replace />;
+};
+
+// Capture landing query parameters using the existing, session-scoped store.
+const CampaignAttributionHandler = () => {
+  const location = useLocation();
+  useEffect(() => {
+    captureCampaignAttribution();
+  }, [location.pathname, location.search]);
+  return null;
 };
 
 const LanguageDirectionHandler = () => {
@@ -65,6 +76,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <CampaignAttributionHandler />
           <LanguageDirectionHandler />
           <RouteMetadata />
           <Routes>
@@ -78,6 +90,7 @@ const App = () => (
             <Route path="/products/:handle" element={<ProductDetail />} />
             <Route path="/order/:reference" element={<OrderStatus />} />
             <Route path="/backoffice" element={<BackOfficeHub />} />
+            <Route path="/build-your-corner" element={<BuildYourCorner />} />
             <Route path="/about" element={<About />} />
             <Route path="/warranty" element={<Warranty />} />
             <Route path="/delivery" element={<Delivery />} />

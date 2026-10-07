@@ -25,6 +25,11 @@ async function recordPaymentState(
     body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error(`Payment recording webhook returned ${response.status}`);
+  // Successful HTTP status can still acknowledge a replay/no-op.
+  const acknowledgment: unknown = await response.json().catch(() => null);
+  const state = recordValue(acknowledgment);
+  return !(state.applied === false || state.updated === false ||
+    state.alreadyProcessed === true || state.duplicate === true);
 }
 
 function recordValue(value: unknown): Record<string, unknown> {
@@ -180,9 +185,6 @@ export async function POST(request: Request) {
 
     const currentPaymentStatus = normalizedPaymentStatus(order);
     if (isSettledPayment(currentPaymentStatus)) {
-      if (currentPaymentTransactionRef(order) === tranRef && mapped.paymentStatus === "DEPOSIT_PAID") {
-        await reportPaidConversion(order, callbackReference, tranRef, expectedDeposit);
-      }
       return Response.json(
         {
           received: true,
@@ -194,7 +196,14 @@ export async function POST(request: Request) {
       );
     }
 
-    await recordPaymentState(paymentWebhook, webhookToken, {
+    // paytabs/payment-intent pins the active transaction before redirect.
+    // Never settle a verified but stale attempt, or an unpinned order.
+    const activeTransactionRef = currentPaymentTransactionRef(order);
+    if (!activeTransactionRef || activeTransactionRef !== tranRef) {
+      return Response.json({ error: "Payment attempt is not current" }, { status: 409 });
+    }
+
+    const recorded = await recordPaymentState(paymentWebhook, webhookToken, {
       type: "PAYMENT_UPDATE",
       reference: callbackReference,
       idempotencyKey: `paytabs:${tranRef}:${mapped.paymentStatus}`,
@@ -223,6 +232,13 @@ export async function POST(request: Request) {
         verifiedAt: new Date().toISOString(),
       },
     });
+
+    if (!recorded) {
+      return Response.json(
+        { received: true, reference: callbackReference, paymentStatus: mapped.paymentStatus, alreadyProcessed: true },
+        { headers: { "Cache-Control": "no-store" } },
+      );
+    }
 
     const operationsType = mapped.paymentStatus === "DEPOSIT_PAID"
       ? "PAYMENT_VERIFIED"
@@ -253,6 +269,7 @@ export async function POST(request: Request) {
     );
 
     if (mapped.paymentStatus === "DEPOSIT_PAID") {
+      // Only a newly recorded verified settlement can report a purchase.
       await reportPaidConversion(order, callbackReference, tranRef, expectedDeposit);
     }
 
