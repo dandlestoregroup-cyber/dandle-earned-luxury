@@ -12,6 +12,7 @@ import {
   type VerifiedPayTabsPayload,
 } from "./_lib/payment.js";
 import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
+import { reportOpenAiOrderCreated, sanitizeOpenAiClickReference } from "./_lib/openAiConversions.js";
 
 async function recordPaymentState(
   paymentWebhook: string,
@@ -24,6 +25,74 @@ async function recordPaymentState(
     body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error(`Payment recording webhook returned ${response.status}`);
+  // Bridge-side atomic CAS must explicitly affirm a newly applied transition.
+  // A mere HTTP 200, empty response or ambiguous 'ok' cannot fire conversion.
+  const acknowledgment: unknown = await response.json().catch(() => null);
+  const state = recordValue(acknowledgment);
+  return state.applied === true && state.alreadyProcessed !== true &&
+    state.duplicate !== true;
+}
+
+function recordValue(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {};
+}
+
+function isPaymentTestOrder(order: unknown) {
+  const source = recordValue(order);
+  if (source.payment_test === true || recordValue(source.metadata).payment_test === true) return true;
+  return recordValue(source.items).payment_test === true;
+}
+
+function orderOppref(order: unknown) {
+  const source = recordValue(order);
+  const direct = sanitizeOpenAiClickReference(recordValue(source.attribution).oppref);
+  if (direct) return direct;
+  return sanitizeOpenAiClickReference(recordValue(recordValue(source.metadata).attribution).oppref);
+}
+
+function currentPaymentTransactionRef(order: unknown) {
+  const source = recordValue(order);
+  const payment = recordValue(source.payment);
+  return clean(
+    payment.transactionRef ?? payment.transaction_ref ?? source.paytabs_tran_ref ?? source.transactionRef,
+    120,
+  );
+}
+
+async function reportPaidConversion(
+  order: unknown,
+  reference: string,
+  transactionRef: string,
+  amountEgp: number,
+) {
+  if (isPaymentTestOrder(order)) {
+    console.log("Skipping marketing conversion for isolated payment test", { reference });
+    return;
+  }
+  if (recordValue(order).source !== "dandle-vercel") {
+    console.warn("Skipping conversion outside this checkout authority", { reference });
+    return;
+  }
+  const oppref = orderOppref(order);
+  if (!oppref) return; // No verified OpenAI click reference to attribute.
+
+  const delivery = await reportOpenAiOrderCreated({
+    orderReference: reference,
+    transactionRef,
+    amountEgp,
+    sourceUrl: `https://dandle-vie.com/order/${encodeURIComponent(reference)}`,
+    oppref,
+  });
+  if (delivery.configured && !delivery.sent) {
+    console.warn("Verified payment retained despite OpenAI conversion delivery failure", {
+      reference,
+      eventId: delivery.eventId,
+      status: delivery.status,
+      attempts: delivery.attempts,
+    });
+  }
 }
 
 export async function POST(request: Request) {
@@ -134,7 +203,14 @@ export async function POST(request: Request) {
       );
     }
 
-    await recordPaymentState(paymentWebhook, webhookToken, {
+    // paytabs/payment-intent pins the active transaction before redirect.
+    // Never settle a verified but stale attempt, or an unpinned order.
+    const activeTransactionRef = currentPaymentTransactionRef(order);
+    if (!activeTransactionRef || activeTransactionRef !== tranRef) {
+      return Response.json({ error: "Payment attempt is not current" }, { status: 409 });
+    }
+
+    const recorded = await recordPaymentState(paymentWebhook, webhookToken, {
       type: "PAYMENT_UPDATE",
       reference: callbackReference,
       idempotencyKey: `paytabs:${tranRef}:${mapped.paymentStatus}`,
@@ -164,6 +240,23 @@ export async function POST(request: Request) {
       },
     });
 
+    if (!recorded) {
+      console.warn("Payment bridge did not affirm a newly applied transition", {
+        reference: callbackReference,
+        transactionRef: tranRef,
+      });
+      return Response.json(
+        {
+          received: true,
+          reference: callbackReference,
+          paymentStatus: mapped.paymentStatus,
+          transitionConfirmed: false,
+          conversionDeferred: true,
+        },
+        { headers: { "Cache-Control": "no-store" } },
+      );
+    }
+
     const operationsType = mapped.paymentStatus === "DEPOSIT_PAID"
       ? "PAYMENT_VERIFIED"
       : mapped.conclusive
@@ -191,6 +284,11 @@ export async function POST(request: Request) {
         },
       }),
     );
+
+    if (mapped.paymentStatus === "DEPOSIT_PAID") {
+      // Only a newly recorded verified settlement can report a purchase.
+      await reportPaidConversion(order, callbackReference, tranRef, expectedDeposit);
+    }
 
     return Response.json(
       {

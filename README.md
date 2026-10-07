@@ -28,6 +28,14 @@ Dandle's customer-facing catalogue, Nour adviser, website order flow, order trac
 12. The remaining 60% is due on delivery under the current commercial flow.
 13. Order tracking never fabricates a fallback status when the live status bridge is unavailable.
 
+## DAN-002 purchase attribution and safeguards
+
+- The existing `dandle_campaign_attribution` session store captures `oppref`, Google clicks and UTMs on every landing route. Cart includes that snapshot in `/api/order-intent`; the server allowlists and sanitizes the fields without trimming or truncating the opaque `oppref` and sends them with the TakeApp order and operations event.
+- **The TakeApp bridge must persist and read back `order.attribution.oppref` or `order.metadata.attribution.oppref` after acceptance and through settlement.** Automated tests simulate that bridge with the actual Vercel handlers, but live TakeApp read-back remains a separate required release gate.
+- The Vercel callback sends a server-only OpenAI purchase only after PayTabs raw HMAC authentication, independent transaction query, profile/reference/currency/amount matching, current pinned transaction, and an explicit atomic bridge acknowledgment `{applied:true}` for a newly persisted payment transition. An ambiguous HTTP 200 does **not** permit conversion. Replayed paid orders, old transactions, unsettled statuses, payment tests and no-op bridge acknowledgments cannot report another purchase. Conversion transport failure must not change payment truth.
+- The separate Supabase PayTabs callback continues to own only Supabase-managed payment sessions; the Vercel/TakeApp and Supabase routes have distinct callback URLs and stores. Do not create an additional browser-side purchase event or route one payment through both. Send Vercel conversion only for `source: dandle-vercel` orders with a valid `oppref`; keep that opaque reference out of generic campaign analytics and URL propagation. Stable event IDs support downstream deduplication but are not a durable exactly-once delivery ledger.
+- `OPENAI_ADS_PIXEL_ID` and `OPENAI_CONVERSIONS_API_KEY` are optional **server-only** secrets. Neither activating PayTabs nor launching campaigns is part of this change. Complete production read-back, CI, credentials verification, one authorized settlement and release approvals before shipping.
+
 ## Required production environment
 
 ```text
