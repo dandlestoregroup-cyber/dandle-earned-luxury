@@ -6,7 +6,7 @@
 const STORAGE_KEY = "dandle_campaign_attribution";
 const isValidOppref = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0 && value.length <= 500 &&
-  !/[\u0000-\u001f\u007f]/.test(value);
+  !Array.from(value).some((character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127);
 
 const PARAM_KEYS = [
   "oppref",

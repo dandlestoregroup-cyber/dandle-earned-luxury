@@ -22,7 +22,7 @@ export type OpenAiConversionDelivery = {
 
 export function sanitizeOpenAiClickReference(value: unknown): string | null {
   if (typeof value !== "string" || value.length < 1 || value.length > 500) return null;
-  if (/[\u0000-\u001f\u007f]/.test(value)) return null;
+  if (Array.from(value).some((character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127)) return null;
   return value;
 }
 
