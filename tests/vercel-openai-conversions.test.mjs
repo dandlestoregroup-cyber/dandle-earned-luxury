@@ -5,6 +5,7 @@ import {
   buildOpenAiOrderCreatedEvent,
   reportOpenAiOrderCreated,
   stableOpenAiOrderEventId,
+  sanitizeOpenAiClickReference,
 } from '../api/_lib/openAiConversions.ts';
 
 const input = {
@@ -93,4 +94,13 @@ test('real storefront path preserves oppref into the settlement callback', () =>
   assert.match(orderIntent, /const attribution = sanitizeAttribution\(body\.attribution\)/);
   assert.match(callback, /mapped\.paymentStatus === "DEPOSIT_PAID"/);
   assert.match(callback, /await reportPaidConversion\(order, callbackReference, tranRef, expectedDeposit\)/);
+});
+
+test('OpenAI click reference is opaque and never trimmed, truncated or included with control characters', () => {
+  const exact = ' important-spaces ';
+  assert.equal(sanitizeOpenAiClickReference(exact), exact);
+  assert.equal(buildOpenAiOrderCreatedEvent({ ...input, oppref: exact }).oppref, exact);
+  assert.equal(sanitizeOpenAiClickReference('a'.repeat(501)), null);
+  assert.equal(sanitizeOpenAiClickReference('bad' + String.fromCharCode(10) + 'ref'), null);
+  assert.equal(buildOpenAiOrderCreatedEvent({ ...input, oppref: 'z'.repeat(501) }).oppref, undefined);
 });

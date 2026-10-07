@@ -20,6 +20,12 @@ export type OpenAiConversionDelivery = {
   attempts: number;
 };
 
+export function sanitizeOpenAiClickReference(value: unknown): string | null {
+  if (typeof value !== "string" || value.length < 1 || value.length > 500) return null;
+  if (/[\u0000-\u001f\u007f]/.test(value)) return null;
+  return value;
+}
+
 export function stableOpenAiOrderEventId(orderReference: string, transactionRef: string): string {
   return `dandle-order:${orderReference}:${transactionRef}`;
 }
@@ -49,7 +55,7 @@ export function buildOpenAiOrderCreatedEvent(input: OpenAiOrderCreatedInput) {
     },
   };
 
-  const oppref = input.oppref?.trim();
+  const oppref = sanitizeOpenAiClickReference(input.oppref);
   if (oppref) event.oppref = oppref;
   return event;
 }

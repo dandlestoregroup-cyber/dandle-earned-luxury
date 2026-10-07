@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 import { readFileSync, writeFileSync, unlinkSync } from "node:fs";
 import test from "node:test";
-import { captureCampaignAttribution, readAttribution } from "../src/lib/campaign.ts";
+import { captureCampaignAttribution, readAttribution, withCampaignParams } from "../src/lib/campaign.ts";
 
 // Exercise the production handler bodies with only the .js -> .ts Node test
 // loader substitutions. No real orders, PayTabs, or Ads endpoint are called.
@@ -20,6 +20,7 @@ async function loadHandler(name, replacements) {
 }
 const orderIntent = await loadHandler("order-intent", [
   ['from "./_lib/catalog.js"', 'from "./_lib/catalog.ts"'],
+  ['from "./_lib/openAiConversions.js"', 'from "./_lib/openAiConversions.ts"'],
 ]);
 const paytabsCallback = await loadHandler("paytabs-callback", [
   ['from "./_lib/payment.js"', 'from "./_lib/payment.ts"'],
@@ -80,13 +81,16 @@ function setup() {
       const payload = JSON.parse(init.body);
       assert.equal(payload.reference, order.reference);
       assert.equal(payload.payment.transactionRef, gateway.tranRef);
-      assert.ok(payload.expectedPriorPaymentStatuses.includes(order.paymentStatus));
       transitions.push(payload);
-      if (recorded.applied) {
+      // Simulated bridge-side atomic compare-and-swap against the pinned attempt.
+      if (recorded.applied === true &&
+          payload.expectedPriorPaymentStatuses.includes(order.paymentStatus) &&
+          order.payment?.transactionRef === payload.payment.transactionRef) {
         order.paymentStatus = payload.payment.status;
         order.payment = payload.payment;
+        return Response.json({ applied: true });
       }
-      return Response.json(recorded);
+      return Response.json({ applied: false, duplicate: true });
     }
     if (address.startsWith("https://bzr.openai.com/v1/events?pid=")) {
       assert.equal(init.headers.Authorization, "Bearer test-conversions-key");
@@ -158,10 +162,12 @@ test("attribution uses existing campaign session store on all routes", () => {
     assert.equal(result.landing_path, "/products/relaxmax");
     assert.equal(readAttribution().utm_source, "openai");
     s.navigate("?oppref=" + "a".repeat(501));
-    assert.equal(captureCampaignAttribution().oppref.length, 500);
+    assert.equal(captureCampaignAttribution().oppref, "OPENAI-CLICK-123",
+      "invalid oversized references must not become truncated provider IDs");
     s.navigate("?utm_term=" + "b".repeat(201));
     assert.equal(captureCampaignAttribution().utm_term.length, 200);
     assert.equal(s.storage.has("dandle:openai:oppref"), false);
+    assert.equal(withCampaignParams("/cart").includes("oppref"), false);
     assert.match(readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8"), /<CampaignAttributionHandler \/>/);
     assert.match(readFileSync(new URL("../src/pages/Cart.tsx", import.meta.url), "utf8"), /attribution:\s*readAttribution\(\)/);
   } finally { s.restore(); }
@@ -175,7 +181,7 @@ test("stored oppref reaches one purchase event only after verified settlement", 
     const created = await submitOrder({ ...readAttribution(), oppref: " OPENAI-ORDER-777 ", evil: "discard" });
     assert.equal(created.charged, false);
     assert.equal(s.order.reference, created.reference);
-    assert.equal(s.order.attribution.oppref, "OPENAI-ORDER-777");
+    assert.equal(s.order.attribution.oppref, " OPENAI-ORDER-777 ");
     assert.equal(s.order.attribution.utm_medium, "chatgpt");
     assert.equal(s.order.attribution.evil, undefined);
     assert.equal(s.order.totalPrice, 21900);
@@ -200,7 +206,7 @@ test("stored oppref reaches one purchase event only after verified settlement", 
     assert.equal(s.deliveries.length, 1);
     const event = s.deliveries[0].events[0];
     assert.equal(event.id, `dandle-order:${created.reference}:PT-ONE`);
-    assert.equal(event.oppref, "OPENAI-ORDER-777");
+    assert.equal(event.oppref, " OPENAI-ORDER-777 ", "oppref must be exact, never trimmed");
     assert.deepEqual(event.data, { type: "contents", currency: "EGP", amount: 876000 });
     const replay = await paytabsCallback(callback(created.reference));
     assert.equal(replay.status, 200);
@@ -218,7 +224,7 @@ test("duplicate bridge acknowledgment cannot emit a purchase", async () => {
     s.setRecorded({ applied: false, duplicate: true });
     const response = await paytabsCallback(callback(s.order.reference));
     assert.equal(response.status, 200);
-    assert.equal((await response.json()).alreadyProcessed, true);
+    assert.equal((await response.json()).conversionDeferred, true);
     assert.equal(s.order.paymentStatus, "PAYMENT_PENDING");
     assert.equal(s.deliveries.length, 0);
   } finally { s.restore(); }
@@ -233,5 +239,60 @@ test("isolated payment test is settled without conversion", async () => {
     assert.equal((await paytabsCallback(callback(s.order.reference))).status, 200);
     assert.equal(s.order.paymentStatus, "DEPOSIT_PAID");
     assert.equal(s.deliveries.length, 0);
+  } finally { s.restore(); }
+});
+
+test("missing explicit atomic-apply acknowledgment cannot authorize conversion", async () => {
+  const s = setup();
+  try {
+    await submitOrder({ oppref: "NO-ACK" });
+    s.accept();
+    s.setRecorded({});
+    const response = await paytabsCallback(callback(s.order.reference));
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).transitionConfirmed, false);
+    assert.equal(s.deliveries.length, 0);
+  } finally { s.restore(); }
+});
+
+test("two concurrent verified callbacks send once under atomic bridge CAS", async () => {
+  const s = setup();
+  try {
+    await submitOrder({ oppref: "CONCURRENT-CLICK" });
+    s.accept();
+    const results = await Promise.all([
+      paytabsCallback(callback(s.order.reference)),
+      paytabsCallback(callback(s.order.reference)),
+    ]);
+    assert.deepEqual(results.map(r => r.status), [200, 200]);
+    assert.equal(s.order.paymentStatus, "DEPOSIT_PAID");
+    assert.equal(s.deliveries.length, 1, "only winning paid transition may send");
+  } finally { s.restore(); }
+});
+
+test("unattributed and cross-system orders cannot produce OpenAI purchase conversions", async () => {
+  for (const otherSource of [null, "other-checkout"]) {
+    const s = setup();
+    try {
+      await submitOrder({ oppref: "VALID-CLICK" });
+      s.accept();
+      if (otherSource) s.order.source = otherSource;
+      else delete s.order.attribution.oppref;
+      assert.equal((await paytabsCallback(callback(s.order.reference))).status, 200);
+      assert.equal(s.order.paymentStatus, "DEPOSIT_PAID");
+      assert.equal(s.deliveries.length, 0);
+    } finally { s.restore(); }
+  }
+});
+
+test("invalid opaque click IDs are never persisted in order attribution", async () => {
+  const s = setup();
+  try {
+    s.navigate("?oppref=" + "y".repeat(501));
+    captureCampaignAttribution();
+    assert.equal(readAttribution().oppref, undefined);
+    await submitOrder({ oppref: "x".repeat(501), utm_source: "openai" });
+    assert.equal(s.order.attribution.oppref, undefined);
+    assert.equal(s.order.attribution.utm_source, "openai");
   } finally { s.restore(); }
 });

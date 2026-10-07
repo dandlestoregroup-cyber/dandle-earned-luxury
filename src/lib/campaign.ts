@@ -1,9 +1,12 @@
 /**
  * North Coast campaign attribution + tracking.
- * Captures Google/UTM/OpenAI identifiers in-session and forwards events to any
- * analytics surfaces already present on the page. No new analytics vendor.
+ * Captures Google/UTM/OpenAI identifiers in-session. The opaque OpenAI click
+ * reference is for checkout only, never generic analytics. No new vendor.
  */
 const STORAGE_KEY = "dandle_campaign_attribution";
+const isValidOppref = (value: unknown): value is string =>
+  typeof value === "string" && value.length > 0 && value.length <= 500 &&
+  !/[\u0000-\u001f\u007f]/.test(value);
 
 const PARAM_KEYS = [
   "oppref",
@@ -40,7 +43,13 @@ export function captureCampaignAttribution(): Attribution {
     const fresh: Attribution = {};
     PARAM_KEYS.forEach((key) => {
       const value = params.get(key);
-      if (value) fresh[key] = value.slice(0, key === "oppref" ? 500 : 200);
+      if (!value) return;
+      if (key === "oppref") {
+        // Never trim/truncate an opaque provider click reference.
+        if (isValidOppref(value)) fresh.oppref = value;
+      } else {
+        fresh[key] = value.slice(0, 200);
+      }
     });
 
     const stored = readAttribution();
@@ -62,7 +71,7 @@ export function captureCampaignAttribution(): Attribution {
 export function withCampaignParams(path: string): string {
   const attr = readAttribution();
   const entries = Object.entries(attr).filter(
-    ([key, value]) => value && (PARAM_KEYS as readonly string[]).includes(key)
+    ([key, value]) => key !== "oppref" && value && (PARAM_KEYS as readonly string[]).includes(key)
   );
   if (entries.length === 0) return path;
 
@@ -85,7 +94,10 @@ export type NorthCoastEvent =
 
 export function trackCampaign(event: NorthCoastEvent, payload?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
-  const props = { campaign: "north_coast_summer_2026", ...readAttribution(), ...payload };
+  const genericAttribution = Object.fromEntries(
+    Object.entries(readAttribution()).filter(([key]) => key !== "oppref"),
+  );
+  const props = { campaign: "north_coast_summer_2026", ...genericAttribution, ...payload };
   try {
     const w = window as unknown as {
       dataLayer?: unknown[];

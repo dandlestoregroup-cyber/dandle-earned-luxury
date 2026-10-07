@@ -1,4 +1,5 @@
 import { getVerifiedUnitPrice } from "./_lib/catalog.js";
+import { sanitizeOpenAiClickReference } from "./_lib/openAiConversions.js";
 import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
 
 type OrderIntentBody = {
@@ -47,7 +48,12 @@ function sanitizeAttribution(input: unknown) {
   const source = input as Record<string, unknown>;
   const attribution: Record<string, string> = {};
   for (const key of ATTRIBUTION_KEYS) {
-    const value = clean(source[key], key === "oppref" ? 500 : 300);
+    if (key === "oppref") {
+      const reference = sanitizeOpenAiClickReference(source.oppref);
+      if (reference) attribution.oppref = reference;
+      continue;
+    }
+    const value = clean(source[key], 300);
     if (value) attribution[key] = value;
   }
   return attribution;

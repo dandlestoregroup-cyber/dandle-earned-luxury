@@ -12,7 +12,7 @@ import {
   type VerifiedPayTabsPayload,
 } from "./_lib/payment.js";
 import { buildOperationsEvent, emitOperationsEvent, stableOperationsEventId } from "./_lib/operations.mjs";
-import { reportOpenAiOrderCreated } from "./_lib/openAiConversions.js";
+import { reportOpenAiOrderCreated, sanitizeOpenAiClickReference } from "./_lib/openAiConversions.js";
 
 async function recordPaymentState(
   paymentWebhook: string,
@@ -25,11 +25,12 @@ async function recordPaymentState(
     body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error(`Payment recording webhook returned ${response.status}`);
-  // Successful HTTP status can still acknowledge a replay/no-op.
+  // Bridge-side atomic CAS must explicitly affirm a newly applied transition.
+  // A mere HTTP 200, empty response or ambiguous 'ok' cannot fire conversion.
   const acknowledgment: unknown = await response.json().catch(() => null);
   const state = recordValue(acknowledgment);
-  return !(state.applied === false || state.updated === false ||
-    state.alreadyProcessed === true || state.duplicate === true);
+  return state.applied === true && state.alreadyProcessed !== true &&
+    state.duplicate !== true;
 }
 
 function recordValue(value: unknown): Record<string, unknown> {
@@ -40,15 +41,15 @@ function recordValue(value: unknown): Record<string, unknown> {
 
 function isPaymentTestOrder(order: unknown) {
   const source = recordValue(order);
-  if (source.payment_test === true) return true;
-  return recordValue(source.metadata).payment_test === true;
+  if (source.payment_test === true || recordValue(source.metadata).payment_test === true) return true;
+  return recordValue(source.items).payment_test === true;
 }
 
 function orderOppref(order: unknown) {
   const source = recordValue(order);
-  const direct = clean(recordValue(source.attribution).oppref, 500);
+  const direct = sanitizeOpenAiClickReference(recordValue(source.attribution).oppref);
   if (direct) return direct;
-  return clean(recordValue(recordValue(source.metadata).attribution).oppref, 500) || null;
+  return sanitizeOpenAiClickReference(recordValue(recordValue(source.metadata).attribution).oppref);
 }
 
 function currentPaymentTransactionRef(order: unknown) {
@@ -70,13 +71,19 @@ async function reportPaidConversion(
     console.log("Skipping marketing conversion for isolated payment test", { reference });
     return;
   }
+  if (recordValue(order).source !== "dandle-vercel") {
+    console.warn("Skipping conversion outside this checkout authority", { reference });
+    return;
+  }
+  const oppref = orderOppref(order);
+  if (!oppref) return; // No verified OpenAI click reference to attribute.
 
   const delivery = await reportOpenAiOrderCreated({
     orderReference: reference,
     transactionRef,
     amountEgp,
     sourceUrl: `https://dandle-vie.com/order/${encodeURIComponent(reference)}`,
-    oppref: orderOppref(order),
+    oppref,
   });
   if (delivery.configured && !delivery.sent) {
     console.warn("Verified payment retained despite OpenAI conversion delivery failure", {
@@ -234,8 +241,18 @@ export async function POST(request: Request) {
     });
 
     if (!recorded) {
+      console.warn("Payment bridge did not affirm a newly applied transition", {
+        reference: callbackReference,
+        transactionRef: tranRef,
+      });
       return Response.json(
-        { received: true, reference: callbackReference, paymentStatus: mapped.paymentStatus, alreadyProcessed: true },
+        {
+          received: true,
+          reference: callbackReference,
+          paymentStatus: mapped.paymentStatus,
+          transitionConfirmed: false,
+          conversionDeferred: true,
+        },
         { headers: { "Cache-Control": "no-store" } },
       );
     }
